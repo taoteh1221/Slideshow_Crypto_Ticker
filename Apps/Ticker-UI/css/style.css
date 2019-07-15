@@ -1,0 +1,81 @@
+
+body, html {
+            margin: 0px;
+            padding: 0px;
+}
+
+html {
+  height: 100%;
+  background: black;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+}
+
+.title {
+	white-space: nowrap;
+  position: relative;
+  Font-family: Montserrat;
+  font-weight: 350;
+  font-size:60px;
+  margin: 0;
+}
+
+p {
+  position: relative;
+  Font-family: Montserrat;
+}
+
+#ticker_window {
+	
+	
+	/* flip upsidedown because my power plug is in the way */
+  -moz-transform:rotate(-180deg); /* Firefox */
+  -webkit-transform:rotate(-180deg); /* Webkit */        
+  -ms-transform:rotate(-180deg); /* IE */
+  -o-transform:rotate(-180deg); /* Opera */
+  transform:rotate(-180deg); /* future */
+  
+  border: 0px solid red;
+  position:absolute;
+	text-align: center;
+	white-space: nowrap;
+	display: inline-block;
+  position: relative;
+  margin: 0px;
+  height: auto;
+  width: auto;
+  background: black;
+  color: #e3e3e3;
+  padding: 1em;
+  padding-bottom: 9px;
+}
+
+#ticker {
+	white-space: nowrap;
+  overflow: hidden;
+  font-weight: 350;
+  font-size: 73px;
+}
+
+.spacing {
+	margin-top: 30px;
+}
+
+.tick {
+  margin: auto;
+  text-align: center;
+}
+
+span {
+  width: 175px;
+  text-align: left;
+}
+
+span.sell {
+  background-color: rgb(105, 199, 115);
+}
+
+span.buy {
+  background-color: rgb(199, 105, 105);
+}
