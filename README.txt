@@ -14,9 +14,17 @@ sudo apt install xdotool unclutter
 
 chmod -R 755 /home/pi/Scripts
 
-chmod -R 755 /home/pi/Builds
-
 ln -s /home/pi/Scripts/switch-display.bash ~/display
+
+## ONLY RUN BELOW COMMANDS IF YOU HAVE A "goodtft LCD-show" LCD
+
+cd ~/Builds
+
+git clone https://github.com/goodtft/LCD-show.git
+
+cd ~/
+
+chmod -R 755 /home/pi/Builds
 
 #############################################################################################
 
