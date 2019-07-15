@@ -18,3 +18,9 @@ v0.92.0
 -Documentation
 -Support for display driver managment on "goodtft LCD-show" LCDs
 ---------------------------------------------------------
+
+
+---------------------------------------------------------
+v0.93.0
+-Documentation for "goodtft LCD-show" LCDs seperated from main documentation
+---------------------------------------------------------
