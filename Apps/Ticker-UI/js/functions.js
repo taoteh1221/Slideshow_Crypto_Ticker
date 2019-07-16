@@ -1,9 +1,24 @@
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////
+
 function numberWithCommas(x) {
     return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 }
 
-    $(document).ready(function() {
-  var socket = new WebSocket("wss://ws-feed.gdax.com");
+/////////////////////////////////////////////////////////////////////////////////////////////////////
+
+function sendText() {
+    var msg = {
+      type: "subscribe",
+      product_id: "BTC-USD"
+    };
+    socket.send(JSON.stringify(msg));
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////
+
+function connect() {
+  var socket = new WebSocket('wss://ws-feed.gdax.com');
   socket.onopen = function() {
     var msg = {
       type: "subscribe",
@@ -11,10 +26,10 @@ function numberWithCommas(x) {
     };
     socket.send(JSON.stringify(msg));
     console.log(msg);
-    $("#status").text("Coinbase").css("color", "#2bbf2b");
+    $("#status").text("Coinbase").css("color", "#2bbf7b");
   };
 
-  socket.onmessage = function(event) {
+  socket.onmessage = function(e) {
     var msg = JSON.parse(event.data);
     if (msg["type"] == "match") {
     	
@@ -63,12 +78,21 @@ function numberWithCommas(x) {
     }
   };
 
-  function sendText() {
-    var msg = {
-      type: "subscribe",
-      product_id: "BTC-USD"
-    };
-    socket.send(JSON.stringify(msg));
-  }
-});
+  socket.onclose = function(e) {
+    //console.log('Connecting', e.reason);
+    setTimeout(function() {
+    $("#status").text("Connecting").css("color", "red");
+      connect();
+    }, 60000); // Reconnect after no data received for 1 minute
+  };
+
+  socket.onerror = function(err) {
+    $("#status").text("Error").css("color", "red");
+    //console.error('Socket encountered error: ', err.message, 'Closing socket');
+    socket.close();
+  };
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////
+
 

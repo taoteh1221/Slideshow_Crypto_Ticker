@@ -24,3 +24,10 @@ v0.92.0
 v0.93.0
 -Documentation for "goodtft LCD-show" LCDs seperated from main documentation
 ---------------------------------------------------------
+
+
+---------------------------------------------------------
+v0.94.0
+-1 minute timeout for idle / disconnected websocket (initiates reconnect attempt automatically)
+-Night-friendly soft white for text
+---------------------------------------------------------
