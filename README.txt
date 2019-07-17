@@ -1,4 +1,9 @@
 
+Real Time BTC Price Ticker For Raspberry Pis With LCD Screens
+
+Example on a 3.5" LCD: https://www.youtube.com/watch?v=1SmOkR7dM9g
+
+Developed on a Raspi v2 B+, with this screen / case: https://smile.amazon.com/gp/product/B07N38B86S/
 
 #############################################################################################
 
