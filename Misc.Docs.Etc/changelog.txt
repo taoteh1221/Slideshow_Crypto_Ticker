@@ -31,3 +31,10 @@ v0.94.0
 -1 minute timeout for idle / disconnected websocket (initiates reconnect attempt automatically)
 -Night-friendly soft white for text
 ---------------------------------------------------------
+
+
+---------------------------------------------------------
+v0.95.0
+-Moved all CSS / Javascript to run locally, except the google font
+---------------------------------------------------------
+
