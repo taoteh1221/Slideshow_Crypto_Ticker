@@ -21,19 +21,33 @@ function connect() {
   var socket = new WebSocket('wss://ws-feed.gdax.com');
   socket.onopen = function() {
     var msg = {
-      type: "subscribe",
-      product_id: "BTC-USD"
+      
+    "type": "subscribe",
+    "product_ids": [
+        "BTC-USD"
+    ],
+    "channels": [
+        {
+            "name": "ticker",
+            "product_ids": [
+                "BTC-USD"
+            ]
+        }
+    ]
     };
     socket.send(JSON.stringify(msg));
-    console.log(msg);
+    //console.log(msg);
     $("#status").text("Coinbase").css("color", "#2bbf7b");
   };
 
   socket.onmessage = function(e) {
     var msg = JSON.parse(event.data);
-    if (msg["type"] == "match") {
+    //console.log(msg);
+    if (msg["type"] == "ticker") {
     	
       var price = parseFloat(msg["price"]).toFixed(2);
+      var usd_volume = price * parseFloat(msg["volume_24h"]);
+      usd_volume = usd_volume.toFixed(0);
 		
       var sign;
       if (msg["side"] == "sell") {
@@ -41,26 +55,6 @@ function connect() {
       } else {
         sign = "▼";
       }
-      var time = new Date();
-      var hours = time.getHours();
-      var minutes = time.getMinutes();
-      var seconds = time.getSeconds();
-      if (hours > 12) {
-        hours = hours - 12;
-      } else if (hours == 0) {
-        hours = 12;
-      }
-      if (hours < 10) {
-        hours = "0" + hours;
-      }
-      if (minutes < 10) {
-        minutes = "0" + minutes;
-      }
-      if (seconds < 10) {
-        seconds = "0" + seconds;
-      }
-
-      var fulltime = hours + ":" + minutes + ":" + seconds;
       var side = '"' + msg["side"] + '"';
       var price_list_item =
         "<div class='spacing'><span class=" +
@@ -69,8 +63,8 @@ function connect() {
         sign +
         "</span> <span class='tick'>$" +
         numberWithCommas(price) +
-        "</span></div><div class='spacing'>(" +
-        fulltime +
+        "</span></div><div class='spacing small'>(24hr Vol: $" +
+        numberWithCommas(usd_volume) +
         ")" +
         "</div>";
 
