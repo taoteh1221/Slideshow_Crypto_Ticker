@@ -51,6 +51,12 @@ Add this as a cron job every minute:
 
 #############################################################################################
 
+Edit the following file to switch between USD / EUR / GBP markets: 
+
+/home/pi/Apps/Ticker-UI/config.js
+
+#############################################################################################
+
 After completing above setup, you can switch between HDMI / LCD on "goodtft LCD-show" devices by running the command:
 
 ./display

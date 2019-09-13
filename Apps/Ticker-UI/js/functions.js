@@ -5,32 +5,37 @@ function numberWithCommas(x) {
     return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 }
 
-/////////////////////////////////////////////////////////////////////////////////////////////////////
-
-function sendText() {
-    var msg = {
-      type: "subscribe",
-      product_id: "BTC-USD"
-    };
-    socket.send(JSON.stringify(msg));
-}
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////
 
 function connect() {
+	
+	if ( window.currency_type == 'USD' ) {
+	var fiat_symbol = "$";
+	}
+	else if ( window.currency_type == 'EUR' ) {
+	var fiat_symbol = "€";
+	}
+	else if ( window.currency_type == 'GBP' ) {
+	var fiat_symbol = "£";
+	}
+	
   var socket = new WebSocket('wss://ws-feed.gdax.com');
+  
+
+  
   socket.onopen = function() {
     var msg = {
       
     "type": "subscribe",
     "product_ids": [
-        "BTC-USD"
+        "BTC-" + window.currency_type
     ],
     "channels": [
         {
             "name": "ticker",
             "product_ids": [
-                "BTC-USD"
+                "BTC-" + window.currency_type
             ]
         }
     ]
@@ -46,8 +51,8 @@ function connect() {
     if (msg["type"] == "ticker") {
     	
       var price = parseFloat(msg["price"]).toFixed(2);
-      var usd_volume = price * parseFloat(msg["volume_24h"]);
-      usd_volume = usd_volume.toFixed(0);
+      var fiat_volume = price * parseFloat(msg["volume_24h"]);
+      fiat_volume = fiat_volume.toFixed(0);
 		
       var sign;
       if (msg["side"] == "sell") {
@@ -61,10 +66,10 @@ function connect() {
         side +
         ">" +
         sign +
-        "</span> <span class='tick'>$" +
+        "</span> <span class='tick'>" + fiat_symbol +
         numberWithCommas(price) +
-        "</span></div><div class='spacing small'>(24hr Vol: $" +
-        numberWithCommas(usd_volume) +
+        "</span></div><div class='spacing small'>(24hr Vol: " + fiat_symbol +
+        numberWithCommas(fiat_volume) +
         ")" +
         "</div>";
 
