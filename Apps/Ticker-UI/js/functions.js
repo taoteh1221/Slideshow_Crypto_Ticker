@@ -2,7 +2,12 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////
 
 function numberWithCommas(x) {
-    return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+	if ( x >= 1 ) {
+	return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+	}
+   else {
+   return x;
+   }
 }
 
 
@@ -10,13 +15,13 @@ function numberWithCommas(x) {
 
 function connect() {
 	
-	if ( window.currency_type == 'USD' ) {
+	if ( window.currency_pairing == 'USD' || window.currency_pairing == 'USDC' ) {
 	var fiat_symbol = "$";
 	}
-	else if ( window.currency_type == 'EUR' ) {
+	else if ( window.currency_pairing == 'EUR' ) {
 	var fiat_symbol = "€";
 	}
-	else if ( window.currency_type == 'GBP' ) {
+	else if ( window.currency_pairing == 'GBP' ) {
 	var fiat_symbol = "£";
 	}
 	
@@ -29,19 +34,20 @@ function connect() {
       
     "type": "subscribe",
     "product_ids": [
-        "BTC-" + window.currency_type
+        window.currency_crypto + "-" + window.currency_pairing
     ],
     "channels": [
         {
             "name": "ticker",
             "product_ids": [
-                "BTC-" + window.currency_type
+                window.currency_crypto + "-" + window.currency_pairing
             ]
         }
     ]
     };
     socket.send(JSON.stringify(msg));
     //console.log(msg);
+    $("#asset").text(window.currency_crypto);
     $("#status").text("Coinbase").css("color", "#2bbf7b");
   };
 
@@ -50,7 +56,8 @@ function connect() {
     //console.log(msg);
     if (msg["type"] == "ticker") {
     	
-      var price = parseFloat(msg["price"]).toFixed(2);
+		var decimals = msg["price"] >= 1 ? 2 : 6;
+      var price = parseFloat(msg["price"]).toFixed(decimals);
       var fiat_volume = price * parseFloat(msg["volume_24h"]);
       fiat_volume = fiat_volume.toFixed(0);
 		

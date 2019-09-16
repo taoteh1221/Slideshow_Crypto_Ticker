@@ -51,7 +51,7 @@ Add this as a cron job every minute:
 
 #############################################################################################
 
-Edit the following file to switch between USD / EUR / GBP markets: 
+Edit the following file to switch between different coinbase pro crypto assets and their paired markets: 
 
 /home/pi/Apps/Ticker-UI/config.js
 

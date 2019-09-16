@@ -17,13 +17,13 @@ html {
   position: relative;
   Font-family: Montserrat;
   font-weight: 350;
-  font-size:60px;
+  font-size:50px;
   margin: 0;
 }
 
 .small {
   font-weight: 350;
-  font-size:40px;
+  font-size:37px;
 }
 
 p {
@@ -60,7 +60,7 @@ p {
 	white-space: nowrap;
   overflow: hidden;
   font-weight: 350;
-  font-size: 73px;
+  font-size: 70px;
 }
 
 .spacing {
