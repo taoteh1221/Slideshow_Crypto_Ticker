@@ -49,7 +49,7 @@ p {
   position: relative;
   margin: 0px;
   height: auto;
-  width: auto;
+  width: 90%; /* centers different assets ok on 3.5" screen */
   background: black;
   color: #c6c6c6;
   padding: 1em;
