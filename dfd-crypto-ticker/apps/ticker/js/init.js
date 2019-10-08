@@ -45,6 +45,7 @@ $(document).ready(function() {
 
 	// Start ticker slideshow
 	if ( window.markets.length > 1 ) {
+	div_slideshow();
 	setInterval(div_slideshow, slideshow_speed * 1000);
 	}
 	else {

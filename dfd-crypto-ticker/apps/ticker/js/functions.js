@@ -154,7 +154,7 @@ var socket = new WebSocket('wss://ws-feed.gdax.com');
     setTimeout(function() {
     $(".status").text("Connecting").css("color", "red");
       connect();
-    }, 690000); // Reconnect after no data received for 1 minute
+    }, 60000); // Reconnect after no data received for 1 minute
   };
 
 

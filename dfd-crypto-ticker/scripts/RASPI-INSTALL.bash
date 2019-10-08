@@ -209,12 +209,6 @@ select opt in $OPTIONS; do
 				
 				rm -rf DFD-Crypto-Ticker
 				
-				rm /home/pi/dfd-crypto-ticker/.github
-				
-				rm /home/pi/dfd-crypto-ticker/.gitattributes
-				
-				rm /home/pi/dfd-crypto-ticker/.gitignore
-				
 				# No trailing forward slash here
 				chown -R pi:pi /home/pi/dfd-crypto-ticker
 				
@@ -242,10 +236,10 @@ echo " "
 
 
 echo "Do you want to automatically configure DFD Crypto Ticker?"
-echo "(##NOT RECOMMENDED## IF YOU HAVE ALREADY DONE THIS ON THIS SYSTEM ONCE ALREADY)"
+echo "(##NOT RECOMMENDED## IF YOU HAVE ALREADY CONFIGURED THIS APP ON THIS SYSTEM ONCE ALREADY)"
 echo " "
 
-echo "Select 1 or 2 to choose whether to auto-install DFD Crypto Ticker, or skip it."
+echo "Select 1 or 2 to choose whether to auto-configure DFD Crypto Ticker, or skip it."
 echo " "
 
 OPTIONS="auto_config_ticker_app skip"
@@ -253,14 +247,18 @@ OPTIONS="auto_config_ticker_app skip"
 select opt in $OPTIONS; do
         if [ "$opt" = "auto_config_ticker_app" ]; then
         
+
+				echo " "
 				
 				echo "Configuring DFD Crypto Ticker..."
 
 				echo " "
 
-				/bin/su pi
-
 				chmod -R 755 /home/pi/dfd-crypto-ticker/scripts
+				
+				mkdir -p /home/pi/.config/lxsession/LXDE-pi/
+
+				touch /home/pi/.config/lxsession/LXDE-pi/autostart
 
 				echo '@xset s off' >>  /home/pi/.config/lxsession/LXDE-pi/autostart
 
@@ -276,10 +274,16 @@ select opt in $OPTIONS; do
 
 				echo '@unclutter -idle 0' >>  /home/pi/.config/lxsession/LXDE-pi/autostart
 
-				CRONJOB="* * * * * /bin/bash /home/pi/dfd-crypto-ticker/scripts/keep.screensaver.off.bash > /dev/null 2>&1"
+				chown pi:pi /home/pi/.config/lxsession/LXDE-pi/autostart
+				
+				touch /etc/cron.d/ticker
 
-				(/usr/bin/sudo /usr/bin/crontab -u pi -l; echo "$CRONJOB" ) | /usr/bin/sudo /usr/bin/crontab -u pi -
+				CRONJOB="* * * * * pi /bin/bash /home/pi/dfd-crypto-ticker/scripts/keep.screensaver.off.bash > /dev/null 2>&1"
 
+				echo "$CRONJOB" >>  /etc/cron.d/ticker
+
+				chown pi:pi /etc/cron.d/ticker
+				
 				echo "Ticker configuration complete."
 
 				echo " "
@@ -317,37 +321,37 @@ select opt in $OPTIONS; do
         if [ "$opt" = "install_goodtft" ]; then
          
 			
-				echo " "
-				
-				echo "Making sure your system is updated before installing required components..."
-				
-				echo " "
-				
-				/usr/bin/sudo /usr/bin/apt-get update
-				
-				/usr/bin/sudo /usr/bin/apt-get upgrade -y
-				
-				echo " "
-				
-				echo "Proceeding with required component installation..."
-				
-				echo " "
-				
-				/usr/bin/sudo /usr/bin/apt-get install git -y
-				
-				echo " "
-				
-				echo "Required component installation completed."
-				
-				sleep 3
-				
-				echo " "
-				
+			echo " "
+			
+			echo "Making sure your system is updated before installing required components..."
+			
+			echo " "
+			
+			/usr/bin/sudo /usr/bin/apt-get update
+			
+			/usr/bin/sudo /usr/bin/apt-get upgrade -y
+			
+			echo " "
+			
+			echo "Proceeding with required component installation..."
+			
+			echo " "
+			
+			/usr/bin/sudo /usr/bin/apt-get install git -y
+			
+			echo " "
+			
+			echo "Required component installation completed."
+			
+			sleep 3
+			
+			echo " "
 			echo "Setting up for 'goodtft LCD-show' LCD devices..."
-
-			/bin/su pi
+			echo " "
 			
 			ln -s /home/pi/dfd-crypto-ticker/scripts/switch-display.bash /home/pi/display
+			
+			mkdir -p /home/pi/dfd-crypto-ticker/builds
 			
 			cd /home/pi/dfd-crypto-ticker/builds
 			
@@ -356,10 +360,20 @@ select opt in $OPTIONS; do
 			cd /home/pi/dfd-crypto-ticker/
 			
 			chmod -R 755 /home/pi/dfd-crypto-ticker/builds
+			
+			# No trailing forward slash here
+			chown -R pi:pi /home/pi/dfd-crypto-ticker/builds
+				
+			chown pi:pi /home/pi/display
 
+				
+			echo " "
 			echo "'goodtft LCD-show' LCD device setup completed."
-			echo "Run the below command (in /home/pi/) to configure your goodtft device:"
-			echo "sudo ./display"
+				
+			echo " "
+			
+			
+			GOODTFT_SETUP=1
 			
         break
        elif [ "$opt" = "skip" ]; then
@@ -375,6 +389,20 @@ echo " "
 ######################################
 
 
+echo " "
+echo "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
+echo "# SAVE THE INFORMATION BELOW FOR FUTURE ACCESS TO THIS APP #"
+echo "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
+echo " "
+
+if [ "$GOODTFT_SETUP" = "1" ]; then
+
+echo "Run the below command (in /home/pi/) to configure your goodtft device:"
+echo "sudo ./display"
+echo " "
+
+fi
+
 echo "Edit the following file in a text editor to switch between the"
 echo "different Coinbase Pro crypto assets and their paired markets: "
 echo "/home/pi/dfd-crypto-ticker/apps/ticker/config.js"
@@ -382,5 +410,8 @@ echo "/home/pi/dfd-crypto-ticker/apps/ticker/config.js"
 echo " "
 
 echo "You must restart your device to activate the Ticker (it should run automatically at startup when you reboot)."
+echo " "
+
+echo "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
 
 

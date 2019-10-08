@@ -75,6 +75,7 @@ v2.00.0
 -Auto-install script
 -User-friendly directory restructuring
 -"Slideshow" mode (cycle through multiple tickers for different assets on-screen)
+-Screen flip setting
 ---------------------------------------------------------
 
 
