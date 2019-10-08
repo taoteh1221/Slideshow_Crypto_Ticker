@@ -9,12 +9,13 @@
 function render_ticker(market) {
 	
 var asset = market.replace(/-[A-Za-z0-9]*/g, "");
+var js_key = market.replace(/-/g, "");
 
 document.write('<div class="asset_tickers">');
 
-document.write('<div class="title"><span id="asset_' + asset + '">' + asset + '</span> (<span class="status">Connecting...</span>)</div>');
+document.write('<div class="title"><span id="asset_' + js_key + '">' + asset + '</span> (<span class="status">Connecting...</span>)</div>');
     
-document.write('<div class="ticker" id="ticker_' + asset + '"></div>');
+document.write('<div class="ticker" id="ticker_' + js_key + '"></div>');
     
 document.write('</div>');
 
@@ -74,7 +75,6 @@ var socket = new WebSocket('wss://ws-feed.gdax.com');
     
   window.markets.forEach(element => {
   	var asset = element.replace(/-[A-Za-z0-9]*/g, "");
-  $("#asset_" + asset).text(asset);
     $(".status").text("Coinbase").css("color", "#2bbf7b");
 	});
 
@@ -94,6 +94,8 @@ var socket = new WebSocket('wss://ws-feed.gdax.com');
     	asset = product_id.replace(/-[A-Za-z0-9]*/g, "");
     	
     	pairing = product_id.replace(/\b([A-Za-z]*)-/g, "");
+    	
+    	var js_key = product_id.replace(/-/g, "");
     	
     	//console.log(asset);
     	//console.log(pairing);
@@ -142,7 +144,7 @@ var socket = new WebSocket('wss://ws-feed.gdax.com');
         ")" +
         "</div>";
 
-      $("#ticker_" + asset).html(price_list_item);
+      $("#ticker_" + js_key).html(price_list_item);
       
     }
     
