@@ -35,7 +35,7 @@ You may need to adjust the initial chromium web browser scale size if your scree
 /home/pi/dfd-crypto-ticker/scripts/start-chromium.bash
 
 
-If you have a "goodtft LCD-show" device and you auto-installed it's drivers during installation, you can switch between the LCD and your normal monitor by running the command (in /home/pi/):
+If you have a "goodtft LCD-show" LCD screen and you auto-installed it's drivers during installation, you can now switch between the LCD and your normal monitor by running the command (in /home/pi/):
 
 ./display
 
@@ -57,8 +57,6 @@ sudo apt install xdotool unclutter
 
 chmod -R 755 /home/pi/dfd-crypto-ticker/scripts
 
-ln -s /home/pi/dfd-crypto-ticker/scripts/switch-display.bash ~/display
-
 
 Create / edit the following file: /home/pi/.config/lxsession/LXDE-pi/autostart and add the following lines:
 
@@ -79,6 +77,10 @@ After installation, edit the following file in a text editor to switch between t
 /home/pi/dfd-crypto-ticker/apps/ticker/config.js
 
 
+You may need to adjust the initial chromium web browser scale size if your screen is NOT 3.5". This can be edited with a text editor in:
+/home/pi/dfd-crypto-ticker/scripts/start-chromium.bash
+
+
 ## ONLY RUN BELOW COMMANDS IF YOU HAVE A "goodtft LCD-show" LCD screen:
 
 sudo apt update && sudo apt upgrade
@@ -92,6 +94,13 @@ git clone https://github.com/goodtft/LCD-show.git
 cd ~/
 
 chmod -R 755 /home/pi/dfd-crypto-ticker/builds
+
+ln -s /home/pi/dfd-crypto-ticker/scripts/switch-display.bash ~/display
+
+
+If you have a "goodtft LCD-show" LCD screen and ran the above commands, you can now switch between the LCD and your normal monitor by running the command (in /home/pi/):
+
+./display
 
 
 
