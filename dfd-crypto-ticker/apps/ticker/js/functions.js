@@ -139,7 +139,7 @@ var socket = new WebSocket('wss://ws-feed.gdax.com');
         sign +
         "</span> <span class='tick'>" + fiat_symbol +
         numberWithCommas(price) +
-        "</span></div><div class='spacing small'>(24hr Vol: " + fiat_symbol +
+        "</span></div><div class='spacing small'>(" + pairing + " Vol: " + fiat_symbol +
         numberWithCommas(fiat_volume) +
         ")" +
         "</div>";

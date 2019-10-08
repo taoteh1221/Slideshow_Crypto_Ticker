@@ -59,7 +59,9 @@ p {
 
 
 #ticker_window div.asset_tickers {
-    display: none;
+  display: none;
+  margin: 0px;
+  padding: 0px;
 }
 
 

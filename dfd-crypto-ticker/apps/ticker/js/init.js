@@ -2,8 +2,10 @@
 // Copyright 2019 GPLv3, DFD Crypto Ticker by Mike Kilday: http://DragonFrugal.com
 
 
+
 // Put configged markets into an array
 var markets = crypto_markets.split("|");
+
 
 
 // API call config
@@ -22,6 +24,7 @@ var subscribe_msg = {
     };
  
  
+ 
 // Add markets to API call
 var loop = 0;
 markets.forEach(element => {
@@ -33,7 +36,7 @@ markets.forEach(element => {
 
 
 
-
+// Initiate once page is fully loaded...
 $(document).ready(function() {
 
 
@@ -43,13 +46,13 @@ $(document).ready(function() {
 	}
 
 
-	// Start ticker slideshow
+// Start ticker
+div_slideshow();
+	
+	
+	// If more than one asset, run slideshow (with delay of slideshow_speed seconds)
 	if ( window.markets.length > 1 ) {
-	div_slideshow();
 	setInterval(div_slideshow, slideshow_speed * 1000);
-	}
-	else {
-	div_slideshow();
 	}
 
 

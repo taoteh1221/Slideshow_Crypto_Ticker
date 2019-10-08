@@ -209,7 +209,7 @@ select opt in $OPTIONS; do
 				
 				\cp README.txt /home/pi/dfd-crypto-ticker/README.txt
 				
-				\cp RASPI-INSTALL.bash /home/pi/dfd-crypto-ticker/RASPI-INSTALL.bash
+				\cp TICKER-RASPI-INSTALL.bash /home/pi/dfd-crypto-ticker/TICKER-RASPI-INSTALL.bash
 				
 				cd ../
 				
@@ -260,6 +260,10 @@ select opt in $OPTIONS; do
 				echo " "
 
 				chmod -R 755 /home/pi/dfd-crypto-ticker/scripts
+			
+				ln -s /home/pi/dfd-crypto-ticker/scripts/chromium-refresh.bash /home/pi/reload
+				
+				chown pi:pi /home/pi/reload
 				
 				mkdir -p /home/pi/.config/lxsession/LXDE-pi/
 
@@ -347,6 +351,8 @@ select opt in $OPTIONS; do
 			echo " "
 			
 			ln -s /home/pi/dfd-crypto-ticker/scripts/switch-display.bash /home/pi/display
+				
+			chown pi:pi /home/pi/display
 			
 			mkdir -p /home/pi/dfd-crypto-ticker/builds
 			
@@ -360,8 +366,6 @@ select opt in $OPTIONS; do
 			
 			# No trailing forward slash here
 			chown -R pi:pi /home/pi/dfd-crypto-ticker/builds
-				
-			chown pi:pi /home/pi/display
 
 				
 			echo " "
@@ -394,8 +398,8 @@ echo " "
 
 if [ "$GOODTFT_SETUP" = "1" ]; then
 
-echo "Run the below command (in /home/pi/) to configure your 'goodtft LCD-show' LCD screen:"
-echo "./display"
+echo "Run the below command to configure your 'goodtft LCD-show' LCD screen:"
+echo "cd ~/;./display"
 echo " "
 
 fi
@@ -403,9 +407,17 @@ fi
 echo "Edit the following file in a text editor to switch between the"
 echo "different Coinbase Pro crypto assets and their paired markets: "
 echo "/home/pi/dfd-crypto-ticker/apps/ticker/config.js"
-
 echo " "
 
+echo "Example editing config.js in nano by command-line:"
+echo "nano ~/dfd-crypto-ticker/apps/ticker/config.js"
+echo " "
+
+echo "After updating config.js, reload the ticker with this command:"
+echo "cd ~/;./reload"
+echo " "
+
+echo "Ticker installation should be complete, unless you saw any error messages on your screen."
 echo "You must restart your device to activate the Ticker (it should run automatically at startup when you reboot)."
 echo " "
 
