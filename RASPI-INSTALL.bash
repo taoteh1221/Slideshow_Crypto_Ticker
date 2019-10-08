@@ -205,9 +205,11 @@ select opt in $OPTIONS; do
 				
 				cd ../
 				
-				mv -v LICENSE /home/pi/dfd-crypto-ticker/LICENSE
+				\cp LICENSE /home/pi/dfd-crypto-ticker/LICENSE
 				
-				mv -v README.txt /home/pi/dfd-crypto-ticker/README.txt
+				\cp README.txt /home/pi/dfd-crypto-ticker/README.txt
+				
+				\cp RASPI-INSTALL.bash /home/pi/dfd-crypto-ticker/RASPI-INSTALL.bash
 				
 				cd ../
 				
