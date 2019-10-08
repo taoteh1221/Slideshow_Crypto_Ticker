@@ -23,7 +23,7 @@ AUTOMATIC INSTALLATION
 To install / upgrade everything automatically on a Raspberry Pi (an affordable low power single board computer), copy / paste / run the command below in a terminal program while logged in on the Raspberry Pi:
 
 
-wget -O TICKER-RASPI-INSTALL.bash https://git.io/JeWmm;chmod +x TICKER-RASPI-INSTALL.bash;sudo ./TICKER-RASPI-INSTALL.bash
+wget -O TICKER-RASPI-INSTALL.bash https://git.io/JeWcd;chmod +x TICKER-RASPI-INSTALL.bash;sudo ./TICKER-RASPI-INSTALL.bash
 
 
 Follow the prompts, and the automated script will install the ticker (rebooting after install will run the ticker at startup automatically).
