@@ -7,7 +7,7 @@ Real Time Crypto Price Ticker For Raspberry Pis With LCD Screens, including 24 h
 
 Supports all Coinbase Pro markets, and can run in "slideshow mode", to show all the markets you want.
 
-Example on a 3.5" LCD: https://www.youtube.com/watch?v=0TDnpYrGnOg
+Example on a 3.5" LCD: https://www.youtube.com/watch?v=jyd_BYfUjUg
 
 Developed on a Raspi v2 B+, with this screen / case: https://smile.amazon.com/gp/product/B07N38B86S/
 
@@ -60,20 +60,20 @@ chmod -R 755 /home/pi/dfd-crypto-ticker/scripts
 ln -s /home/pi/dfd-crypto-ticker/scripts/switch-display.bash ~/display
 
 
-Edit the following file: /home/pi/.config/lxsession/LXDE-pi/autostart and add the following lines:
+Create / edit the following file: /home/pi/.config/lxsession/LXDE-pi/autostart and add the following lines:
 
 @xset s off
 @xset -dpms
 @xset s noblank
 # start chromium
-@/bin/bash /home/pi//home/pi/dfd-crypto-ticker/scripts/start-chromium.bash &
+@/bin/bash /home/pi/dfd-crypto-ticker/scripts/start-chromium.bash &
 # hide cursor
 @unclutter -idle 0
 
 
 Add this as a cron job every minute:
 
-* * * * * /bin/bash /home/pi//home/pi/dfd-crypto-ticker/scripts/keep.screensaver.off.bash > /dev/null 2>&1
+* * * * * /bin/bash /home/pi/dfd-crypto-ticker/scripts/keep.screensaver.off.bash > /dev/null 2>&1
 
 
 ## ONLY RUN BELOW COMMANDS IF YOU HAVE A "goodtft LCD-show" LCD screen:
