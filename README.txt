@@ -20,7 +20,7 @@ Download Latest Version: https://github.com/taoteh1221/DFD_Crypto_Ticker/release
 To install / upgrade everything automatically on a Raspberry Pi (an affordable low power single board computer), copy / paste / run the command below in a terminal program while logged in on the Raspberry Pi:
 
 
-wget -O RASPI-INSTALL.bash https://git.io/JeWTZ;chmod +x RASPI-INSTALL.bash;sudo ./RASPI-INSTALL.bash
+wget -O RASPI-INSTALL.bash https://git.io/JeWmm;chmod +x RASPI-INSTALL.bash;sudo ./RASPI-INSTALL.bash
 
 
 Follow the prompts. This automated script will install and configure the app.
