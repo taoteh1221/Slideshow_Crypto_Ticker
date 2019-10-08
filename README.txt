@@ -7,7 +7,7 @@ Real Time Crypto Price Ticker For Raspberry Pis With LCD Screens, including 24 h
 
 Supports all Coinbase Pro markets, and can run in "slideshow mode", to show all the markets you want.
 
-Example on a 3.5" LCD: https://www.youtube.com/watch?v=jyd_BYfUjUg
+Example on a 3.5" LCD: https://www.youtube.com/watch?v=Jrn7NGBUUDc
 
 Developed on a Raspi v2 B+, with this screen / case: https://smile.amazon.com/gp/product/B07N38B86S/
 
@@ -23,7 +23,7 @@ AUTOMATIC INSTALLATION
 To install / upgrade everything automatically on a Raspberry Pi (an affordable low power single board computer), copy / paste / run the command below in a terminal program while logged in on the Raspberry Pi:
 
 
-wget -O TICKER-RASPI-INSTALL.bash https://git.io/JeWcd;chmod +x TICKER-RASPI-INSTALL.bash;sudo ./TICKER-RASPI-INSTALL.bash
+wget -O TICKER-INSTALL.bash https://git.io/JeWWx;chmod +x TICKER-INSTALL.bash;sudo ./TICKER-INSTALL.bash
 
 
 Follow the prompts, and the automated script will install the ticker (rebooting after install will run the ticker at startup automatically).
