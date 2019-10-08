@@ -10,11 +10,11 @@ OPTIONS="hdmi lcd-$MODEL"
 
 select opt in $OPTIONS; do
         if [ "$opt" = "hdmi" ]; then
-        cd ~/Builds/LCD-show
+        cd /home/pi/dfd-crypto-ticker/builds/LCD-show
 	sudo ./LCD-hdmi
         break
        elif [ "$opt" = "lcd-$MODEL" ]; then
-        cd ~/Builds/LCD-show
+        cd /home/pi/dfd-crypto-ticker/builds/LCD-show
 	sudo ./$MODEL-show
         break
        else

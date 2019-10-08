@@ -1,6 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+
+<!-- Copyright 2019 GPLv3, DFD Crypto Ticker by Mike Kilday: http://DragonFrugal.com -->
+
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title></title>
@@ -18,29 +21,24 @@
     
     <script src="config.js"></script>
     
+    <script src="js/init.js"></script>
+    
 	<script src="js/functions.js"></script>
 	
-	
-	<script>
-	
-$(document).ready(function() {
-  connect();
-});
-
-	</script>
-	
 </head>
-
 <body>
+
  
   <div id="ticker_window">
-  
-    <div class='title'><span id="asset"></span> (<span class="status" id="status">Connecting...</span>)</div>
-    
-    <div id="ticker"></div>
-    
+
+  	<script>
+  	markets.forEach(element => {
+  	render_ticker(element);
+	});
+  	</script>
+
   </div>
   
+  
 </body>
-
 </html>

@@ -1,8 +1,13 @@
+/*
+ * Copyright 2019 GPLv3, DFD Crypto Ticker by Mike Kilday: http://DragonFrugal.com
+ */
+
 
 body, html {
             margin: 0px;
             padding: 0px;
 }
+
 
 html {
   height: 100%;
@@ -11,6 +16,7 @@ html {
   -moz-box-sizing: border-box;
   box-sizing: border-box;
 }
+
 
 .title {
 	white-space: nowrap;
@@ -21,26 +27,21 @@ html {
   margin: 0;
 }
 
+
 .small {
   font-weight: 350;
   font-size:37px;
 }
+
 
 p {
   position: relative;
   Font-family: Montserrat;
 }
 
+
 #ticker_window {
 	
-	
-	/* flip upsidedown because my power plug is in the way */
-  -moz-transform:rotate(-180deg); /* Firefox */
-  -webkit-transform:rotate(-180deg); /* Webkit */        
-  -ms-transform:rotate(-180deg); /* IE */
-  -o-transform:rotate(-180deg); /* Opera */
-  transform:rotate(-180deg); /* future */
-  
   border: 0px solid red;
   position:absolute;
 	text-align: center;
@@ -56,31 +57,64 @@ p {
   padding-bottom: 40px;
 }
 
-#ticker {
+
+#ticker_window div.asset_tickers {
+    display: none;
+}
+
+
+#ticker_window div.asset_tickers:first-child {
+    display: inline-block;
+}
+
+
+#ticker_window > div.asset_tickers{
+   /* width:400px;
+    height:250px; */
+}
+
+
+.ticker {
 	white-space: nowrap;
   overflow: hidden;
   font-weight: 350;
   font-size: 70px;
 }
 
+
+.flip {
+/* flip upsidedown because my power plug is in the way */
+  -moz-transform:rotate(-180deg); /* Firefox */
+  -webkit-transform:rotate(-180deg); /* Webkit */        
+  -ms-transform:rotate(-180deg); /* IE */
+  -o-transform:rotate(-180deg); /* Opera */
+  transform:rotate(-180deg); /* future */
+}
+
+
 .spacing {
 	margin-top: 30px;
 }
+
 
 .tick {
   margin: auto;
   text-align: center;
 }
 
+
 span {
   width: 175px;
   text-align: left;
 }
 
+
 span.sell {
   background-color: rgb(105, 199, 115);
 }
 
+
 span.buy {
   background-color: rgb(199, 105, 105);
 }
+
