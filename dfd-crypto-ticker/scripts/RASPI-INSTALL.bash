@@ -60,7 +60,11 @@ fi
 
 echo "TECHNICAL NOTE:"
 echo "This script was designed to install / setup on the Raspian operating system,"
-echo "and was developed / created on Raspbian Linux v10, for Raspberry Pi computers."
+echo "and was developed / created on Raspbian Linux v10, for Raspberry Pi computers"
+echo "WITH SMALL IN-CASE LCD SCREENS."
+echo " "
+echo "It is ONLY recommended to install this ticker app"
+echo "IF your Raspberry Pi has an LCD screen installed."
 echo " "
 
 echo "Your operating system has been detected as:"
