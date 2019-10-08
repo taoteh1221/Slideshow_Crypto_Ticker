@@ -74,6 +74,11 @@ Add this as a cron job every minute, by creating the following file: /etc/cron.d
 * * * * * pi /bin/bash /home/pi/dfd-crypto-ticker/scripts/keep.screensaver.off.bash > /dev/null 2>&1
 
 
+After installation, edit the following file in a text editor to switch between the different Coinbase Pro crypto assets and their paired markets: 
+
+/home/pi/dfd-crypto-ticker/apps/ticker/config.js
+
+
 ## ONLY RUN BELOW COMMANDS IF YOU HAVE A "goodtft LCD-show" LCD screen:
 
 sudo apt update && sudo apt upgrade
