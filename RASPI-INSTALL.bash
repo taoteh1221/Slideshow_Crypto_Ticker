@@ -242,7 +242,6 @@ echo " "
 
 
 echo "Do you want to automatically configure DFD Crypto Ticker?"
-echo "(##NOT RECOMMENDED## IF YOU HAVE ALREADY CONFIGURED THIS APP ON THIS SYSTEM ONCE ALREADY)"
 echo " "
 
 echo "Select 1 or 2 to choose whether to auto-configure DFD Crypto Ticker, or skip it."
