@@ -65,15 +65,13 @@ Create / edit the following file: /home/pi/.config/lxsession/LXDE-pi/autostart a
 @xset s off
 @xset -dpms
 @xset s noblank
-# start chromium
 @/bin/bash /home/pi/dfd-crypto-ticker/scripts/start-chromium.bash &
-# hide cursor
 @unclutter -idle 0
 
 
-Add this as a cron job every minute:
+Add this as a cron job every minute, by creating the following file: /etc/cron.d/ticker and add the following line:
 
-* * * * * /bin/bash /home/pi/dfd-crypto-ticker/scripts/keep.screensaver.off.bash > /dev/null 2>&1
+* * * * * pi /bin/bash /home/pi/dfd-crypto-ticker/scripts/keep.screensaver.off.bash > /dev/null 2>&1
 
 
 ## ONLY RUN BELOW COMMANDS IF YOU HAVE A "goodtft LCD-show" LCD screen:
