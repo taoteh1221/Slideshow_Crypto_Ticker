@@ -209,7 +209,7 @@ select opt in $OPTIONS; do
 				
 				\cp README.txt /home/pi/dfd-crypto-ticker/README.txt
 				
-				\cp TICKER-RASPI-INSTALL.bash /home/pi/dfd-crypto-ticker/TICKER-RASPI-INSTALL.bash
+				\cp TICKER-INSTALL.bash /home/pi/dfd-crypto-ticker/TICKER-INSTALL.bash
 				
 				cd ../
 				
