@@ -266,19 +266,7 @@ select opt in $OPTIONS; do
 
 				touch /home/pi/.config/lxsession/LXDE-pi/autostart
 
-				echo '@xset s off' >>  /home/pi/.config/lxsession/LXDE-pi/autostart
-
-				echo '@xset -dpms' >>  /home/pi/.config/lxsession/LXDE-pi/autostart
-
-				echo '@xset s noblank' >>  /home/pi/.config/lxsession/LXDE-pi/autostart
-
-				echo '# start chromium' >>  /home/pi/.config/lxsession/LXDE-pi/autostart
-
-				echo '@/bin/bash /home/pi/dfd-crypto-ticker/scripts/start-chromium.bash &' >>  /home/pi/.config/lxsession/LXDE-pi/autostart
-
-				echo '# hide cursor' >>  /home/pi/.config/lxsession/LXDE-pi/autostart
-
-				echo '@unclutter -idle 0' >>  /home/pi/.config/lxsession/LXDE-pi/autostart
+				echo -e "@xset s off \n@xset -dpms \n@xset s noblank \n@/bin/bash /home/pi/dfd-crypto-ticker/scripts/start-chromium.bash & \n@unclutter -idle 0" > /home/pi/.config/lxsession/LXDE-pi/autostart
 
 				chown pi:pi /home/pi/.config/lxsession/LXDE-pi/autostart
 				
@@ -286,7 +274,7 @@ select opt in $OPTIONS; do
 
 				CRONJOB="* * * * * pi /bin/bash /home/pi/dfd-crypto-ticker/scripts/keep.screensaver.off.bash > /dev/null 2>&1"
 
-				echo "$CRONJOB" >>  /etc/cron.d/ticker
+				echo "$CRONJOB" > /etc/cron.d/ticker
 
 				chown pi:pi /etc/cron.d/ticker
 				
