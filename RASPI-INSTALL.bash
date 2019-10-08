@@ -305,7 +305,11 @@ echo " "
 ######################################
 
 
-echo "Select 1 or 2 to choose whether to install 'goodtft LCD-show' LCD, or skip."
+echo "WARNING:"
+echo "DO NOT install the 'goodtft LCD-show' LCD drivers below, UNLESS YOU HAVE A 'goodtft LCD-show' LCD SCREEN."
+echo " "
+
+echo "Select 1 or 2 to choose whether to install 'goodtft LCD-show' LCD drivers, or skip."
 echo " "
 
 OPTIONS="install_goodtft skip"
@@ -390,8 +394,8 @@ echo " "
 
 if [ "$GOODTFT_SETUP" = "1" ]; then
 
-echo "Run the below command (in /home/pi/) to configure your goodtft device:"
-echo "sudo ./display"
+echo "Run the below command (in /home/pi/) to configure your 'goodtft LCD-show' LCD screen:"
+echo "./display"
 echo " "
 
 fi

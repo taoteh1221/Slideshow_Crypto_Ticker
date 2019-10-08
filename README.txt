@@ -35,7 +35,7 @@ You may need to adjust the initial chromium web browser scale size if your scree
 /home/pi/dfd-crypto-ticker/scripts/start-chromium.bash
 
 
-If you have a "goodtft LCD-show" device and you auto-installed it's drivers during installation, you can switch between the LCD and your normal monitor by running the command:
+If you have a "goodtft LCD-show" device and you auto-installed it's drivers during installation, you can switch between the LCD and your normal monitor by running the command (in /home/pi/):
 
 ./display
 
