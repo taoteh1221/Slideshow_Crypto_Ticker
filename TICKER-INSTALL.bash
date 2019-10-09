@@ -64,7 +64,7 @@ echo "and was developed / created on Raspbian Linux v10, for Raspberry Pi comput
 echo "WITH SMALL IN-CASE LCD SCREENS."
 echo " "
 echo "It is ONLY recommended to install this ticker app"
-echo "IF your Raspberry Pi has an LCD screen installed."
+echo "IF your device has an LCD screen installed."
 echo " "
 
 echo "Your operating system has been detected as:"
@@ -106,8 +106,68 @@ done
 echo " "
 
 
+######################################
+
+
+echo "Enter the system username to configure access for:"
+echo "(leave blank / hit enter for default of username 'pi')"
+echo " "
+
+read SYS_USER
+        
+if [ -z "$SYS_USER" ]; then
+SYS_USER=${1:-pi}
+echo "Using default username: $SYS_USER"
+else
+echo "Using username: $SYS_USER"
+fi
+
+
+if [ ! -d "/home/$SYS_USER/" ]; then    		
+echo " "
+echo "Directory /home/$SYS_USER/ DOES NOT exist, cannot install DFD Crypto Ticker."
+echo " "
+echo "Please create user $SYS_USER's home directory before running this installation."
+exit
+fi
+
+echo " "
+
 
 ######################################
+
+  				
+echo "You have set the user information as..."
+echo "User: $SYS_USER"
+echo "User home directory: /home/$SYS_USER/"
+echo " "
+
+echo "If this information is NOT correct, please quit installation and start again."
+echo " "
+
+echo "Select 1 or 2 to choose whether to continue, or quit."
+echo " "
+
+OPTIONS="continue quit"
+
+select opt in $OPTIONS; do
+        if [ "$opt" = "continue" ]; then
+        echo " "
+        echo "Continuing with setup..."
+        break
+       elif [ "$opt" = "quit" ]; then
+        echo " "
+        echo "Exiting setup..."
+        exit
+        break
+       fi
+done
+
+echo " "
+
+
+######################################
+
 
          
 echo " "
@@ -126,7 +186,7 @@ echo "Proceeding with required component installation..."
 				
 echo " "
 				
-/usr/bin/sudo /usr/bin/apt-get install xdotool unclutter -y
+/usr/bin/sudo /usr/bin/apt-get install xdotool lxde unclutter -y
 
 echo " "
 				
@@ -142,7 +202,7 @@ echo " "
 
 echo "Do you want this script to automatically download the latest version of"
 echo "DFD Crypto Ticker from Github.com, and install it?"
-echo "(auto-install will overwrite / upgrade any previous install located at: /home/pi/dfd-crypto-ticker)"
+echo "(auto-install will overwrite / upgrade any previous install located at: /home/$SYS_USER/dfd-crypto-ticker)"
 echo " "
 
 echo "Select 1 or 2 to choose whether to auto-install DFD Crypto Ticker, or skip it."
@@ -196,27 +256,27 @@ select opt in $OPTIONS; do
 				
 				rm DFD-Crypto-Ticker.zip
 				
-  				mkdir -p /home/pi/dfd-crypto-ticker
+  				mkdir -p /home/$SYS_USER/dfd-crypto-ticker
   				
 				cd dfd-crypto-ticker
 				
 				# No trailing forward slash here
-				\cp -r ./ /home/pi/dfd-crypto-ticker
+				\cp -r ./ /home/$SYS_USER/dfd-crypto-ticker
 				
 				cd ../
 				
-				\cp LICENSE /home/pi/dfd-crypto-ticker/LICENSE
+				\cp LICENSE /home/$SYS_USER/dfd-crypto-ticker/LICENSE
 				
-				\cp README.txt /home/pi/dfd-crypto-ticker/README.txt
+				\cp README.txt /home/$SYS_USER/dfd-crypto-ticker/README.txt
 				
-				\cp TICKER-INSTALL.bash /home/pi/dfd-crypto-ticker/TICKER-INSTALL.bash
+				\cp TICKER-INSTALL.bash /home/$SYS_USER/dfd-crypto-ticker/TICKER-INSTALL.bash
 				
 				cd ../
 				
 				rm -rf DFD-Crypto-Ticker
 				
 				# No trailing forward slash here
-				chown -R pi:pi /home/pi/dfd-crypto-ticker
+				chown -R $SYS_USER:$SYS_USER /home/$SYS_USER/dfd-crypto-ticker
 				
 				echo " "
 				
@@ -259,27 +319,60 @@ select opt in $OPTIONS; do
 
 				echo " "
 
-				chmod -R 755 /home/pi/dfd-crypto-ticker/scripts
+				chmod -R 755 /home/$SYS_USER/dfd-crypto-ticker/scripts
 			
-				ln -s /home/pi/dfd-crypto-ticker/scripts/chromium-refresh.bash /home/pi/reload
+				ln -s /home/$SYS_USER/dfd-crypto-ticker/scripts/chromium-refresh.bash /home/$SYS_USER/reload
 				
-				chown pi:pi /home/pi/reload
+				chown $SYS_USER:$SYS_USER /home/$SYS_USER/reload
 				
-				mkdir -p /home/pi/.config/lxsession/LXDE-pi/
+				
+					if [ "$SYS_USER" = "pi" ]; then
+					
+					LXDE_PROFILE="LXDE-pi"
+					
+					else
+					
+					echo "The LXDE profile name used by your operating system could not be automatically determined."
+					echo " "
+					
+					echo "Enter the LXDE profile name used by your operating system:"
+					echo "(~/.config/lxsession/<profile name>/)"
+					echo "(leave blank / hit enter for default of profile name 'LXDE')"
+					echo " "
+					
+					read LXDE_PROFILE
+        			
+						if [ -z "$LXDE_PROFILE" ]; then
+						LXDE_PROFILE=${1:-LXDE}
+						echo "Using default profile name: $LXDE_PROFILE"
+						else
+						echo "Using profile name: $LXDE_PROFILE"
+						fi
+					
+					echo " "
 
-				touch /home/pi/.config/lxsession/LXDE-pi/autostart
+					LXDE_ALERT=1
+					
+					fi
+				
+				
+				mkdir -p /home/$SYS_USER/.config/lxsession/$LXDE_PROFILE/
 
-				echo -e "@xset s off \n@xset -dpms \n@xset s noblank \n@/bin/bash /home/pi/dfd-crypto-ticker/scripts/start-chromium.bash & \n@unclutter -idle 0" > /home/pi/.config/lxsession/LXDE-pi/autostart
+				touch /home/$SYS_USER/.config/lxsession/$LXDE_PROFILE/autostart
+				
+				GLOBAL_LXDE=$(</etc/xdg/lxsession/$LXDE_PROFILE/autostart)
 
-				chown pi:pi /home/pi/.config/lxsession/LXDE-pi/autostart
+				echo -e "$GLOBAL_LXDE \n@xset s off \n@xset -dpms \n@xset s noblank \n@/bin/bash /home/$SYS_USER/dfd-crypto-ticker/scripts/start-chromium.bash & \n@unclutter -idle 0" > /home/$SYS_USER/.config/lxsession/$LXDE_PROFILE/autostart
+				
+				chown -R $SYS_USER:$SYS_USER /home/$SYS_USER/.config
 				
 				touch /etc/cron.d/ticker
 
-				CRONJOB="* * * * * pi /bin/bash /home/pi/dfd-crypto-ticker/scripts/keep.screensaver.off.bash > /dev/null 2>&1"
+				CRONJOB="* * * * * $SYS_USER /bin/bash /home/$SYS_USER/dfd-crypto-ticker/scripts/keep.screensaver.off.bash > /dev/null 2>&1"
 
 				echo "$CRONJOB" > /etc/cron.d/ticker
 
-				chown pi:pi /etc/cron.d/ticker
+				chown $SYS_USER:$SYS_USER /etc/cron.d/ticker
 				
 				echo "Ticker configuration complete."
 
@@ -350,22 +443,22 @@ select opt in $OPTIONS; do
 			echo "Setting up for 'goodtft LCD-show' LCD devices..."
 			echo " "
 			
-			ln -s /home/pi/dfd-crypto-ticker/scripts/switch-display.bash /home/pi/display
+			ln -s /home/$SYS_USER/dfd-crypto-ticker/scripts/switch-display.bash /home/$SYS_USER/display
 				
-			chown pi:pi /home/pi/display
+			chown $SYS_USER:$SYS_USER /home/$SYS_USER/display
 			
-			mkdir -p /home/pi/dfd-crypto-ticker/builds
+			mkdir -p /home/$SYS_USER/dfd-crypto-ticker/builds
 			
-			cd /home/pi/dfd-crypto-ticker/builds
+			cd /home/$SYS_USER/dfd-crypto-ticker/builds
 			
 			/usr/bin/git clone https://github.com/goodtft/LCD-show.git
 			
-			cd /home/pi/dfd-crypto-ticker/
+			cd /home/$SYS_USER/dfd-crypto-ticker/
 			
-			chmod -R 755 /home/pi/dfd-crypto-ticker/builds
+			chmod -R 755 /home/$SYS_USER/dfd-crypto-ticker/builds
 			
 			# No trailing forward slash here
-			chown -R pi:pi /home/pi/dfd-crypto-ticker/builds
+			chown -R $SYS_USER:$SYS_USER /home/$SYS_USER/dfd-crypto-ticker/builds
 
 				
 			echo " "
@@ -396,6 +489,27 @@ echo "# SAVE THE INFORMATION BELOW FOR FUTURE ACCESS TO THIS APP #"
 echo "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
 echo " "
 
+
+if [ "$LXDE_ALERT" = "1" ]; then
+
+echo "The LXDE profile name used by your operating system could not be automatically determined,"
+echo "and the custom profile name '$LXDE_PROFILE' was used."
+echo " "
+
+echo "Your LXDE autostart path was setup at:"
+echo "/home/$SYS_USER/.config/lxsession/$LXDE_PROFILE/autostart"
+echo " "
+
+echo "If the ticker DOES NOT autostart at system boot time, your operating system's"
+echo "LXDE profile name PROBABLY IS NOT '$LXDE_PROFILE' after all."
+echo " "
+
+echo "You can re-run this install script later on with the proper LXDE profile name if needed."
+echo " "
+
+fi
+
+
 if [ "$GOODTFT_SETUP" = "1" ]; then
 
 echo "Run the below command to configure your 'goodtft LCD-show' LCD screen:"
@@ -404,9 +518,10 @@ echo " "
 
 fi
 
+
 echo "Edit the following file in a text editor to switch between the"
 echo "different Coinbase Pro crypto assets and their paired markets: "
-echo "/home/pi/dfd-crypto-ticker/apps/ticker/config.js"
+echo "/home/$SYS_USER/dfd-crypto-ticker/apps/ticker/config.js"
 echo " "
 
 echo "Example editing config.js in nano by command-line:"
