@@ -54,58 +54,6 @@ else
 fi
 
 
-
-######################################
-
-
-echo "TECHNICAL NOTE:"
-echo "This script was designed to install / setup on the Raspian operating system,"
-echo "and was developed / created on Raspbian Linux v10, for Raspberry Pi computers"
-echo "WITH SMALL IN-CASE LCD SCREENS."
-echo " "
-echo "It is ONLY recommended to install this ticker app"
-echo "IF your device has an LCD screen installed."
-echo " "
-
-echo "Your operating system has been detected as:"
-echo "$OS v$VER"
-echo " "
-
-echo "This script may work on other Debian-based systems as well, but it has not been tested for that purpose."
-echo " "
-
-if [ -f "/etc/debian_version" ]; then
-echo "Your system has been detected as Debian-based, which is compatible with this automated installation script."
-echo "Continuing..."
-echo " "
-else
-echo "Your system has been detected as NOT BEING Debian-based. Your system is NOT compatible with this automated installation script."
-echo "Exiting..."
-exit
-fi
-  				
-  				
-echo "Select 1 or 2 to choose whether to continue, or quit."
-echo " "
-
-OPTIONS="continue quit"
-
-select opt in $OPTIONS; do
-        if [ "$opt" = "continue" ]; then
-        echo " "
-        echo "Continuing with setup..."
-        break
-       elif [ "$opt" = "quit" ]; then
-        echo " "
-        echo "Exiting setup..."
-        exit
-        break
-       fi
-done
-
-echo " "
-
-
 ######################################
 
 
@@ -169,7 +117,67 @@ echo " "
 ######################################
 
 
-         
+echo "TECHNICAL NOTE:"
+echo "This script was designed to install / setup on the Raspian operating system,"
+echo "and was developed / created on Raspbian Linux v10, for Raspberry Pi computers"
+echo "WITH SMALL IN-CASE LCD SCREENS."
+echo " "
+echo "It is ONLY recommended to install this ticker app"
+echo "IF your device has an LCD screen installed."
+echo " "
+
+echo "Your operating system has been detected as:"
+echo "$OS v$VER"
+echo " "
+
+echo "This script may work on other Debian-based systems as well, but it has not been tested for that purpose."
+echo " "
+
+if [ -f "/etc/debian_version" ]; then
+echo "Your system has been detected as Debian-based, which is compatible with this automated installation script."
+echo "Continuing..."
+echo " "
+else
+echo "Your system has been detected as NOT BEING Debian-based. Your system is NOT compatible with this automated installation script."
+echo "Exiting..."
+exit
+fi
+  				
+				
+if [ -f /home/$SYS_USER/dfd-crypto-ticker/config.js ]; then
+echo "A configuration file from a previous install of DFD Crypto Ticker has been detected on your system."
+echo "During this upgrade / re-install, it will be backed up to:"
+echo "/home/$SYS_USER/dfd-crypto-ticker/config.js.BACKUP.$DATE"
+echo "This will save any custom settings within it."
+echo "You will need to manually move any custom settings in this backup file to the new config.js file with a text editor."
+echo " "
+fi
+
+  				
+echo "Select 1 or 2 to choose whether to continue, or quit."
+echo " "
+
+OPTIONS="continue quit"
+
+select opt in $OPTIONS; do
+        if [ "$opt" = "continue" ]; then
+        echo " "
+        echo "Continuing with setup..."
+        break
+       elif [ "$opt" = "quit" ]; then
+        echo " "
+        echo "Exiting setup..."
+        exit
+        break
+       fi
+done
+
+echo " "
+
+
+######################################
+
+
 echo " "
 
 echo "Making sure your system is updated before installation..."
@@ -239,6 +247,18 @@ select opt in $OPTIONS; do
 				sleep 3
 				
 				echo " "
+				
+				
+					if [ -f /home/$SYS_USER/dfd-crypto-ticker/config.js ]; then
+					
+					\cp /home/$SYS_USER/dfd-crypto-ticker/config.js /home/$SYS_USER/dfd-crypto-ticker/config.js.BACKUP.$DATE
+						
+					chown $SYS_USER:$SYS_USER /home/$SYS_USER/dfd-crypto-ticker/config.js.BACKUP.$DATE
+						
+					CONFIG_BACKUP=1
+					
+					fi
+				
 				
 				echo "Downloading and installing the latest version of DFD Crypto Ticker, from Github.com..."
 				
@@ -332,6 +352,7 @@ select opt in $OPTIONS; do
 					
 					else
 					
+					echo " "
 					echo "The LXDE profile name used by your operating system could not be automatically determined."
 					echo " "
 					
@@ -374,6 +395,7 @@ select opt in $OPTIONS; do
 
 				chown $SYS_USER:$SYS_USER /etc/cron.d/ticker
 				
+				echo " "
 				echo "Ticker configuration complete."
 
 				echo " "
@@ -514,6 +536,18 @@ if [ "$GOODTFT_SETUP" = "1" ]; then
 
 echo "Run the below command to configure your 'goodtft LCD-show' LCD screen:"
 echo "cd ~/;./display"
+echo " "
+
+fi
+
+
+if [ "$CONFIG_BACKUP" = "1" ]; then
+
+echo " "
+echo "The previously-installed DFD Crypto Ticker configuration"
+echo "file /home/$SYS_USER/dfd-crypto-ticker/config.js has been backed up to:"
+echo "/home/$SYS_USER/dfd-crypto-ticker/config.js.BACKUP.$DATE"
+echo "You will need to manually move any custom settings in this backup file to the new config.js file with a text editor."
 echo " "
 
 fi
