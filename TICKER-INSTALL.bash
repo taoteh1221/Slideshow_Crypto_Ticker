@@ -358,7 +358,7 @@ select opt in $OPTIONS; do
 
 					touch /home/$SYS_USER/.config/lxsession/$LXDE_PROFILE/autostart
 
-					echo -e "$GLOBAL_LXDE \n@xset s off \n@xset -dpms \n@xset s noblank \n@/bin/bash /home/$SYS_USER/dfd-crypto-ticker/scripts/start-chromium.bash & \n@unclutter -idle 0" > /home/$SYS_USER/.config/lxsession/$LXDE_PROFILE/autostart
+					echo -e "$GLOBAL_LXDE \n@/bin/bash /home/pi/dfd-crypto-ticker/scripts/ticker-init.bash & \n" > /home/$SYS_USER/.config/lxsession/$LXDE_PROFILE/autostart
 				
 					chown -R $SYS_USER:$SYS_USER /home/$SYS_USER/.config
 				

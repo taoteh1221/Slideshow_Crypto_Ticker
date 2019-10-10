@@ -93,13 +93,9 @@ ln -s ~/dfd-crypto-ticker/scripts/chromium-refresh.bash ~/reload
 
 
 
-Create / edit the following file: /home/pi/.config/lxsession/LXDE-pi/autostart and add the following lines:
+Create / edit the following file: /home/pi/.config/lxsession/LXDE-pi/autostart and add the following line:
 
-@xset s off
-@xset -dpms
-@xset s noblank
-@/bin/bash /home/pi/dfd-crypto-ticker/scripts/start-chromium.bash &
-@unclutter -idle 0
+@/bin/bash /home/pi/dfd-crypto-ticker/scripts/ticker-init.bash &
 
 
 
