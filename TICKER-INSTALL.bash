@@ -57,7 +57,7 @@ fi
 ######################################
 
 
-echo "Enter the system username to configure access for:"
+echo "Enter the system username to configure installation for:"
 echo "(leave blank / hit enter for default of username 'pi')"
 echo " "
 
@@ -346,52 +346,36 @@ select opt in $OPTIONS; do
 				chown $SYS_USER:$SYS_USER /home/$SYS_USER/reload
 				
 				
-					if [ "$SYS_USER" = "pi" ]; then
+					if [ -d "/etc/xdg/lxsession" ]; then
 					
-					LXDE_PROFILE="LXDE-pi"
+					NEWEST_DIR=$(ls -td -- /etc/xdg/lxsession/* | head -n 1)
+					
+					LXDE_PROFILE=$(/usr/bin/basename $NEWEST_DIR)
+				
+					GLOBAL_LXDE=$(</etc/xdg/lxsession/$LXDE_PROFILE/autostart)
+				
+					mkdir -p /home/$SYS_USER/.config/lxsession/$LXDE_PROFILE/
+
+					touch /home/$SYS_USER/.config/lxsession/$LXDE_PROFILE/autostart
+
+					echo -e "$GLOBAL_LXDE \n@xset s off \n@xset -dpms \n@xset s noblank \n@/bin/bash /home/$SYS_USER/dfd-crypto-ticker/scripts/start-chromium.bash & \n@unclutter -idle 0" > /home/$SYS_USER/.config/lxsession/$LXDE_PROFILE/autostart
+				
+					chown -R $SYS_USER:$SYS_USER /home/$SYS_USER/.config
+				
+					LXDE_ALERT=1
 					
 					else
 					
-					echo " "
-					echo "The LXDE profile name used by your operating system could not be automatically determined."
-					echo " "
-					
-					echo "Enter the LXDE profile name used by your operating system:"
-					echo "(~/.config/lxsession/<profile name>/)"
-					echo "(leave blank / hit enter for default of profile name 'LXDE')"
-					echo " "
-					
-					read LXDE_PROFILE
-        			
-						if [ -z "$LXDE_PROFILE" ]; then
-						LXDE_PROFILE=${1:-LXDE}
-						echo "Using default profile name: $LXDE_PROFILE"
-						else
-						echo "Using profile name: $LXDE_PROFILE"
-						fi
-					
-					echo " "
-
-					LXDE_ALERT=1
+					LXDE_ALERT=2
 					
 					fi
-				
-				
-				mkdir -p /home/$SYS_USER/.config/lxsession/$LXDE_PROFILE/
-
-				touch /home/$SYS_USER/.config/lxsession/$LXDE_PROFILE/autostart
-				
-				GLOBAL_LXDE=$(</etc/xdg/lxsession/$LXDE_PROFILE/autostart)
-
-				echo -e "$GLOBAL_LXDE \n@xset s off \n@xset -dpms \n@xset s noblank \n@/bin/bash /home/$SYS_USER/dfd-crypto-ticker/scripts/start-chromium.bash & \n@unclutter -idle 0" > /home/$SYS_USER/.config/lxsession/$LXDE_PROFILE/autostart
-				
-				chown -R $SYS_USER:$SYS_USER /home/$SYS_USER/.config
+					
 				
 				touch /etc/cron.d/ticker
 
-				CRONJOB="* * * * * $SYS_USER /bin/bash /home/$SYS_USER/dfd-crypto-ticker/scripts/keep.screensaver.off.bash > /dev/null 2>&1"
+				CRONJOB="* * * * * $SYS_USER /bin/bash /home/$SYS_USER/dfd-crypto-ticker/scripts/keep-screensaver-off.bash > /dev/null 2>&1"
 
-				echo "$CRONJOB" > /etc/cron.d/ticker
+				echo -e "$CRONJOB\n" > /etc/cron.d/ticker
 
 				chown $SYS_USER:$SYS_USER /etc/cron.d/ticker
 				
@@ -512,33 +496,53 @@ echo "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
 echo " "
 
 
+
 if [ "$LXDE_ALERT" = "1" ]; then
 
-echo "The LXDE profile name used by your operating system could not be automatically determined,"
-echo "and the custom profile name '$LXDE_PROFILE' was used."
+echo " "
+echo "The most recent LXDE Desktop profile name on your operating system has been detected as:"
+echo "$LXDE_PROFILE"
 echo " "
 
-echo "Your LXDE autostart path was setup at:"
-echo "/home/$SYS_USER/.config/lxsession/$LXDE_PROFILE/autostart"
+echo "LXDE Desktop settings have been detected on your system successfully,"
+echo "and autostart at system boot has been enabled for DFD Crypto Ticker."
 echo " "
 
-echo "If the ticker DOES NOT autostart at system boot time, your operating system's"
-echo "LXDE profile name PROBABLY IS NOT '$LXDE_PROFILE' after all."
+elif [ "$LXDE_ALERT" = "2" ]; then
+
+echo " "
+echo "LXDE Desktop settings could NOT be detected on your system,"
+echo "autostart at system boot COULD NOT BE ENABLED."
 echo " "
 
-echo "You can re-run this install script later on with the proper LXDE profile name if needed."
-echo " "
+echo "Please make sure LXDE Desktop has been setup on your device as the default desktop,"
+echo "if you wish to enable autostart at system boot."
+echo " "	
 
 fi
+
+
+
+if [ "$LXDE_ALERT" = "1" ] || [ "$LXDE_ALERT" = "2" ]; then
+
+echo "Regardless of autostart being enabled or not, you can run this command"
+echo "AFTER system boot MANUALLY, to start DFD Crypto Ticker:"
+echo "bash ~/dfd-crypto-ticker/scripts/ticker-init.bash &>/dev/null &"
+echo " "
+					
+
+fi
+
 
 
 if [ "$GOODTFT_SETUP" = "1" ]; then
 
 echo "Run the below command to configure your 'goodtft LCD-show' LCD screen:"
-echo "cd ~/;./display"
+echo "cd ~/display"
 echo " "
 
 fi
+
 
 
 if [ "$CONFIG_BACKUP" = "1" ]; then
@@ -553,6 +557,7 @@ echo " "
 fi
 
 
+
 echo "Edit the following file in a text editor to switch between the"
 echo "different Coinbase Pro crypto assets and their paired markets: "
 echo "/home/$SYS_USER/dfd-crypto-ticker/apps/ticker/config.js"
@@ -563,7 +568,7 @@ echo "nano ~/dfd-crypto-ticker/apps/ticker/config.js"
 echo " "
 
 echo "After updating config.js, reload the ticker with this command:"
-echo "cd ~/;./reload"
+echo "cd ~/reload"
 echo " "
 
 echo "Ticker installation should be complete, unless you saw any error messages on your screen."

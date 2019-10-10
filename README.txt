@@ -19,6 +19,8 @@ Download Latest Version: https://github.com/taoteh1221/DFD_Crypto_Ticker/release
 
 AUTOMATIC INSTALLATION
 
+IMPORTANT NOTES: This install script has been designed to run generically on Debian-based systems, but has only been tested on Raspberry Pis running Raspian. For Ticker autostart at system boot, the LXDE Desktop is required (this is the default desktop on Raspberry Pis). The ticker can also be manually started (see CONFIGURING AFTER INSTALLATION).
+
 
 To install / upgrade everything automatically on a Raspberry Pi (an affordable low power single board computer), copy / paste / run the command below in a terminal program while logged in on the Raspberry Pi:
 
@@ -26,7 +28,7 @@ To install / upgrade everything automatically on a Raspberry Pi (an affordable l
 wget -O TICKER-INSTALL.bash https://git.io/JeWWx;chmod +x TICKER-INSTALL.bash;sudo ./TICKER-INSTALL.bash
 
 
-Follow the prompts, and the automated script will install the ticker (rebooting after install will run the ticker at startup automatically).
+Follow the prompts, and the automated script will install / configure the ticker.
 
 
 #############################################################################################
@@ -47,16 +49,21 @@ nano ~/dfd-crypto-ticker/apps/ticker/config.js
 
 After updating config.js, reload the ticker with this command:
 
-cd ~/;./reload
+cd ~/reload
+
+
+If you have a "goodtft LCD-show" LCD screen and you installed it's drivers, you can now switch between the LCD and your normal monitor by running the command:
+
+cd ~/display
 
 
 You may need to adjust the initial chromium web browser scale size if your screen is NOT 3.5". This can be edited with a text editor in:
 /home/pi/dfd-crypto-ticker/scripts/start-chromium.bash
 
 
-If you have a "goodtft LCD-show" LCD screen and you installed it's drivers, you can now switch between the LCD and your normal monitor by running the command:
+If ticker autostart on system boot fails for any reason, the ticker can be started MANUALLY (after system boot) with this command:
 
-cd ~/;./display
+bash ~/dfd-crypto-ticker/scripts/ticker-init.bash &>/dev/null &
 
 
 #############################################################################################
@@ -66,8 +73,11 @@ cd ~/;./display
 MANUAL INSTALLATION (IF AUTO-INSTALL SCRIPT FAILS, ETC)...
 
 
+IMPORTANT NOTES: If your system is not a Raspberry Pi, or you are logged in / running as a user other than 'pi', just substitute that username in place of the 'pi' user in (/home/pi/) references below. Additionally, the path .../lxsession/LXDE-pi/... should remain as 'LXDE-pi' on Raspberry Pis REGARDLESS of what user you login / run as. On other Debain-based systems with the LXDE Desktop installed, 'LXDE-pi' will NEED TO BE CHANGED to the proper profile name (usually can be determined as the most recently-created subdirectory name within /etc/xdg/lxsession/).
 
-Upload the 'dfd-crypto-ticker' directory in the download archive into /home/pi/ on your raspberry pi.
+
+
+Upload the 'dfd-crypto-ticker' directory in the download archive into /home/pi/ on your Raspberry Pi.
 
 
 
@@ -95,7 +105,7 @@ Create / edit the following file: /home/pi/.config/lxsession/LXDE-pi/autostart a
 
 Add this as a cron job every minute, by creating the following file (you'll need sudo permissions): /etc/cron.d/ticker and add the following line:
 
-* * * * * pi /bin/bash /home/pi/dfd-crypto-ticker/scripts/keep.screensaver.off.bash > /dev/null 2>&1
+* * * * * pi /bin/bash /home/pi/dfd-crypto-ticker/scripts/keep-screensaver-off.bash > /dev/null 2>&1
 
 
 
