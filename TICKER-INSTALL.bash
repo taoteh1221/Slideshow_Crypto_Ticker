@@ -144,10 +144,10 @@ exit
 fi
   				
 				
-if [ -f /home/$SYS_USER/dfd-crypto-ticker/config.js ]; then
+if [ -f /home/$SYS_USER/dfd-crypto-ticker/apps/ticker/config.js ]; then
 echo "A configuration file from a previous install of DFD Crypto Ticker has been detected on your system."
 echo "During this upgrade / re-install, it will be backed up to:"
-echo "/home/$SYS_USER/dfd-crypto-ticker/config.js.BACKUP.$DATE"
+echo "/home/$SYS_USER/dfd-crypto-ticker/apps/ticker/config.js.BACKUP.$DATE"
 echo "This will save any custom settings within it."
 echo "You will need to manually move any custom settings in this backup file to the new config.js file with a text editor."
 echo " "
@@ -249,11 +249,11 @@ select opt in $OPTIONS; do
 				echo " "
 				
 				
-					if [ -f /home/$SYS_USER/dfd-crypto-ticker/config.js ]; then
+					if [ -f /home/$SYS_USER/dfd-crypto-ticker/apps/ticker/config.js ]; then
 					
-					\cp /home/$SYS_USER/dfd-crypto-ticker/config.js /home/$SYS_USER/dfd-crypto-ticker/config.js.BACKUP.$DATE
+					\cp /home/$SYS_USER/dfd-crypto-ticker/apps/ticker/config.js /home/$SYS_USER/dfd-crypto-ticker/apps/ticker/config.js.BACKUP.$DATE
 						
-					chown $SYS_USER:$SYS_USER /home/$SYS_USER/dfd-crypto-ticker/config.js.BACKUP.$DATE
+					chown $SYS_USER:$SYS_USER /home/$SYS_USER/dfd-crypto-ticker/apps/ticker/config.js.BACKUP.$DATE
 						
 					CONFIG_BACKUP=1
 					
@@ -549,8 +549,8 @@ if [ "$CONFIG_BACKUP" = "1" ]; then
 
 echo " "
 echo "The previously-installed DFD Crypto Ticker configuration"
-echo "file /home/$SYS_USER/dfd-crypto-ticker/config.js has been backed up to:"
-echo "/home/$SYS_USER/dfd-crypto-ticker/config.js.BACKUP.$DATE"
+echo "file /home/$SYS_USER/dfd-crypto-ticker/apps/ticker/config.js has been backed up to:"
+echo "/home/$SYS_USER/dfd-crypto-ticker/apps/ticker/config.js.BACKUP.$DATE"
 echo "You will need to manually move any custom settings in this backup file to the new config.js file with a text editor."
 echo " "
 
