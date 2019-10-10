@@ -49,12 +49,12 @@ nano ~/dfd-crypto-ticker/apps/ticker/config.js
 
 After updating config.js, reload the ticker with this command:
 
-cd ~/reload
+~/reload
 
 
 If you have a "goodtft LCD-show" LCD screen and you installed it's drivers, you can now switch between the LCD and your normal monitor by running the command:
 
-cd ~/display
+~/display
 
 
 You may need to adjust the initial chromium web browser scale size if your screen is NOT 3.5". This can be edited with a text editor in:

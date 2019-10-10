@@ -253,7 +253,7 @@ select opt in $OPTIONS; do
 					
 					\cp /home/$SYS_USER/dfd-crypto-ticker/apps/ticker/config.js /home/$SYS_USER/dfd-crypto-ticker/apps/ticker/config.js.BACKUP.$DATE
 						
-					chown $SYS_USER:$SYS_USER /home/$SYS_USER/dfd-crypto-ticker/apps/ticker/config.js.BACKUP.$DATE
+					/bin/chown $SYS_USER:$SYS_USER /home/$SYS_USER/dfd-crypto-ticker/apps/ticker/config.js.BACKUP.$DATE
 						
 					CONFIG_BACKUP=1
 					
@@ -296,7 +296,7 @@ select opt in $OPTIONS; do
 				rm -rf DFD-Crypto-Ticker
 				
 				# No trailing forward slash here
-				chown -R $SYS_USER:$SYS_USER /home/$SYS_USER/dfd-crypto-ticker
+				/bin/chown -R $SYS_USER:$SYS_USER /home/$SYS_USER/dfd-crypto-ticker
 				
 				echo " "
 				
@@ -343,7 +343,7 @@ select opt in $OPTIONS; do
 			
 				ln -s /home/$SYS_USER/dfd-crypto-ticker/scripts/chromium-refresh.bash /home/$SYS_USER/reload
 				
-				chown $SYS_USER:$SYS_USER /home/$SYS_USER/reload
+				/bin/chown $SYS_USER:$SYS_USER /home/$SYS_USER/reload
 				
 				
 					if [ -d "/etc/xdg/lxsession" ]; then
@@ -356,11 +356,11 @@ select opt in $OPTIONS; do
 				
 					mkdir -p /home/$SYS_USER/.config/lxsession/$LXDE_PROFILE/
 
-					touch /home/$SYS_USER/.config/lxsession/$LXDE_PROFILE/autostart
+					/usr/bin/touch /home/$SYS_USER/.config/lxsession/$LXDE_PROFILE/autostart
 
 					echo -e "$GLOBAL_LXDE \n@/bin/bash /home/pi/dfd-crypto-ticker/scripts/ticker-init.bash & \n" > /home/$SYS_USER/.config/lxsession/$LXDE_PROFILE/autostart
 				
-					chown -R $SYS_USER:$SYS_USER /home/$SYS_USER/.config
+					/bin/chown -R $SYS_USER:$SYS_USER /home/$SYS_USER/.config
 				
 					LXDE_ALERT=1
 					
@@ -371,13 +371,13 @@ select opt in $OPTIONS; do
 					fi
 					
 				
-				touch /etc/cron.d/ticker
+				/usr/bin/touch /etc/cron.d/ticker
 
 				CRONJOB="* * * * * $SYS_USER /bin/bash /home/$SYS_USER/dfd-crypto-ticker/scripts/keep-screensaver-off.bash > /dev/null 2>&1"
 
 				echo -e "$CRONJOB\n" > /etc/cron.d/ticker
 
-				chown $SYS_USER:$SYS_USER /etc/cron.d/ticker
+				/bin/chown $SYS_USER:$SYS_USER /etc/cron.d/ticker
 				
 				echo " "
 				echo "Ticker configuration complete."
@@ -451,7 +451,7 @@ select opt in $OPTIONS; do
 			
 			ln -s /home/$SYS_USER/dfd-crypto-ticker/scripts/switch-display.bash /home/$SYS_USER/display
 				
-			chown $SYS_USER:$SYS_USER /home/$SYS_USER/display
+			/bin/chown $SYS_USER:$SYS_USER /home/$SYS_USER/display
 			
 			mkdir -p /home/$SYS_USER/dfd-crypto-ticker/builds
 			
@@ -464,7 +464,7 @@ select opt in $OPTIONS; do
 			chmod -R 755 /home/$SYS_USER/dfd-crypto-ticker/builds
 			
 			# No trailing forward slash here
-			chown -R $SYS_USER:$SYS_USER /home/$SYS_USER/dfd-crypto-ticker/builds
+			/bin/chown -R $SYS_USER:$SYS_USER /home/$SYS_USER/dfd-crypto-ticker/builds
 
 				
 			echo " "
@@ -499,7 +499,6 @@ echo " "
 
 if [ "$LXDE_ALERT" = "1" ]; then
 
-echo " "
 echo "The most recent LXDE Desktop profile name on your operating system has been detected as:"
 echo "$LXDE_PROFILE"
 echo " "
@@ -510,7 +509,6 @@ echo " "
 
 elif [ "$LXDE_ALERT" = "2" ]; then
 
-echo " "
 echo "LXDE Desktop settings could NOT be detected on your system,"
 echo "autostart at system boot COULD NOT BE ENABLED."
 echo " "
@@ -538,7 +536,7 @@ fi
 if [ "$GOODTFT_SETUP" = "1" ]; then
 
 echo "Run the below command to configure your 'goodtft LCD-show' LCD screen:"
-echo "cd ~/display"
+echo "~/display"
 echo " "
 
 fi
@@ -547,7 +545,6 @@ fi
 
 if [ "$CONFIG_BACKUP" = "1" ]; then
 
-echo " "
 echo "The previously-installed DFD Crypto Ticker configuration"
 echo "file /home/$SYS_USER/dfd-crypto-ticker/apps/ticker/config.js has been backed up to:"
 echo "/home/$SYS_USER/dfd-crypto-ticker/apps/ticker/config.js.BACKUP.$DATE"
@@ -568,11 +565,12 @@ echo "nano ~/dfd-crypto-ticker/apps/ticker/config.js"
 echo " "
 
 echo "After updating config.js, reload the ticker with this command:"
-echo "cd ~/reload"
+echo "~/reload"
 echo " "
 
 echo "Ticker installation should be complete, unless you saw any error messages on your screen."
-echo "You must restart your device to activate the Ticker (it should run automatically at startup when you reboot)."
+echo "You must restart your device to activate the ticker."
+echo "(the ticker should run automatically at startup AFTER YOU REBOOT TWICE)."
 echo " "
 
 echo "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
