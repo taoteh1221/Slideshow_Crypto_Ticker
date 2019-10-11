@@ -97,6 +97,9 @@ Create / edit the following file: /home/pi/.config/lxsession/LXDE-pi/autostart a
 
 @/bin/bash /home/pi/dfd-crypto-ticker/scripts/ticker-init.bash &
 
+IF /home/pi/.config/lxsession/LXDE-pi/autostart IS BLANK / NON-EXISTANT WHEN YOU EDIT IT, 
+ADD THE LINES IN THIS FILE ---FIRST ABOVE--- THAT COMMAND (to preserve your CURRENT desktop settings): /etc/xdg/lxsession/LXDE-pi/autostart
+
 
 
 Add this as a cron job every minute, by creating the following file (you'll need sudo permissions): /etc/cron.d/ticker and add the following line (and a carriage return AFTER it):
