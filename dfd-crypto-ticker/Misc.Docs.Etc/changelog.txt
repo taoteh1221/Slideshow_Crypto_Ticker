@@ -141,6 +141,7 @@ v2.04.2
 ---------------------------------------------------------
 v2.04.3
 -Bug fix for proper cron.d owner permissions
+-UX for adjusting ticker to screen size
 ---------------------------------------------------------
 
 
