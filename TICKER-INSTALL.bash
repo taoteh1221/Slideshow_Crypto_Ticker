@@ -386,6 +386,7 @@ select opt in $OPTIONS; do
 				# cron.d entries MUST BE OWNED BY ROOT
 				/bin/chown root:root /etc/cron.d/ticker
 				
+        		CRON_SETUP=1
 				
 				echo " "
 				echo "Ticker configuration complete."
@@ -557,6 +558,22 @@ echo "The previously-installed DFD Crypto Ticker configuration"
 echo "file /home/$SYS_USER/dfd-crypto-ticker/apps/ticker/config.js has been backed up to:"
 echo "/home/$SYS_USER/dfd-crypto-ticker/apps/ticker/config.js.BACKUP.$DATE"
 echo "You will need to manually move any custom settings in this backup file to the new config.js file with a text editor."
+echo " "
+
+fi
+
+
+
+if [ "$CRON_SETUP" = "1" ]; then
+
+echo "A cron job has been setup for user '$SYS_USER',"
+echo "as a command in /etc/cron.d/ticker:"
+echo "$CRONJOB"
+echo " "
+
+echo "Double-check that the command 'crontab -e' does not have any OLD MATCHING entries"
+echo "pointing to the same cron job, OR YOUR CRON JOB WILL RUN TOO OFTEN."
+echo "(when /etc/cron.d/ is used, then 'crontab -e' should NOT BE USED for the same cron job)"
 echo " "
 
 fi

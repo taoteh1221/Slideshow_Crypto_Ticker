@@ -102,10 +102,19 @@ ADD THE LINES IN THIS FILE ---FIRST ABOVE--- THAT COMMAND (to preserve your CURR
 
 
 
-Add this as a cron job every minute, by creating the following file (you'll need sudo permissions): /etc/cron.d/ticker and add the following line (and a carriage return AFTER it):
+Add this as a cron job every minute, by creating the following file (you'll need sudo permissions): /etc/cron.d/ticker and add the following line (and a carriage return AFTER it to be safe):
 
 * * * * * pi /bin/bash /home/pi/dfd-crypto-ticker/scripts/keep-screensaver-off.bash > /dev/null 2>&1
 
+
+
+If your system DOES NOT have /etc/cron.d/ on it, then NEARLY the same format (minus the username) can be installed via the 'crontab -e' command (logged in as the user you want running the cron job):
+
+* * * * * /bin/bash /home/pi/dfd-crypto-ticker/scripts/keep-screensaver-off.bash > /dev/null 2>&1
+
+
+
+IMPORTANT CRON JOB NOTES: MAKE SURE YOU ONLY USE EITHER /etc/cron.d/, or 'crontab -e', NOT BOTH...ANY OLD DUPLICATE ENTRIES WILL RUN YOUR CRON JOB TOO OFTEN.
 
 
 When you've finished setting up everything, reboot to activate the ticker with this command:
