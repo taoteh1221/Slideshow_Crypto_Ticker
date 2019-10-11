@@ -188,17 +188,21 @@ echo " "
 
 /usr/bin/sudo /usr/bin/apt-get upgrade -y
 
+/usr/bin/sudo /usr/bin/apt-get dist-upgrade -y
+
+/usr/bin/sudo /usr/bin/apt-get clean
+
 echo " "
 				
 echo "Proceeding with required component installation..."
 				
 echo " "
 				
-/usr/bin/sudo /usr/bin/apt-get install xdotool lxde unclutter -y
+/usr/bin/sudo /usr/bin/apt-get install xdotool unclutter raspberrypi-ui-mods rpi-chromium-mods -y
 
 echo " "
 				
-echo "Required component installation completed."
+echo "System update / required component installation completed."
 				
 sleep 3
 				
@@ -222,16 +226,6 @@ select opt in $OPTIONS; do
         if [ "$opt" = "auto_install_ticker_app" ]; then
         
         	
-				echo " "
-				
-				echo "Making sure your system is updated before installing required components..."
-				
-				echo " "
-				
-				/usr/bin/sudo /usr/bin/apt-get update
-				
-				/usr/bin/sudo /usr/bin/apt-get upgrade -y
-				
 				echo " "
 				
 				echo "Proceeding with required component installation..."
