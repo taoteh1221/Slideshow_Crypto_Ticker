@@ -99,7 +99,7 @@ Create / edit the following file: /home/pi/.config/lxsession/LXDE-pi/autostart a
 
 
 
-Add this as a cron job every minute, by creating the following file (you'll need sudo permissions): /etc/cron.d/ticker and add the following line:
+Add this as a cron job every minute, by creating the following file (you'll need sudo permissions): /etc/cron.d/ticker and add the following line (and a carriage return AFTER it):
 
 * * * * * pi /bin/bash /home/pi/dfd-crypto-ticker/scripts/keep-screensaver-off.bash > /dev/null 2>&1
 

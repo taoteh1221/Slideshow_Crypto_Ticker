@@ -339,7 +339,7 @@ select opt in $OPTIONS; do
 
 				echo " "
 
-				chmod -R 755 /home/$SYS_USER/dfd-crypto-ticker/scripts
+				/bin/chmod -R 755 /home/$SYS_USER/dfd-crypto-ticker/scripts
 			
 				ln -s /home/$SYS_USER/dfd-crypto-ticker/scripts/chromium-refresh.bash /home/$SYS_USER/reload
 				
@@ -370,14 +370,22 @@ select opt in $OPTIONS; do
 					
 					fi
 					
+					
+				# Setup cron (to check logs after install: tail -f /var/log/syslog | grep cron -i)
 				
 				/usr/bin/touch /etc/cron.d/ticker
 
 				CRONJOB="* * * * * $SYS_USER /bin/bash /home/$SYS_USER/dfd-crypto-ticker/scripts/keep-screensaver-off.bash > /dev/null 2>&1"
 
+				# Play it safe and be sure their is a newline after this job entry
 				echo -e "$CRONJOB\n" > /etc/cron.d/ticker
-
-				/bin/chown $SYS_USER:$SYS_USER /etc/cron.d/ticker
+				
+		  		# cron.d entries must be a permission of 644
+		  		/bin/chmod 644 /etc/cron.d/ticker
+		  		
+				# cron.d entries MUST BE OWNED BY ROOT
+				/bin/chown root:root /etc/cron.d/ticker
+				
 				
 				echo " "
 				echo "Ticker configuration complete."
@@ -461,7 +469,7 @@ select opt in $OPTIONS; do
 			
 			cd /home/$SYS_USER/dfd-crypto-ticker/
 			
-			chmod -R 755 /home/$SYS_USER/dfd-crypto-ticker/builds
+			/bin/chmod -R 755 /home/$SYS_USER/dfd-crypto-ticker/builds
 			
 			# No trailing forward slash here
 			/bin/chown -R $SYS_USER:$SYS_USER /home/$SYS_USER/dfd-crypto-ticker/builds
