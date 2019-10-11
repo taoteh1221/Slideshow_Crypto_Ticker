@@ -105,6 +105,10 @@ Add this as a cron job every minute, by creating the following file (you'll need
 
 
 
+When you've finished setting up everything, reboot to activate the ticker with this command:
+sudo reboot
+
+
 ## ONLY RUN BELOW COMMANDS IF YOU HAVE A "goodtft LCD-show" LCD screen:
 
 sudo apt update && sudo apt upgrade

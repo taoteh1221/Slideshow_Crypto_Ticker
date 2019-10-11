@@ -569,8 +569,8 @@ echo "~/reload"
 echo " "
 
 echo "Ticker installation should be complete, unless you saw any error messages on your screen."
-echo "You must restart your device to activate the ticker."
-echo "(the ticker should run automatically at startup AFTER YOU REBOOT TWICE)."
+echo "You must restart your device to activate the ticker, by running this command:"
+echo "sudo reboot"
 echo " "
 
 echo "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
