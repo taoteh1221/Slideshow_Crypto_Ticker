@@ -290,8 +290,14 @@ select opt in $OPTIONS; do
 				
 				rm -rf DFD-Crypto-Ticker
 				
+				/bin/chmod -R 755 /home/$SYS_USER/dfd-crypto-ticker/scripts
+				
 				# No trailing forward slash here
 				/bin/chown -R $SYS_USER:$SYS_USER /home/$SYS_USER/dfd-crypto-ticker
+			
+				ln -s /home/$SYS_USER/dfd-crypto-ticker/scripts/chromium-refresh.bash /home/$SYS_USER/reload
+				
+				/bin/chown $SYS_USER:$SYS_USER /home/$SYS_USER/reload
 				
 				echo " "
 				
@@ -316,29 +322,24 @@ echo " "
 ######################################
 
 
-echo "Do you want to automatically configure DFD Crypto Ticker?"
+echo "Do you want to automatically configure DFD Crypto Ticker for"
+echo "your system (autostart at login / keep screen turned on)?"
 echo " "
 
-echo "Select 1 or 2 to choose whether to auto-configure DFD Crypto Ticker, or skip it."
+echo "Select 1 or 2 to choose whether to auto-configure DFD Crypto Ticker system settings, or skip it."
 echo " "
 
-OPTIONS="auto_config_ticker_app skip"
+OPTIONS="auto_config_ticker_system skip"
 
 select opt in $OPTIONS; do
-        if [ "$opt" = "auto_config_ticker_app" ]; then
+        if [ "$opt" = "auto_config_ticker_system" ]; then
         
 
 				echo " "
 				
-				echo "Configuring DFD Crypto Ticker..."
+				echo "Configuring DFD Crypto Ticker on your system..."
 
 				echo " "
-
-				/bin/chmod -R 755 /home/$SYS_USER/dfd-crypto-ticker/scripts
-			
-				ln -s /home/$SYS_USER/dfd-crypto-ticker/scripts/chromium-refresh.bash /home/$SYS_USER/reload
-				
-				/bin/chown $SYS_USER:$SYS_USER /home/$SYS_USER/reload
 				
 				
 					if [ -d "/etc/xdg/lxsession" ]; then
@@ -355,8 +356,10 @@ select opt in $OPTIONS; do
 					
 					# Play it safe and be sure their is a newline after each entry
 					echo -e "$GLOBAL_LXDE \n@bash /home/$SYS_USER/dfd-crypto-ticker/scripts/ticker-init.bash &>/dev/null & \n" > /home/$SYS_USER/.config/lxsession/$LXDE_PROFILE/autostart
-				
-					/bin/chown -R $SYS_USER:$SYS_USER /home/$SYS_USER/.config
+					
+					/bin/chmod -R 755 /home/$SYS_USER/.config/lxsession
+					
+					/bin/chown -R $SYS_USER:$SYS_USER /home/$SYS_USER/.config/lxsession
 				
 					LXDE_ALERT=1
 					
@@ -385,11 +388,9 @@ select opt in $OPTIONS; do
         		CRON_SETUP=1
 				
 				echo " "
-				echo "Ticker configuration complete."
+				echo "DFD Crypto Ticker system configuration complete."
 
 				echo " "
-				
-				echo "DFD Crypto Ticker has been configured."
 				
 	        	CONFIG_SETUP=1
    	     	
@@ -397,7 +398,7 @@ select opt in $OPTIONS; do
         break
        elif [ "$opt" = "skip" ]; then
         echo " "
-        echo "Skipping auto-configuration of DFD Crypto Ticker."
+        echo "Skipping auto-configuration of DFD Crypto Ticker system settings."
         break
        fi
 done
@@ -408,9 +409,6 @@ echo " "
 
 ######################################
 
-
-
-######################################
 
 
 echo "WARNING:"
