@@ -197,8 +197,9 @@ echo " "
 echo "Proceeding with required component installation..."
 				
 echo " "
-				
-/usr/bin/sudo /usr/bin/apt-get install xdotool unclutter raspberrypi-ui-mods rpi-chromium-mods -y
+
+# ttf-ancient-fonts provides needed unicode font coverage in chromium
+/usr/bin/sudo /usr/bin/apt-get install xdotool unclutter raspberrypi-ui-mods rpi-chromium-mods ttf-ancient-fonts -y
 
 echo " "
 				
@@ -351,8 +352,9 @@ select opt in $OPTIONS; do
 					mkdir -p /home/$SYS_USER/.config/lxsession/$LXDE_PROFILE/
 
 					/usr/bin/touch /home/$SYS_USER/.config/lxsession/$LXDE_PROFILE/autostart
-
-					echo -e "$GLOBAL_LXDE \n@/bin/bash /home/pi/dfd-crypto-ticker/scripts/ticker-init.bash & \n" > /home/$SYS_USER/.config/lxsession/$LXDE_PROFILE/autostart
+					
+					# Play it safe and be sure their is a newline after each entry
+					echo -e "$GLOBAL_LXDE \n@bash /home/$SYS_USER/dfd-crypto-ticker/scripts/ticker-init.bash &>/dev/null & \n" > /home/$SYS_USER/.config/lxsession/$LXDE_PROFILE/autostart
 				
 					/bin/chown -R $SYS_USER:$SYS_USER /home/$SYS_USER/.config
 				

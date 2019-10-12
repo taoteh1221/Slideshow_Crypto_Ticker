@@ -18,3 +18,9 @@ var slideshow_speed = 20;
 var screen_position = 'flip'; // 'upright' or 'flip'
 
 
+// Bottom margin
+var bottom_margin = '55px'; // '[number]px' example: '55px'
+
+
+
+

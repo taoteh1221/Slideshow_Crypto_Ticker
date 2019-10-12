@@ -58,7 +58,7 @@ If you have a "goodtft LCD-show" LCD screen and you installed it's drivers, you 
 
 
 You may need to adjust the initial chromium web browser scale size if your screen is NOT 3.5". This can be edited with a text editor in:
-/home/pi/dfd-crypto-ticker/scripts/start-chromium.bash
+/home/pi/dfd-crypto-ticker/scripts/ticker-init.bash
 
 
 If ticker autostart on system boot fails for any reason, the ticker can be started MANUALLY (after system boot) with this command:

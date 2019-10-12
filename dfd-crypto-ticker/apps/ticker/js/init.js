@@ -7,6 +7,8 @@
 var markets = crypto_markets.split("|");
 
 
+///////////////////////////////////////////////////////////////////////////////////////
+
 
 // API call config
 var subscribe_msg = {
@@ -35,9 +37,15 @@ markets.forEach(element => {
 //console.log(subscribe_msg);
 
 
+//////////////////////////////////////////////////////////////////////////////////////
+
 
 // Initiate once page is fully loaded...
 $(document).ready(function() {
+
+
+// Bottom margin
+$("#ticker_window").css({ "padding-bottom": bottom_margin });
 
 
 	// Flipped screen
@@ -61,3 +69,9 @@ api_connect();
 	
 	
 });
+
+
+//////////////////////////////////////////////////////////////////////////////////////
+
+
+

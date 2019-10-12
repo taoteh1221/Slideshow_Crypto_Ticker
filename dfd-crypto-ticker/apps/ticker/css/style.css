@@ -4,8 +4,9 @@
 
 
 body, html {
-            margin: 0px;
-            padding: 0px;
+  margin: 0px;
+  padding: 0px;
+  font-family: serif;
 }
 
 
@@ -21,27 +22,28 @@ html {
 .title {
 	white-space: nowrap;
   position: relative;
-  Font-family: Montserrat;
+  font-family: serif;
   font-weight: 350;
-  font-size:50px;
+  font-size:48px;
   margin: 0;
 }
 
 
 .small {
   font-weight: 350;
-  font-size:37px;
+  font-size: 29px;
 }
 
 
 p {
   position: relative;
-  Font-family: Montserrat;
+  font-family: serif;
 }
 
 
 #ticker_window {
 	
+  font-family: serif;
   border: 0px solid red;
   position:absolute;
 	text-align: center;
@@ -54,7 +56,7 @@ p {
   background: black;
   color: #c6c6c6;
   padding: 1em;
-  padding-bottom: 40px;
+  padding-bottom: 55px;
 }
 
 
@@ -80,7 +82,7 @@ p {
 	white-space: nowrap;
   overflow: hidden;
   font-weight: 350;
-  font-size: 70px;
+  font-size: 60px;
 }
 
 
@@ -111,12 +113,41 @@ span {
 }
 
 
-span.sell {
-  background-color: rgb(105, 199, 115);
+span.arrow {
+border: 0px solid white;
+position: relative;
+vertical-align: middle;
+margin-right: 10px;
 }
+
 
 
 span.buy {
-  background-color: rgb(199, 105, 105);
+  /*background-color: solid rgb(105, 199, 115);*/
+  position: relative;
+  bottom: 35px;
+  width: auto;
+  height: 58px;
+  border-left: 24px solid transparent;
+  border-right: 24px solid transparent;
+  border-bottom: 58px solid rgb(105, 199, 115);
+  font-size: 0px;
+  line-height: 0px;
 }
+
+
+span.sell {
+  /*background-color: rgb(199, 105, 105);*/
+  position: relative;
+  bottom: -23px;
+  width: auto;
+  height: 58px;
+  border-left: 24px solid transparent;
+  border-right: 24px solid transparent;
+  border-top: 58px solid rgb(199, 105, 105);
+  font-size: 0px;
+  line-height: 0px;
+}
+
+
 

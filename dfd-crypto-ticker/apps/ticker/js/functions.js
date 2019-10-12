@@ -121,23 +121,13 @@ var socket = new WebSocket('wss://ws-feed.gdax.com');
       
       fiat_volume = fiat_volume.toFixed(0);
 		
-      var sign;
       
-      if (msg["side"] == "sell") {
-        sign = "▲";
-      } 
-      else {
-        sign = "▼";
-      }
-      
-      var side = '"' + msg["side"] + '"';
+      var side = msg["side"];
       
       var price_list_item =
-        "<div class='spacing'><span class=" +
+        "<div class='spacing'><span class='arrow " +
         side +
-        ">" +
-        sign +
-        "</span> <span class='tick'>" + fiat_symbol +
+        "'></span> <span class='tick'>" + fiat_symbol +
         numberWithCommas(price) +
         "</span></div><div class='spacing small'>(" + pairing + " Vol: " + fiat_symbol +
         numberWithCommas(fiat_volume) +
