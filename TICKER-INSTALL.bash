@@ -118,7 +118,7 @@ echo " "
 
 
 echo "TECHNICAL NOTE:"
-echo "This script was designed to install / setup on the Raspian operating system,"
+echo "This script was designed to install / setup on the Raspbian operating system,"
 echo "and was developed / created on Raspbian Linux v10, for Raspberry Pi computers"
 echo "WITH SMALL IN-CASE LCD SCREENS."
 echo " "
@@ -426,16 +426,6 @@ select opt in $OPTIONS; do
 			
 			echo " "
 			
-			echo "Making sure your system is updated before installing required components..."
-			
-			echo " "
-			
-			/usr/bin/sudo /usr/bin/apt-get update
-			
-			/usr/bin/sudo /usr/bin/apt-get upgrade -y
-			
-			echo " "
-			
 			echo "Proceeding with required component installation..."
 			
 			echo " "
@@ -536,16 +526,6 @@ fi
 
 
 
-if [ "$GOODTFT_SETUP" = "1" ]; then
-
-echo "Run the below command to configure your 'goodtft LCD-show' LCD screen:"
-echo "~/display"
-echo " "
-
-fi
-
-
-
 if [ "$CONFIG_BACKUP" = "1" ]; then
 
 echo "The previously-installed DFD Crypto Ticker configuration"
@@ -588,10 +568,87 @@ echo "~/reload"
 echo " "
 
 echo "Ticker installation should be complete, unless you saw any error messages on your screen."
+echo " "
+
+
+if [ "$GOODTFT_SETUP" = "1" ]; then
+
+echo "Run the below command, to configure / activate your"
+echo "'goodtft LCD-show' LCD screen:"
+echo "~/display"
+echo " "
+
+echo "(your device will restart automatically afterwards)"
+echo " "
+
+else
+
 echo "You must restart your device to activate the ticker, by running this command:"
 echo "sudo reboot"
 echo " "
 
+fi
+
+
 echo "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
+
+echo " "
+
+
+
+######################################
+
+
+echo "Desktop auto-login needs to be enabled to run the ticker at system startup."
+echo " "
+
+echo "If you choose to NOT enable desktop auto-login, you'll need to run this"
+echo "command MANUALLY after logging into the desktop:"
+echo "bash ~/dfd-crypto-ticker/scripts/ticker-init.bash &>/dev/null &"
+echo " "
+
+
+if [ -f "/usr/bin/raspi-config" ]; then
+
+echo "Select 1 or 2 to choose whether to setup desktop auto-login, or skip it."
+echo "(under 'Boot Options' -> 'Desktop / CLI' -> 'Desktop Autologin' in raspi-config)"
+echo "(your device will restart automatically afterwards)"
+echo " "
+
+	if [ "$GOODTFT_SETUP" = "1" ]; then
+	echo "(you will still need to activate the 'goodtft LCD-show' LCD screen AFTER reboot with: ~/display)"
+	echo " "
+	fi
+
+echo " "
+
+OPTIONS="setup_auto_login skip"
+
+	select opt in $OPTIONS; do
+        if [ "$opt" = "setup_auto_login" ]; then
+        
+			echo " "
+			echo "Initiating raspi-config..."
+	
+			# We need sudo here, or raspi-config fails in bash
+			/usr/bin/sudo /usr/bin/raspi-config
+        
+         AUTOLOGIN_SETUP=1
+        
+        break
+       elif [ "$opt" = "skip" ]; then
+        echo " "
+        echo "Skipping desktop auto-login setup."
+        break
+       fi
+	done
+       
+
+fi
+
+echo " "
+
+
+######################################
 
 
