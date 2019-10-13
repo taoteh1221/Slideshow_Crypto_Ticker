@@ -52,11 +52,6 @@ After updating config.js, reload the ticker with this command:
 ~/reload
 
 
-If you have a "goodtft LCD-show" LCD screen and you installed it's drivers, you can now switch between the LCD and your normal monitor by running the command:
-
-~/display
-
-
 You may need to adjust the initial chromium web browser scale size if your screen is NOT 3.5". This can be edited with a text editor in:
 /home/pi/dfd-crypto-ticker/scripts/ticker-init.bash
 
@@ -64,6 +59,11 @@ You may need to adjust the initial chromium web browser scale size if your scree
 If ticker autostart on system boot fails for any reason, the ticker can be started MANUALLY (after system boot) with this command:
 
 bash ~/dfd-crypto-ticker/scripts/ticker-init.bash &>/dev/null &
+
+
+If you have a "goodtft LCD-show" LCD screen and you installed it's drivers, you can now switch between the LCD and your normal monitor by running the command:
+
+~/display
 
 
 #############################################################################################
@@ -93,12 +93,12 @@ ln -s ~/dfd-crypto-ticker/scripts/chromium-refresh.bash ~/reload
 
 
 
-Create / edit the following file: /home/pi/.config/lxsession/LXDE-pi/autostart and add the following line:
+Create / edit the following file: /home/pi/.config/lxsession/LXDE-pi/autostart and add the following command line:
 
 @/bin/bash /home/pi/dfd-crypto-ticker/scripts/ticker-init.bash &
 
 IF /home/pi/.config/lxsession/LXDE-pi/autostart IS BLANK / NON-EXISTANT WHEN YOU EDIT IT, 
-ADD THE LINES IN THIS FILE ---FIRST ABOVE--- THAT COMMAND (to preserve your CURRENT desktop settings): /etc/xdg/lxsession/LXDE-pi/autostart
+ADD THE LINES IN THIS FILE ---FIRST ABOVE--- THAT COMMAND LINE (to preserve your CURRENT desktop settings): /etc/xdg/lxsession/LXDE-pi/autostart
 
 
 
@@ -123,7 +123,7 @@ sudo reboot
 
 ## ONLY RUN BELOW COMMANDS IF YOU HAVE A "goodtft LCD-show" LCD screen:
 
-sudo apt update && sudo apt upgrade
+sudo apt-get update && sudo apt-get upgrade && sudo apt-get dist-upgrade
 
 sudo apt install git
 
