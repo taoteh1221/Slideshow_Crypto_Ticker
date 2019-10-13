@@ -83,9 +83,9 @@ Upload the 'dfd-crypto-ticker' directory in the download archive into /home/pi/ 
 
 Run these commands (logged in as user pi):
 
-sudo apt update && sudo apt upgrade
+sudo apt-get update && sudo apt-get upgrade && sudo apt-get dist-upgrade
 
-sudo apt install xdotool unclutter -y
+sudo apt-get install xdotool unclutter raspberrypi-ui-mods rpi-chromium-mods ttf-ancient-fonts ttf-dejavu ttf-mscorefonts-installer fonts-symbola fonts-noto xfonts-unifont ttf-unifont -y
 
 chmod -R 755 ~/dfd-crypto-ticker/scripts
 
