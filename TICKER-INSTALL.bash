@@ -198,8 +198,8 @@ echo "Proceeding with required component installation..."
 				
 echo " "
 
-# ttf-ancient-fonts provides needed unicode font coverage in chromium
-/usr/bin/sudo /usr/bin/apt-get install xdotool unclutter raspberrypi-ui-mods rpi-chromium-mods ttf-ancient-fonts -y
+# Including common font packages with good unicode support in chromium (needed for crypto / other unicode symbols)
+/usr/bin/sudo /usr/bin/apt-get install xdotool unclutter raspberrypi-ui-mods rpi-chromium-mods ttf-ancient-fonts ttf-dejavu ttf-mscorefonts-installer fonts-symbola fonts-noto xfonts-unifont ttf-unifont -y
 
 echo " "
 				
@@ -554,8 +554,9 @@ fi
 
 
 
-echo "Edit the following file in a text editor to switch between the"
-echo "different Coinbase Pro crypto assets and their paired markets: "
+echo "Edit the following file in a text editor to switch between different"
+echo "exchanges / crypto assets / base pairings, and to configure"
+echo "slideshow speed / font size / vertical position / screen orientation:"
 echo "/home/$SYS_USER/dfd-crypto-ticker/apps/ticker/config.js"
 echo " "
 

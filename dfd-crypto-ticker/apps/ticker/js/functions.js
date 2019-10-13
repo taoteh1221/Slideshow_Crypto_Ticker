@@ -6,7 +6,7 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-function render_ticker(market) {
+function ticker_html(market) {
 	
 var asset = market.replace(/-[A-Za-z0-9]*/g, "");
 var js_key = market.replace(/-/g, "");
@@ -17,6 +17,8 @@ document.write('<div class="title"><span id="asset_' + js_key + '">' + asset + '
     
 document.write('<div class="ticker" id="ticker_' + js_key + '"></div>');
     
+document.write('<div class="volume" id="volume_' + js_key + '"></div>');
+    
 document.write('</div>');
 
 }
@@ -25,7 +27,7 @@ document.write('</div>');
 /////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-function div_slideshow() {
+function ticker_init() {
 	
 var divs= $('#ticker_window div.asset_tickers'),
 
@@ -45,6 +47,18 @@ speed = 1000;
    }
    
    
+}
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+function uc_first(input) { 
+
+var string = input; 
+
+return string[0].toUpperCase() + string.slice(1); 
+
 }
 
 
@@ -75,7 +89,7 @@ var socket = new WebSocket('wss://ws-feed.gdax.com');
     
   window.markets.forEach(element => {
   	var asset = element.replace(/-[A-Za-z0-9]*/g, "");
-    $(".status").text("Coinbase").css("color", "#2bbf7b");
+    $(".status").text( uc_first(window.crypto_exchange) ).css("color", "#2bbf7b");
 	});
 
     
@@ -83,7 +97,7 @@ var socket = new WebSocket('wss://ws-feed.gdax.com');
 
   socket.onmessage = function(e) {
   	
-    var msg = JSON.parse(event.data);
+    var msg = JSON.parse(e.data);
     
     //console.log(msg);
     
@@ -100,41 +114,65 @@ var socket = new WebSocket('wss://ws-feed.gdax.com');
     	//console.log(asset);
     	//console.log(pairing);
 
+
+			// Unicode asset symbols
 			if ( pairing == 'USD' ) {
-			var fiat_symbol = "$";
-			}
-			else if ( pairing == 'USDC' ) {
-			var fiat_symbol = "Ⓢ";
+			volume_symbol = "$";
 			}
 			else if ( pairing == 'EUR' ) {
-			var fiat_symbol = "€";
+			var volume_symbol = "€";
 			}
 			else if ( pairing == 'GBP' ) {
-			var fiat_symbol = "£";
+			var volume_symbol = "£";
+			}
+			else if ( pairing == 'BTC' ) {
+			volume_symbol = "Ƀ ";
+			}
+			else if ( pairing == 'ETH' ) {
+			volume_symbol = "Ξ ";
+			}
+			else if ( pairing == 'LTC' ) {
+			volume_symbol = "Ł ";
+			}
+			else if ( pairing == 'USDC' || pairing == 'TUSD' ) {
+			volume_symbol = "Ⓢ ";
+			}
+			else if ( pairing == 'USDT' ) {
+			volume_symbol = "₮ ";
+			}
+			else if ( pairing == 'XMR' ) {
+			volume_symbol = "ɱ ";
 			}
     	
-		var decimals = msg["price"] >= 1 ? 2 : 6;
+    	
+		var price_decimals = msg["price"] >= 1 ? 2 : 6;
 		
-      var price = parseFloat(msg["price"]).toFixed(decimals);
+      var price = parseFloat(msg["price"]).toFixed(price_decimals);
       
-      var fiat_volume = price * parseFloat(msg["volume_24h"]);
+		var volume_decimals = pairing == 'BTC' ? 2 : 0;
       
-      fiat_volume = fiat_volume.toFixed(0);
+      var base_volume = price * parseFloat(msg["volume_24h"]);
+      
+      base_volume = base_volume.toFixed(volume_decimals);
 		
       
       var side = msg["side"];
       
-      var price_list_item =
-        "<div class='spacing'><span class='arrow " +
+      var ticker_item =
+        "<div class='spacing'><div class='arrow_wrapper'><span class='arrow " +
         side +
-        "'></span> <span class='tick'>" + fiat_symbol +
+        "'></span></div><span class='tick_text'>" + volume_symbol +
         numberWithCommas(price) +
-        "</span></div><div class='spacing small'>(" + pairing + " Vol: " + fiat_symbol +
-        numberWithCommas(fiat_volume) +
+        "</span></div>";
+        
+      var volume_item = 
+      	"<div class='spacing'>(" + pairing + " Vol: " + volume_symbol +
+        numberWithCommas(base_volume) +
         ")" +
         "</div>";
 
-      $("#ticker_" + js_key).html(price_list_item);
+      $("#ticker_" + js_key).html(ticker_item);
+      $("#volume_" + js_key).html(volume_item);
       
     }
     

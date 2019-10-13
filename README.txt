@@ -37,7 +37,7 @@ Follow the prompts, and the automated script will install / configure the ticker
 CONFIGURING AFTER INSTALLATION
 
 
-Edit the following file in a text editor to switch between the different Coinbase Pro crypto assets and their paired markets: 
+Edit the following file in a text editor to switch between different exchanges / crypto assets / base pairings, and to configure slideshow speed / font size / vertical position / screen orientation: 
 
 /home/pi/dfd-crypto-ticker/apps/ticker/config.js
 

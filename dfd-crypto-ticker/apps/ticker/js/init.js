@@ -44,23 +44,32 @@ markets.forEach(element => {
 $(document).ready(function() {
 
 
+// Title font size
+$(".title").css({ "font-size": title_size + "px" });
+
+// Ticker font size
+$(".ticker").css({ "font-size": ticker_size + "px" });
+
+// Volume font size
+$(".volume").css({ "font-size": volume_size + "px" });
+
 // Bottom margin
-$("#ticker_window").css({ "padding-bottom": bottom_margin });
+$("#ticker_window").css({ "padding-bottom": bottom_margin + "px" });
 
 
-	// Flipped screen
-	if ( screen_position == 'flip' ) {
+	// Screen orientation
+	if ( orient_screen == 'flip' ) {
 	$("#ticker_window").addClass("flip");
 	}
 
 
 // Start ticker
-div_slideshow();
+ticker_init();
 	
 	
-	// If more than one asset, run slideshow (with delay of slideshow_speed seconds)
+	// If more than one asset, run in slideshow mode (with delay of slideshow_speed seconds)
 	if ( window.markets.length > 1 ) {
-	setInterval(div_slideshow, slideshow_speed * 1000);
+	setInterval(ticker_init, slideshow_speed * 1000);
 	}
 
 

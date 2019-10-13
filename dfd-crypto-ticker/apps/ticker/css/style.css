@@ -6,7 +6,7 @@
 body, html {
   margin: 0px;
   padding: 0px;
-  font-family: serif;
+  font-family: Montserrat, serif;
 }
 
 
@@ -19,31 +19,106 @@ html {
 }
 
 
+p {
+  position: relative;
+  font-family: Montserrat, serif;
+}
+
+
 .title {
 	white-space: nowrap;
   position: relative;
-  font-family: serif;
+  font-family: Montserrat, serif;
   font-weight: 350;
-  font-size:48px;
+  font-size: 48px;
   margin: 0;
 }
 
 
-.small {
+.ticker {
+	white-space: nowrap;
+  overflow: hidden;
+  font-weight: 350;
+  font-size: 60px;
+}
+
+
+.tick_text {
+  margin: auto;
+  text-align: center;
+}
+
+
+.volume {
   font-weight: 350;
   font-size: 29px;
 }
 
 
-p {
+.flip {
+/* flip upsidedown because my power plug is in the way */
+  -moz-transform:rotate(-180deg); /* Firefox */
+  -webkit-transform:rotate(-180deg); /* Webkit */        
+  -ms-transform:rotate(-180deg); /* IE */
+  -o-transform:rotate(-180deg); /* Opera */
+  transform:rotate(-180deg); /* future */
+}
+
+
+.spacing {
   position: relative;
-  font-family: serif;
+	margin-top: 30px;
+}
+
+
+span {
+  width: 175px;
+  text-align: left;
+}
+
+
+span.arrow {
+position: absolute;
+left: 0px;
+  padding: 0px;
+  margin: 0px;
+  width: auto;
+  min-height: 58px;
+  max-height: 58px;
+  border-left: 24px solid transparent;
+  border-right: 24px solid transparent;
+}
+
+
+div.arrow_wrapper {
+display: inline-block;
+position: relative;
+top: 5px;
+  min-width: 48px;
+  max-width: 48px;
+  min-height: 58px;
+  max-height: 58px;
+padding: 0px;
+margin: 0px;
+margin-right: 8px;
+}
+
+
+span.buy {
+bottom: 0px;
+border-bottom: 58px solid rgb(105, 199, 115);
+}
+
+
+span.sell {
+top: 0px;
+border-top: 58px solid rgb(199, 105, 105);
 }
 
 
 #ticker_window {
 	
-  font-family: serif;
+  font-family: Montserrat, serif;
   border: 0px solid red;
   position:absolute;
 	text-align: center;
@@ -75,78 +150,6 @@ p {
 #ticker_window > div.asset_tickers{
    /* width:400px;
     height:250px; */
-}
-
-
-.ticker {
-	white-space: nowrap;
-  overflow: hidden;
-  font-weight: 350;
-  font-size: 60px;
-}
-
-
-.flip {
-/* flip upsidedown because my power plug is in the way */
-  -moz-transform:rotate(-180deg); /* Firefox */
-  -webkit-transform:rotate(-180deg); /* Webkit */        
-  -ms-transform:rotate(-180deg); /* IE */
-  -o-transform:rotate(-180deg); /* Opera */
-  transform:rotate(-180deg); /* future */
-}
-
-
-.spacing {
-	margin-top: 30px;
-}
-
-
-.tick {
-  margin: auto;
-  text-align: center;
-}
-
-
-span {
-  width: 175px;
-  text-align: left;
-}
-
-
-span.arrow {
-border: 0px solid white;
-position: relative;
-vertical-align: middle;
-margin-right: 10px;
-}
-
-
-
-span.buy {
-  /*background-color: solid rgb(105, 199, 115);*/
-  position: relative;
-  bottom: 35px;
-  width: auto;
-  height: 58px;
-  border-left: 24px solid transparent;
-  border-right: 24px solid transparent;
-  border-bottom: 58px solid rgb(105, 199, 115);
-  font-size: 0px;
-  line-height: 0px;
-}
-
-
-span.sell {
-  /*background-color: rgb(199, 105, 105);*/
-  position: relative;
-  bottom: -23px;
-  width: auto;
-  height: 58px;
-  border-left: 24px solid transparent;
-  border-right: 24px solid transparent;
-  border-top: 58px solid rgb(199, 105, 105);
-  font-size: 0px;
-  line-height: 0px;
 }
 
 
