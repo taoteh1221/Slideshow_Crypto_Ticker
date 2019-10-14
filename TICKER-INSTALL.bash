@@ -555,8 +555,9 @@ fi
 
 
 echo "Edit the following file in a text editor to switch between different"
-echo "exchanges / crypto assets / base pairings, and to configure"
-echo "slideshow speed / font size / vertical position / screen orientation:"
+echo "exchanges / crypto assets / base pairings, and to configure settings"
+echo "for slideshow speed / font sizes / vertical position / screen orientation"
+echo "/ google font used / monospace emulation:"
 echo "/home/$SYS_USER/dfd-crypto-ticker/apps/ticker/config.js"
 echo " "
 
@@ -600,11 +601,11 @@ echo " "
 ######################################
 
 
-echo "Desktop auto-login needs to be enabled to run the ticker at system startup."
+echo "Desktop auto-login (load desktop without login) needs to be enabled to run the ticker at system startup."
 echo " "
 
 echo "If you choose to NOT enable desktop auto-login, you'll need to run this"
-echo "command MANUALLY after logging into the desktop:"
+echo "command MANUALLY after logging into the desktop to run the ticker:"
 echo "bash ~/dfd-crypto-ticker/scripts/ticker-init.bash &>/dev/null &"
 echo " "
 
@@ -617,7 +618,7 @@ echo "(your device will restart automatically afterwards)"
 echo " "
 
 	if [ "$GOODTFT_SETUP" = "1" ]; then
-	echo "(you will still need to activate the 'goodtft LCD-show' LCD screen AFTER reboot with: ~/display)"
+	echo "(you will STILL need to activate the 'goodtft LCD-show' LCD screen AFTER reboot with this command: ~/display)"
 	echo " "
 	fi
 

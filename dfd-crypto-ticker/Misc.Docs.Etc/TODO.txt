@@ -1,0 +1,3 @@
+
+
+Optional integration with upcoming REST API in DFD Cryptocoin Values, that prints out extra bottom row of data showing price / volume percent change for last day and last week for each market.

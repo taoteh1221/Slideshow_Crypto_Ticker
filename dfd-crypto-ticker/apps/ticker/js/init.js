@@ -3,39 +3,11 @@
 
 
 
-// Put configged markets into an array
-var markets = crypto_markets.split("|");
 
+//////////////////////////////////////////////////////////////////////////////////////
 
-///////////////////////////////////////////////////////////////////////////////////////
-
-
-// API call config
-var subscribe_msg = {
-      
-    "type": "subscribe",
-    "product_ids": [
-    ],
-    "channels": [
-        {
-            "name": "ticker",
-            "product_ids": [
-            ]
-        }
-    ]
-    };
- 
- 
- 
-// Add markets to API call
-var loop = 0;
-markets.forEach(element => {
-	subscribe_msg.product_ids[loop] = element;
-	loop = loop + 1;
-	});
-
-//console.log(subscribe_msg);
-
+// Load external google font CSS file if required
+var google_font_css = load_google_font();
 
 //////////////////////////////////////////////////////////////////////////////////////
 
@@ -44,6 +16,35 @@ markets.forEach(element => {
 $(document).ready(function() {
 
 
+
+	// Custom google font
+	if ( google_font_css == false ) {
+	console.log('Skipping custom google font rendering (no value set).');
+	}
+	else {
+	console.log('Enabling custom google font rendering.');
+	$("body, html").css({ "font-family": google_font_css });
+	}
+
+
+	// Monospace emulation
+	if ( monospace_check() == true ) {
+	console.log('Enabling monospace emulation rendering.');
+	$(".ticker .monospace").css({ "width": Math.round(ticker_size * monospace_width) + "px" });
+	$(".volume .monospace").css({ "width": Math.round(volume_size * monospace_width) + "px" });
+	}
+	else {
+	console.log('Skipping monospace emulation rendering (no proper decimal value of 1.00 or less detected).');
+	}
+	
+
+	// Screen orientation
+	if ( orient_screen == 'flip' ) {
+	$("#ticker_window").addClass("flip");
+	}
+
+
+	
 // Title font size
 $(".title").css({ "font-size": title_size + "px" });
 
@@ -56,11 +57,6 @@ $(".volume").css({ "font-size": volume_size + "px" });
 // Bottom margin
 $("#ticker_window").css({ "padding-bottom": bottom_margin + "px" });
 
-
-	// Screen orientation
-	if ( orient_screen == 'flip' ) {
-	$("#ticker_window").addClass("flip");
-	}
 
 
 // Start ticker

@@ -172,6 +172,14 @@ v2.06.0
 ---------------------------------------------------------
 
 
+---------------------------------------------------------
+v2.07.0
+-Config setting for emulated / dynamic monospaced width for ticker/volume numbers (works with ANY font...stops numbers from "jumping around" when changing in real-time)
+-Config setting to use ANY google font listed at https://fonts.google.com/ for the ticker UI
+---------------------------------------------------------
+
+
+
 
 
 

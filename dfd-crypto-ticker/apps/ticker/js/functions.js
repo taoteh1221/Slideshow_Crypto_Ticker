@@ -6,6 +6,122 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
+function monospace_check() {
+	
+var check = window.monospace_width;
+
+	// Not a number check
+	if ( isNaN(check) ) {
+   return false;
+	}
+
+
+// Second number check, with check for decimals with value of 1.00 or less
+var result = (check - Math.floor(check)) !== 0; 
+   
+  if (result) { // Is a decimal number
+  
+  	if ( window.monospace_width > 1 ) { // Is greater than 1.00
+  	return false;
+  	}
+  	else { // Is NOT greater than 1.00
+  	return true;
+  	}
+  	
+  }
+  else { // Is not a decimal number
+  return false;
+  }
+     
+     
+ }
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+function load_google_font() {
+	
+var config_font = window.google_font;
+
+	// Skip custom font rendering if no config value
+	if ( config_font == null ) {
+	return false;
+	}
+
+var formatted_link = config_font.split(' ').join('+');
+
+
+// Get HTML head element 
+var head = document.getElementsByTagName('HEAD')[0];  
+  
+// Create new link Element 
+var link = document.createElement('link'); 
+  
+// set the attributes for link element  
+link.rel = 'stylesheet';  
+      
+link.type = 'text/css'; 
+      
+link.href = 'https://fonts.googleapis.com/css?family=' + formatted_link + '&display=swap';  
+
+// Append link element to HTML head 
+head.appendChild(link); 
+
+// DEBUGGING
+//console.log("google_font = " + config_font);
+//console.log("Formatted for CSS link: " + formatted_link);
+console.log("Google font CSS href link set as: " + link.href);
+
+return "'" + config_font + "', serif, monospace";
+
+}
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+function monospace_rendering($element) {
+	
+    for (var i = 0; i < $element.childNodes.length; i++) {
+    
+    var $child = $element.childNodes[i];
+
+        if ($child.nodeType === Node.TEXT_NODE) {
+        	
+        var $wrapper = document.createDocumentFragment();
+
+            for (var i = 0; i < $child.nodeValue.length; i++) {
+            	
+            	if ( isNaN($child.nodeValue.charAt(i)) || $child.nodeValue.charAt(i) == ' ' ) { // Space not detected well here, lol...so we work-around
+                var $char = document.createElement('span');
+                $char.textContent = $child.nodeValue.charAt(i);
+                }
+                else {
+                var $char = document.createElement('span');
+                $char.className = 'monospace';
+                $char.textContent = $child.nodeValue.charAt(i);
+                }
+
+            $wrapper.appendChild($char);
+                
+            }
+
+        $element.replaceChild($wrapper, $child);
+        
+        } 
+        else if ($child.nodeType === Node.ELEMENT_NODE) {
+        monospace_rendering($child);
+        }
+        
+    }
+    
+}
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
 function ticker_html(market) {
 	
 var asset = market.replace(/-[A-Za-z0-9]*/g, "");
@@ -145,11 +261,11 @@ var socket = new WebSocket('wss://ws-feed.gdax.com');
 			}
     	
     	
-		var price_decimals = msg["price"] >= 1 ? 2 : 6;
+		var price_decimals = msg["price"] >= 1 ? 2 : 5;
 		
       var price = parseFloat(msg["price"]).toFixed(price_decimals);
       
-		var volume_decimals = pairing == 'BTC' ? 2 : 0;
+		var volume_decimals = pairing == 'BTC' ? 3 : 0;
       
       var base_volume = price * parseFloat(msg["volume_24h"]);
       
@@ -166,14 +282,27 @@ var socket = new WebSocket('wss://ws-feed.gdax.com');
         "</span></div>";
         
       var volume_item = 
-      	"<div class='spacing'>(" + pairing + " Vol: " + volume_symbol +
+      	"<div class='spacing'>" + pairing + " Vol: " + volume_symbol +
         numberWithCommas(base_volume) +
-        ")" +
         "</div>";
-
+		
+		
+		// Render data to appropriate ticker
       $("#ticker_" + js_key).html(ticker_item);
       $("#volume_" + js_key).html(volume_item);
       
+      
+      	// If monospace emulation is properly enabled, run it
+      	if ( monospace_check() == true ) {
+      		
+      	monospace_rendering(document.querySelectorAll('#ticker_' + js_key)[0]);
+      	monospace_rendering(document.querySelectorAll('#volume_' + js_key)[0]);
+      	
+			$(".ticker .monospace").css({ "width": Math.round(window.ticker_size * window.monospace_width) + "px" });
+			$(".volume .monospace").css({ "width": Math.round(window.volume_size * window.monospace_width) + "px" });
+			
+			}
+			
     }
     
   };
