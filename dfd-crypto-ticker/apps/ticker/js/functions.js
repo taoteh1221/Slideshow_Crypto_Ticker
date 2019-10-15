@@ -319,7 +319,7 @@ var socket = new WebSocket('wss://ws-feed.gdax.com');
 
   socket.onerror = function(err) {
     $(".status").text("Error").css("color", "red");
-    //console.error('Socket encountered error: ', err.message, 'Closing socket');
+    console.log('Socket encountered error: ', err.message, 'Closing socket');
     socket.close();
   };
   

@@ -556,8 +556,8 @@ fi
 
 echo "Edit the following file in a text editor to switch between different"
 echo "exchanges / crypto assets / base pairings, and to configure settings"
-echo "for slideshow speed / font sizes / vertical position / screen orientation"
-echo "/ google font used / monospace emulation:"
+echo "for slideshow speed / font sizes and colors / background color"
+echo "/ vertical position / screen orientation / google font used / monospace emulation:"
 echo "/home/$SYS_USER/dfd-crypto-ticker/apps/ticker/config.js"
 echo " "
 

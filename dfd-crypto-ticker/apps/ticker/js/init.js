@@ -55,8 +55,13 @@ $(".ticker").css({ "font-size": ticker_size + "px" });
 $(".volume").css({ "font-size": volume_size + "px" });
 
 // Bottom margin
-$("#ticker_window").css({ "padding-bottom": bottom_margin + "px" });
+$("#ticker_window").css({ "top": vertical_position + "px" });
 
+// Background color
+$("body, html").css({ "background": background_color });
+
+// Text color
+$("body, html").css({ "color": text_color });
 
 
 // Start ticker

@@ -40,13 +40,23 @@ var volume_size = 37;
 
 
 
-// Bottom margin (adjusts the ticker's vertical position)
-var bottom_margin = 40;
+// Vertical position (adjusts the ticker's vertical position up/down)
+var vertical_position = 38;
 
 
 
 // Screen orientation (upright, or flip upside-down)
 var orient_screen = 'flip'; // 'upright' or 'flip'
+
+
+
+// Background color (https://www.w3schools.com/colors/colors_picker.asp)
+var background_color = '#000000'; // '#colorcode'
+
+
+
+// Text color (https://www.w3schools.com/colors/colors_picker.asp)
+var text_color = '#c6c6c6'; // '#colorcode'
 
 
 
