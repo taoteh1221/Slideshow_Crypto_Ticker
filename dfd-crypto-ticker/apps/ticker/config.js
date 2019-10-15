@@ -26,7 +26,7 @@ var slideshow_speed = 20;
 
 
 // Title font size
-var title_size = 59;
+var title_size = 54;
 
 
 
@@ -52,7 +52,7 @@ var orient_screen = 'flip'; // 'upright' or 'flip'
 
 // Use a google font...set as null for default system serif font
 // Runs the ticker in ANY google font found at: https://fonts.google.com/
-var google_font = 'Patua One'; // 'fontname' IN QUOTES for ANY google font, or null to skip (null MUST BE LOWERCASE WITHOUT QUOTES)
+var google_font = 'Varela Round'; // 'fontname' IN QUOTES for ANY google font, or null to skip (null MUST BE LOWERCASE WITHOUT QUOTES)
 
 
 
