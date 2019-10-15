@@ -7,7 +7,7 @@ Real Time Crypto Price Ticker For Raspberry Pis With LCD Screens, including 24 h
 
 Supports all Coinbase Pro markets, and can run in "slideshow mode", to show all the markets you want.
 
-Example on a 3.5" LCD: https://www.youtube.com/watch?v=W043CHKKjC8
+Example on a 3.5" LCD: https://www.youtube.com/watch?v=bvPQ6PLy_ME
 
 Developed on a Raspi v2 B+, with this screen / case: https://smile.amazon.com/gp/product/B07N38B86S/
 
