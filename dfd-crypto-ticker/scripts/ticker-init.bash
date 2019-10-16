@@ -1,7 +1,6 @@
 #!/bin/bash
 
-# Device scale setting, adjust to fit your screen size ("1.00" is for 3.5" LCD screens)
-DEVICE_SCALE="1.00"
+export DISPLAY=:0 
 
 ###################################
 
@@ -9,7 +8,6 @@ DEVICE_SCALE="1.00"
 cd "$(dirname "$0")"
 cd ../
 
-export DISPLAY=:0 
 
 /usr/bin/xset s off
 
@@ -17,8 +15,18 @@ export DISPLAY=:0
 
 /usr/bin/xset s noblank
 
-/usr/bin/unclutter -idle 0
+/usr/bin/unclutter -idle 0.5 -root &
+
+
+/bin/sed -i 's/"exited_cleanly":false/"exited_cleanly":true/' ~/.config/chromium/Default/Preferences
+/bin/sed -i 's/"exit_type":"Crashed"/"exit_type":"Normal"/' ~/.config/chromium/Default/Preferences
+
+
+
+sleep 2
 
 #incognito mode doesn't prompt to restore previous session, yay
-/usr/bin/chromium-browser ./apps/ticker/index.html --start-fullscreen --incognito --force-device-scale-factor=$DEVICE_SCALE
+/usr/bin/chromium-browser --noerrdialogs --disable-infobars --incognito --kiosk ~/dfd-crypto-ticker/apps/ticker/index.html
+
+
 

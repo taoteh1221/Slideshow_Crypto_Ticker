@@ -133,6 +133,11 @@ echo " "
 echo "This script may work on other Debian-based systems as well, but it has not been tested for that purpose."
 echo " "
 
+echo "USE RASPBIAN FULL DESKTOP, #NOT# LITE, OR YOU LIKELY WILL HAVE SOME"
+echo "CHROMIUM BROWSER ISSUES EVEN AFTER UPGRADING TO GUI / CHROME (trust me)."
+echo "(GUI desktop and Chromium browser are required for this ticker app)"
+echo " "
+
 if [ -f "/etc/debian_version" ]; then
 echo "Your system has been detected as Debian-based, which is compatible with this automated installation script."
 echo "Continuing..."
@@ -186,11 +191,8 @@ echo " "
 			
 /usr/bin/sudo /usr/bin/apt-get update
 
+#DO NOT RUN dist-upgrade, bad things can happen, lol
 /usr/bin/sudo /usr/bin/apt-get upgrade -y
-
-/usr/bin/sudo /usr/bin/apt-get dist-upgrade -y
-
-/usr/bin/sudo /usr/bin/apt-get clean
 
 echo " "
 				
@@ -198,8 +200,7 @@ echo "Proceeding with required component installation..."
 				
 echo " "
 
-# Including common font packages with good unicode support in chromium (needed for crypto / other unicode symbols)
-/usr/bin/sudo /usr/bin/apt-get install xdotool unclutter raspberrypi-ui-mods rpi-chromium-mods ttf-ancient-fonts ttf-dejavu ttf-mscorefonts-installer fonts-symbola fonts-noto xfonts-unifont ttf-unifont -y
+/usr/bin/sudo /usr/bin/apt-get install xdotool unclutter sed -y
 
 echo " "
 				
@@ -342,30 +343,44 @@ select opt in $OPTIONS; do
 				echo " "
 				
 				
-					if [ -d "/etc/xdg/lxsession" ]; then
-					
-					NEWEST_DIR=$(ls -td -- /etc/xdg/lxsession/* | head -n 1)
-					
-					LXDE_PROFILE=$(/usr/bin/basename $NEWEST_DIR)
-				
-					GLOBAL_LXDE=$(</etc/xdg/lxsession/$LXDE_PROFILE/autostart)
-				
-					mkdir -p /home/$SYS_USER/.config/lxsession/$LXDE_PROFILE/
+					if [ -d "/lib/systemd/system" ]; then
 
-					/usr/bin/touch /home/$SYS_USER/.config/lxsession/$LXDE_PROFILE/autostart
+
+# Don't nest / indent, or it could malform the settings            
+read -r -d '' TICKER_STARTUP <<- EOF
+\r
+[Unit]
+Description=Chromium Ticker
+Wants=graphical.target
+After=graphical.target
+\r
+[Service]
+Environment=DISPLAY=:0  
+Environment=XAUTHORITY=/home/$SYS_USER/.Xauthority
+Type=simple
+ExecStart=/bin/bash /home/$SYS_USER/dfd-crypto-ticker/scripts/ticker-init.bash
+Restart=on-abort
+User=$SYS_USER
+Group=$SYS_USER
+\r
+[Install]
+WantedBy=graphical.target
+\r
+EOF
+
+					# Setup service to run at boot
+
+					/usr/bin/touch /lib/systemd/system/ticker.service
 					
-					# Play it safe and be sure their is a newline after each entry
-					echo -e "$GLOBAL_LXDE \n@bash /home/$SYS_USER/dfd-crypto-ticker/scripts/ticker-init.bash &>/dev/null & \n" > /home/$SYS_USER/.config/lxsession/$LXDE_PROFILE/autostart
+					echo -e "$TICKER_STARTUP" > /lib/systemd/system/ticker.service
 					
-					/bin/chmod -R 755 /home/$SYS_USER/.config/lxsession
-					
-					/bin/chown -R $SYS_USER:$SYS_USER /home/$SYS_USER/.config/lxsession
+					/bin/systemctl enable ticker.service
 				
-					LXDE_ALERT=1
+					AUTOSTART_ALERT=1
 					
 					else
 					
-					LXDE_ALERT=2
+					AUTOSTART_ALERT=2
 					
 					fi
 					
@@ -490,31 +505,24 @@ echo " "
 
 
 
-if [ "$LXDE_ALERT" = "1" ]; then
+if [ "$AUTOSTART_ALERT" = "1" ]; then
 
-echo "The most recent LXDE Desktop profile name on your operating system has been detected as:"
-echo "$LXDE_PROFILE"
+echo "Ticker autostart at login has been configured at:"
+echo "/lib/systemd/system/ticker.service"
+echo "(the ticker will now start at boot/login)"
 echo " "
 
-echo "LXDE Desktop settings have been detected on your system successfully,"
-echo "and autostart at system boot has been enabled for DFD Crypto Ticker."
-echo " "
+elif [ "$AUTOSTART_ALERT" = "2" ]; then
 
-elif [ "$LXDE_ALERT" = "2" ]; then
-
-echo "LXDE Desktop settings could NOT be detected on your system,"
-echo "autostart at system boot COULD NOT BE ENABLED."
-echo " "
-
-echo "Please make sure LXDE Desktop has been setup on your device as the default desktop,"
-echo "if you wish to enable autostart at system boot."
+echo "systemd settings could NOT be detected on your system,"
+echo "ticker autostart at system boot COULD NOT BE ENABLED."
 echo " "	
 
 fi
 
 
 
-if [ "$LXDE_ALERT" = "1" ] || [ "$LXDE_ALERT" = "2" ]; then
+if [ "$AUTOSTART_ALERT" = "1" ] || [ "$AUTOSTART_ALERT" = "2" ]; then
 
 echo "Regardless of autostart being enabled or not, you can run this command"
 echo "AFTER system boot MANUALLY, to start DFD Crypto Ticker:"
@@ -602,6 +610,7 @@ echo " "
 
 
 echo "Desktop auto-login (load desktop without login) needs to be enabled to run the ticker at system startup."
+echo "(if you have not set it up already beforehand)"
 echo " "
 
 echo "If you choose to NOT enable desktop auto-login, you'll need to run this"
