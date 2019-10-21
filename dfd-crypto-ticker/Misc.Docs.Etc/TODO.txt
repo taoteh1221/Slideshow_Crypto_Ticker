@@ -2,6 +2,6 @@
 
 Add SFTP setup as optional in auto-install, AND mention SSH login too (since the screen on the device will be occupied by the ticker running).
 
-Add Kraken webocket API support.
+Add Kraken / Binance / Binance US webocket API support.
 
 Optional integration with upcoming REST API in DFD Cryptocoin Values, that prints out extra bottom row of data showing price / volume percent change for last day and last week for each market.
