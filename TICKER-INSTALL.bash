@@ -609,6 +609,9 @@ echo " "
 ######################################
 
 
+echo "^^^^^^^^^^^^^ SAVE THE INFORMATION ^ABOVE^ FOR FUTURE ACCESS TO THIS APP, BEFORE CONTINUING ^^^^^^^^^^^^^"
+echo " "
+
 echo "Desktop auto-login (load desktop without login) needs to be enabled to run the ticker at system startup."
 echo "(if you have not set it up already beforehand)"
 echo " "
@@ -623,7 +626,7 @@ if [ -f "/usr/bin/raspi-config" ]; then
 
 echo "Select 1 or 2 to choose whether to setup desktop auto-login, or skip it."
 echo "(under 'Boot Options' -> 'Desktop / CLI' -> 'Desktop Autologin' in raspi-config)"
-echo "(your device will restart automatically afterwards)"
+echo "(your DEVICE WILL RESTART AUTOMATICALLY afterwards)"
 echo " "
 
 	if [ "$GOODTFT_SETUP" = "1" ]; then
