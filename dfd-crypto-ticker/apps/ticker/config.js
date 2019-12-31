@@ -8,7 +8,7 @@
 
 
 // What exchange to use
-// Currently only coinbase is supported (kraken is coming soon)
+// Currently only coinbase is supported (kraken / binance coming soon)
 var crypto_exchange = 'coinbase'; 
 
 
@@ -20,8 +20,14 @@ var crypto_markets = 'BTC-USD|ETH-USD|ETH-BTC';
 
 
 
+// Maximum allowed decimals in market price 
+var max_price_decimals = 5;
+
+
+
 // Seconds between "slideshowing" multiple tickers (if multiple assets configured)
-var slideshow_speed = 20; 
+// SET TO ZERO FOR AUTO MODE (shows all configured tickers over 60 seconds)
+var slideshow_speed = 0; 
 
 
 

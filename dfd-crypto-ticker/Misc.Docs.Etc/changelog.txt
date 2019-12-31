@@ -193,6 +193,26 @@ v2.08.1
 ---------------------------------------------------------
 
 
+---------------------------------------------------------
+v2.09.0
+
+-Auto-correct basic config user input errors (case / whitespace)
+
+-Prepped ticker logic for supporting multiple exchanges in the future
+
+-Code cleanup / consolidation / optimization
+
+-Slideshow auto mode (shows all configured tickers over 60 seconds)
+
+-Setting for maximum market price decimals allowed
+
+-Automatic determination whether crypto / fiat market pairing 
+
+---------------------------------------------------------
+
+
+
+
 
 
 

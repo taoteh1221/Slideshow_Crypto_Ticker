@@ -6,6 +6,81 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
+function uc_first(input) { 
+
+var string = input; 
+
+return string[0].toUpperCase() + string.slice(1); 
+
+}
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+function number_commas(num) {
+	
+	if ( num >= 1 ) {
+	return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+	}
+   else {
+   return num;
+   }
+   
+}
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+function ticker_html(market) {
+	
+var asset = market.replace(/-[A-Za-z0-9]*/g, "");
+
+var js_key = market.replace(/-/g, "");
+
+document.write('<div class="asset_tickers">');
+
+document.write('<div class="title"><span id="asset_' + js_key + '">' + asset + '</span> (<span class="status">Connecting...</span>)</div>');
+    
+document.write('<div class="ticker" id="ticker_' + js_key + '"></div>');
+    
+document.write('<div class="volume" id="volume_' + js_key + '"></div>');
+    
+document.write('</div>');
+
+}
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+function ticker_init() {
+	
+var divs= $('#ticker_window div.asset_tickers'),
+
+now = divs.filter(':visible'),
+
+next = now.next().length ? now.next() : divs.first(),
+
+speed = 1000;
+
+    
+	if ( window.markets.length > 1 ) {
+    now.fadeOut(speed);
+    next.delay(speed + 100).fadeIn(speed);
+   }
+   else {
+   next.fadeIn(speed);
+   }
+   
+   
+}
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
 function monospace_check() {
 	
 var check = window.monospace_width;
@@ -122,72 +197,84 @@ function monospace_rendering($element) {
 /////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-function ticker_html(market) {
-	
-var asset = market.replace(/-[A-Za-z0-9]*/g, "");
-var js_key = market.replace(/-/g, "");
+function asset_symbols(asset_abrv) {
 
-document.write('<div class="asset_tickers">');
+results = new Array();
 
-document.write('<div class="title"><span id="asset_' + js_key + '">' + asset + '</span> (<span class="status">Connecting...</span>)</div>');
-    
-document.write('<div class="ticker" id="ticker_' + js_key + '"></div>');
-    
-document.write('<div class="volume" id="volume_' + js_key + '"></div>');
-    
-document.write('</div>');
+			// Unicode asset symbols
+			if ( asset_abrv == 'AUD' ) {
+			results['asset_symbol'] = "A$";
+			results['asset_type'] = 'fiat';
+			}
+			else if ( asset_abrv == 'BRL' ) {
+			results['asset_symbol'] = "R$";
+			results['asset_type'] = 'fiat';
+			}
+			else if ( asset_abrv == 'BTC' ) {
+			results['asset_symbol'] = "Ƀ ";
+			results['asset_type'] = 'crypto';
+			}
+			else if ( asset_abrv == 'CAD' ) {
+			results['asset_symbol'] = "C$";
+			results['asset_type'] = 'fiat';
+			}
+			else if ( asset_abrv == 'CHF' ) {
+			results['asset_symbol'] = "CHf";
+			results['asset_type'] = 'fiat';
+			}
+			else if ( asset_abrv == 'ETH' ) {
+			results['asset_symbol'] = "Ξ ";
+			results['asset_type'] = 'crypto';
+			}
+			else if ( asset_abrv == 'EUR' ) {
+			results['asset_symbol'] = "€";
+			results['asset_type'] = 'fiat';
+			}
+			else if ( asset_abrv == 'GBP' ) {
+			results['asset_symbol'] = "£";
+			results['asset_type'] = 'fiat';
+			}
+			else if ( asset_abrv == 'HKD' ) {
+			results['asset_symbol'] = "HK$";
+			results['asset_type'] = 'fiat';
+			}
+			else if ( asset_abrv == 'JPY' ) {
+			results['asset_symbol'] = "J¥";
+			results['asset_type'] = 'fiat';
+			}
+			else if ( asset_abrv == 'LTC' ) {
+			results['asset_symbol'] = "Ł ";
+			results['asset_type'] = 'crypto';
+			}
+			else if ( asset_abrv == 'RUB' ) {
+			results['asset_symbol'] = "₽";
+			results['asset_type'] = 'fiat';
+			}
+			else if ( asset_abrv == 'SGD' ) {
+			results['asset_symbol'] = "S$";
+			results['asset_type'] = 'fiat';
+			}
+			else if ( asset_abrv == 'TUSD' || asset_abrv == 'USDC' ) {
+			results['asset_symbol'] = "Ⓢ ";
+			results['asset_type'] = 'fiat';
+			}
+			else if ( asset_abrv == 'USD' ) {
+			results['asset_symbol'] = "$";
+			results['asset_type'] = 'fiat';
+			}
+			else if ( asset_abrv == 'USDT' ) {
+			results['asset_symbol'] = "₮ ";
+			results['asset_type'] = 'fiat';
+			}
+			else if ( asset_abrv == 'XMR' ) {
+			results['asset_symbol'] = "ɱ ";
+			results['asset_type'] = 'crypto';
+			}
 
-}
 
 
-/////////////////////////////////////////////////////////////////////////////////////////////////////
+return results;
 
-
-function ticker_init() {
-	
-var divs= $('#ticker_window div.asset_tickers'),
-
-now = divs.filter(':visible'),
-
-next = now.next().length ? now.next() : divs.first(),
-
-speed = 1000;
-
-    
-	if ( window.markets.length > 1 ) {
-    now.fadeOut(speed);
-    next.delay(speed + 100).fadeIn(speed);
-   }
-   else {
-   next.fadeIn(speed);
-   }
-   
-   
-}
-
-
-/////////////////////////////////////////////////////////////////////////////////////////////////////
-
-
-function uc_first(input) { 
-
-var string = input; 
-
-return string[0].toUpperCase() + string.slice(1); 
-
-}
-
-
-/////////////////////////////////////////////////////////////////////////////////////////////////////
-
-
-function numberWithCommas(x) {
-	if ( x >= 1 ) {
-	return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-	}
-   else {
-   return x;
-   }
 }
 
 
@@ -196,132 +283,154 @@ function numberWithCommas(x) {
 
 function api_connect() {
 
-	
-var socket = new WebSocket('wss://ws-feed.gdax.com');
+
+	if ( window.crypto_exchange == 'coinbase' ) {
+	var socket = new WebSocket('wss://ws-feed.gdax.com');
+	}
   
-  socket.onopen = function() {
-
-  socket.send(JSON.stringify(window.subscribe_msg));
-    
-  window.markets.forEach(element => {
-  	var asset = element.replace(/-[A-Za-z0-9]*/g, "");
-    $(".status").text( uc_first(window.crypto_exchange) ).css("color", "#2bbf7b");
-	});
-
-    
-  };
-
-  socket.onmessage = function(e) {
-  	
-    var msg = JSON.parse(e.data);
-    
-    //console.log(msg);
-    
-    if (msg["type"] == "ticker") {
-    	
-    	var product_id = msg["product_id"];
-    	
-    	asset = product_id.replace(/-[A-Za-z0-9]*/g, "");
-    	
-    	pairing = product_id.replace(/\b([A-Za-z]*)-/g, "");
-    	
-    	var js_key = product_id.replace(/-/g, "");
-    	
-    	//console.log(asset);
-    	//console.log(pairing);
-
-
-			// Unicode asset symbols
-			if ( pairing == 'USD' ) {
-			volume_symbol = "$";
+ 
+	
+	// Open socket ///////////////////////////////////////////////////
+	socket.onopen = function() {
+   
+	socket.send(JSON.stringify(window.subscribe_msg));
+	
+	   
+	 	window.markets.forEach(element => {
+	 		
+	   var asset = element.replace(/-[A-Za-z0-9]*/g, "");
+	   
+	   $(".status").text( uc_first(window.crypto_exchange) ).css("color", "#2bbf7b");
+	   
+	   });
+   
+	   
+	};
+   
+   
+   
+	// Socket response ///////////////////////////////////////////////////
+	socket.onmessage = function(e) {
+	   
+	var msg = JSON.parse(e.data);
+	   
+	//console.log(msg);
+		   
+		   
+		if ( window.crypto_exchange == 'coinbase' ) {
+					 
+		var api_field = msg["type"];
+				 
+		var product_id = msg["product_id"];
+				 
+		var price_raw = msg["price"];
+				 
+		var volume_raw = msg["volume_24h"];
+			 
+		var trade_side = msg["side"];
+				 
+		var asset = product_id.replace(/-[A-Za-z0-9]*/g, "");
+				 
+		var pairing = product_id.replace(/\b([A-Za-z]*)-/g, "");
+				 
+		var js_key = product_id.replace(/-/g, "");
+				 
+		}
+	  
+	  
+		if ( api_field == "ticker" ) {
+			 
+		//console.log(asset);
+		//console.log(pairing);
+	 
+		var market_info = asset_symbols(pairing);
+	 
+		var market_symbol = market_info['asset_symbol'];
+		   
+		var volume_decimals = ( market_info['asset_type'] == 'crypto' ? 3 : 0 );
+		   
+		var base_volume = price_raw * parseFloat(volume_raw);
+		   
+		base_volume = base_volume.toFixed(volume_decimals);
+			 
+			 
+			if ( market_info['asset_type'] == 'fiat' ) {
+			var price_decimals = ( price_raw >= 1 ? 2 : window.max_price_decimals );
 			}
-			else if ( pairing == 'EUR' ) {
-			var volume_symbol = "€";
+			else {
+			price_decimals = window.max_price_decimals;
 			}
-			else if ( pairing == 'GBP' ) {
-			var volume_symbol = "£";
-			}
-			else if ( pairing == 'BTC' ) {
-			volume_symbol = "Ƀ ";
-			}
-			else if ( pairing == 'ETH' ) {
-			volume_symbol = "Ξ ";
-			}
-			else if ( pairing == 'LTC' ) {
-			volume_symbol = "Ł ";
-			}
-			else if ( pairing == 'USDC' || pairing == 'TUSD' ) {
-			volume_symbol = "Ⓢ ";
-			}
-			else if ( pairing == 'USDT' ) {
-			volume_symbol = "₮ ";
-			}
-			else if ( pairing == 'XMR' ) {
-			volume_symbol = "ɱ ";
-			}
-    	
-    	
-		var price_decimals = msg["price"] >= 1 ? 2 : 5;
-		
-      var price = parseFloat(msg["price"]).toFixed(price_decimals);
-      
-		var volume_decimals = pairing == 'BTC' ? 3 : 0;
-      
-      var base_volume = price * parseFloat(msg["volume_24h"]);
-      
-      base_volume = base_volume.toFixed(volume_decimals);
-		
-      
-      var side = msg["side"];
-      
-      var ticker_item =
-        "<div class='spacing'><div class='arrow_wrapper'><span class='arrow " +
-        side +
-        "'></span></div><span class='tick_text'>" + volume_symbol +
-        numberWithCommas(price) +
-        "</span></div>";
-        
-      var volume_item = 
-      	"<div class='spacing'>" + pairing + " Vol: " + volume_symbol +
-        numberWithCommas(base_volume) +
-        "</div>";
-		
-		
+			 
+			 
+		var price = parseFloat(price_raw).toFixed(price_decimals);
+		   
+		var ticker_item =
+			 "<div class='spacing'><div class='arrow_wrapper'><span class='arrow " +
+			 trade_side +
+			 "'></span></div><span class='tick_text'>" + market_symbol +
+			 number_commas(price) +
+			 "</span></div>";
+			 
+		var volume_item = 
+			 "<div class='spacing'>" + pairing + " Vol: " + market_symbol +
+			 number_commas(base_volume) +
+			 "</div>";
+			 
+			 
 		// Render data to appropriate ticker
-      $("#ticker_" + js_key).html(ticker_item);
-      $("#volume_" + js_key).html(volume_item);
-      
-      
-      	// If monospace emulation is properly enabled, run it
-      	if ( monospace_check() == true ) {
-      		
-      	monospace_rendering(document.querySelectorAll('#ticker_' + js_key)[0]);
-      	monospace_rendering(document.querySelectorAll('#volume_' + js_key)[0]);
-      	
+		$("#ticker_" + js_key).html(ticker_item);
+		$("#volume_" + js_key).html(volume_item);
+		   
+		   
+			// If monospace emulation is properly enabled, run it
+			if ( monospace_check() == true ) {
+				 
+			monospace_rendering(document.querySelectorAll('#ticker_' + js_key)[0]);
+			monospace_rendering(document.querySelectorAll('#volume_' + js_key)[0]);
+			 
 			$(".ticker .monospace").css({ "width": Math.round(window.ticker_size * window.monospace_width) + "px" });
 			$(".volume .monospace").css({ "width": Math.round(window.volume_size * window.monospace_width) + "px" });
-			
+				 
 			}
 			
-    }
-    
-  };
-
-
-  socket.onclose = function(e) {
-    //console.log('Connecting', e.reason);
-    setTimeout(function() {
-    $(".status").text("Connecting").css("color", "red");
-      api_connect();
-    }, 60000); // Reconnect after no data received for 1 minute
-  };
-
-
-  socket.onerror = function(err) {
-    $(".status").text("Error").css("color", "red");
-    console.log('Socket encountered error: ', err.message, 'Closing socket');
-    socket.close();
-  };
+				 
+		}
+	   
+	   
+	};
+   
+   
+	
+	// When socket closes ///////////////////////////////////////////////////
+	socket.onclose = function(e) {
+		
+	//console.log('Connecting', e.reason);
+	   
+	   
+		setTimeout(function() {
+			
+	   $(".status").text("Connecting").css("color", "red");
+		
+		api_connect();
+		 
+	   }, 60000); // Reconnect after no data received for 1 minute
+	   
+	   
+	};
+   
+   
+   
+	// Socket error ///////////////////////////////////////////////////
+	socket.onerror = function(err) {
+		
+	$(".status").text("Error").css("color", "red");
+	
+	console.log('Socket encountered error: ', err.message, 'Closing socket');
+	
+	socket.close();
+	
+	};
+	 
   
   
 }
