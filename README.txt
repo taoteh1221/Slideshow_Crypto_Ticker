@@ -9,7 +9,7 @@ Supports all Coinbase Pro markets, and can run in "slideshow mode", to show all 
 
 Example on a 3.5" LCD: https://www.youtube.com/watch?v=bvPQ6PLy_ME
 
-Developed on a Raspi v2 B+, with this screen / case: https://smile.amazon.com/gp/product/B07N38B86S/
+Developed on a Raspi v3 B+, with this screen / case: https://smile.amazon.com/gp/product/B07N38B86S/
 
 Download Latest Version: https://github.com/taoteh1221/DFD_Crypto_Ticker/releases
 
