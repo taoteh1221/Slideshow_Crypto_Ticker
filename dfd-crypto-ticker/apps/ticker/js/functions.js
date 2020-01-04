@@ -353,14 +353,7 @@ function api_connect() {
 		   
 		base_volume = base_volume.toFixed(volume_decimals);
 			 
-			 
-			if ( market_info['asset_type'] == 'fiat' ) {
-			var price_decimals = ( price_raw >= 1 ? 2 : window.max_price_decimals );
-			}
-			else {
-			price_decimals = window.max_price_decimals;
-			}
-			 
+		var price_decimals = ( price_raw >= 1 ? 2 : window.max_price_decimals );
 			 
 		var price = parseFloat(price_raw).toFixed(price_decimals);
 		   

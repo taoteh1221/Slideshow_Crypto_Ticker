@@ -20,7 +20,7 @@ var crypto_markets = 'BTC-USD|ETH-USD|ETH-BTC';
 
 
 
-// Maximum allowed decimals in market price 
+// Maximum decimal places for coins worth under 1.00 unit [eth/ltc/btc/usd/usdc/gbp/eur/etc], for prettier / less-cluttered interface
 var max_price_decimals = 5;
 
 
