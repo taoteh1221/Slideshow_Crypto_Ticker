@@ -666,3 +666,9 @@ echo " "
 ######################################
 
 
+echo " "
+echo "See my other cryptocurrency-related free / private / open source software at:"
+echo "https://sourceforge.net/u/taoteh1221/profile"
+echo "https://github.com/taoteh1221"
+echo " "
+
