@@ -1,4 +1,7 @@
 
+
+Post on telegram, discord, Twitter, and Facebook whenever there is a new release of the app.
+
 Sometimes the ticker app doesn't load the Google font upon system bootup (happened more the once), unless you reload the page (on chrome / raspi). 
 
 When adding new exchanges to the ticker app, bake in the ability to run multiple different exchange tickers in slideshow mode (coinbase and kraken and binance all at the same time).
