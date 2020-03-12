@@ -553,11 +553,6 @@ echo "as a command in /etc/cron.d/ticker:"
 echo "$CRONJOB"
 echo " "
 
-echo "Double-check that the command 'crontab -e' does not have any OLD MATCHING entries"
-echo "pointing to the same cron job, OR YOUR CRON JOB WILL RUN TOO OFTEN."
-echo "(when /etc/cron.d/ is used, then 'crontab -e' should NOT BE USED for the same cron job)"
-echo " "
-
 fi
 
 
