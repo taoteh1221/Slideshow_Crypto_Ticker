@@ -1,4 +1,5 @@
 
+Create install / uninstall dialog for bash auto install
 
 Post on telegram, discord, Twitter, and Facebook whenever there is a new release of the app.
 

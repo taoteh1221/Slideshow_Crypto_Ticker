@@ -594,66 +594,10 @@ echo " "
 
 fi
 
+echo "WITH BRAND NEW INSTALLATIONS, YOU #MAY NEED TO REBOOT TWO TIMES# TO ACTIVATE THE TICKER STARTING AT BOOT TIME AUTOMATICALLY."
+echo " "
 
 echo "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
-
-echo " "
-
-
-
-######################################
-
-
-echo "^^^^^^^^^^^^^ SAVE THE INFORMATION ^ABOVE^ FOR FUTURE ACCESS TO THIS APP, BEFORE CONTINUING ^^^^^^^^^^^^^"
-echo " "
-
-echo "Desktop auto-login (load desktop without login) needs to be enabled to run the ticker at system startup."
-echo "(if you have not set it up already beforehand)"
-echo " "
-
-echo "If you choose to NOT enable desktop auto-login, you'll need to run this"
-echo "command MANUALLY after logging into the desktop to run the ticker:"
-echo "bash ~/dfd-crypto-ticker/scripts/ticker-init.bash &>/dev/null &"
-echo " "
-
-
-if [ -f "/usr/bin/raspi-config" ]; then
-
-echo "Select 1 or 2 to choose whether to setup desktop auto-login, or skip it."
-echo "(under 'Boot Options' -> 'Desktop / CLI' -> 'Desktop Autologin' in raspi-config)"
-echo "(your DEVICE WILL RESTART AUTOMATICALLY afterwards)"
-echo " "
-
-	if [ "$GOODTFT_SETUP" = "1" ]; then
-	echo "(you will STILL need to activate the 'goodtft LCD-show' LCD screen AFTER reboot with this command: ~/display)"
-	echo " "
-	fi
-
-echo " "
-
-OPTIONS="setup_auto_login skip"
-
-	select opt in $OPTIONS; do
-        if [ "$opt" = "setup_auto_login" ]; then
-        
-			echo " "
-			echo "Initiating raspi-config..."
-	
-			# We need sudo here, or raspi-config fails in bash
-			/usr/bin/sudo /usr/bin/raspi-config
-        
-         AUTOLOGIN_SETUP=1
-        
-        break
-       elif [ "$opt" = "skip" ]; then
-        echo " "
-        echo "Skipping desktop auto-login setup."
-        break
-       fi
-	done
-       
-
-fi
 
 echo " "
 
@@ -663,8 +607,6 @@ echo " "
 
 echo " "
 echo "BE SURE TO SAVE ALL THE ACCESS DETAILS PRINTED OUT ABOVE, BEFORE YOU SIGN OFF FROM THIS TERMINAL SESSION."
-echo " "
-echo "WITH BRAND NEW INSTALLATIONS, YOU #MAY NEED TO REBOOT TWO TIMES# TO ACTIVATE THE TICKER STARTING AT BOOT TIME AUTOMATICALLY."
 echo " "
 echo "See my other cryptocurrency-related free / private / open source software at:"
 echo "https://sourceforge.net/u/taoteh1221/profile"
