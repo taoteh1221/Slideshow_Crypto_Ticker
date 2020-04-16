@@ -1,6 +1,8 @@
 
 Create install / uninstall dialog for bash auto install
 
+Add "pkill chromium" as either notes, or an option in the install script (to close the ticker after auto-startup).
+
 Post on telegram, discord, Twitter, and Facebook whenever there is a new release of the app.
 
 Sometimes the ticker app doesn't load the Google font upon system bootup (happened more the once), unless you reload the page (on chrome / raspi). 
