@@ -17,7 +17,7 @@ var crypto_exchange = 'binance'; // 'coinbase' or 'binance'
 // Separate with pipe | symbol to "slideshow" between multiple tickers
 // (coinbase example:'BTC-USD|BTC-GBP|ETH-USD|ETH-BTC|ETH-EUR|LTC-BTC|LTC-EUR|MANA-USDC')
 // (binance example:'btctusd|ethbtc|ethusdt|dcrbtc|dcrusdt|mkrbtc|mkrusdt|antbtc|antusdt|xmreth')
-var crypto_markets = 'btcusdt|ethbtc|ethusdt|dcrbtc|dcrusdt|xmrusdt|mkrusdt|antusdt'; 
+var crypto_markets = 'btcusdt|ethusdt|ethbtc|dcrusdt|dcrbtc|xmrusdt|mkrusdt|antusdt'; 
 
 
 

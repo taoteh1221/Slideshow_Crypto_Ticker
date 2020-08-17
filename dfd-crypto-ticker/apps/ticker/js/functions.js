@@ -36,13 +36,22 @@ function number_commas(num) {
 function ticker_html(market) {
 
 var pairing = market;
+var asset = market;
 
 pairing = pairing.replace(/\b([A-Z]{3})TUSD/g, "TUSD");
 pairing = pairing.replace(/\b([A-Z]{3})USD/g, "USD");
 pairing = pairing.replace(/\b([A-Z]{3})BTC/g, "BTC");
 pairing = pairing.replace(/\b([A-Z]{3})ETH/g, "ETH");
 				 
-var asset = market.replace(pairing, "");
+	
+	// MUST RUN AFTER PARSING PAIRING ABOVE
+	if ( window.crypto_exchange == 'coinbase' ) {
+	asset = asset.replace(/-[A-Za-z0-9]*/g, "");
+	}
+	else if ( window.crypto_exchange == 'binance' ) {
+	asset = asset.replace(pairing, "");
+	}
+  
 
 var js_key = market.replace(/-/g, "") + '_key';
 
