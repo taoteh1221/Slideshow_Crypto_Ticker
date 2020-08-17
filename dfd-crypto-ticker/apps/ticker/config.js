@@ -33,17 +33,17 @@ var slideshow_speed = 0;
 
 
 // Title font size
-var title_size = 54;
+var title_size = 53;
 
 
 
 // Ticker font size
-var ticker_size = 71;
+var ticker_size = 68;
 
 
 
 // Volume font size
-var volume_size = 37;
+var volume_size = 35;
 
 
 
