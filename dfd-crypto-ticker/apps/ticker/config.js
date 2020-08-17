@@ -8,15 +8,16 @@
 
 
 // What exchange to use
-// Currently only coinbase is supported (kraken / binance coming soon)
-var crypto_exchange = 'coinbase'; 
+// Currently only coinbase and binance are supported (kraken coming soon)
+var crypto_exchange = 'binance'; // 'coinbase' or 'binance'
 
 
 
 // Which crypto asset(s) to display on the ticker
-// Separate with pipe | symbol to "slideshow" between multiple tickers (example:'BTC-USD|BTC-GBP|ETH-USD|ETH-BTC|ETH-EUR|LTC-BTC|LTC-EUR|MANA-USDC')
-// BTC-USD / BTC-GBP / ETH-USD / ETH-BTC / ETH-EUR / LTC-BTC / LTC-EUR / MANA-USDC / whatever pairing available on the exchange
-var crypto_markets = 'BTC-USD|ETH-USD|ETH-BTC'; 
+// Separate with pipe | symbol to "slideshow" between multiple tickers
+// (coinbase example:'BTC-USD|BTC-GBP|ETH-USD|ETH-BTC|ETH-EUR|LTC-BTC|LTC-EUR|MANA-USDC')
+// (binance example:'btctusd|ethbtc|ethusdt|dcrbtc|dcrusdt|mkrbtc|mkrusdt|antbtc|antusdt|xmreth')
+var crypto_markets = 'btcusdt|ethbtc|ethusdt|dcrbtc|dcrusdt|xmrusdt|mkrusdt|antusdt'; 
 
 
 

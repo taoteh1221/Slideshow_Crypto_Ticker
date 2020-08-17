@@ -34,10 +34,17 @@ function number_commas(num) {
 
 
 function ticker_html(market) {
-	
-var asset = market.replace(/-[A-Za-z0-9]*/g, "");
 
-var js_key = market.replace(/-/g, "");
+var pairing = market;
+
+pairing = pairing.replace(/\b([A-Z]{3})TUSD/g, "TUSD");
+pairing = pairing.replace(/\b([A-Z]{3})USD/g, "USD");
+pairing = pairing.replace(/\b([A-Z]{3})BTC/g, "BTC");
+pairing = pairing.replace(/\b([A-Z]{3})ETH/g, "ETH");
+				 
+var asset = market.replace(pairing, "");
+
+var js_key = market.replace(/-/g, "") + '_key';
 
 document.write('<div class="asset_tickers">');
 
@@ -287,6 +294,9 @@ function api_connect() {
 	if ( window.crypto_exchange == 'coinbase' ) {
 	var socket = new WebSocket('wss://ws-feed.gdax.com');
 	}
+	else if ( window.crypto_exchange == 'binance' ) {
+	var socket = new WebSocket('wss://stream.binance.com:9443/ws');
+	}
   
  
 	
@@ -326,6 +336,8 @@ function api_connect() {
 		var price_raw = msg["price"];
 				 
 		var volume_raw = msg["volume_24h"];
+		   
+		var base_volume = price_raw * parseFloat(volume_raw);
 			 
 		var trade_side = msg["side"];
 				 
@@ -333,23 +345,62 @@ function api_connect() {
 				 
 		var pairing = product_id.replace(/\b([A-Za-z]*)-/g, "");
 				 
-		var js_key = product_id.replace(/-/g, "");
+		var js_key = product_id.replace(/-/g, "") + '_key';
+				 
+		}
+		else if ( window.crypto_exchange == 'binance' && !msg["id"] ) {
+					 
+		var api_field = msg["e"];
+				 
+		var product_id = msg["s"];
+				 
+		var price_raw = msg["c"];
+				 
+		var volume_raw = msg["q"];
+		   
+		var base_volume = parseFloat(volume_raw);
+			 
+			 if ( price_raw < trade_side_price[product_id] ) {
+			 var trade_side = 'sell';
+			 }
+			 else if ( price_raw > trade_side_price[product_id] ) {
+			 var trade_side = 'buy';
+			 }
+			 else if ( trade_side_arrow[product_id] ) {
+			 var trade_side = trade_side_arrow[product_id]; // Stays same
+			 }
+			 else {
+			 var trade_side = 'buy'; // If just initiated, with no change yet
+			 }
+		
+		trade_side_price[product_id] = price_raw;
+		trade_side_arrow[product_id] = trade_side;
+				 
+		var pairing = product_id;
+		
+		pairing = pairing.replace(/\b([A-Z]{3})TUSD/g, "TUSD");
+		pairing = pairing.replace(/\b([A-Z]{3})USD/g, "USD");
+		pairing = pairing.replace(/\b([A-Z]{3})BTC/g, "BTC");
+		pairing = pairing.replace(/\b([A-Z]{3})ETH/g, "ETH");
+				 
+		var asset = product_id.replace(pairing, "");
+				 
+		var js_key = product_id + '_key';
 				 
 		}
 	  
 	  
-		if ( api_field == "ticker" ) {
+		if ( api_field == "ticker" || api_field == "24hrTicker" ) {
 			 
-		//console.log(asset);
-		//console.log(pairing);
+		//console.log('asset = ' + asset);
+		//console.log('pairing = ' + pairing);
+		//console.log('js_key = ' + js_key);
 	 
 		var market_info = asset_symbols(pairing);
 	 
 		var market_symbol = market_info['asset_symbol'];
 		   
 		var volume_decimals = ( market_info['asset_type'] == 'crypto' ? 3 : 0 );
-		   
-		var base_volume = price_raw * parseFloat(volume_raw);
 		   
 		base_volume = base_volume.toFixed(volume_decimals);
 			 

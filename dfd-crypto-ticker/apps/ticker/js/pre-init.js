@@ -4,6 +4,8 @@
 
 //////////////////////////////////////////////////////////////////////////////////////
 
+var trade_side_price = [];
+var trade_side_arrow = [];
 
 // Auto-correct basic config user input errors
 crypto_exchange = crypto_exchange.trim();
@@ -40,6 +42,27 @@ var subscribe_msg = {
 	var loop = 0;
 	markets.forEach(element => {
 	subscribe_msg.product_ids[loop] = element;
+	loop = loop + 1;
+	});
+
+//console.log(subscribe_msg);
+
+}
+else if ( crypto_exchange == 'binance' ) {
+	
+// API call config
+var subscribe_msg = {
+  "method": "SUBSCRIBE",
+  "params": [
+  ],
+  "id": 1
+};
+ 
+ 
+	// Add markets to API call
+	var loop = 0;
+	markets.forEach(element => {
+	subscribe_msg.params[loop] = element + '@ticker'; 
 	loop = loop + 1;
 	});
 

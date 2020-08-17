@@ -1,16 +1,17 @@
 
+
 Create install / uninstall dialog for bash auto install
 
 Add "pkill chromium" as either notes, or an option in the install script (to close the ticker after auto-startup).
 
 Post on telegram, discord, Twitter, and Facebook whenever there is a new release of the app.
 
-Sometimes the ticker app doesn't load the Google font upon system bootup (happened more the once), unless you reload the page (on chrome / raspi). 
-
 When adding new exchanges to the ticker app, bake in the ability to run multiple different exchange tickers in slideshow mode (coinbase and kraken and binance all at the same time).
 
 Add SFTP setup as optional in auto-install, AND mention SSH login too (since the screen on the device will be occupied by the ticker running).
 
-Add Kraken / Binance / Binance US webocket API support.
+Add Kraken / Binance US webocket API support.
+
+https://www.bitmex.com/app/wsAPI
 
 Optional integration with upcoming REST API in DFD Cryptocoin Values, that prints out extra bottom row of data showing price / volume percent change for last day and last week for each market.
