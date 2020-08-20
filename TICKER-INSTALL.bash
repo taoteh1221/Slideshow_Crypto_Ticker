@@ -149,10 +149,10 @@ exit
 fi
   				
 				
-if [ -f /home/$SYS_USER/dfd-crypto-ticker/apps/ticker/config.js ]; then
+if [ -f /home/$SYS_USER/dfd-crypto-ticker/config.js ]; then
 echo "A configuration file from a previous install of DFD Crypto Ticker has been detected on your system."
 echo "During this upgrade / re-install, it will be backed up to:"
-echo "/home/$SYS_USER/dfd-crypto-ticker/apps/ticker/config.js.BACKUP.$DATE"
+echo "/home/$SYS_USER/dfd-crypto-ticker/config.js.BACKUP.$DATE"
 echo "This will save any custom settings within it."
 echo "You will need to manually move any custom settings in this backup file to the new config.js file with a text editor."
 echo " "
@@ -245,11 +245,11 @@ select opt in $OPTIONS; do
 				echo " "
 				
 				
-					if [ -f /home/$SYS_USER/dfd-crypto-ticker/apps/ticker/config.js ]; then
+					if [ -f /home/$SYS_USER/dfd-crypto-ticker/config.js ]; then
 					
-					\cp /home/$SYS_USER/dfd-crypto-ticker/apps/ticker/config.js /home/$SYS_USER/dfd-crypto-ticker/apps/ticker/config.js.BACKUP.$DATE
+					\cp /home/$SYS_USER/dfd-crypto-ticker/config.js /home/$SYS_USER/dfd-crypto-ticker/config.js.BACKUP.$DATE
 						
-					/bin/chown $SYS_USER:$SYS_USER /home/$SYS_USER/dfd-crypto-ticker/apps/ticker/config.js.BACKUP.$DATE
+					/bin/chown $SYS_USER:$SYS_USER /home/$SYS_USER/dfd-crypto-ticker/config.js.BACKUP.$DATE
 						
 					CONFIG_BACKUP=1
 					
@@ -271,6 +271,8 @@ select opt in $OPTIONS; do
 				/usr/bin/bsdtar --strip-components=1 -xvf DFD-Crypto-Ticker.zip
 				
 				rm DFD-Crypto-Ticker.zip
+				
+				rm -rf /home/$SYS_USER/dfd-crypto-ticker/apps # Remove depreciated directory structure
 				
   				mkdir -p /home/$SYS_USER/dfd-crypto-ticker
   				
@@ -537,8 +539,8 @@ fi
 if [ "$CONFIG_BACKUP" = "1" ]; then
 
 echo "The previously-installed DFD Crypto Ticker configuration"
-echo "file /home/$SYS_USER/dfd-crypto-ticker/apps/ticker/config.js has been backed up to:"
-echo "/home/$SYS_USER/dfd-crypto-ticker/apps/ticker/config.js.BACKUP.$DATE"
+echo "file /home/$SYS_USER/dfd-crypto-ticker/config.js has been backed up to:"
+echo "/home/$SYS_USER/dfd-crypto-ticker/config.js.BACKUP.$DATE"
 echo "You will need to manually move any custom settings in this backup file to the new config.js file with a text editor."
 echo " "
 
@@ -561,11 +563,11 @@ echo "Edit the following file in a text editor to switch between different"
 echo "exchanges / crypto assets / base pairings, and to configure settings"
 echo "for slideshow speed / font sizes and colors / background color"
 echo "/ vertical position / screen orientation / google font used / monospace emulation:"
-echo "/home/$SYS_USER/dfd-crypto-ticker/apps/ticker/config.js"
+echo "/home/$SYS_USER/dfd-crypto-ticker/config.js"
 echo " "
 
 echo "Example editing config.js in nano by command-line:"
-echo "nano ~/dfd-crypto-ticker/apps/ticker/config.js"
+echo "nano ~/dfd-crypto-ticker/config.js"
 echo " "
 
 echo "After updating config.js, reload the ticker with this command:"

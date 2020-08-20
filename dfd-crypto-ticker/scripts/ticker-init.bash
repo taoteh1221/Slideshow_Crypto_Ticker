@@ -27,7 +27,7 @@ sleep 2
 
 # Incognito mode doesn't prompt to restore previous session, yay
 # We also set it to not check for upgrades for 7 days (SETTING TO ZERO DOES NOT WORK), to avoid the upgrade prompt popup
-/usr/bin/chromium-browser --check-for-update-interval=604800 --noerrdialogs --disable-infobars --incognito --kiosk ~/dfd-crypto-ticker/apps/ticker/index.html
+/usr/bin/chromium-browser --check-for-update-interval=604800 --noerrdialogs --disable-infobars --incognito --kiosk ~/dfd-crypto-ticker/index.html
 
 
 

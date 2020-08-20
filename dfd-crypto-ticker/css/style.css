@@ -82,41 +82,32 @@ div .monospace {
 
 
 span.arrow {
-position: absolute;
-left: 0px;
+  position: absolute;
   padding: 0px;
   margin: 0px;
+  left: 0px;
   width: auto;
-  min-height: 62px;
-  max-height: 62px;
-  border-left: 26px solid transparent;
-  border-right: 26px solid transparent;
+  height: auto;
 }
 
 
 div.arrow_wrapper {
 display: inline-block;
 position: relative;
-top: 5px;
-min-width: 52px;
-max-width: 52px;
-min-height: 62px;
-max-height: 62px;
 padding: 0px;
 margin: 0px;
-margin-right: 4px;
+margin-right: 10px;
+top: 0px;
 }
 
 
 span.buy {
 bottom: 0px;
-border-bottom: 62px solid rgb(105, 199, 115);
 }
 
 
 span.sell {
 top: 0px;
-border-top: 62px solid rgb(199, 105, 105);
 }
 
 
