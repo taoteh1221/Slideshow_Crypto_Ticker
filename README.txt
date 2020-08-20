@@ -39,12 +39,12 @@ CONFIGURING AFTER INSTALLATION
 
 Edit the following file in a text editor to switch between different exchanges / crypto assets / base pairings, and to configure settings for slideshow speed / font sizes and colors / background color / vertical position / screen orientation / google font used / monospace emulation: 
 
-/home/pi/dfd-crypto-ticker/apps/ticker/config.js
+/home/pi/dfd-crypto-ticker/config.js
 
 
 Example editing config.js in nano by command-line:
 
-nano ~/dfd-crypto-ticker/apps/ticker/config.js
+nano ~/dfd-crypto-ticker/config.js
 
 
 After updating config.js, reload the ticker with this command:
