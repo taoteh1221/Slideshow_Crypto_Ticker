@@ -38,12 +38,12 @@ var title_size = 54;
 
 
 // Ticker font size
-var ticker_size = 68; // decimal number format X.XX of 1.00 or less
+var ticker_size = 68;
 
 
 
 // Ticker arrow size (percent of TICKER font HEIGHT as a decimal)
-var arrow_size = 0.65;
+var arrow_size = 0.65; // decimal number format X.XX of 1.00 or less
 
 
 
