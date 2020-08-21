@@ -1,17 +1,17 @@
 
 
+Bake in the ability to run multiple different exchange tickers in slideshow mode (coinbase and kraken and binance all at the same time). Do this by having a seperate config for each exchange, like: crypto_markets['EXCHANGENAME'] = 'market1|market2|market3', and looping through the 'crypto_markets' varables by key => value. Then we can us our already-built logic and place the key in for the exchange id when parsing the markets for each exchange.
+
+Add Kraken / Binance US / HitBTC / Bitmex webocket API support.
+
+https://www.bitmex.com/app/wsAPI
+
 Create install / uninstall dialog for bash auto install
 
 Add "pkill chromium" as either notes, or an option in the install script (to close the ticker after auto-startup).
 
 Post on telegram, discord, Twitter, and Facebook whenever there is a new release of the app.
 
-When adding new exchanges to the ticker app, bake in the ability to run multiple different exchange tickers in slideshow mode (coinbase and kraken and binance all at the same time).
-
 Add SFTP setup as optional in auto-install, AND mention SSH login too (since the screen on the device will be occupied by the ticker running).
-
-Add Kraken / Binance US webocket API support.
-
-https://www.bitmex.com/app/wsAPI
 
 Optional integration with upcoming REST API in DFD Cryptocoin Values, that prints out extra bottom row of data showing price / volume percent change for last day and last week for each market.
