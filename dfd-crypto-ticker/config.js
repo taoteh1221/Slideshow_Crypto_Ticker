@@ -21,8 +21,8 @@ var crypto_markets = 'btcusdt|ethusdt|ethbtc|dcrusdt|dcrbtc|xmrusdt|mkrusdt|antu
 
 
 
-// Maximum decimal places for coins worth under 1.00 unit [eth/ltc/btc/usd/usdc/gbp/eur/etc], for prettier / less-cluttered interface
-var max_price_decimals = 5;
+// Maximum decimal places for coins worth under 1.00 unit value [btc/eth/usd/usdc/gbp/eur/whatever], for prettier / less-cluttered interface
+var max_price_decimals = 6;
 
 
 
