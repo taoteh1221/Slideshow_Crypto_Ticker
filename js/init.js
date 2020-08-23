@@ -2,8 +2,6 @@
 // Copyright 2019 GPLv3, DFD Crypto Ticker by Mike Kilday: http://DragonFrugal.com
 
 
-
-
 //////////////////////////////////////////////////////////////////////////////////////
 
 // Load external google font CSS file if required
@@ -14,8 +12,7 @@ var google_font_css = load_google_font();
 
 // Initiate once page is fully loaded...
 $(document).ready(function() {
-
-
+	
 
 	// Custom google font
 	if ( google_font_css == false ) {
@@ -64,16 +61,17 @@ $("body, html").css({ "background": background_color });
 $("body, html").css({ "color": text_color });
 
 
+
 // Start ticker
 ticker_init();
 	
 	
 	// If more than one asset, run in slideshow mode (with delay of slideshow_speed seconds)
-	if ( window.markets.length > 1 ) {
+	if ( window.markets_length > 1 ) {
 		
 		// If auto mode for slideshow speed
 		if ( slideshow_speed == 0 ) {
-		slideshow_speed = Math.round(60 / window.markets.length);
+		slideshow_speed = Math.round(60 / window.markets_length);
 		}
 		
 	setInterval(ticker_init, slideshow_speed * 1000);
@@ -81,8 +79,10 @@ ticker_init();
 	}
 
 
-// Connect to API
-api_connect();
+	// Connect to exchange APIs for market data
+	Object.keys(markets).forEach(function(exchange) {
+	api_connect(exchange);
+	});
 	
 	
 });

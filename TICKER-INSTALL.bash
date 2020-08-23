@@ -272,22 +272,26 @@ select opt in $OPTIONS; do
 				
 				rm DFD-Crypto-Ticker.zip
 				
-				rm -rf /home/$SYS_USER/dfd-crypto-ticker/apps # Remove depreciated directory structure
+				# Remove depreciated directory structure from any previous installs
+				rm -rf /home/$SYS_USER/dfd-crypto-ticker/apps 
+				rm -rf /home/$SYS_USER/dfd-crypto-ticker/scripts
+
+				/bin/sleep 1
+				
+  				# Copy over the upgrade install files to the install directory, after cleaning up dev files
+				# No trailing forward slash here
 				
   				mkdir -p /home/$SYS_USER/dfd-crypto-ticker
-  				
-				cd dfd-crypto-ticker
 				
-				# No trailing forward slash here
+				rm -rf ./.git
+				rm -rf ./.github
+				rm ./.gitattributes
+				rm ./.gitignore
+				rm ./CODEOWNERS
+				
 				\cp -r ./ /home/$SYS_USER/dfd-crypto-ticker
-				
-				cd ../
-				
-				\cp LICENSE /home/$SYS_USER/dfd-crypto-ticker/LICENSE
-				
-				\cp README.txt /home/$SYS_USER/dfd-crypto-ticker/README.txt
-				
-				\cp TICKER-INSTALL.bash /home/$SYS_USER/dfd-crypto-ticker/TICKER-INSTALL.bash
+
+				/bin/sleep 3
 				
 				cd ../
 				
@@ -298,7 +302,7 @@ select opt in $OPTIONS; do
 				# No trailing forward slash here
 				/bin/chown -R $SYS_USER:$SYS_USER /home/$SYS_USER/dfd-crypto-ticker
 			
-				ln -s /home/$SYS_USER/dfd-crypto-ticker/scripts/chromium-refresh.bash /home/$SYS_USER/reload
+				ln -s /home/$SYS_USER/dfd-crypto-ticker/bash/chromium-refresh.bash /home/$SYS_USER/reload
 				
 				/bin/chown $SYS_USER:$SYS_USER /home/$SYS_USER/reload
 				
@@ -360,7 +364,7 @@ After=graphical.target
 Environment=DISPLAY=:0  
 Environment=XAUTHORITY=/home/$SYS_USER/.Xauthority
 Type=simple
-ExecStart=/bin/bash /home/$SYS_USER/dfd-crypto-ticker/scripts/ticker-init.bash
+ExecStart=/bin/bash /home/$SYS_USER/dfd-crypto-ticker/bash/ticker-init.bash
 Restart=on-abort
 User=$SYS_USER
 Group=$SYS_USER
@@ -391,7 +395,7 @@ EOF
 				
 				/usr/bin/touch /etc/cron.d/ticker
 
-				CRONJOB="* * * * * $SYS_USER /bin/bash /home/$SYS_USER/dfd-crypto-ticker/scripts/keep-screensaver-off.bash > /dev/null 2>&1"
+				CRONJOB="* * * * * $SYS_USER /bin/bash /home/$SYS_USER/dfd-crypto-ticker/bash/keep-screensaver-off.bash > /dev/null 2>&1"
 
 				# Play it safe and be sure their is a newline after this job entry
 				echo -e "$CRONJOB\n" > /etc/cron.d/ticker
@@ -459,7 +463,7 @@ select opt in $OPTIONS; do
 			echo "Setting up for 'goodtft LCD-show' LCD devices..."
 			echo " "
 			
-			ln -s /home/$SYS_USER/dfd-crypto-ticker/scripts/switch-display.bash /home/$SYS_USER/display
+			ln -s /home/$SYS_USER/dfd-crypto-ticker/bash/switch-display.bash /home/$SYS_USER/display
 				
 			/bin/chown $SYS_USER:$SYS_USER /home/$SYS_USER/display
 			
@@ -528,7 +532,7 @@ if [ "$AUTOSTART_ALERT" = "1" ] || [ "$AUTOSTART_ALERT" = "2" ]; then
 
 echo "Regardless of autostart being enabled or not, you can run this command"
 echo "AFTER system boot MANUALLY, to start DFD Crypto Ticker:"
-echo "bash ~/dfd-crypto-ticker/scripts/ticker-init.bash &>/dev/null &"
+echo "bash ~/dfd-crypto-ticker/bash/ticker-init.bash &>/dev/null &"
 echo " "
 					
 

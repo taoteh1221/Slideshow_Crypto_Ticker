@@ -33,9 +33,20 @@
   <div id="ticker_window">
 
   	<script>
-  	markets.forEach(element => {
-  	ticker_html(element.toUpperCase());
+	
+	// Render the HTML containers for each ticker
+	Object.keys(markets).forEach(function(exchange) {
+	
+		if ( markets[exchange] != '' ) {
+		
+  			markets[exchange].forEach(element => {
+  			ticker_html(element, exchange);
+			});
+		
+		}
+	
 	});
+
   	</script>
 
   </div>

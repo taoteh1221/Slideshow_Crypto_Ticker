@@ -14,24 +14,9 @@ return input[0].toUpperCase() + input.slice(1);
 /////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-function number_commas(num) {
-	
-	if ( num >= 1 ) {
-	return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-	}
-   else {
-   return num;
-   }
-   
-}
-
-
-/////////////////////////////////////////////////////////////////////////////////////////////////////
-
-
 function pairing_parser(market_name, exchange) {
 	
-pairing_parse = market_name;
+pairing_parse = market_name.toUpperCase();
 
 	if ( exchange == 'binance' ) {
 	pairing_parse = pairing_parse.replace(/\b([A-Z]{3})TUSD/g, "TUSD");
@@ -73,37 +58,6 @@ $("span.arrow").css({ "border-right": arrow_border_width + "px solid transparent
 /////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-function ticker_html(market) {
-
-	
-	if ( window.crypto_exchange == 'coinbase' ) {
-	asset = market.replace(/-[A-Za-z0-9]*/g, "");
-	}
-	else if ( window.crypto_exchange == 'binance' ) {
-	pairing = pairing_parser(market, 'binance'); // To derive Binance asset var
-	asset = market.replace(pairing, "");
-	}
-  
-
-js_key = market.replace(/-/g, "") + '_key';
-
-
-document.write('<div class="asset_tickers">');
-
-document.write('<div class="title"><span id="asset_' + js_key + '">' + asset + '</span> (<span class="status">Connecting...</span>)</div>');
-    
-document.write('<div class="ticker" id="ticker_' + js_key + '"></div>');
-    
-document.write('<div class="volume" id="volume_' + js_key + '"></div>');
-    
-document.write('</div>');
-
-}
-
-
-/////////////////////////////////////////////////////////////////////////////////////////////////////
-
-
 function ticker_init() {
 	
 var divs= $('#ticker_window div.asset_tickers'),
@@ -115,7 +69,7 @@ next = now.next().length ? now.next() : divs.first(),
 speed = 1000;
 
     
-	if ( window.markets.length > 1 ) {
+	if ( window.markets_length > 1 ) {
     now.fadeOut(speed);
     next.delay(speed + 100).fadeIn(speed);
    }
@@ -124,6 +78,73 @@ speed = 1000;
    }
    
    
+}
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+function number_commas(num, decimals) {
+	
+//console.log(typeof num);
+	
+	if ( num >= 1 ) {
+		
+		if ( typeof num == 'string' ) {
+		
+			num = parseFloat(num).toLocaleString(undefined, {
+   		minimumFractionDigits: decimals,
+   		maximumFractionDigits: decimals
+			});
+		
+		}
+		else {
+		
+			num = num.toLocaleString(undefined, {
+   		minimumFractionDigits: decimals,
+   		maximumFractionDigits: decimals
+			});
+		
+		}
+	
+	}
+
+
+return num;
+   
+}
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+function ticker_html(market, exchange) {
+
+market = market.toUpperCase();
+	
+	if ( exchange == 'coinbase' ) {
+	asset = market.replace(/-[A-Za-z0-9]*/g, "");
+	}
+	else if ( exchange == 'binance' ) {
+	pairing = pairing_parser(market, exchange); // To derive Binance asset var
+	asset = market.replace(pairing, "");
+	}
+  
+
+js_key = market.replace(/-/g, "") + '_key_' + exchange;
+js_key = js_key.toLowerCase();
+
+
+document.write('<div class="asset_tickers">');
+
+document.write('<div class="title"><span id="asset_' + js_key + '">' + asset + '</span> (<span class="status_'+exchange+'">Connecting...</span>)</div>');
+    
+document.write('<div class="ticker" id="ticker_' + js_key + '"></div>');
+    
+document.write('<div class="volume" id="volume_' + js_key + '"></div>');
+    
+document.write('</div>');
+
 }
 
 
@@ -332,35 +353,36 @@ return results;
 /////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-function api_connect() {
+function api_connect(exchange) {
 
+	//console.log('api_connect = ' + exchange);
 
-	if ( window.crypto_exchange == 'coinbase' ) {
-	socket = new WebSocket('wss://ws-feed.gdax.com');
+	if ( exchange == 'coinbase' ) {
+	window.sockets[exchange] = new WebSocket('wss://ws-feed.gdax.com');
 	}
-	else if ( window.crypto_exchange == 'binance' ) {
-	socket = new WebSocket('wss://stream.binance.com:9443/ws');
+	else if ( exchange == 'binance' ) {
+	window.sockets[exchange] = new WebSocket('wss://stream.binance.com:9443/ws');
 	}
 	else {
 	return;
 	}
-	
-	
-	// Open socket ///////////////////////////////////////////////////
-	socket.onopen = function() {
    
-	socket.send(JSON.stringify(window.subscribe_msg));
+	
+   
+	// Open socket ///////////////////////////////////////////////////
+	window.sockets[exchange].onopen = function() {
+   
+	window.sockets[exchange].send(JSON.stringify(window.subscribe_msg[exchange]));
 	   
-	 	window.markets.forEach(element => {
-	   $(".status").text( uc_first(window.crypto_exchange) ).css("color", "#2bbf7b");
+	 	window.markets[exchange].forEach(element => {
+	   $(".status_" + exchange).text( uc_first(exchange) ).css("color", "#2bbf7b");
 	   });
 	   
 	};
    
    
-   
 	// Socket response ///////////////////////////////////////////////////
-	socket.onmessage = function(e) {
+	window.sockets[exchange].onmessage = function(e) {
 	   
 	msg = JSON.parse(e.data);
 	   
@@ -368,7 +390,7 @@ function api_connect() {
 		
 		// Parse data
 		   
-		if ( window.crypto_exchange == 'coinbase' && msg["type"] == 'ticker' ) {
+		if ( exchange == 'coinbase' && msg["type"] == 'ticker' ) {
 					 
 		api_field = msg["type"];
 				 
@@ -382,12 +404,12 @@ function api_connect() {
 			 
 		trade_side = msg["side"];
 		
-		pairing = pairing_parser(product_id, window.crypto_exchange);
+		pairing = pairing_parser(product_id, exchange);
 				 
 		asset = product_id.replace(/-[A-Za-z0-9]*/g, "");
 				 
 		}
-		else if ( window.crypto_exchange == 'binance' && !msg["id"] && msg["e"] == '24hrTicker' ) {
+		else if ( exchange == 'binance' && !msg["id"] && msg["e"] == '24hrTicker' ) {
 					 
 		api_field = msg["e"];
 				 
@@ -415,7 +437,7 @@ function api_connect() {
 		trade_side_price[product_id] = price_raw;
 		trade_side_arrow[product_id] = trade_side;
 		
-		pairing = pairing_parser(product_id, window.crypto_exchange);
+		pairing = pairing_parser(product_id, exchange);
 				 
 		asset = product_id.replace(pairing, "");
 				 
@@ -425,6 +447,7 @@ function api_connect() {
 		}
 	  
 	  
+  
 	   // Render
 	  
 		if ( api_field ) {
@@ -432,13 +455,14 @@ function api_connect() {
 		//console.log('asset = ' + asset);
 		//console.log('pairing = ' + pairing);
 				 
-		js_key = product_id.replace(/-/g, "") + '_key';
+		js_key = product_id.replace(/-/g, "") + '_key_' + exchange;
+		js_key = js_key.toLowerCase();
 	 
 		market_info = asset_symbols(pairing);
 	 
 		market_symbol = market_info['asset_symbol'];
 		   
-		volume_decimals = ( market_info['asset_type'] == 'crypto' ? 3 : 0 );
+		volume_decimals = ( market_info['asset_type'] == 'crypto' ? 4 : 0 );
 		   
 		base_volume = base_volume.toFixed(volume_decimals);
 			 
@@ -451,12 +475,12 @@ function api_connect() {
 			 "<div class='spacing'><div class='arrow_wrapper' style=''><span class='arrow " +
 			 trade_side +
 			 "'></span></div><span class='tick_text'>" + market_symbol +
-			 number_commas(price) +
+			 number_commas(price, price_decimals) +
 			 "</span></div>";
 			 
 		volume_item = 
 			 "<div class='spacing'>" + pairing + " Vol: " + market_symbol +
-			 number_commas(base_volume) +
+			 number_commas(base_volume, volume_decimals) +
 			 "</div>";
 			 
 			 
@@ -488,13 +512,13 @@ function api_connect() {
    
 	
 	// When socket closes, reconnect ///////////////////////////////////////////////////
-	socket.onclose = function(e) {
+	window.sockets[exchange].onclose = function(e) {
 		
 	//console.log('Connecting', e.reason);
 	   
 		setTimeout(function() {
 	   $(".status").text("Connecting").css("color", "red");
-		api_connect();
+		api_connect(exchange);
 	   }, 60000); // Reconnect after no data received for 1 minute
 	   
 	};
@@ -502,13 +526,12 @@ function api_connect() {
    
    
 	// Socket error ///////////////////////////////////////////////////
-	socket.onerror = function(err) {
+	window.sockets[exchange].onerror = function(err) {
 	$(".status").text("Error").css("color", "red");
 	console.log('Socket encountered error: ', err.message, 'Closing socket');
-	socket.close();
+	window.sockets[exchange].close();
 	};
-	 
-  
+	
   
 }
 

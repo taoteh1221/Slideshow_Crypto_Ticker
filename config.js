@@ -1,23 +1,24 @@
 
 // Copyright 2019 GPLv3, DFD Crypto Ticker by Mike Kilday: http://DragonFrugal.com
 
+var exchange_markets = []; // LEAVE ALONE / DON'T DELETE (REQUIRED INIT)
 
 
 //  TYPOS LIKE MISSED SEMICOLONS / MISSED QUOTES / ETC WILL BREAK THE APP, BE CAREFUL EDITING THIS CONFIG FILE
-
-
-
-// What exchange to use
-// Currently only coinbase and binance are supported (kraken coming soon)
-var crypto_exchange = 'binance'; // 'coinbase' or 'binance'
-
 
 
 // Which crypto asset(s) to display on the ticker
 // Separate with pipe | symbol to "slideshow" between multiple tickers
 // (coinbase example:'BTC-USD|BTC-GBP|ETH-USD|ETH-BTC|ETH-EUR|MKR-USD|MKR-BTC|MANA-USDC')
 // (binance example:'btcusdt|ethusdt|ethbtc|dcrusdt|dcrbtc|xmrusdt|mkrusdt|antusdt|xmreth')
-var crypto_markets = 'btcusdt|ethusdt|ethbtc|dcrusdt|dcrbtc|xmrusdt|mkrusdt|antusdt'; 
+// ONLY BINANCE AND COINBASE ARE SUPPORTED FOR NOW...
+
+// Binance markets (set to '' to disable)
+exchange_markets['binance'] = 'btcusdt|ethusdt|ethbtc|dcrusdt|dcrbtc|xmrusdt|antusdt'; 
+
+
+// Coinbase markets (set to '' to disable)
+exchange_markets['coinbase'] = 'MKR-USD|MANA-USDC'; 
 
 
 

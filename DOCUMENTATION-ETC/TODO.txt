@@ -1,7 +1,5 @@
 
 
-Bake in the ability to run multiple different exchange tickers in slideshow mode (coinbase and kraken and binance all at the same time). Do this by having a seperate config for each exchange, like: crypto_markets['EXCHANGENAME'] = 'market1|market2|market3', and looping through the 'crypto_markets' varables by key => value. Then we can us our already-built logic and place the key in for the exchange id when parsing the markets for each exchange.
-
 Add Kraken / Binance US / HitBTC / Bitmex webocket API support.
 
 https://www.bitmex.com/app/wsAPI

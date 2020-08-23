@@ -253,6 +253,21 @@ v2.12.0
 ---------------------------------------------------------
 
 
+---------------------------------------------------------
+v2.13.0
+
+-Ability to show tickers for multiple exchanges at the same time
+
+-More refactoring and cleanup
+
+IMPORTANT UPGRADE NOTES: The paths to the bash scripts changed in v2.13 and higher. Please re-run the auto-install script, 
+OR manually update (as sudo / admin) the files /lib/systemd/system/ticker.service AND /etc/cron.d/ticker, and replace "/scripts/" with "/bash/".
+
+---------------------------------------------------------
+
+
+
+
 
 
 

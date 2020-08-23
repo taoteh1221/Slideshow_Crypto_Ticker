@@ -54,7 +54,7 @@ After updating config.js, reload the ticker with this command:
 
 If ticker autostart on system boot fails for any reason, the ticker can be started MANUALLY (after system boot) with this command:
 
-bash ~/dfd-crypto-ticker/scripts/ticker-init.bash &>/dev/null &
+bash ~/dfd-crypto-ticker/bash/ticker-init.bash &>/dev/null &
 
 
 If you have a "goodtft LCD-show" LCD screen and you installed it's drivers, you can now switch between the LCD and your normal monitor by running the command:
@@ -72,7 +72,8 @@ MANUAL INSTALLATION (IF AUTO-INSTALL SCRIPT FAILS, ETC)...
 IMPORTANT NOTES: USE RASPBIAN FULL DESKTOP, #NOT# LITE, OR YOU LIKELY WILL HAVE SOME ISSUES EVEN AFTER UPGRADING TO GUI (trust me). If your system is NOT a Raspberry Pi, or you are logged in / running as a user other than 'pi', just substitute that username in place of the 'pi' user in references below.
 
 
-Upload the 'dfd-crypto-ticker' directory in the download archive into /home/pi/ on your Raspberry Pi.
+Create a new directory / folder named 'dfd-crypto-ticker' in /home/pi/ on your Raspberry Pi,
+and put all the app's files and folders into this directory.
 
 
 ---------------------
@@ -86,7 +87,7 @@ sudo apt-get install xdotool unclutter sed -y
 
 chmod -R 755 ~/dfd-crypto-ticker/scripts
 
-ln -s ~/dfd-crypto-ticker/scripts/chromium-refresh.bash ~/reload
+ln -s ~/dfd-crypto-ticker/bash/chromium-refresh.bash ~/reload
 
 
 ---------------------
@@ -103,7 +104,7 @@ After=graphical.target
 Environment=DISPLAY=:0  
 Environment=XAUTHORITY=/home/pi/.Xauthority
 Type=simple
-ExecStart=/bin/bash /home/pi/dfd-crypto-ticker/scripts/ticker-init.bash
+ExecStart=/bin/bash /home/pi/dfd-crypto-ticker/bash/ticker-init.bash
 Restart=on-abort
 User=pi
 Group=pi
@@ -122,13 +123,13 @@ sudo systemctl enable ticker.service
 
 Add this as a cron job every minute, by creating the following file (you'll need sudo/root permissions): /etc/cron.d/ticker and add the following line (and a carriage return AFTER it to be safe):
 
-* * * * * pi /bin/bash /home/pi/dfd-crypto-ticker/scripts/keep-screensaver-off.bash > /dev/null 2>&1
+* * * * * pi /bin/bash /home/pi/dfd-crypto-ticker/bash/keep-screensaver-off.bash > /dev/null 2>&1
 
 
 
 If your system DOES NOT have /etc/cron.d/ on it, then NEARLY the same format (minus the username) can be installed via the 'crontab -e' command (logged in as the user you want running the cron job):
 
-* * * * * /bin/bash /home/pi/dfd-crypto-ticker/scripts/keep-screensaver-off.bash > /dev/null 2>&1
+* * * * * /bin/bash /home/pi/dfd-crypto-ticker/bash/keep-screensaver-off.bash > /dev/null 2>&1
 
 
 
@@ -156,7 +157,7 @@ cd ~/
 
 chmod -R 755 ~/dfd-crypto-ticker/builds
 
-ln -s ~/dfd-crypto-ticker/scripts/switch-display.bash ~/display
+ln -s ~/dfd-crypto-ticker/bash/switch-display.bash ~/display
 
 
 
