@@ -301,6 +301,12 @@ select opt in $OPTIONS; do
 				
 				# No trailing forward slash here
 				/bin/chown -R $SYS_USER:$SYS_USER /home/$SYS_USER/dfd-crypto-ticker
+				
+				# If an older depreciated version, just re-create the symlink after deleting to be safe
+				
+				rm /home/$SYS_USER/reload
+				
+				/bin/sleep 1
 			
 				ln -s /home/$SYS_USER/dfd-crypto-ticker/bash/chromium-refresh.bash /home/$SYS_USER/reload
 				
