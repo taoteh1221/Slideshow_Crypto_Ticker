@@ -1,6 +1,6 @@
 
 
-Add Kraken / Binance US / HitBTC / Bitmex webocket API support.
+Add Binance US / Bitmex webocket API support.
 
 https://www.bitmex.com/app/wsAPI
 

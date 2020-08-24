@@ -14,21 +14,43 @@ return input[0].toUpperCase() + input.slice(1);
 /////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-function pairing_parser(market_name, exchange) {
+function pair_volume(volume_type, trade_value, volume) {
 	
-pairing_parse = market_name.toUpperCase();
-
-	if ( exchange == 'binance' ) {
-	pairing_parse = pairing_parse.replace(/\b([A-Z]{3})TUSD/g, "TUSD");
-	pairing_parse = pairing_parse.replace(/\b([A-Z]{3})USD/g, "USD");
-	pairing_parse = pairing_parse.replace(/\b([A-Z]{3})BTC/g, "BTC");
-	pairing_parse = pairing_parse.replace(/\b([A-Z]{3})ETH/g, "ETH");
-	}
-	else if ( exchange == 'coinbase' ) {
-	pairing_parse = pairing_parse.replace(/\b([A-Za-z]*)-/g, "")
+	if ( typeof volume == 'string' ) {
+	volume = parseFloat(volume);
 	}
 
-return pairing_parse;
+	if ( volume_type == 'asset' ) {
+	base_volume = trade_value * volume; // Roughly emulate pairing volume for UX
+	}
+	else if ( volume_type == 'pairing' ) {
+	base_volume = volume;
+	}
+	
+return base_volume;
+
+}
+
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+function trade_type(price_raw, product_id) {
+	
+	if ( !trade_side_price[product_id] ) {
+	trade_side_arrow[product_id] = 'buy'; // If just initiated, with no change yet
+	}
+	else if ( price_raw < trade_side_price[product_id] ) {
+	trade_side_arrow[product_id] = 'sell';
+	}
+	else if ( price_raw > trade_side_price[product_id] ) {
+	trade_side_arrow[product_id] = 'buy';
+	}
+		
+trade_side_price[product_id] = price_raw;
+
+return trade_side_arrow[product_id];
 
 }
 
@@ -38,7 +60,7 @@ return pairing_parse;
 
 function arrow_html() {
 
-arrow_height = Math.round(window.ticker_size * window.arrow_size);
+arrow_height = Math.round(ticker_size * arrow_size);
 arrow_width = Math.round(arrow_height * 0.84);
 arrow_border_width = Math.round(arrow_width / 2);
 	
@@ -69,7 +91,7 @@ next = now.next().length ? now.next() : divs.first(),
 speed = 1000;
 
     
-	if ( window.markets_length > 1 ) {
+	if ( markets_length > 1 ) {
     now.fadeOut(speed);
     next.delay(speed + 100).fadeIn(speed);
    }
@@ -120,18 +142,16 @@ return num;
 
 function ticker_html(market, exchange) {
 
-market = market.toUpperCase();
-	
-	if ( exchange == 'coinbase' ) {
-	asset = market.replace(/-[A-Za-z0-9]*/g, "");
-	}
-	else if ( exchange == 'binance' ) {
-	pairing = pairing_parser(market, exchange); // To derive Binance asset var
-	asset = market.replace(pairing, "");
-	}
+parsed_pairing = pairing_parser(market, exchange);
+				 
+asset = parsed_pairing.asset;
+		
+pairing = parsed_pairing.pairing;
   
 
-js_key = market.replace(/-/g, "") + '_key_' + exchange;
+js_key = market;
+js_key = js_key.replace("/", "-");
+js_key = js_key.replace(/-/g, "") + '_key_' + exchange;
 js_key = js_key.toLowerCase();
 
 
@@ -151,9 +171,73 @@ document.write('</div>');
 /////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
+function pairing_parser(market_name, exchange) {
+	
+market_name = market_name.toUpperCase();
+market_name = market_name.replace("/", "-");
+
+
+	if ( exchange == 'binance' || exchange == 'hitbtc' ) {
+	
+	pairing_parse = market_name;
+	pairing_parse = pairing_parse.replace(/\b([A-Z]{3})TUSD/g, "TUSD");
+	pairing_parse = pairing_parse.replace(/\b([A-Z]{3})USD/g, "USD");
+	pairing_parse = pairing_parse.replace(/\b([A-Z]{3})BTC/g, "BTC");
+	pairing_parse = pairing_parse.replace(/\b([A-Z]{3})ETH/g, "ETH");
+	
+	pairing_parse = pairing_parse.replace(/\b([A-Z]{4})TUSD/g, "TUSD");
+	pairing_parse = pairing_parse.replace(/\b([A-Z]{4})USD/g, "USD");
+	pairing_parse = pairing_parse.replace(/\b([A-Z]{4})BTC/g, "BTC");
+	pairing_parse = pairing_parse.replace(/\b([A-Z]{4})ETH/g, "ETH");
+	
+	asset_parse = market_name.replace(pairing_parse, "");
+	
+	}
+	else if ( exchange == 'coinbase' || exchange == 'kraken' ) {
+	asset_parse = market_name.replace(/-[A-Za-z0-9]*/g, "");
+	pairing_parse = market_name.replace(/\b([A-Za-z]*)-/g, "");
+	}
+
+
+parsed_markets[market_name] = { "pairing" : pairing_parse, "asset" : asset_parse };
+
+//console.log(parsed_markets[market_name]);
+
+return parsed_markets[market_name];
+
+}
+	
+	
+/////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+function render_names(name) {
+	
+render = name.charAt(0).toUpperCase() + name.slice(1);
+
+render = render.replace(/btc/gi, "BTC");
+render = render.replace(/coin/gi, "Coin");
+render = render.replace(/bitcoin/gi, "Bitcoin");
+render = render.replace(/exchange/gi, "Exchange");
+render = render.replace(/market/gi, "Market");
+render = render.replace(/forex/gi, "Forex");
+render = render.replace(/finex/gi, "Finex");
+render = render.replace(/stamp/gi, "Stamp");
+render = render.replace(/flyer/gi, "Flyer");
+render = render.replace(/panda/gi, "Panda");
+render = render.replace(/pay/gi, "Pay");
+
+return render;
+
+}
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
 function monospace_check() {
 	
-check = window.monospace_width;
+check = monospace_width;
 
 
 	// Not a number check
@@ -168,7 +252,7 @@ var result = (check - Math.floor(check)) !== 0;
    
   if (result) { // Is a decimal number
   
-  	if ( window.monospace_width > 1 ) { // Is greater than 1.00
+  	if ( monospace_width > 1 ) { // Is greater than 1.00
   	return false;
   	}
   	else { // Is NOT greater than 1.00
@@ -189,7 +273,7 @@ var result = (check - Math.floor(check)) !== 0;
 
 function load_google_font() {
 	
-config_font = window.google_font;
+config_font = google_font;
 
 	// Skip custom font rendering if no config value
 	if ( config_font == null ) {
@@ -314,10 +398,6 @@ results = new Array();
 			results['asset_symbol'] = "J¥";
 			results['asset_type'] = 'fiat';
 			}
-			else if ( asset_abrv == 'LTC' ) {
-			results['asset_symbol'] = "Ł ";
-			results['asset_type'] = 'crypto';
-			}
 			else if ( asset_abrv == 'RUB' ) {
 			results['asset_symbol'] = "₽";
 			results['asset_type'] = 'fiat';
@@ -338,11 +418,6 @@ results = new Array();
 			results['asset_symbol'] = "₮ ";
 			results['asset_type'] = 'fiat';
 			}
-			else if ( asset_abrv == 'XMR' ) {
-			results['asset_symbol'] = "ɱ ";
-			results['asset_type'] = 'crypto';
-			}
-
 
 
 return results;
@@ -356,43 +431,35 @@ return results;
 function api_connect(exchange) {
 
 	//console.log('api_connect = ' + exchange);
-
-	if ( exchange == 'coinbase' ) {
-	window.sockets[exchange] = new WebSocket('wss://ws-feed.gdax.com');
-	}
-	else if ( exchange == 'binance' ) {
-	window.sockets[exchange] = new WebSocket('wss://stream.binance.com:9443/ws');
-	}
-	else {
+	
+	// Exit function if no endpoint set
+	if ( sockets[exchange] == '' ) {
 	return;
 	}
-   
 	
    
 	// Open socket ///////////////////////////////////////////////////
-	window.sockets[exchange].onopen = function() {
+	sockets[exchange].onopen = function() {
    
-	window.sockets[exchange].send(JSON.stringify(window.subscribe_msg[exchange]));
+	sockets[exchange].send(JSON.stringify(subscribe_msg[exchange]));
 	   
-	 	window.markets[exchange].forEach(element => {
-	   $(".status_" + exchange).text( uc_first(exchange) ).css("color", "#2bbf7b");
+	 	markets[exchange].forEach(element => {
+	   $(".status_" + exchange).text( render_names(exchange) ).css("color", "#2bbf7b");
 	   });
 	   
 	};
    
    
 	// Socket response ///////////////////////////////////////////////////
-	window.sockets[exchange].onmessage = function(e) {
+	sockets[exchange].onmessage = function(e) {
 	   
 	msg = JSON.parse(e.data);
-	   
 	//console.log(msg);
 		
-		// Parse data
-		   
+		// Parse exchange data
+		
+		// Coinbase
 		if ( exchange == 'coinbase' && msg["type"] == 'ticker' ) {
-					 
-		api_field = msg["type"];
 				 
 		product_id = msg["product_id"];
 				 
@@ -400,18 +467,11 @@ function api_connect(exchange) {
 				 
 		volume_raw = msg["volume_24h"];
 		   
-		base_volume = price_raw * parseFloat(volume_raw);
-			 
-		trade_side = msg["side"];
-		
-		pairing = pairing_parser(product_id, exchange);
-				 
-		asset = product_id.replace(/-[A-Za-z0-9]*/g, "");
+		base_volume = pair_volume('asset', price_raw, volume_raw);
 				 
 		}
+		// Binance
 		else if ( exchange == 'binance' && !msg["id"] && msg["e"] == '24hrTicker' ) {
-					 
-		api_field = msg["e"];
 				 
 		product_id = msg["s"];
 				 
@@ -419,58 +479,71 @@ function api_connect(exchange) {
 				 
 		volume_raw = msg["q"];
 		   
-		base_volume = parseFloat(volume_raw);
-			 
-			 if ( price_raw < trade_side_price[product_id] ) {
-			 trade_side = 'sell';
-			 }
-			 else if ( price_raw > trade_side_price[product_id] ) {
-			 trade_side = 'buy';
-			 }
-			 else if ( trade_side_arrow[product_id] ) {
-			 trade_side = trade_side_arrow[product_id]; // Stays same
-			 }
-			 else {
-			 trade_side = 'buy'; // If just initiated, with no change yet
-			 }
-		
-		trade_side_price[product_id] = price_raw;
-		trade_side_arrow[product_id] = trade_side;
-		
-		pairing = pairing_parser(product_id, exchange);
+		base_volume = pair_volume('pairing', price_raw, volume_raw);
 				 
-		asset = product_id.replace(pairing, "");
+		}
+		// Kraken
+		else if ( exchange == 'kraken' && !msg["event"] && msg[2] == 'ticker' ) {
+				 
+		product_id = msg[3];
+				 
+		price_raw = msg[1]["c"][0];
+				 
+		volume_raw = msg[1]["v"][1];
+		   
+		base_volume = pair_volume('asset', price_raw, volume_raw);
+				 
+		}
+		// HitBTC
+		else if ( exchange == 'hitbtc' && !msg["result"] && msg["method"] == 'ticker' ) {
+				 
+		product_id = msg["params"]["symbol"];
+				 
+		price_raw = msg["params"]["last"];
+				 
+		volume_raw = msg["params"]["volumeQuote"];
+		   
+		base_volume = pair_volume('pairing', price_raw, volume_raw);
 				 
 		}
 		else {
-		api_field = null;
+		product_id = null;
 		}
 	  
 	  
   
 	   // Render
-	  
-		if ( api_field ) {
+		if ( product_id ) {
 			 
 		//console.log('asset = ' + asset);
 		//console.log('pairing = ' + pairing);
-				 
-		js_key = product_id.replace(/-/g, "") + '_key_' + exchange;
+		
+		js_key = product_id;
+		js_key = js_key.replace("/", "-");
+		js_key = js_key.replace(/-/g, "") + '_key_' + exchange;
 		js_key = js_key.toLowerCase();
+		
+		parsed_pairing = pairing_parser(product_id, exchange);
+				 
+		asset = parsed_pairing.asset;
+		
+		pairing = parsed_pairing.pairing;
+		
+		trade_side = trade_type(price_raw, product_id);
 	 
 		market_info = asset_symbols(pairing);
 	 
 		market_symbol = market_info['asset_symbol'];
-		   
+		
+		// Volume decimals
 		volume_decimals = ( market_info['asset_type'] == 'crypto' ? 4 : 0 );
-		   
 		base_volume = base_volume.toFixed(volume_decimals);
-			 
-		price_decimals = ( price_raw >= 1 ? 2 : window.max_price_decimals );
-			 
+		
+		// Price decimals
+		price_decimals = ( price_raw >= 1 ? 2 : max_price_decimals );
 		price = parseFloat(price_raw).toFixed(price_decimals);
 		   
-		   
+		// HTML for rendering
 		ticker_item =
 			 "<div class='spacing'><div class='arrow_wrapper' style=''><span class='arrow " +
 			 trade_side +
@@ -498,8 +571,8 @@ function api_connect(exchange) {
 			monospace_rendering(document.querySelectorAll('#ticker_' + js_key)[0]);
 			monospace_rendering(document.querySelectorAll('#volume_' + js_key)[0]);
 			 
-			$(".ticker .monospace").css({ "width": Math.round(window.ticker_size * window.monospace_width) + "px" });
-			$(".volume .monospace").css({ "width": Math.round(window.volume_size * window.monospace_width) + "px" });
+			$(".ticker .monospace").css({ "width": Math.round(ticker_size * monospace_width) + "px" });
+			$(".volume .monospace").css({ "width": Math.round(volume_size * monospace_width) + "px" });
 				 
 			}
 			
@@ -512,12 +585,12 @@ function api_connect(exchange) {
    
 	
 	// When socket closes, reconnect ///////////////////////////////////////////////////
-	window.sockets[exchange].onclose = function(e) {
+	sockets[exchange].onclose = function(e) {
 		
 	//console.log('Connecting', e.reason);
 	   
 		setTimeout(function() {
-	   $(".status").text("Connecting").css("color", "red");
+	   $(".status_" + exchange).text("Connecting").css("color", "red");
 		api_connect(exchange);
 	   }, 60000); // Reconnect after no data received for 1 minute
 	   
@@ -526,10 +599,10 @@ function api_connect(exchange) {
    
    
 	// Socket error ///////////////////////////////////////////////////
-	window.sockets[exchange].onerror = function(err) {
-	$(".status").text("Error").css("color", "red");
+	sockets[exchange].onerror = function(err) {
+	$(".status_" + exchange).text("Error").css("color", "red");
 	console.log('Socket encountered error: ', err.message, 'Closing socket');
-	window.sockets[exchange].close();
+	sockets[exchange].close();
 	};
 	
   

@@ -8,10 +8,21 @@
 // Var inits
 var sockets = [];
 var markets = [];
+var parsed_markets = [];
 var subscribe_msg = [];
 var trade_side_price = [];
 var trade_side_arrow = [];
 var markets_length = 0;
+
+
+// Exchange API endpoints
+sockets['binance'] = new WebSocket('wss://stream.binance.com:9443/ws');
+
+sockets['coinbase'] = new WebSocket('wss://ws-feed.gdax.com');
+
+sockets['kraken'] = new WebSocket('wss://ws.kraken.com');
+
+sockets['hitbtc'] = new WebSocket('wss://api.hitbtc.com/api/2/ws');
 
 
 // Put configged markets into a multi-dimensional array, calculate number of markets total
@@ -74,6 +85,48 @@ Object.keys(markets).forEach(function(exchange) {
     var loop = 0;
     markets[exchange].forEach(element => {
     subscribe_msg[exchange].params[loop] = element + '@ticker'; 
+    loop = loop + 1;
+    });
+  
+  }
+  // Binance
+  else if ( exchange == 'kraken' ) {
+    
+  // API call config
+  subscribe_msg[exchange] = {
+    "event": "subscribe",
+    "pair": [
+    ],
+  	 "subscription": {
+    	"name": "ticker"
+  	 }
+  };
+   
+   
+    // Add markets to API call
+    var loop = 0;
+    markets[exchange].forEach(element => {
+    subscribe_msg[exchange].pair[loop] = element; 
+    loop = loop + 1;
+    });
+  
+  }
+  // HitBTC
+  else if ( exchange == 'hitbtc' ) {
+    
+  // API call config
+  subscribe_msg[exchange] = {
+    "method": "subscribeTicker",
+    "params": {
+    },
+    "id": 1
+  };
+   
+   
+    // Add markets to API call
+    var loop = 0;
+    markets[exchange].forEach(element => {
+    subscribe_msg[exchange].params['symbol'] = element; 
     loop = loop + 1;
     });
   

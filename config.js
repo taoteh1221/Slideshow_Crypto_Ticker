@@ -18,12 +18,20 @@ exchange_markets['binance'] = 'btcusdt|ethusdt|ethbtc|dcrusdt|dcrbtc|xmrusdt|ant
 
 
 // Coinbase markets (set to '' to disable)
-exchange_markets['coinbase'] = 'MKR-USD|MANA-USDC'; 
+exchange_markets['coinbase'] = 'MKR-USD|MANA-USDC|BTC-GBP'; 
+
+
+// Kraken markets (set to '' to disable)
+exchange_markets['kraken'] = 'XBT/CAD|XBT/EUR'; 
+
+
+// HitBTC markets (set to '' to disable)
+exchange_markets['hitbtc'] = 'MYSTBTC'; // !!ONLY SUPPORTS ONE ASSET!!
 
 
 
 // Maximum decimal places for coins worth under 1.00 unit value [btc/eth/usd/usdc/gbp/eur/whatever], for prettier / less-cluttered interface
-var max_price_decimals = 6;
+var max_price_decimals = 7;
 
 
 
@@ -39,7 +47,7 @@ var title_size = 54;
 
 
 // Ticker font size
-var ticker_size = 68;
+var ticker_size = 63;
 
 
 
