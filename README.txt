@@ -3,7 +3,7 @@ DFD Crypto Ticker - Developed by Michael Kilday <mike@dragonfrugal.com>, release
 
 Copyright 2019 GPLv3
 
-Real Time Crypto Price Ticker For Raspberry Pis With LCD Screens, including 24 hour volume and Binance / Coinbase Pro support (more exchanges coming in the future).
+Real Time Crypto Price Ticker For Raspberry Pis With LCD Screens, including 24 hour volume and Binance / Coinbase Pro / Kraken / HitBTC support (more exchanges coming in the future).
 
 Supports running in "slideshow mode", to show all the markets you want.
 
