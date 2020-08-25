@@ -14,6 +14,21 @@ return input[0].toUpperCase() + input.slice(1);
 /////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
+function js_safe_key(key, exchange) {
+
+js_key = key;
+js_key = js_key.replace("/", "-"); // So we only have to regex a hyphen
+js_key = js_key.replace(/-/g, "") + '_key_' + exchange;
+js_key = js_key.toLowerCase();
+
+return js_key;
+
+}
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
 function pair_volume(volume_type, trade_value, volume) {
 	
 	if ( typeof volume == 'string' ) {
@@ -148,11 +163,7 @@ asset = parsed_pairing.asset;
 		
 pairing = parsed_pairing.pairing;
   
-
-js_key = market;
-js_key = js_key.replace("/", "-");
-js_key = js_key.replace(/-/g, "") + '_key_' + exchange;
-js_key = js_key.toLowerCase();
+js_key = js_safe_key(market, exchange);
 
 
 document.write('<div class="asset_tickers">');
@@ -165,6 +176,7 @@ document.write('<div class="volume" id="volume_' + js_key + '"></div>');
     
 document.write('</div>');
 
+
 }
 
 
@@ -174,7 +186,7 @@ document.write('</div>');
 function pairing_parser(market_name, exchange) {
 	
 market_name = market_name.toUpperCase();
-market_name = market_name.replace("/", "-");
+market_name = market_name.replace("/", "-"); // So we only have to regex a hyphen
 
 
 	if ( exchange == 'binance' || exchange == 'hitbtc' ) {
@@ -183,11 +195,13 @@ market_name = market_name.replace("/", "-");
 	pairing_parse = pairing_parse.replace(/\b([A-Z]{3})TUSD/g, "TUSD");
 	pairing_parse = pairing_parse.replace(/\b([A-Z]{3})USD/g, "USD");
 	pairing_parse = pairing_parse.replace(/\b([A-Z]{3})BTC/g, "BTC");
+	pairing_parse = pairing_parse.replace(/\b([A-Z]{3})BTC/g, "XBT");
 	pairing_parse = pairing_parse.replace(/\b([A-Z]{3})ETH/g, "ETH");
 	
 	pairing_parse = pairing_parse.replace(/\b([A-Z]{4})TUSD/g, "TUSD");
 	pairing_parse = pairing_parse.replace(/\b([A-Z]{4})USD/g, "USD");
 	pairing_parse = pairing_parse.replace(/\b([A-Z]{4})BTC/g, "BTC");
+	pairing_parse = pairing_parse.replace(/\b([A-Z]{4})BTC/g, "XBT");
 	pairing_parse = pairing_parse.replace(/\b([A-Z]{4})ETH/g, "ETH");
 	
 	asset_parse = market_name.replace(pairing_parse, "");
@@ -370,6 +384,10 @@ results = new Array();
 			results['asset_symbol'] = "Ƀ ";
 			results['asset_type'] = 'crypto';
 			}
+			else if ( asset_abrv == 'XBT' ) {
+			results['asset_symbol'] = "Ƀ ";
+			results['asset_type'] = 'crypto';
+			}
 			else if ( asset_abrv == 'CAD' ) {
 			results['asset_symbol'] = "C$";
 			results['asset_type'] = 'fiat';
@@ -433,9 +451,13 @@ function api_connect(exchange) {
 	//console.log('api_connect = ' + exchange);
 	
 	// Exit function if no endpoint set
-	if ( sockets[exchange] == '' ) {
+	if ( api[exchange] == '' ) {
 	return;
 	}
+	
+	
+	// Create new socket
+	sockets[exchange] = new WebSocket(api[exchange]);
 	
    
 	// Open socket ///////////////////////////////////////////////////
@@ -518,10 +540,7 @@ function api_connect(exchange) {
 		//console.log('asset = ' + asset);
 		//console.log('pairing = ' + pairing);
 		
-		js_key = product_id;
-		js_key = js_key.replace("/", "-");
-		js_key = js_key.replace(/-/g, "") + '_key_' + exchange;
-		js_key = js_key.toLowerCase();
+		js_key = js_safe_key(product_id, exchange);
 		
 		parsed_pairing = pairing_parser(product_id, exchange);
 				 

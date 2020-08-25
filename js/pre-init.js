@@ -6,6 +6,7 @@
 
 
 // Var inits
+var api = [];
 var sockets = [];
 var markets = [];
 var parsed_markets = [];
@@ -16,13 +17,13 @@ var markets_length = 0;
 
 
 // Exchange API endpoints
-sockets['binance'] = new WebSocket('wss://stream.binance.com:9443/ws');
+api['binance'] = 'wss://stream.binance.com:9443/ws';
 
-sockets['coinbase'] = new WebSocket('wss://ws-feed.gdax.com');
+api['coinbase'] = 'wss://ws-feed.gdax.com';
 
-sockets['kraken'] = new WebSocket('wss://ws.kraken.com');
+api['kraken'] = 'wss://ws.kraken.com';
 
-sockets['hitbtc'] = new WebSocket('wss://api.hitbtc.com/api/2/ws');
+api['hitbtc'] = 'wss://api.hitbtc.com/api/2/ws';
 
 
 // Put configged markets into a multi-dimensional array, calculate number of markets total
