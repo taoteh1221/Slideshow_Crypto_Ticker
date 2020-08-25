@@ -72,6 +72,9 @@ MANUAL INSTALLATION (IF AUTO-INSTALL SCRIPT FAILS, ETC)...
 IMPORTANT NOTES: USE RASPBIAN FULL DESKTOP, #NOT# LITE, OR YOU LIKELY WILL HAVE SOME ISSUES EVEN AFTER UPGRADING TO GUI (trust me). If your system is NOT a Raspberry Pi, or you are logged in / running as a user other than 'pi', just substitute that username in place of the 'pi' user in references below.
 
 
+UPGRADE NOTES: For v2.13.0 and higher, delete any OLDER install's /scripts/ and /apps/ sub-directories WITHIN the main 'dfd-crypto-ticker' directory (THESE ARE NO LONGER USED).
+
+
 Create a new directory / folder named 'dfd-crypto-ticker' in /home/pi/ on your Raspberry Pi,
 and put all the app's files and folders into this directory.
 

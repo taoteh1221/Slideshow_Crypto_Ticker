@@ -1,8 +1,10 @@
 
 
-Add Binance US / Bitmex webocket API support.
+Add Binance US / Bitmex/ Bitstamp webocket API support.
 
 https://www.bitmex.com/app/wsAPI
+
+https://www.bitstamp.net/websocket/v2/
 
 Create install / uninstall dialog for bash auto install
 

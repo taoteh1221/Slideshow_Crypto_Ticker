@@ -283,11 +283,11 @@ select opt in $OPTIONS; do
 				
   				mkdir -p /home/$SYS_USER/dfd-crypto-ticker
 				
-				rm -rf ./.git
-				rm -rf ./.github
-				rm ./.gitattributes
-				rm ./.gitignore
-				rm ./CODEOWNERS
+				rm -rf .git
+				rm -rf .github
+				rm .gitattributes
+				rm .gitignore
+				rm CODEOWNERS
 				
 				\cp -r ./ /home/$SYS_USER/dfd-crypto-ticker
 
