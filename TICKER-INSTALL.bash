@@ -297,7 +297,7 @@ select opt in $OPTIONS; do
 				
 				rm -rf DFD-Crypto-Ticker
 				
-				/bin/chmod -R 755 /home/$SYS_USER/dfd-crypto-ticker/scripts
+				/bin/chmod -R 755 /home/$SYS_USER/dfd-crypto-ticker/bash
 				
 				# No trailing forward slash here
 				/bin/chown -R $SYS_USER:$SYS_USER /home/$SYS_USER/dfd-crypto-ticker

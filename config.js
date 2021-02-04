@@ -9,22 +9,22 @@ var exchange_markets = []; // LEAVE ALONE / DON'T DELETE (REQUIRED INIT)
 
 // Which crypto asset(s) to display on the ticker
 // Separate with pipe | symbol to "slideshow" between multiple tickers
-// kraken example: 'XBT/USD|XBT/CAD|XBT/EUR|ETH/USD|ETH/EUR|ETH/CAD|XMR/USD'
+// kraken example: 'XBT/USD|XBT/CAD|XBT/EUR|ETH/USD|ETH/EUR|ETH/CAD'
 // coinbase example: 'BTC-USD|BTC-GBP|ETH-USD|ETH-BTC|ETH-EUR|MKR-USD|MKR-BTC|MANA-USDC'
-// binance example: 'btcusdt|ethusdt|ethbtc|dcrusdt|dcrbtc|xmrusdt|mkrusdt|antusdt|xmreth'
+// binance example: 'btcusdt|ethusdt|ethbtc|mkrusdt'
 // hitbtc example: 'MYSTBTC'
 ////
 ////
-// Kraken markets (set to '' to disable)
-exchange_markets['kraken'] = 'XBT/USD|ETH/USD|ETH/XBT|XMR/USD'; 
-////
-////
 // Coinbase markets (set to '' to disable)
-exchange_markets['coinbase'] = 'MKR-USD|MANA-USDC'; 
+exchange_markets['coinbase'] = 'BTC-USD|ETH-USD|ETH-BTC|UNI-USD|UNI-BTC'; 
 ////
 ////
 // Binance markets (set to '' to disable)
-exchange_markets['binance'] = 'dcrusdt|dcrbtc|antusdt'; 
+exchange_markets['binance'] = 'sxpusdt|sxpbtc'; 
+////
+////
+// Kraken markets (set to '' to disable)
+exchange_markets['kraken'] = 'KEEP/USD|MANA/USD'; 
 ////
 ////
 // HitBTC markets (set to '' to disable) !!HITBTC WEBSOCKET API ONLY SUPPORTS ONE ASSET!!

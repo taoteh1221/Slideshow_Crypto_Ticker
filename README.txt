@@ -88,7 +88,7 @@ sudo apt-get update && sudo apt-get upgrade
 
 sudo apt-get install xdotool unclutter sed -y
 
-chmod -R 755 ~/dfd-crypto-ticker/scripts
+chmod -R 755 ~/dfd-crypto-ticker/bash
 
 ln -s ~/dfd-crypto-ticker/bash/chromium-refresh.bash ~/reload
 
