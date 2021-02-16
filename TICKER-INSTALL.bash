@@ -14,6 +14,10 @@ fi
 ######################################
 
 
+# Get logged-in username (if sudo, this works best with logname)
+USERNAME=$(/usr/bin/logname)
+
+
 # Get date
 DATE=$(date '+%Y-%m-%d')
 
@@ -58,13 +62,13 @@ fi
 
 
 echo "Enter the system username to configure installation for:"
-echo "(leave blank / hit enter for default of username 'pi')"
+echo "(leave blank / hit enter for default of username '${USERNAME}')"
 echo " "
 
 read SYS_USER
         
 if [ -z "$SYS_USER" ]; then
-SYS_USER=${1:-pi}
+SYS_USER=${1:-$USERNAME}
 echo "Using default username: $SYS_USER"
 else
 echo "Using username: $SYS_USER"
@@ -185,7 +189,7 @@ echo " "
 
 echo " "
 
-echo "Making sure your system is updated before installation..."
+echo "Making sure your system is updated before installation, please wait..."
 
 echo " "
 			
@@ -196,7 +200,7 @@ echo " "
 
 echo " "
 				
-echo "Proceeding with required component installation..."
+echo "Proceeding with required component installation, please wait..."
 				
 echo " "
 
@@ -230,7 +234,7 @@ select opt in $OPTIONS; do
         	
 				echo " "
 				
-				echo "Proceeding with required component installation..."
+				echo "Proceeding with required component installation, please wait..."
 				
 				echo " "
 				
@@ -256,7 +260,7 @@ select opt in $OPTIONS; do
 					fi
 				
 				
-				echo "Downloading and installing the latest version of DFD Crypto Ticker, from Github.com..."
+				echo "Downloading and installing the latest version of DFD Crypto Ticker, from Github.com, please wait..."
 				
 				echo " "
 				
@@ -350,7 +354,7 @@ select opt in $OPTIONS; do
 
 				echo " "
 				
-				echo "Configuring DFD Crypto Ticker on your system..."
+				echo "Configuring DFD Crypto Ticker on your system, please wait..."
 
 				echo " "
 				
@@ -453,7 +457,7 @@ select opt in $OPTIONS; do
 			
 			echo " "
 			
-			echo "Proceeding with required component installation..."
+			echo "Proceeding with required component installation, please wait..."
 			
 			echo " "
 			
@@ -466,7 +470,7 @@ select opt in $OPTIONS; do
 			sleep 3
 			
 			echo " "
-			echo "Setting up for 'goodtft LCD-show' LCD devices..."
+			echo "Setting up for 'goodtft LCD-show' LCD devices, please wait..."
 			echo " "
 			
 			ln -s /home/$SYS_USER/dfd-crypto-ticker/bash/switch-display.bash /home/$SYS_USER/display

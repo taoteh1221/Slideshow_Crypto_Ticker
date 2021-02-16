@@ -16,11 +16,11 @@ var exchange_markets = []; // LEAVE ALONE / DON'T DELETE (REQUIRED INIT)
 ////
 ////
 // Coinbase markets (set to '' to disable)
-exchange_markets['coinbase'] = 'BTC-USD|ETH-USD|ETH-BTC|UNI-USD|UNI-BTC'; 
+exchange_markets['coinbase'] = 'BTC-USD|ETH-USD|ETH-BTC|LRC-USD|LRC-BTC'; 
 ////
 ////
 // Binance markets (set to '' to disable)
-exchange_markets['binance'] = 'sxpusdt|sxpbtc'; 
+exchange_markets['binance'] = 'uniusdt|unibtc|mkrusdt|mkrbtc'; 
 ////
 ////
 // Kraken markets (set to '' to disable)
@@ -28,7 +28,7 @@ exchange_markets['kraken'] = 'KEEP/USD|MANA/USD';
 ////
 ////
 // HitBTC markets (set to '' to disable) !!HITBTC WEBSOCKET API ONLY SUPPORTS ONE ASSET!!
-exchange_markets['hitbtc'] = 'MYSTBTC'; // !!HITBTC WEBSOCKET API ONLY SUPPORTS ONE ASSET!!
+exchange_markets['hitbtc'] = 'MYSTBTC';
 
 
 
