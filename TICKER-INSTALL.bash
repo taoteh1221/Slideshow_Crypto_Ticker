@@ -676,6 +676,8 @@ select opt in $OPTIONS; do
 			
 			/bin/chmod +x FOLIO-INSTALL.bash
 			
+			/bin/chown $SYS_USER:$SYS_USER FOLIO-INSTALL.bash
+			
 			/usr/bin/sudo ./FOLIO-INSTALL.bash
 			
 			
