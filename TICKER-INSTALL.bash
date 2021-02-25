@@ -162,6 +162,10 @@ echo "You will need to manually move any custom settings in this backup file to 
 echo " "
 fi
 
+
+echo "PLEASE REPORT ANY ISSUES HERE: https://github.com/taoteh1221/DFD_Crypto_Ticker/issues"
+echo " "
+
   				
 echo "Select 1 or 2 to choose whether to continue, or quit."
 echo " "
@@ -200,15 +204,7 @@ echo " "
 
 echo " "
 				
-echo "Proceeding with required component installation, please wait..."
-				
-echo " "
-
-/usr/bin/sudo /usr/bin/apt-get install xdotool unclutter sed -y
-
-echo " "
-				
-echo "System update / required component installation completed."
+echo "System update completed."
 				
 sleep 3
 				
@@ -223,13 +219,13 @@ echo "DFD Crypto Ticker from Github.com, and install it?"
 echo "(auto-install will overwrite / upgrade any previous install located at: /home/$SYS_USER/dfd-crypto-ticker)"
 echo " "
 
-echo "Select 1 or 2 to choose whether to auto-install DFD Crypto Ticker, or skip it."
+echo "Select 1, 2, or 3 to choose whether to auto-install / remove DFD Crypto Ticker, or skip."
 echo " "
 
-OPTIONS="auto_install_ticker_app skip"
+OPTIONS="install_ticker_app remove_ticker_app skip"
 
 select opt in $OPTIONS; do
-        if [ "$opt" = "auto_install_ticker_app" ]; then
+        if [ "$opt" = "install_ticker_app" ]; then
         
         	
 				echo " "
@@ -238,7 +234,7 @@ select opt in $OPTIONS; do
 				
 				echo " "
 				
-				/usr/bin/sudo /usr/bin/apt-get install curl jq bsdtar openssl -y
+				/usr/bin/sudo /usr/bin/apt-get install xdotool unclutter sed curl jq bsdtar openssl -y
 				
 				echo " "
 				
@@ -323,7 +319,25 @@ select opt in $OPTIONS; do
 	        	INSTALL_SETUP=1
    	     	
    	     	
+        break
+       elif [ "$opt" = "remove_ticker_app" ]; then
+       
+        echo " "
+        echo "Removing DFD Crypto Ticker, please wait..."
+        
+        rm /etc/cron.d/ticker
+        
+        rm /lib/systemd/system/ticker.service
+        
+        rm /home/$SYS_USER/reload
+        
+        rm -rf /home/$SYS_USER/dfd-crypto-ticker
 
+		  /bin/sleep 3
+        
+		  echo " "
+		  echo "DFD Crypto Ticker has been removed from the system, please reboot to complete the removal process."
+        
         break
        elif [ "$opt" = "skip" ]; then
         echo " "
@@ -443,7 +457,7 @@ echo " "
 
 
 echo "WARNING:"
-echo "DO NOT install the 'goodtft LCD-show' LCD drivers below, UNLESS YOU HAVE A 'goodtft LCD-show' LCD SCREEN."
+echo "#DO NOT INSTALL# THE 'goodtft LCD-show' LCD DRIVERS BELOW, UNLESS YOU HAVE A 'goodtft LCD-show' LCD SCREEN!"
 echo " "
 
 echo "Select 1 or 2 to choose whether to install 'goodtft LCD-show' LCD drivers, or skip."
@@ -470,29 +484,27 @@ select opt in $OPTIONS; do
 			sleep 3
 			
 			echo " "
-			echo "Setting up for 'goodtft LCD-show' LCD devices, please wait..."
+			echo "Setting up for 'goodtft LCD-show' LCD drivers, please wait..."
 			echo " "
 			
 			ln -s /home/$SYS_USER/dfd-crypto-ticker/bash/switch-display.bash /home/$SYS_USER/display
 				
 			/bin/chown $SYS_USER:$SYS_USER /home/$SYS_USER/display
 			
-			mkdir -p /home/$SYS_USER/dfd-crypto-ticker/builds
+			mkdir -p /home/$SYS_USER/goodtft/builds
 			
-			cd /home/$SYS_USER/dfd-crypto-ticker/builds
+			cd /home/$SYS_USER/goodtft/builds
 			
 			/usr/bin/git clone https://github.com/goodtft/LCD-show.git
 			
-			cd /home/$SYS_USER/dfd-crypto-ticker/
-			
-			/bin/chmod -R 755 /home/$SYS_USER/dfd-crypto-ticker/builds
+			/bin/chmod -R 755 /home/$SYS_USER/goodtft/builds
 			
 			# No trailing forward slash here
-			/bin/chown -R $SYS_USER:$SYS_USER /home/$SYS_USER/dfd-crypto-ticker/builds
+			/bin/chown -R $SYS_USER:$SYS_USER /home/$SYS_USER/goodtft/builds
 
 				
 			echo " "
-			echo "'goodtft LCD-show' LCD device setup completed."
+			echo "'goodtft LCD-show' LCD driver setup completed."
 				
 			echo " "
 			
@@ -502,7 +514,7 @@ select opt in $OPTIONS; do
         break
        elif [ "$opt" = "skip" ]; then
         echo " "
-        echo "Skipping 'goodtft LCD-show' LCD setup..."
+        echo "Skipping 'goodtft LCD-show' LCD driver setup..."
         break
        fi
 done
@@ -511,6 +523,9 @@ echo " "
 
 
 ######################################
+			
+# Return to user's home directory
+cd /home/$SYS_USER/
 
 
 echo " "
@@ -588,14 +603,14 @@ echo "After updating config.js, reload the ticker with this command:"
 echo "~/reload"
 echo " "
 
-echo "Ticker installation should be complete, unless you saw any error messages on your screen."
+echo "Ticker installation / setup should be complete (if you chose those options), unless you saw any error messages on your screen during setup."
 echo " "
 
 
 if [ "$GOODTFT_SETUP" = "1" ]; then
 
-echo "Run the below command, to configure / activate your"
-echo "'goodtft LCD-show' LCD screen:"
+echo "TO COMPLETE THE 'goodtft LCD-show' LCD DRIVERS SETUP, run this command below"
+echo "to configure / activate your 'goodtft LCD-show' LCD screen:"
 echo "~/display"
 echo " "
 
@@ -624,8 +639,55 @@ echo " "
 echo " "
 echo "BE SURE TO SAVE ALL THE ACCESS DETAILS PRINTED OUT ABOVE, BEFORE YOU SIGN OFF FROM THIS TERMINAL SESSION."
 echo " "
-echo "See my other cryptocurrency-related free / private / open source software at:"
-echo "https://sourceforge.net/u/taoteh1221/profile"
-echo "https://github.com/taoteh1221"
+echo "Also check out my 100% FREE open source cryptocurrency investment portfolio tracker,"
+echo "with email / text / Alexa / Ghome / Telegram alerts, charts, mining calculators,"
+echo "leverage / gain / loss / balance stats, news feeds and more:"
+echo " "
+echo "https://taoteh1221.github.io"
+echo " "
+echo "https://github.com/taoteh1221/DFD_Cryptocoin_Values"
 echo " "
 
+
+
+######################################
+
+
+
+echo "Would you like to ADDITIONALLY install DFD Cryptocoin Values (server edition), private portfolio tracker on this machine?"
+echo " "
+
+echo "Select 1 or 2 to choose whether to install the private portfolio tracker, or skip."
+echo " "
+
+OPTIONS="install_portfolio_tracker skip"
+
+select opt in $OPTIONS; do
+        if [ "$opt" = "install_portfolio_tracker" ]; then
+         
+			
+			echo " "
+			
+			echo "Proceeding with portfolio tracker installation, please wait..."
+			
+			echo " "
+			
+			/usr/bin/wget -O FOLIO-INSTALL.bash https://raw.githubusercontent.com/taoteh1221/DFD_Cryptocoin_Values/main/FOLIO-INSTALL.bash
+			
+			/bin/chmod +x FOLIO-INSTALL.bash
+			
+			/usr/bin/sudo ./FOLIO-INSTALL.bash
+			
+			
+        break
+       elif [ "$opt" = "skip" ]; then
+        echo " "
+        echo "Skipping portfolio tracker install..."
+        break
+       fi
+done
+
+echo " "
+
+
+######################################

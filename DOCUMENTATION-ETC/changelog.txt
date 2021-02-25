@@ -312,6 +312,12 @@ v3.01.0
 
 -Auto-detection of user running install script, for better auto-configuration
 
+-Option to remove ticker app from the system in the install script
+
+-UX improvement on 'goodtft' installation / build / running
+
+-Misc UX on install script
+
 -Revised default config
 
 IMPORTANT UPGRADE NOTES: The paths to the bash scripts changed in v2.13.0 and higher. Please re-run the auto-install script, 

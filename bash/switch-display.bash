@@ -1,6 +1,6 @@
 #!/bin/bash
 
-echo "This script currently only supports \"goodtft LCD-show\" LCDs. Enter your model number to continue (example: MHS35)"
+echo "THIS SCRIPT CURRENTLY ONLY SUPPORTS \"goodtft LCD-show\" LCDs! Enter your model number to continue (example: MHS35)"
 
 read MODEL
 
@@ -10,15 +10,15 @@ OPTIONS="hdmi lcd-$MODEL"
 
 select opt in $OPTIONS; do
         if [ "$opt" = "hdmi" ]; then
-        cd /home/pi/dfd-crypto-ticker/builds/LCD-show
+        cd ~/goodtft/builds/LCD-show
 	sudo ./LCD-hdmi
         break
        elif [ "$opt" = "lcd-$MODEL" ]; then
-        cd /home/pi/dfd-crypto-ticker/builds/LCD-show
+        cd ~/goodtft/builds/LCD-show
 	sudo ./$MODEL-show
         break
        else
-        echo "Thanks"
+        echo "Skipping display switch..."
         break
        fi
 done
