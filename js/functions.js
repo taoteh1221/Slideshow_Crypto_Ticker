@@ -16,12 +16,17 @@ return input[0].toUpperCase() + input.slice(1);
 
 function js_safe_key(key, exchange) {
 
-js_key = key;
-js_key = js_key.replace("/", "-"); // So we only have to regex a hyphen
-js_key = js_key.replace(/-/g, "") + '_key_' + exchange;
-js_key = js_key.toLowerCase();
+key = key.replace("/", "-"); // So we only have to regex a hyphen
+key = key.replace(/-/g, "") + '_key_' + exchange;
+key = key.toLowerCase();
 
-return js_key;
+	// To assure appropriate ticker updated
+	if ( key ) {
+	return key;
+	}
+	else {
+	return false;
+	}
 
 }
 
@@ -163,18 +168,26 @@ asset = parsed_pairing.asset;
 		
 pairing = parsed_pairing.pairing;
   
-js_key = js_safe_key(market, exchange);
+market_key = js_safe_key(market, exchange);
 
+	
+	// To assure appropriate ticker updated
+	if ( market_key ) {
 
-document.write('<div class="asset_tickers">');
+	document.write('<div class="asset_tickers">');
 
-document.write('<div class="title"><span id="asset_' + js_key + '">' + asset + '</span> (<span class="status_'+exchange+'">Connecting...</span>)</div>');
+	document.write('<div class="title"><span id="asset_' + market_key + '">' + asset + '</span> (<span class="status_'+exchange+'">Connecting...</span>)</div>');
     
-document.write('<div class="ticker" id="ticker_' + js_key + '"></div>');
+	document.write('<div class="ticker" id="ticker_' + market_key + '"></div>');
     
-document.write('<div class="volume" id="volume_' + js_key + '"></div>');
+	document.write('<div class="volume" id="volume_' + market_key + '"></div>');
     
-document.write('</div>');
+	document.write('</div>');
+	
+	}
+	else {
+	return false;
+	}
 
 
 }
@@ -540,62 +553,68 @@ function api_connect(exchange) {
 		//console.log('asset = ' + asset);
 		//console.log('pairing = ' + pairing);
 		
-		js_key = js_safe_key(product_id, exchange);
+		update_key = js_safe_key(product_id, exchange);
 		
-		parsed_pairing = pairing_parser(product_id, exchange);
+			// To assure appropriate ticker updated
+			if ( update_key ) {
+			
+			parsed_pairing = pairing_parser(product_id, exchange);
+					 
+			asset = parsed_pairing.asset;
+			
+			pairing = parsed_pairing.pairing;
+			
+			trade_side = trade_type(price_raw, product_id);
+		 
+			market_info = asset_symbols(pairing);
+		 
+			market_symbol = market_info['asset_symbol'];
+			
+			// Volume decimals
+			volume_decimals = ( market_info['asset_type'] == 'crypto' ? 4 : 0 );
+			base_volume = base_volume.toFixed(volume_decimals);
+			
+			// Price decimals
+			price_decimals = ( price_raw >= 1 ? 2 : max_price_decimals );
+			price = parseFloat(price_raw).toFixed(price_decimals);
+				
+			// HTML for rendering
+			ticker_item =
+				 "<div class='spacing'><div class='arrow_wrapper' style=''><span class='arrow " +
+				 trade_side +
+				 "'></span></div><span class='tick_text'>" + market_symbol +
+				 number_commas(price, price_decimals) +
+				 "</span></div>";
 				 
-		asset = parsed_pairing.asset;
-		
-		pairing = parsed_pairing.pairing;
-		
-		trade_side = trade_type(price_raw, product_id);
-	 
-		market_info = asset_symbols(pairing);
-	 
-		market_symbol = market_info['asset_symbol'];
-		
-		// Volume decimals
-		volume_decimals = ( market_info['asset_type'] == 'crypto' ? 4 : 0 );
-		base_volume = base_volume.toFixed(volume_decimals);
-		
-		// Price decimals
-		price_decimals = ( price_raw >= 1 ? 2 : max_price_decimals );
-		price = parseFloat(price_raw).toFixed(price_decimals);
-		   
-		// HTML for rendering
-		ticker_item =
-			 "<div class='spacing'><div class='arrow_wrapper' style=''><span class='arrow " +
-			 trade_side +
-			 "'></span></div><span class='tick_text'>" + market_symbol +
-			 number_commas(price, price_decimals) +
-			 "</span></div>";
-			 
-		volume_item = 
-			 "<div class='spacing'>" + pairing + " Vol: " + market_symbol +
-			 number_commas(base_volume, volume_decimals) +
-			 "</div>";
-			 
-			 
-		// Render data to appropriate ticker
-		$("#ticker_" + js_key).html(ticker_item);
-		
-		arrow_html();
-		
-		$("#volume_" + js_key).html(volume_item);
-		   
-		   
-			// If monospace emulation is properly enabled, run it
-			if ( monospace_check() == true ) {
+			volume_item = 
+				 "<div class='spacing'>" + pairing + " Vol: " + market_symbol +
+				 number_commas(base_volume, volume_decimals) +
+				 "</div>";
 				 
-			monospace_rendering(document.querySelectorAll('#ticker_' + js_key)[0]);
-			monospace_rendering(document.querySelectorAll('#volume_' + js_key)[0]);
-			 
-			$(".ticker .monospace").css({ "width": Math.round(ticker_size * monospace_width) + "px" });
-			$(".volume .monospace").css({ "width": Math.round(volume_size * monospace_width) + "px" });
 				 
+			// Render data to appropriate ticker
+			$("#ticker_" + update_key).html(ticker_item);
+			
+			arrow_html();
+			
+			$("#volume_" + update_key).html(volume_item);
+				
+				
+				// If monospace emulation is properly enabled, run it
+				if ( monospace_check() == true ) {
+					 
+				monospace_rendering(document.querySelectorAll('#ticker_' + update_key)[0]);
+				monospace_rendering(document.querySelectorAll('#volume_' + update_key)[0]);
+				 
+				$(".ticker .monospace").css({ "width": Math.round(ticker_size * monospace_width) + "px" });
+				$(".volume .monospace").css({ "width": Math.round(volume_size * monospace_width) + "px" });
+					 
+				}
+				
+				
 			}
 			
-				 
+		
 		}
 	   
 	   
