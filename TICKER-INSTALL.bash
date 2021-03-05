@@ -206,7 +206,7 @@ echo " "
 				
 echo "System update completed."
 				
-sleep 3
+/bin/sleep 3
 				
 echo " "
 
@@ -240,7 +240,7 @@ select opt in $OPTIONS; do
 				
 				echo "Required component installation completed."
 				
-				sleep 3
+				/bin/sleep 3
 				
 				echo " "
 				
@@ -323,7 +323,19 @@ select opt in $OPTIONS; do
        elif [ "$opt" = "remove_ticker_app" ]; then
        
         echo " "
-        echo "Removing DFD Crypto Ticker, please wait..."
+        echo "Removing DFD Crypto Ticker and some required components, please wait..."
+		  echo " "
+				
+        # ONLY removing unclutter, AS WE DON'T WANT TO F!CK UP THE WHOLE SYSTEM, REMOVING ANY OTHER ALREADY-USED / DEPENDANT PACKAGES TOO!!
+		  /usr/bin/sudo /usr/bin/apt-get remove unclutter -y
+				
+		  echo " "
+		  echo "Removal of 'unclutter' app package completed, please wait..."
+		  echo "(IF YOU USED unclutter FOR ANOTHER APP, RE-INSTALL WITH: sudo apt-get install unclutter) "
+		  echo " "
+				
+				
+		  /bin/sleep 3
         
         rm /etc/cron.d/ticker
         
@@ -336,7 +348,7 @@ select opt in $OPTIONS; do
 		  /bin/sleep 3
         
 		  echo " "
-		  echo "DFD Crypto Ticker has been removed from the system, please reboot to complete the removal process."
+		  echo "DFD Crypto Ticker has been removed from the system, PLEASE REBOOT to complete the removal process."
         
         break
        elif [ "$opt" = "skip" ]; then
@@ -481,7 +493,7 @@ select opt in $OPTIONS; do
 			
 			echo "Required component installation completed."
 			
-			sleep 3
+			/bin/sleep 3
 			
 			echo " "
 			echo "Setting up for 'goodtft LCD-show' LCD drivers, please wait..."
