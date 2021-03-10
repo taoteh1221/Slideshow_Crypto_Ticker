@@ -1,7 +1,7 @@
 
 DFD Crypto Ticker - Developed by Michael Kilday <mike@dragonfrugal.com>, released free / open source (under GPL v3)
 
-Copyright 2019 GPLv3
+Copyright 2019-2021 GPLv3
 
 Real Time Crypto Price Ticker For Raspberry Pis With LCD Screens, including 24 hour volume and Binance / Coinbase Pro / Kraken / HitBTC support (more exchanges coming in the future).
 

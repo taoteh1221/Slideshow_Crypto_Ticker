@@ -1,5 +1,7 @@
 #!/bin/bash
 
+# Copyright 2019-2021 GPLv3, DFD Crypto Ticker by Mike Kilday: http://DragonFrugal.com
+
 
 export DISPLAY=:0
 

@@ -1,6 +1,6 @@
 
 
-Add Binance US / Bitmex/ Bitstamp webocket API support.
+Add Kucoin / Binance US / Bitmex / Bitstamp webocket API support.
 
 https://www.bitmex.com/app/wsAPI
 
