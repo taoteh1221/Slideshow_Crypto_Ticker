@@ -7,11 +7,34 @@ Real Time Crypto Price Ticker For Raspberry Pis With LCD Screens, including 24 h
 
 Supports running in "slideshow mode", to show all the markets you want.
 
+Developed on a Raspi v3 B+, with this screen / case: https://smile.amazon.com/gp/product/B07N38B86S
+
 Example on a 3.5" LCD: https://www.youtube.com/watch?v=bvPQ6PLy_ME
 
-Developed on a Raspi v3 B+, with this screen / case: https://smile.amazon.com/gp/product/B07N38B86S/
+Project Website: https://sourceforge.net/projects/dfd-crypto-ticker
 
 Download Latest Version: https://github.com/taoteh1221/DFD_Crypto_Ticker/releases
+
+Issue Reporting (Features / Issues / Help): https://github.com/taoteh1221/DFD_Crypto_Ticker/issues
+
+Discord Chat: https://discord.gg/WZVK2nm
+
+Telegram Chat: https://t.me/joinchat/Oo2XZRS2HsOXSMGejgSO0A
+
+Private Contact: https://dragonfrugal.com/contact
+
+
+Donations support further development... 
+
+Bitcoin:  3Nw6cvSgnLEFmQ1V4e8RSBG23G7pDjF3hW
+
+Ethereum:  0x644343e8D0A4cF33eee3E54fE5d5B8BFD0285EF8
+
+Github Sponsors:  https://github.com/sponsors/taoteh1221
+
+Patreon:   https://www.patreon.com/dragonfrugal
+
+PayPal:    https://www.paypal.me/dragonfrugal
 
 
 #############################################################################################
