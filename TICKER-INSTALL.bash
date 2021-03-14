@@ -77,7 +77,7 @@ fi
 
 if [ ! -d "/home/$SYS_USER/" ]; then    		
 echo " "
-echo "Directory /home/$SYS_USER/ DOES NOT exist, cannot install DFD Crypto Ticker."
+echo "Directory /home/$SYS_USER/ DOES NOT exist, cannot install Slideshow Crypto Ticker."
 echo " "
 echo "Please create user $SYS_USER's home directory before running this installation."
 exit
@@ -154,7 +154,7 @@ fi
   				
 				
 if [ -f /home/$SYS_USER/dfd-crypto-ticker/config.js ]; then
-echo "A configuration file from a previous install of DFD Crypto Ticker has been detected on your system."
+echo "A configuration file from a previous install of Slideshow Crypto Ticker has been detected on your system."
 echo "During this upgrade / re-install, it will be backed up to:"
 echo "/home/$SYS_USER/dfd-crypto-ticker/config.js.BACKUP.$DATE"
 echo "This will save any custom settings within it."
@@ -163,7 +163,7 @@ echo " "
 fi
 
 
-echo "PLEASE REPORT ANY ISSUES HERE: https://github.com/taoteh1221/DFD_Crypto_Ticker/issues"
+echo "PLEASE REPORT ANY ISSUES HERE: https://github.com/taoteh1221/Slideshow_Crypto_Ticker/issues"
 echo " "
 
   				
@@ -215,11 +215,11 @@ echo " "
 
 
 echo "Do you want this script to automatically download the latest version of"
-echo "DFD Crypto Ticker from Github.com, and install it?"
+echo "Slideshow Crypto Ticker from Github.com, and install it?"
 echo "(auto-install will overwrite / upgrade any previous install located at: /home/$SYS_USER/dfd-crypto-ticker)"
 echo " "
 
-echo "Select 1, 2, or 3 to choose whether to auto-install / remove DFD Crypto Ticker, or skip."
+echo "Select 1, 2, or 3 to choose whether to auto-install / remove Slideshow Crypto Ticker, or skip."
 echo " "
 
 OPTIONS="install_ticker_app remove_ticker_app skip"
@@ -256,7 +256,7 @@ select opt in $OPTIONS; do
 					fi
 				
 				
-				echo "Downloading and installing the latest version of DFD Crypto Ticker, from Github.com, please wait..."
+				echo "Downloading and installing the latest version of Slideshow Crypto Ticker, from Github.com, please wait..."
 				
 				echo " "
 				
@@ -264,7 +264,7 @@ select opt in $OPTIONS; do
 				
 				cd DFD-Crypto-Ticker
 				
-				ZIP_DL=$(/usr/bin/curl -s 'https://api.github.com/repos/taoteh1221/DFD_Crypto_Ticker/releases/latest' | /usr/bin/jq -r '.zipball_url')
+				ZIP_DL=$(/usr/bin/curl -s 'https://api.github.com/repos/taoteh1221/Slideshow_Crypto_Ticker/releases/latest' | /usr/bin/jq -r '.zipball_url')
 				
 				/usr/bin/wget -O DFD-Crypto-Ticker.zip $ZIP_DL
 				
@@ -314,7 +314,7 @@ select opt in $OPTIONS; do
 				
 				echo " "
 				
-				echo "DFD Crypto Ticker has been installed."
+				echo "Slideshow Crypto Ticker has been installed."
 				
 	        	INSTALL_SETUP=1
    	     	
@@ -323,7 +323,7 @@ select opt in $OPTIONS; do
        elif [ "$opt" = "remove_ticker_app" ]; then
        
         echo " "
-        echo "Removing DFD Crypto Ticker and some required components, please wait..."
+        echo "Removing Slideshow Crypto Ticker and some required components, please wait..."
 		  echo " "
 				
         # ONLY removing unclutter, AS WE DON'T WANT TO F!CK UP THE WHOLE SYSTEM, REMOVING ANY OTHER ALREADY-USED / DEPENDANT PACKAGES TOO!!
@@ -348,12 +348,12 @@ select opt in $OPTIONS; do
 		  /bin/sleep 3
         
 		  echo " "
-		  echo "DFD Crypto Ticker has been removed from the system, PLEASE REBOOT to complete the removal process."
+		  echo "Slideshow Crypto Ticker has been removed from the system, PLEASE REBOOT to complete the removal process."
         
         break
        elif [ "$opt" = "skip" ]; then
         echo " "
-        echo "Skipping auto-install of DFD Crypto Ticker."
+        echo "Skipping auto-install of Slideshow Crypto Ticker."
         break
        fi
 done
@@ -365,11 +365,11 @@ echo " "
 ######################################
 
 
-echo "Do you want to automatically configure DFD Crypto Ticker for"
+echo "Do you want to automatically configure Slideshow Crypto Ticker for"
 echo "your system (autostart at login / keep screen turned on)?"
 echo " "
 
-echo "Select 1 or 2 to choose whether to auto-configure DFD Crypto Ticker system settings, or skip it."
+echo "Select 1 or 2 to choose whether to auto-configure Slideshow Crypto Ticker system settings, or skip it."
 echo " "
 
 OPTIONS="auto_config_ticker_system skip"
@@ -380,7 +380,7 @@ select opt in $OPTIONS; do
 
 				echo " "
 				
-				echo "Configuring DFD Crypto Ticker on your system, please wait..."
+				echo "Configuring Slideshow Crypto Ticker on your system, please wait..."
 
 				echo " "
 				
@@ -445,7 +445,7 @@ EOF
         		CRON_SETUP=1
 				
 				echo " "
-				echo "DFD Crypto Ticker system configuration complete."
+				echo "Slideshow Crypto Ticker system configuration complete."
 
 				echo " "
 				
@@ -455,7 +455,7 @@ EOF
         break
        elif [ "$opt" = "skip" ]; then
         echo " "
-        echo "Skipping auto-configuration of DFD Crypto Ticker system settings."
+        echo "Skipping auto-configuration of Slideshow Crypto Ticker system settings."
         break
        fi
 done
@@ -568,7 +568,7 @@ fi
 if [ "$AUTOSTART_ALERT" = "1" ] || [ "$AUTOSTART_ALERT" = "2" ]; then
 
 echo "Regardless of autostart being enabled or not, you can run this command"
-echo "AFTER system boot MANUALLY, to start DFD Crypto Ticker:"
+echo "AFTER system boot MANUALLY, to start Slideshow Crypto Ticker:"
 echo "bash ~/dfd-crypto-ticker/bash/ticker-init.bash &>/dev/null &"
 echo " "
 					
@@ -579,7 +579,7 @@ fi
 
 if [ "$CONFIG_BACKUP" = "1" ]; then
 
-echo "The previously-installed DFD Crypto Ticker configuration"
+echo "The previously-installed Slideshow Crypto Ticker configuration"
 echo "file /home/$SYS_USER/dfd-crypto-ticker/config.js has been backed up to:"
 echo "/home/$SYS_USER/dfd-crypto-ticker/config.js.BACKUP.$DATE"
 echo "You will need to manually move any custom settings in this backup file to the new config.js file with a text editor."
@@ -673,7 +673,7 @@ echo " "
 
 
 
-echo "Would you like to ADDITIONALLY install DFD Cryptocoin Values (server edition), private portfolio tracker on this machine?"
+echo "Would you like to ADDITIONALLY install Open Crypto Portfolio Tracker (server edition), private portfolio tracker on this machine?"
 echo " "
 
 echo "Select 1 or 2 to choose whether to install the private portfolio tracker, or skip."

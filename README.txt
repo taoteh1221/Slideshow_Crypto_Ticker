@@ -1,5 +1,5 @@
 
-DFD Crypto Ticker - Developed by Michael Kilday <mike@dragonfrugal.com>, released free / open source (under GPL v3)
+Slideshow Crypto Ticker - Developed by Michael Kilday <mike@dragonfrugal.com>, released free / open source (under GPL v3)
 
 Copyright 2019-2021 GPLv3
 
@@ -13,9 +13,9 @@ Example on a 3.5" LCD: https://www.youtube.com/watch?v=bvPQ6PLy_ME
 
 Project Website: https://sourceforge.net/projects/dfd-crypto-ticker
 
-Download Latest Version: https://github.com/taoteh1221/DFD_Crypto_Ticker/releases
+Download Latest Version: https://github.com/taoteh1221/Slideshow_Crypto_Ticker/releases
 
-Issue Reporting (Features / Issues / Help): https://github.com/taoteh1221/DFD_Crypto_Ticker/issues
+Issue Reporting (Features / Issues / Help): https://github.com/taoteh1221/Slideshow_Crypto_Ticker/issues
 
 Discord Chat: https://discord.gg/WZVK2nm
 

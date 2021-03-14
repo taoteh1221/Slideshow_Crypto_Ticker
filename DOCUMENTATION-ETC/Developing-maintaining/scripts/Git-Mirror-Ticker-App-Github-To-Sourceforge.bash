@@ -4,10 +4,10 @@
 cd /home/taoteh1221/Build/
 
 #uncomment first run only
-#git clone --bare --mirror https://github.com/taoteh1221/DFD_Crypto_Ticker.git
+#git clone --bare --mirror https://github.com/taoteh1221/Slideshow_Crypto_Ticker.git
 
 #enter your repo directory
-cd DFD_Crypto_Ticker.git
+cd Slideshow_Crypto_Ticker.git
 
 #uncomment first run only
 #git remote add sourceforge ssh://taoteh1221@git.code.sf.net/p/dfd-crypto-ticker/code
