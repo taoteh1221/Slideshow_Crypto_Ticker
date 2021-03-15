@@ -6,9 +6,8 @@ export DISPLAY=:0
 
 ###################################
 
-# Reliably set working directory to .../dfd-crypto-ticker/... under any home directory username
-cd "$(dirname "$0")"
-cd ../
+# Start in user home directory
+cd ~/
 
 
 /usr/bin/xset s off
@@ -18,6 +17,10 @@ cd ../
 /usr/bin/xset s noblank
 
 /usr/bin/unclutter -idle 0.5 -root &
+
+
+# Kucoin auth cache updating (MAKE SURE IT EXISTS BEFORE RUNNING THE TICKER)
+~/dfd-crypto-ticker/bash/cron/kucoin-auth.bash
 
 
 /bin/sed -i 's/"exited_cleanly":false/"exited_cleanly":true/' ~/.config/chromium/Default/Preferences

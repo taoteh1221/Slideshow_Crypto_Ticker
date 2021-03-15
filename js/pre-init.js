@@ -2,6 +2,7 @@
 // Copyright 2019-2021 GPLv3, Slideshow Crypto Ticker by Mike Kilday: http://DragonFrugal.com
 
 
+
 //////////////////////////////////////////////////////////////////////////////////////
 
 
@@ -24,6 +25,10 @@ api['coinbase'] = 'wss://ws-feed.gdax.com';
 api['kraken'] = 'wss://ws.kraken.com';
 
 api['hitbtc'] = 'wss://api.hitbtc.com/api/2/ws';
+
+api['bitstamp'] = 'wss://ws.bitstamp.net/';
+
+api['kucoin'] = kucoin_endpoint + '?token=' + kucoin_token;
 
 
 // Put configged markets into a multi-dimensional array, calculate number of markets total
@@ -128,6 +133,51 @@ Object.keys(markets).forEach(function(exchange) {
     var loop = 0;
     markets[exchange].forEach(element => {
     subscribe_msg[exchange].params['symbol'] = element; 
+    loop = loop + 1;
+    });
+  
+  }
+  // Kucoin
+  // https://docs.kucoin.com/#symbol-ticker
+  else if ( exchange == 'kucoin' ) {
+    
+  // API call config
+  subscribe_msg[exchange] = {        
+    "id": 1,
+    "type": "subscribe",
+    "topic": "/market/snapshot:",
+    "privateChannel": false,
+    "response": true       
+	}
+   
+   
+    // Add markets to API call
+    var loop = 0;
+    markets[exchange].forEach(element => {
+    subscribe_msg[exchange]['topic'] = subscribe_msg[exchange]['topic'] + element + ','; 
+    loop = loop + 1;
+    });
+    
+	subscribe_msg[exchange]['topic'] = subscribe_msg[exchange]['topic'].slice(0, -1) // remove last character
+  
+  }
+  // Bitstamp
+  // https://www.bitstamp.net/websocket/v2/
+  else if ( exchange == 'bitstamp' ) {
+    
+  // API call config
+  subscribe_msg[exchange] = { 
+    "event": "bts:subscribe",
+    "data": {
+        "channel": "live_trades_"
+    }  
+  }
+   
+   
+    // Add markets to API call
+    var loop = 0;
+    markets[exchange].forEach(element => {
+    subscribe_msg[exchange]['data']['channel'] = subscribe_msg[exchange]['data']['channel'] + element; 
     loop = loop + 1;
     });
   

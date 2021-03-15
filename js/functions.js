@@ -178,9 +178,9 @@ market_key = js_safe_key(market, exchange);
 
 	document.write('<div class="title"><span id="asset_' + market_key + '">' + asset + '</span> (<span class="status_'+exchange+'">Connecting...</span>)</div>');
     
-	document.write('<div class="ticker" id="ticker_' + market_key + '"></div>');
+	document.write('<div class="ticker" id="ticker_' + market_key + '">Loading...</div>');
     
-	document.write('<div class="volume" id="volume_' + market_key + '"></div>');
+	document.write('<div class="volume" id="volume_' + market_key + '">Loading...</div>');
     
 	document.write('</div>');
 	
@@ -202,7 +202,7 @@ market_name = market_name.toUpperCase();
 market_name = market_name.replace("/", "-"); // So we only have to regex a hyphen
 
 
-	if ( exchange == 'binance' || exchange == 'hitbtc' ) {
+	if ( exchange == 'binance' || exchange == 'hitbtc' || exchange == 'bitstamp' ) {
 	
 	pairing_parse = market_name;
 	pairing_parse = pairing_parse.replace(/\b([A-Z]{3})TUSD/g, "TUSD");
@@ -210,17 +210,21 @@ market_name = market_name.replace("/", "-"); // So we only have to regex a hyphe
 	pairing_parse = pairing_parse.replace(/\b([A-Z]{3})BTC/g, "BTC");
 	pairing_parse = pairing_parse.replace(/\b([A-Z]{3})BTC/g, "XBT");
 	pairing_parse = pairing_parse.replace(/\b([A-Z]{3})ETH/g, "ETH");
+	pairing_parse = pairing_parse.replace(/\b([A-Z]{3})EUR/g, "EUR");
+	pairing_parse = pairing_parse.replace(/\b([A-Z]{3})GBP/g, "GBP");
 	
 	pairing_parse = pairing_parse.replace(/\b([A-Z]{4})TUSD/g, "TUSD");
 	pairing_parse = pairing_parse.replace(/\b([A-Z]{4})USD/g, "USD");
 	pairing_parse = pairing_parse.replace(/\b([A-Z]{4})BTC/g, "BTC");
 	pairing_parse = pairing_parse.replace(/\b([A-Z]{4})BTC/g, "XBT");
 	pairing_parse = pairing_parse.replace(/\b([A-Z]{4})ETH/g, "ETH");
+	pairing_parse = pairing_parse.replace(/\b([A-Z]{4})EUR/g, "EUR");
+	pairing_parse = pairing_parse.replace(/\b([A-Z]{4})GBP/g, "GBP");
 	
 	asset_parse = market_name.replace(pairing_parse, "");
 	
 	}
-	else if ( exchange == 'coinbase' || exchange == 'kraken' ) {
+	else if ( exchange == 'coinbase' || exchange == 'kraken' || exchange == 'kucoin' ) {
 	asset_parse = market_name.replace(/-[A-Za-z0-9]*/g, "");
 	pairing_parse = market_name.replace(/\b([A-Za-z]*)-/g, "");
 	}
@@ -541,6 +545,30 @@ function api_connect(exchange) {
 		base_volume = pair_volume('pairing', price_raw, volume_raw);
 				 
 		}
+		// Kucoin
+		else if ( exchange == 'kucoin' && msg["subject"] == 'trade.snapshot' ) {
+				 
+		product_id = msg["data"]["data"]["symbol"];
+				 
+		price_raw = msg["data"]["data"]["close"];
+				 
+		volume_raw = msg["data"]["data"]["volValue"];
+		   
+		base_volume = pair_volume('pairing', price_raw, volume_raw);
+				 
+		}
+		// Kucoin
+		else if ( exchange == 'bitstamp' && msg["event"] == 'trade' ) {
+				 
+		product_id = msg["channel"].replace("live_trades_", "");
+				 
+		price_raw = msg["data"]["price"];
+				 
+		volume_raw = null;
+		   
+		base_volume = null;
+				 
+		}
 		else {
 		product_id = null;
 		}
@@ -570,10 +598,6 @@ function api_connect(exchange) {
 		 
 			market_symbol = market_info['asset_symbol'];
 			
-			// Volume decimals
-			volume_decimals = ( market_info['asset_type'] == 'crypto' ? 4 : 0 );
-			base_volume = base_volume.toFixed(volume_decimals);
-			
 			// Price decimals
 			price_decimals = ( price_raw >= 1 ? 2 : max_price_decimals );
 			price = parseFloat(price_raw).toFixed(price_decimals);
@@ -586,17 +610,38 @@ function api_connect(exchange) {
 				 number_commas(price, price_decimals) +
 				 "</span></div>";
 				 
-			volume_item = 
+			
+				// Volume logic
+				if ( base_volume != null ) {
+					
+				volume_decimals = ( market_info['asset_type'] == 'crypto' ? 4 : 0 );
+				
+				base_volume = base_volume.toFixed(volume_decimals);
+				
+				volume_item = 
 				 "<div class='spacing'>" + pairing + " Vol: " + market_symbol +
 				 number_commas(base_volume, volume_decimals) +
 				 "</div>";
+				
+				}
+				else {
+					
+					if ( hide_empty_volume == 'yes' ) {
+					$("#volume_" + update_key).css({ "display": "none" });
+					volume_item = "<div class='spacing'></div>";
+					}
+					else {
+					volume_item = "<div class='spacing'>" + pairing + " Vol: (not provided)</div>";
+					}
+					
+				}
 				 
 				 
 			// Render data to appropriate ticker
 			$("#ticker_" + update_key).html(ticker_item);
 			
 			arrow_html();
-			
+				
 			$("#volume_" + update_key).html(volume_item);
 				
 				

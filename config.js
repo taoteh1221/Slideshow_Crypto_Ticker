@@ -7,12 +7,19 @@ var exchange_markets = []; // LEAVE ALONE / DON'T DELETE (REQUIRED INIT)
 //  TYPOS LIKE MISSED SEMICOLONS / MISSED QUOTES / ETC WILL BREAK THE APP, BE CAREFUL EDITING THIS CONFIG FILE
 
 
+// ############## PER-EXCHANGE FORMATTING EXAMPLES ##########################
 // Which crypto asset(s) to display on the ticker
-// Separate with pipe | symbol to "slideshow" between multiple tickers
-// kraken example: 'XBT/USD|XBT/CAD|XBT/EUR|ETH/USD|ETH/EUR|ETH/CAD'
-// coinbase example: 'BTC-USD|BTC-GBP|ETH-USD|ETH-BTC|ETH-EUR|MKR-USD|MKR-BTC|MANA-USDC'
-// binance example: 'btcusdt|ethusdt|ethbtc|mkrusdt'
-// hitbtc example: 'MYSTBTC'
+// Separate with pipe | symbol to "slideshow" between multiple tickers on the same exchange
+// Kraken example: 'XBT/USD|XBT/CAD|XBT/EUR|ETH/USD|ETH/EUR|ETH/CAD'
+// Coinbase example: 'BTC-USD|BTC-GBP|ETH-USD|ETH-BTC|ETH-EUR|MKR-USD|MKR-BTC|MANA-USDC'
+// Binance example: 'btcusdt|ethusdt|ethbtc|mkrusdt'
+// Kucoin example: 'MANA-BTC|ENJ-BTC|SXP-USDT'
+// Hitbtc example (MULTIPLE TICKERS NOT SUPPORTED): 'MYSTBTC'
+// Bitstamp pairs (MULTIPLE TICKERS NOT SUPPORTED): btcusd, btceur, btcgbp, btcpax, btcusdc, gbpusd, gbpeur, eurusd, xrpusd, xrpeur, xrpbtc, xrpgbp, xrppax, ltcusd, ltceur, ltcbtc, ltcgbp, ethusd, etheur, ethbtc, ethgbp, ethpax, ethusdc, bchusd, bcheur, bchbtc, bchgbp, paxusd, paxeur, paxgbp, xlmbtc, xlmusd, xlmeur, xlmgbp, linkusd, linkeur, linkgbp, linkbtc, linketh, omgusd, omgeur, omggbp, omgbtc, usdcusd, usdceur, daiusd, kncusd, knceur, kncbtc, mkrusd, mkreur, mkrbtc, zrxusd, zrxeur, zrxbtc, gusdusd
+////
+////
+// Bitstamp markets (set to '' to disable)
+exchange_markets['bitstamp'] = 'btceur';// !!BITSTAMP WEBSOCKET API ONLY SUPPORTS ONE ASSET!!
 ////
 ////
 // Coinbase markets (set to '' to disable)
@@ -27,8 +34,12 @@ exchange_markets['binance'] = 'uniusdt|unibtc|mkrusdt|mkrbtc';
 exchange_markets['kraken'] = 'KEEP/USD|MANA/USD'; 
 ////
 ////
-// HitBTC markets (set to '' to disable) !!HITBTC WEBSOCKET API ONLY SUPPORTS ONE ASSET!!
-exchange_markets['hitbtc'] = 'MYSTBTC';
+// Kucoin markets (set to '' to disable)
+exchange_markets['kucoin'] = 'MANA-BTC|ENJ-BTC|SXP-USDT';
+////
+////
+// HitBTC markets (set to '' to disable) 
+exchange_markets['hitbtc'] = 'MYSTBTC'; // !!HITBTC WEBSOCKET API ONLY SUPPORTS ONE ASSET!!
 
 
 
@@ -68,6 +79,11 @@ var vertical_position = 38;
 
 
 
+// Hide volume section, IF NO VOLUME WAS PROVIDED
+var hide_empty_volume = 'no'; // 'no' / 'yes'
+
+
+
 // Screen orientation (upright, or flip upside-down)
 var orient_screen = 'flip'; // 'upright' or 'flip'
 
@@ -94,7 +110,6 @@ var google_font = 'Varela Round'; // 'fontname' IN QUOTES for ANY google font, O
 // so numbers don't "jump around" when changing in real-time)
 // Set as null to skip monospace emulation 
 var monospace_width = 0.65; // decimal number format X.XX of 1.00 or less, OR null to skip (null MUST BE LOWERCASE WITHOUT QUOTES)
-
 
 
 

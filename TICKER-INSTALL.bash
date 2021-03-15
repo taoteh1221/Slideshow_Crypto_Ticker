@@ -428,10 +428,8 @@ EOF
 					
 					
 				# Setup cron (to check logs after install: tail -f /var/log/syslog | grep cron -i)
-				
-				/usr/bin/touch /etc/cron.d/ticker
 
-				CRONJOB="* * * * * $SYS_USER /bin/bash /home/$SYS_USER/dfd-crypto-ticker/bash/keep-screensaver-off.bash > /dev/null 2>&1"
+				CRONJOB="* * * * * $SYS_USER /bin/bash /home/$SYS_USER/dfd-crypto-ticker/bash/cron/cron.bash > /dev/null 2>&1"
 
 				# Play it safe and be sure their is a newline after this job entry
 				echo -e "$CRONJOB\n" > /etc/cron.d/ticker

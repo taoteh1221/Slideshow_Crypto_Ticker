@@ -346,6 +346,10 @@ v3.02.0
 
 -Re-branded name of app to "Slideshow Crypto Ticker"
 
+-Refactored cron logic (with caching)
+
+-Added Kucoin and Bitstamp API support
+
 IMPORTANT UPGRADE NOTES: The paths to the bash scripts changed in v2.13.0 and higher. Please re-run the auto-install script, 
 OR manually update (as sudo / admin) the files /lib/systemd/system/ticker.service AND /etc/cron.d/ticker, 
 and replace "/scripts/" with "/bash/". Also remove / re-create the ~/reload symbolic link.

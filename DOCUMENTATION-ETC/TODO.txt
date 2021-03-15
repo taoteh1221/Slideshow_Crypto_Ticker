@@ -1,10 +1,8 @@
 
 
-Add Kucoin / Binance US / Bitmex / Bitstamp webocket API support.
+Add Binance US / Bitmex webocket API support.
 
 https://www.bitmex.com/app/wsAPI
-
-https://www.bitstamp.net/websocket/v2/
 
 Add "pkill chromium" as either notes, or an option in the install script (to close the ticker after auto-startup).
 
