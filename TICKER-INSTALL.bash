@@ -655,7 +655,7 @@ echo "leverage / gain / loss / balance stats, news feeds and more:"
 echo " "
 echo "https://taoteh1221.github.io"
 echo " "
-echo "https://github.com/taoteh1221/DFD_Cryptocoin_Values"
+echo "https://github.com/taoteh1221/Open_Crypto_Portfolio_Tracker"
 echo " "
 
 echo "ANY DONATIONS (LARGE OR SMALL) HELP SUPPORT DEVELOPMENT OF MY APPS..."
