@@ -3,7 +3,7 @@ Slideshow Crypto Ticker - Developed by Michael Kilday <mike@dragonfrugal.com>, r
 
 Copyright 2019-2021 GPLv3
 
-Real Time Crypto Price Ticker For Raspberry Pis With LCD Screens, including 24 hour volume and Binance / Coinbase Pro / Kraken / HitBTC support (more exchanges coming in the future).
+Real Time Crypto Price Ticker For Raspberry Pis With LCD Screens, including 24 hour volume and Binance / Coinbase Pro / Kraken / Kucoin / Bitstamp / HitBTC support (more exchanges coming in the future).
 
 Supports running in "slideshow mode", to show all the markets you want.
 
@@ -149,13 +149,13 @@ sudo systemctl enable ticker.service
 
 Add this as a cron job every minute, by creating the following file (you'll need sudo/root permissions): /etc/cron.d/ticker and add the following line (and a carriage return AFTER it to be safe):
 
-* * * * * pi /bin/bash /home/pi/dfd-crypto-ticker/bash/keep-screensaver-off.bash > /dev/null 2>&1
+* * * * * pi /bin/bash /home/pi/dfd-crypto-ticker/bash/cron/cron.bash > /dev/null 2>&1
 
 
 
 If your system DOES NOT have /etc/cron.d/ on it, then NEARLY the same format (minus the username) can be installed via the 'crontab -e' command (logged in as the user you want running the cron job):
 
-* * * * * /bin/bash /home/pi/dfd-crypto-ticker/bash/keep-screensaver-off.bash > /dev/null 2>&1
+* * * * * /bin/bash /home/pi/dfd-crypto-ticker/bash/cron/cron.bash > /dev/null 2>&1
 
 
 
