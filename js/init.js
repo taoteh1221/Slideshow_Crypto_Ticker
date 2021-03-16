@@ -69,9 +69,10 @@ ticker_init();
 	// If more than one asset, run in slideshow mode (with delay of slideshow_speed seconds)
 	if ( window.markets_length > 1 ) {
 		
-		// If auto mode for slideshow speed
+		// If auto mode for slideshow speed (minimum of 5 seconds allowed)
 		if ( slideshow_speed == 0 ) {
 		slideshow_speed = Math.round(60 / window.markets_length);
+		slideshow_speed = slideshow_speed < 5 ? 5 : slideshow_speed;
 		}
 		
 	setInterval(ticker_init, slideshow_speed * 1000);

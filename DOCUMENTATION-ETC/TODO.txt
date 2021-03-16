@@ -1,4 +1,5 @@
 
+Add a tiny upgrade alert icon in GUI, when upgrade detected using github.com API??
 
 Add Binance US / Bitmex webocket API support.
 

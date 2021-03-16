@@ -49,7 +49,7 @@ var max_price_decimals = 7;
 
 
 // Seconds between "slideshowing" multiple tickers (if multiple assets configured)
-// SET TO ZERO FOR AUTO MODE (shows all configured tickers over 60 seconds)
+// SET TO ZERO FOR AUTO MODE (trys to show all tickers in 1 minute, BUT has a 5 second per-ticker MINIMUM)
 var slideshow_speed = 0; 
 
 
