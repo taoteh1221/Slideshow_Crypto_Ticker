@@ -358,27 +358,17 @@ and replace "/scripts/" with "/bash/". Also remove / re-create the ~/reload symb
 
 
 ---------------------------------------------------------
-v3.03.0
+v3.02.1
+
+-Bug fix, if user does not properly install the app, it should still run OK
+
+-Added market pairing configs feature to the config.js file, to support easily adding new market pairings
 
 -Set minimum ticker slideshow time for 'auto' mode to 5 seconds
 
 -Revised documentation
 
 -Housekeeping
-
-IMPORTANT UPGRADE NOTES: The paths to the bash scripts changed in v2.13.0 and higher. Please re-run the auto-install script, 
-OR manually update (as sudo / admin) the files /lib/systemd/system/ticker.service AND /etc/cron.d/ticker, 
-and replace "/scripts/" with "/bash/". Also remove / re-create the ~/reload symbolic link.
-
----------------------------------------------------------
-
-
----------------------------------------------------------
-v3.03.1
-
--Bug fix, if user does not properly install the app, it should still run OK
-
--Added market pairing configs feature to the config.js file, to support easily adding new market pairings
 
 IMPORTANT UPGRADE NOTES: The paths to the bash scripts changed in v2.13.0 and higher. Please re-run the auto-install script, 
 OR manually update (as sudo / admin) the files /lib/systemd/system/ticker.service AND /etc/cron.d/ticker, 
