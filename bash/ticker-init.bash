@@ -2,13 +2,17 @@
 
 # Copyright 2019-2021 GPLv3, Slideshow Crypto Ticker by Mike Kilday: http://DragonFrugal.com
 
+
+USERNAME=$(/usr/bin/logname)
+
 export DISPLAY=:0 
+
 
 ###################################
 
-# Start in user home directory
-cd ~/
 
+# Start in user home directory
+cd /home/$USERNAME
 
 /usr/bin/xset s off
 

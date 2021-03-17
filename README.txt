@@ -75,7 +75,7 @@ After updating config.js, reload the ticker with this command:
 ~/reload
 
 
-If ticker autostart on system boot fails for any reason, the ticker can be started MANUALLY (after system boot) with this command:
+If autostart does not work, you can run this command MANUALLY, #AFTER BOOTING INTO THE DESKTOP INTERFACE#, to start Slideshow Crypto Ticker:
 
 bash ~/dfd-crypto-ticker/bash/ticker-init.bash &>/dev/null &
 
@@ -92,7 +92,7 @@ If you have a "goodtft LCD-show" LCD screen and you installed it's drivers, you 
 MANUAL INSTALLATION (IF AUTO-INSTALL SCRIPT FAILS, ETC)...
 
 
-IMPORTANT NOTES: USE RASPBIAN FULL DESKTOP, #NOT# LITE, OR YOU LIKELY WILL HAVE SOME ISSUES EVEN AFTER UPGRADING TO GUI (trust me). If your system is NOT a Raspberry Pi, or you are logged in / running as a user other than 'pi', just substitute that username in place of the 'pi' user in references below.
+IMPORTANT NOTES: USE RASPBIAN #FULL# DESKTOP, #NOT# LITE, OR YOU LIKELY WILL HAVE SOME ISSUES EVEN AFTER UPGRADING TO GUI (trust me). If your system is NOT a Raspberry Pi, or you are logged in / running as a user other than 'pi', just substitute that username in place of the 'pi' user in references below.
 
 
 UPGRADE NOTES: For v2.13.0 and higher, delete any OLDER install's /scripts/ and /apps/ sub-directories WITHIN the main 'dfd-crypto-ticker' directory (THESE ARE NO LONGER USED).
@@ -149,13 +149,13 @@ sudo systemctl enable ticker.service
 
 Add this as a cron job every minute, by creating the following file (you'll need sudo/root permissions): /etc/cron.d/ticker and add the following line (and a carriage return AFTER it to be safe):
 
-* * * * * pi /bin/bash /home/pi/dfd-crypto-ticker/bash/cron/cron.bash > /dev/null 2>&1
+* * * * * pi /bin/bash /home/pi/dfd-crypto-ticker/bash/cron.bash > /dev/null 2>&1
 
 
 
 If your system DOES NOT have /etc/cron.d/ on it, then NEARLY the same format (minus the username) can be installed via the 'crontab -e' command (logged in as the user you want running the cron job):
 
-* * * * * /bin/bash /home/pi/dfd-crypto-ticker/bash/cron/cron.bash > /dev/null 2>&1
+* * * * * /bin/bash /home/pi/dfd-crypto-ticker/bash/cron.bash > /dev/null 2>&1
 
 
 

@@ -18,6 +18,18 @@ var markets_length = 0;
 
 
 // Exchange API endpoints
+
+// If kucoin auth data is cached, allow kucoin configs
+if ( typeof kucoin_endpoint !== 'undefined' && typeof kucoin_token !== 'undefined' ) {
+api['kucoin'] = kucoin_endpoint + '?token=' + kucoin_token;
+}
+// Remove kucoin market configs if no cache data is present, to avoid script errors,
+// and alert (to console ONLY) that app was improperly installed
+else {
+delete exchange_markets['kucoin']; 
+install_alert(); 
+}
+
 api['binance'] = 'wss://stream.binance.com:9443/ws';
 
 api['coinbase'] = 'wss://ws-feed.gdax.com';
@@ -27,9 +39,6 @@ api['kraken'] = 'wss://ws.kraken.com';
 api['hitbtc'] = 'wss://api.hitbtc.com/api/2/ws';
 
 api['bitstamp'] = 'wss://ws.bitstamp.net/';
-
-api['kucoin'] = kucoin_endpoint + '?token=' + kucoin_token;
-
 
 // Put configged markets into a multi-dimensional array, calculate number of markets total
 Object.keys(exchange_markets).forEach(function(exchange) {

@@ -2,6 +2,13 @@
 
 # Copyright 2019-2021 GPLv3, Slideshow Crypto Ticker by Mike Kilday: http://DragonFrugal.com
 
+
+USERNAME=$(/usr/bin/logname)
+
+# Start in user home directory
+cd /home/$USERNAME
+
+
 echo "THIS SCRIPT CURRENTLY ONLY SUPPORTS \"goodtft LCD-show\" LCDs! Enter your model number to continue (example: MHS35)"
 
 read MODEL

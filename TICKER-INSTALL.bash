@@ -58,6 +58,11 @@ else
 fi
 
 
+
+# Start in user home directory
+cd /home/$USERNAME
+
+
 ######################################
 
 
@@ -137,7 +142,7 @@ echo " "
 echo "This script may work on other Debian-based systems as well, but it has not been tested for that purpose."
 echo " "
 
-echo "USE RASPBIAN FULL DESKTOP, #NOT# LITE, OR YOU LIKELY WILL HAVE SOME"
+echo "USE RASPBIAN #FULL# DESKTOP, #NOT# LITE, OR YOU LIKELY WILL HAVE SOME"
 echo "CHROMIUM BROWSER ISSUES EVEN AFTER UPGRADING TO GUI / CHROME (trust me)."
 echo "(GUI desktop and Chromium browser are required for this ticker app)"
 echo " "
@@ -260,7 +265,7 @@ select opt in $OPTIONS; do
 				
 				echo " "
 				
-				mkdir DFD-Crypto-Ticker
+				/usr/bin/mkdir DFD-Crypto-Ticker
 				
 				cd DFD-Crypto-Ticker
 				
@@ -275,19 +280,23 @@ select opt in $OPTIONS; do
 				# Remove depreciated directory structure from any previous installs
 				rm -rf /home/$SYS_USER/dfd-crypto-ticker/apps 
 				rm -rf /home/$SYS_USER/dfd-crypto-ticker/scripts
+				rm -rf /home/$SYS_USER/dfd-crypto-ticker/cache/json
+				rm -rf /home/$SYS_USER/dfd-crypto-ticker/cache/js
 
 				/bin/sleep 1
 				
   				# Copy over the upgrade install files to the install directory, after cleaning up dev files
 				# No trailing forward slash here
 				
-  				mkdir -p /home/$SYS_USER/dfd-crypto-ticker
+  				/usr/bin/mkdir -p /home/$SYS_USER/dfd-crypto-ticker
 				
 				rm -rf .git
 				rm -rf .github
 				rm .gitattributes
 				rm .gitignore
 				rm CODEOWNERS
+				rm /home/$SYS_USER/dfd-crypto-ticker/bash/cron/cron.bash
+				rm /home/$SYS_USER/dfd-crypto-ticker/bash/cron/kucoin-auth.bash
 				
 				\cp -r ./ /home/$SYS_USER/dfd-crypto-ticker
 
@@ -429,7 +438,7 @@ EOF
 					
 				# Setup cron (to check logs after install: tail -f /var/log/syslog | grep cron -i)
 
-				CRONJOB="* * * * * $SYS_USER /bin/bash /home/$SYS_USER/dfd-crypto-ticker/bash/cron/cron.bash > /dev/null 2>&1"
+				CRONJOB="* * * * * $SYS_USER /bin/bash /home/$SYS_USER/dfd-crypto-ticker/bash/cron.bash > /dev/null 2>&1"
 
 				# Play it safe and be sure their is a newline after this job entry
 				echo -e "$CRONJOB\n" > /etc/cron.d/ticker
@@ -501,7 +510,7 @@ select opt in $OPTIONS; do
 				
 			/bin/chown $SYS_USER:$SYS_USER /home/$SYS_USER/display
 			
-			mkdir -p /home/$SYS_USER/goodtft/builds
+			/usr/bin/mkdir -p /home/$SYS_USER/goodtft/builds
 			
 			cd /home/$SYS_USER/goodtft/builds
 			
@@ -565,8 +574,8 @@ fi
 
 if [ "$AUTOSTART_ALERT" = "1" ] || [ "$AUTOSTART_ALERT" = "2" ]; then
 
-echo "Regardless of autostart being enabled or not, you can run this command"
-echo "AFTER system boot MANUALLY, to start Slideshow Crypto Ticker:"
+echo "If autostart does not work, you can run this command MANUALLY,"
+echo "#AFTER BOOTING INTO THE DESKTOP INTERFACE#, to start Slideshow Crypto Ticker:"
 echo "bash ~/dfd-crypto-ticker/bash/ticker-init.bash &>/dev/null &"
 echo " "
 					

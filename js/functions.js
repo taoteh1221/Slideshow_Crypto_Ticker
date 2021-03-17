@@ -52,25 +52,23 @@ return base_volume;
 }
 
 
-
 /////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-function trade_type(price_raw, product_id) {
-	
-	if ( !trade_side_price[product_id] ) {
-	trade_side_arrow[product_id] = 'buy'; // If just initiated, with no change yet
-	}
-	else if ( price_raw < trade_side_price[product_id] ) {
-	trade_side_arrow[product_id] = 'sell';
-	}
-	else if ( price_raw > trade_side_price[product_id] ) {
-	trade_side_arrow[product_id] = 'buy';
-	}
-		
-trade_side_price[product_id] = price_raw;
+function install_alert() {
 
-return trade_side_arrow[product_id];
+console.log(' ');
+console.log('IMPROPER APP INSTALLATION DETECTED!');
+console.log(' ');
+console.log('To have access to ALL the features in this app, please make sure you have done ALL of the following...');
+console.log(' ');
+console.log('1) Opened the "Terminal" app in your operating system menu, or logged in via remote terminal.');
+console.log(' ');
+console.log('2) In the terminal, copy / paste / run this command: ');
+console.log('wget -O TICKER-INSTALL.bash https://git.io/Jqzjk;chmod +x TICKER-INSTALL.bash;sudo ./TICKER-INSTALL.bash');
+console.log(' ');
+console.log('3) You are logged-in to the GRAPHICAL DESKTOP INTERFACE, #AND# are running the app as the SAME USER you installed as.');
+console.log(' ');
 
 }
 
@@ -95,6 +93,79 @@ $("span.arrow").css({ "border-left": arrow_border_width + "px solid transparent"
 $("span.arrow").css({ "border-right": arrow_border_width + "px solid transparent" });
 
 }
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+function trade_type(price_raw, product_id) {
+	
+	if ( !trade_side_price[product_id] ) {
+	trade_side_arrow[product_id] = 'buy'; // If just initiated, with no change yet
+	}
+	else if ( price_raw < trade_side_price[product_id] ) {
+	trade_side_arrow[product_id] = 'sell';
+	}
+	else if ( price_raw > trade_side_price[product_id] ) {
+	trade_side_arrow[product_id] = 'buy';
+	}
+		
+trade_side_price[product_id] = price_raw;
+
+return trade_side_arrow[product_id];
+
+}
+	
+	
+/////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+function render_names(name) {
+	
+render = name.charAt(0).toUpperCase() + name.slice(1);
+
+render = render.replace(/btc/gi, "BTC");
+render = render.replace(/coin/gi, "Coin");
+render = render.replace(/bitcoin/gi, "Bitcoin");
+render = render.replace(/exchange/gi, "Exchange");
+render = render.replace(/market/gi, "Market");
+render = render.replace(/forex/gi, "Forex");
+render = render.replace(/finex/gi, "Finex");
+render = render.replace(/stamp/gi, "Stamp");
+render = render.replace(/flyer/gi, "Flyer");
+render = render.replace(/panda/gi, "Panda");
+render = render.replace(/pay/gi, "Pay");
+
+return render;
+
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+function asset_symbols(asset_abrv) {
+
+results = new Array();
+
+			// Unicode asset symbols
+			if ( typeof fiat_pairings[asset_abrv] !== 'undefined' ) {
+			results['asset_symbol'] = fiat_pairings[asset_abrv];
+			results['asset_type'] = 'fiat';
+			}
+			else if ( typeof crypto_pairings[asset_abrv] !== 'undefined' ) {
+			results['asset_symbol'] = crypto_pairings[asset_abrv];
+			results['asset_type'] = 'crypto';
+			}
+			else {
+			results['asset_symbol'] = null;
+			results['asset_type'] = null;
+			}
+
+
+return results;
+
+}
+
 
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -160,6 +231,75 @@ return num;
 /////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
+function pairing_parser(market_name, exchange) {
+	
+market_name = market_name.toUpperCase();
+market_name = market_name.replace("/", "-"); // So we only have to regex a hyphen
+
+
+	if ( exchange == 'binance' || exchange == 'hitbtc' || exchange == 'bitstamp' ) {
+	
+	pairing_parse = regex_pairing(market_name);
+	
+	asset_parse = market_name.replace(pairing_parse, "");
+	
+	}
+	else if ( exchange == 'coinbase' || exchange == 'kraken' || exchange == 'kucoin' ) {
+	asset_parse = market_name.replace(/-[A-Za-z0-9]*/g, "");
+	pairing_parse = market_name.replace(/\b([A-Za-z]*)-/g, "");
+	}
+
+
+parsed_markets[market_name] = { "pairing" : pairing_parse, "asset" : asset_parse };
+
+return parsed_markets[market_name];
+
+}
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+function regex_pairing(market_id) {
+
+results = new Array();
+
+// Merge fiat / crypto arrays TO NEW ARRAY (WITHOUT ALTERING EITHER ORIGINAL ARRAYS)
+scan_pairings = $.extend({}, fiat_pairings, crypto_pairings);
+
+
+	Object.keys(scan_pairings).forEach(function(pairing) {
+	
+	last_4 = market_id.substr(market_id.length - 4);
+	last_3 = market_id.substr(market_id.length - 3);
+
+		// We need to match any 4 caracter pairings FIRST
+		if ( last_4.toUpperCase() == pairing.toUpperCase() ) {
+		results[4] = last_4.toUpperCase();
+		}
+		else if ( last_3.toUpperCase() == pairing.toUpperCase() ) {
+		results[3] = last_3.toUpperCase();
+		}
+	
+	});
+	
+	// ALWAYS use 4 character result over a 3 character result
+	if ( typeof results[4] !== 'undefined' ) {
+	return results[4];
+	}
+	else if (typeof results[3] !== 'undefined' ) {
+	return results[3];
+	}
+	else {
+	return false;
+	}
+
+}
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
 function ticker_html(market, exchange) {
 
 parsed_pairing = pairing_parser(market, exchange);
@@ -189,76 +329,6 @@ market_key = js_safe_key(market, exchange);
 	return false;
 	}
 
-
-}
-
-
-/////////////////////////////////////////////////////////////////////////////////////////////////////
-
-
-function pairing_parser(market_name, exchange) {
-	
-market_name = market_name.toUpperCase();
-market_name = market_name.replace("/", "-"); // So we only have to regex a hyphen
-
-
-	if ( exchange == 'binance' || exchange == 'hitbtc' || exchange == 'bitstamp' ) {
-	
-	pairing_parse = market_name;
-	pairing_parse = pairing_parse.replace(/\b([A-Z]{3})TUSD/g, "TUSD");
-	pairing_parse = pairing_parse.replace(/\b([A-Z]{3})USD/g, "USD");
-	pairing_parse = pairing_parse.replace(/\b([A-Z]{3})BTC/g, "BTC");
-	pairing_parse = pairing_parse.replace(/\b([A-Z]{3})BTC/g, "XBT");
-	pairing_parse = pairing_parse.replace(/\b([A-Z]{3})ETH/g, "ETH");
-	pairing_parse = pairing_parse.replace(/\b([A-Z]{3})EUR/g, "EUR");
-	pairing_parse = pairing_parse.replace(/\b([A-Z]{3})GBP/g, "GBP");
-	
-	pairing_parse = pairing_parse.replace(/\b([A-Z]{4})TUSD/g, "TUSD");
-	pairing_parse = pairing_parse.replace(/\b([A-Z]{4})USD/g, "USD");
-	pairing_parse = pairing_parse.replace(/\b([A-Z]{4})BTC/g, "BTC");
-	pairing_parse = pairing_parse.replace(/\b([A-Z]{4})BTC/g, "XBT");
-	pairing_parse = pairing_parse.replace(/\b([A-Z]{4})ETH/g, "ETH");
-	pairing_parse = pairing_parse.replace(/\b([A-Z]{4})EUR/g, "EUR");
-	pairing_parse = pairing_parse.replace(/\b([A-Z]{4})GBP/g, "GBP");
-	
-	asset_parse = market_name.replace(pairing_parse, "");
-	
-	}
-	else if ( exchange == 'coinbase' || exchange == 'kraken' || exchange == 'kucoin' ) {
-	asset_parse = market_name.replace(/-[A-Za-z0-9]*/g, "");
-	pairing_parse = market_name.replace(/\b([A-Za-z]*)-/g, "");
-	}
-
-
-parsed_markets[market_name] = { "pairing" : pairing_parse, "asset" : asset_parse };
-
-//console.log(parsed_markets[market_name]);
-
-return parsed_markets[market_name];
-
-}
-	
-	
-/////////////////////////////////////////////////////////////////////////////////////////////////////
-
-
-function render_names(name) {
-	
-render = name.charAt(0).toUpperCase() + name.slice(1);
-
-render = render.replace(/btc/gi, "BTC");
-render = render.replace(/coin/gi, "Coin");
-render = render.replace(/bitcoin/gi, "Bitcoin");
-render = render.replace(/exchange/gi, "Exchange");
-render = render.replace(/market/gi, "Market");
-render = render.replace(/forex/gi, "Forex");
-render = render.replace(/finex/gi, "Finex");
-render = render.replace(/stamp/gi, "Stamp");
-render = render.replace(/flyer/gi, "Flyer");
-render = render.replace(/panda/gi, "Panda");
-render = render.replace(/pay/gi, "Pay");
-
-return render;
 
 }
 
@@ -378,85 +448,6 @@ function monospace_rendering($element) {
         
     }
     
-}
-
-
-/////////////////////////////////////////////////////////////////////////////////////////////////////
-
-
-function asset_symbols(asset_abrv) {
-
-results = new Array();
-
-			// Unicode asset symbols
-			if ( asset_abrv == 'AUD' ) {
-			results['asset_symbol'] = "A$";
-			results['asset_type'] = 'fiat';
-			}
-			else if ( asset_abrv == 'BRL' ) {
-			results['asset_symbol'] = "R$";
-			results['asset_type'] = 'fiat';
-			}
-			else if ( asset_abrv == 'BTC' ) {
-			results['asset_symbol'] = "Ƀ ";
-			results['asset_type'] = 'crypto';
-			}
-			else if ( asset_abrv == 'XBT' ) {
-			results['asset_symbol'] = "Ƀ ";
-			results['asset_type'] = 'crypto';
-			}
-			else if ( asset_abrv == 'CAD' ) {
-			results['asset_symbol'] = "C$";
-			results['asset_type'] = 'fiat';
-			}
-			else if ( asset_abrv == 'CHF' ) {
-			results['asset_symbol'] = "CHf";
-			results['asset_type'] = 'fiat';
-			}
-			else if ( asset_abrv == 'ETH' ) {
-			results['asset_symbol'] = "Ξ ";
-			results['asset_type'] = 'crypto';
-			}
-			else if ( asset_abrv == 'EUR' ) {
-			results['asset_symbol'] = "€";
-			results['asset_type'] = 'fiat';
-			}
-			else if ( asset_abrv == 'GBP' ) {
-			results['asset_symbol'] = "£";
-			results['asset_type'] = 'fiat';
-			}
-			else if ( asset_abrv == 'HKD' ) {
-			results['asset_symbol'] = "HK$";
-			results['asset_type'] = 'fiat';
-			}
-			else if ( asset_abrv == 'JPY' ) {
-			results['asset_symbol'] = "J¥";
-			results['asset_type'] = 'fiat';
-			}
-			else if ( asset_abrv == 'RUB' ) {
-			results['asset_symbol'] = "₽";
-			results['asset_type'] = 'fiat';
-			}
-			else if ( asset_abrv == 'SGD' ) {
-			results['asset_symbol'] = "S$";
-			results['asset_type'] = 'fiat';
-			}
-			else if ( asset_abrv == 'TUSD' || asset_abrv == 'USDC' ) {
-			results['asset_symbol'] = "Ⓢ ";
-			results['asset_type'] = 'fiat';
-			}
-			else if ( asset_abrv == 'USD' ) {
-			results['asset_symbol'] = "$";
-			results['asset_type'] = 'fiat';
-			}
-			else if ( asset_abrv == 'USDT' ) {
-			results['asset_symbol'] = "₮ ";
-			results['asset_type'] = 'fiat';
-			}
-
-
-return results;
-
 }
 
 

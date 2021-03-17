@@ -113,4 +113,40 @@ var monospace_width = 0.65; // decimal number format X.XX of 1.00 or less, OR nu
 
 
 
+// All #ACTIVATED# market pairings, AND their currency symbols
+// ADD ANY NEW MARKET PAIRINGS HERE YOU WANT #ACTIVATED# IN THIS APP (IF THEY ARE NOT ADDED HERE ALREADY)
+
+
+// Fiat-equivelent market pairings (KEYS #MUST BE# UPPERCASE)
+var fiat_pairings = {
+								'AUD': 'A$',
+								'BRL': 'R$',
+								'CAD': 'C$',
+								'CHF': 'CHf',
+								'EUR': '€',
+								'GBP': '£',
+								'HKD': 'HK$',
+								'JPY': 'J¥',
+								'RUB': '₽',
+								'SGD': 'S$',
+								'TUSD': 'Ⓢ ',
+								'USD': '$',
+								'USDC': 'Ⓢ ',
+								'USDT': '₮ ',
+								};
+
+
+// Crypto market pairings (KEYS #MUST BE# UPPERCASE)
+var crypto_pairings = {
+								'BNB': 'Ⓑ ',
+								'BTC': 'Ƀ ',
+								'ETH': 'Ξ ',
+								'KCS': 'Ḵ ',
+								'XBT': 'Ƀ ',
+								};
+
+
+
+
+
 
