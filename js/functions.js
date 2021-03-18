@@ -55,21 +55,21 @@ return base_volume;
 /////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-function trade_type(price_raw, product_id) {
+function trade_type(price_raw, market_id) {
 	
-	if ( !trade_side_price[product_id] ) {
-	trade_side_arrow[product_id] = 'buy'; // If just initiated, with no change yet
+	if ( !trade_side_price[market_id] ) {
+	trade_side_arrow[market_id] = 'buy'; // If just initiated, with no change yet
 	}
-	else if ( price_raw < trade_side_price[product_id] ) {
-	trade_side_arrow[product_id] = 'sell';
+	else if ( price_raw < trade_side_price[market_id] ) {
+	trade_side_arrow[market_id] = 'sell';
 	}
-	else if ( price_raw > trade_side_price[product_id] ) {
-	trade_side_arrow[product_id] = 'buy';
+	else if ( price_raw > trade_side_price[market_id] ) {
+	trade_side_arrow[market_id] = 'buy';
 	}
 		
-trade_side_price[product_id] = price_raw;
+trade_side_price[market_id] = price_raw;
 
-return trade_side_arrow[product_id];
+return trade_side_arrow[market_id];
 
 }
 
@@ -84,12 +84,12 @@ console.log('IMPROPER APP INSTALLATION DETECTED!');
 console.log(' ');
 console.log('To have access to ALL the features in this app, please make sure you have done ALL of the following...');
 console.log(' ');
-console.log('1) Opened the "Terminal" app in your operating system menu, or logged in via remote terminal.');
+console.log('1) Open the "Terminal" app in your operating system interface menu, or login via remote terminal, AS THE USER YOU WANT RUNNING THE APP.');
 console.log(' ');
-console.log('2) In the terminal, copy / paste / run this command: ');
+console.log('2) In the terminal, copy / paste / run this command, THEN REBOOT when finished installing the app:');
 console.log('wget -O TICKER-INSTALL.bash https://git.io/Jqzjk;chmod +x TICKER-INSTALL.bash;sudo ./TICKER-INSTALL.bash');
 console.log(' ');
-console.log('3) You are logged-in to the GRAPHICAL DESKTOP INTERFACE, #AND# are running the app as the SAME USER you installed as.');
+console.log('3) ON REBOOT / TICKER STARTUP, you are logged-in to the GRAPHICAL DESKTOP INTERFACE, #AND# are running the app as the SAME USER YOU INSTALLED AS.');
 console.log(' ');
 
 }
