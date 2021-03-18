@@ -55,6 +55,28 @@ return base_volume;
 /////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
+function trade_type(price_raw, product_id) {
+	
+	if ( !trade_side_price[product_id] ) {
+	trade_side_arrow[product_id] = 'buy'; // If just initiated, with no change yet
+	}
+	else if ( price_raw < trade_side_price[product_id] ) {
+	trade_side_arrow[product_id] = 'sell';
+	}
+	else if ( price_raw > trade_side_price[product_id] ) {
+	trade_side_arrow[product_id] = 'buy';
+	}
+		
+trade_side_price[product_id] = price_raw;
+
+return trade_side_arrow[product_id];
+
+}
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
 function install_alert() {
 
 console.log(' ');
@@ -91,28 +113,6 @@ $("span.sell").css({ "border-top": arrow_height + "px solid rgb(199, 105, 105)" 
 $("div.arrow_wrapper").css({ "width": arrow_width + "px" });
 $("span.arrow").css({ "border-left": arrow_border_width + "px solid transparent" });
 $("span.arrow").css({ "border-right": arrow_border_width + "px solid transparent" });
-
-}
-
-
-/////////////////////////////////////////////////////////////////////////////////////////////////////
-
-
-function trade_type(price_raw, product_id) {
-	
-	if ( !trade_side_price[product_id] ) {
-	trade_side_arrow[product_id] = 'buy'; // If just initiated, with no change yet
-	}
-	else if ( price_raw < trade_side_price[product_id] ) {
-	trade_side_arrow[product_id] = 'sell';
-	}
-	else if ( price_raw > trade_side_price[product_id] ) {
-	trade_side_arrow[product_id] = 'buy';
-	}
-		
-trade_side_price[product_id] = price_raw;
-
-return trade_side_arrow[product_id];
 
 }
 	
@@ -231,28 +231,30 @@ return num;
 /////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-function pairing_parser(market_name, exchange) {
+function market_id_parser(market_id, exchange) {
 	
-market_name = market_name.toUpperCase();
-market_name = market_name.replace("/", "-"); // So we only have to regex a hyphen
+market_id = market_id.toUpperCase(); // Uppercase
+
+// So we only have to regex a hyphen, #CONVERT ALL DELIMITERS TO HYPHENS HERE#
+market_id = market_id.replace("/", "-"); 
 
 
-	if ( exchange == 'binance' || exchange == 'hitbtc' || exchange == 'bitstamp' ) {
-	
-	pairing_parse = regex_pairing(market_name);
-	
-	asset_parse = market_name.replace(pairing_parse, "");
-	
+	// HYPHEN-delimited market IDs 
+	// (ALL DELIMITERS ARE CONVERTED TO HYPHENS [IN THIS FUNCTION ONLY]...SEE market_id ABOVE)
+	if ( exchange == 'coinbase' || exchange == 'kraken' || exchange == 'kucoin' ) {
+	pairing = market_id.replace(/\b([A-Za-z]*)-/g, "");
+	asset = market_id.replace(/-[A-Za-z0-9]*/g, "");
 	}
-	else if ( exchange == 'coinbase' || exchange == 'kraken' || exchange == 'kucoin' ) {
-	asset_parse = market_name.replace(/-[A-Za-z0-9]*/g, "");
-	pairing_parse = market_name.replace(/\b([A-Za-z]*)-/g, "");
+	// NON-delimited market IDs
+	else {
+	pairing = regex_pairing_detection(market_id);
+	asset = market_id.replace(pairing, "");
 	}
 
 
-parsed_markets[market_name] = { "pairing" : pairing_parse, "asset" : asset_parse };
+parsed_markets[market_id] = { "pairing" : pairing, "asset" : asset };
 
-return parsed_markets[market_name];
+return parsed_markets[market_id];
 
 }
 
@@ -260,7 +262,43 @@ return parsed_markets[market_name];
 /////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-function regex_pairing(market_id) {
+function monospace_check() {
+	
+check = monospace_width;
+
+
+	// Not a number check
+	if ( isNaN(check) ) {
+   return false;
+	}
+
+
+// Second number check, with check for decimals with value of 1.00 or less
+var result = (check - Math.floor(check)) !== 0; 
+   
+   
+  if (result) { // Is a decimal number
+  
+  	if ( monospace_width > 1 ) { // Is greater than 1.00
+  	return false;
+  	}
+  	else { // Is NOT greater than 1.00
+  	return true;
+  	}
+  	
+  }
+  else { // Is not a decimal number
+  return false;
+  }
+     
+     
+ }
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+function regex_pairing_detection(market_id) {
 
 results = new Array();
 
@@ -300,15 +338,15 @@ scan_pairings = $.extend({}, fiat_pairings, crypto_pairings);
 /////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-function ticker_html(market, exchange) {
+function ticker_html(market_id, exchange) {
 
-parsed_pairing = pairing_parser(market, exchange);
+parsed_market_id = market_id_parser(market_id, exchange);
 				 
-asset = parsed_pairing.asset;
+asset = parsed_market_id.asset;
 		
-pairing = parsed_pairing.pairing;
+pairing = parsed_market_id.pairing;
   
-market_key = js_safe_key(market, exchange);
+market_key = js_safe_key(market_id, exchange);
 
 	
 	// To assure appropriate ticker updated
@@ -331,42 +369,6 @@ market_key = js_safe_key(market, exchange);
 
 
 }
-
-
-/////////////////////////////////////////////////////////////////////////////////////////////////////
-
-
-function monospace_check() {
-	
-check = monospace_width;
-
-
-	// Not a number check
-	if ( isNaN(check) ) {
-   return false;
-	}
-
-
-// Second number check, with check for decimals with value of 1.00 or less
-var result = (check - Math.floor(check)) !== 0; 
-   
-   
-  if (result) { // Is a decimal number
-  
-  	if ( monospace_width > 1 ) { // Is greater than 1.00
-  	return false;
-  	}
-  	else { // Is NOT greater than 1.00
-  	return true;
-  	}
-  	
-  }
-  else { // Is not a decimal number
-  return false;
-  }
-     
-     
- }
 
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -491,7 +493,7 @@ function api_connect(exchange) {
 		// Coinbase
 		if ( exchange == 'coinbase' && msg["type"] == 'ticker' ) {
 				 
-		product_id = msg["product_id"];
+		market_id = msg["product_id"];
 				 
 		price_raw = msg["price"];
 				 
@@ -503,7 +505,7 @@ function api_connect(exchange) {
 		// Binance
 		else if ( exchange == 'binance' && !msg["id"] && msg["e"] == '24hrTicker' ) {
 				 
-		product_id = msg["s"];
+		market_id = msg["s"];
 				 
 		price_raw = msg["c"];
 				 
@@ -515,7 +517,7 @@ function api_connect(exchange) {
 		// Kraken
 		else if ( exchange == 'kraken' && !msg["event"] && msg[2] == 'ticker' ) {
 				 
-		product_id = msg[3];
+		market_id = msg[3];
 				 
 		price_raw = msg[1]["c"][0];
 				 
@@ -527,7 +529,7 @@ function api_connect(exchange) {
 		// HitBTC
 		else if ( exchange == 'hitbtc' && !msg["result"] && msg["method"] == 'ticker' ) {
 				 
-		product_id = msg["params"]["symbol"];
+		market_id = msg["params"]["symbol"];
 				 
 		price_raw = msg["params"]["last"];
 				 
@@ -539,7 +541,7 @@ function api_connect(exchange) {
 		// Kucoin
 		else if ( exchange == 'kucoin' && msg["subject"] == 'trade.snapshot' ) {
 				 
-		product_id = msg["data"]["data"]["symbol"];
+		market_id = msg["data"]["data"]["symbol"];
 				 
 		price_raw = msg["data"]["data"]["close"];
 				 
@@ -551,7 +553,7 @@ function api_connect(exchange) {
 		// Kucoin
 		else if ( exchange == 'bitstamp' && msg["event"] == 'trade' ) {
 				 
-		product_id = msg["channel"].replace("live_trades_", "");
+		market_id = msg["channel"].replace("live_trades_", "");
 				 
 		price_raw = msg["data"]["price"];
 				 
@@ -561,29 +563,29 @@ function api_connect(exchange) {
 				 
 		}
 		else {
-		product_id = null;
+		market_id = null;
 		}
 	  
 	  
   
-	   // Render
-		if ( product_id ) {
+	   // Render (IF market_id defined)
+		if ( typeof market_id !== 'undefined' ) {
 			 
 		//console.log('asset = ' + asset);
 		//console.log('pairing = ' + pairing);
 		
-		update_key = js_safe_key(product_id, exchange);
+		update_key = js_safe_key(market_id, exchange);
 		
 			// To assure appropriate ticker updated
 			if ( update_key ) {
 			
-			parsed_pairing = pairing_parser(product_id, exchange);
+			parsed_market_id = market_id_parser(market_id, exchange);
 					 
-			asset = parsed_pairing.asset;
+			asset = parsed_market_id.asset;
 			
-			pairing = parsed_pairing.pairing;
+			pairing = parsed_market_id.pairing;
 			
-			trade_side = trade_type(price_raw, product_id);
+			trade_side = trade_type(price_raw, market_id);
 		 
 			market_info = asset_symbols(pairing);
 		 
