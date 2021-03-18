@@ -17,9 +17,11 @@ Download Latest Version: https://github.com/taoteh1221/Slideshow_Crypto_Ticker/r
 
 Issue Reporting (Features / Issues / Help): https://github.com/taoteh1221/Slideshow_Crypto_Ticker/issues
 
-Discord Chat: https://discord.gg/WZVK2nm
+Discord: https://discord.gg/WZVK2nm
 
-Telegram Chat: https://t.me/joinchat/Oo2XZRS2HsOXSMGejgSO0A
+Telegram: https://t.me/joinchat/Oo2XZRS2HsOXSMGejgSO0A
+
+Twitter: https://twitter.com/taoteh1221
 
 Private Contact: https://dragonfrugal.com/contact
 
@@ -45,7 +47,7 @@ AUTOMATIC INSTALLATION
 IMPORTANT NOTES: This install script has been designed to run generically on Debian-based systems, but has only been tested on Raspberry Pis running Raspian. For Ticker autostart at system boot, the LXDE Desktop is required (this is the default desktop on Raspberry Pis). The ticker can also be manually started (see CONFIGURING AFTER INSTALLATION).
 
 
-To install / upgrade everything automatically on a Raspberry Pi (an affordable low power single board computer), copy / paste / run the command below in a terminal program while logged in on the Raspberry Pi:
+To install / upgrade everything automatically on a Raspberry Pi (an affordable low power single board computer), copy / paste / run the command below in a terminal program (using the 'Terminal' app in the system menu, or over remote SSH), while logged in AS THE USER THAT WILL RUN THE APP (user must have sudo permissions):
 
 
 wget -O TICKER-INSTALL.bash https://git.io/Jqzjk;chmod +x TICKER-INSTALL.bash;sudo ./TICKER-INSTALL.bash
