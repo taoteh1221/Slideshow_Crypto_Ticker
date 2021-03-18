@@ -1,5 +1,5 @@
 
-Add a tiny upgrade alert icon in GUI, when upgrade detected using github.com API??
+Add a VERY TINY upgrade ! round icon in top left corner, with VERY TINY wording 'Upgrade' to the right next to it. Use my github API logic javascript from taoteh1221.github.io, and port my version check logic in the portfolio app to javascript (even checks bug release versions). ALSO ADD A CONFIG SETTING TO DISABLE SHOWING THIS UPGRADE ALERT, DEFAULT TO 'ON'.
 
 Add Binance US / Bitmex webocket API support.
 
