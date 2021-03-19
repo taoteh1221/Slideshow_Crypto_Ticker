@@ -3,35 +3,33 @@
 # Copyright 2019-2021 GPLv3, Slideshow Crypto Ticker by Mike Kilday: http://DragonFrugal.com
 
 
+# Username
 USERNAME=$(/usr/bin/logname)
-
 
 # Start in user home directory
 cd /home/$USERNAME
 
-
-# Create cache directory if it doesn't exist yet
-if [ ! -d ~/dfd-crypto-ticker/cache ]; then
-/usr/bin/mkdir -p ~/dfd-crypto-ticker/cache/json
-/usr/bin/mkdir -p ~/dfd-crypto-ticker/cache/js
-fi
-
-
-
 # Current timestamp
 CURRENT_TIMESTAMP=$(/usr/bin/date +%s)
 
-# 1 week threshold (in seconds)
-SECONDS_THRESHOLD=604800
+
+
+# Create cache directory if it doesn't exist yet
+if [ ! -d ~/dfd-crypto-ticker/cache ]; then
+/usr/bin/mkdir -p ~/dfd-crypto-ticker/cache
+fi
 
 
 
 # Check to see if the kucoin cache data needs to be updated
 if [ -f ~/dfd-crypto-ticker/cache/kucoin-auth.json ]; then
 
+# 6 hours (in seconds) between refreshings
+KUCOIN_REFRESH=21600
+
 KUCOIN_LAST_MODIFIED=$(/usr/bin/date +%s -r ~/dfd-crypto-ticker/cache/kucoin-auth.json)
 
-KUCOIN_THRESHOLD=$((KUCOIN_LAST_MODIFIED + SECONDS_THRESHOLD))
+KUCOIN_THRESHOLD=$((KUCOIN_LAST_MODIFIED + KUCOIN_REFRESH))
 
 	if [ "$CURRENT_TIMESTAMP" -ge "$KUCOIN_THRESHOLD" ]; then
 	UPDATE_KUCOIN=1

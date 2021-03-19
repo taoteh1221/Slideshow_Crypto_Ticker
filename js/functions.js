@@ -305,32 +305,22 @@ results = new Array();
 // Merge fiat / crypto arrays TO NEW ARRAY (WITHOUT ALTERING EITHER ORIGINAL ARRAYS)
 scan_pairings = $.extend({}, fiat_pairings, crypto_pairings);
 
+// last 4 / last 3 characters of the market id
+last_4 = market_id.substr(market_id.length - 4);
+last_3 = market_id.substr(market_id.length - 3);
 
-	Object.keys(scan_pairings).forEach(function(pairing) {
-	
-	last_4 = market_id.substr(market_id.length - 4);
-	last_3 = market_id.substr(market_id.length - 3);
 
-		// We need to match any 4 caracter pairings FIRST
-		if ( last_4.toUpperCase() == pairing.toUpperCase() ) {
-		results[4] = last_4.toUpperCase();
-		}
-		else if ( last_3.toUpperCase() == pairing.toUpperCase() ) {
-		results[3] = last_3.toUpperCase();
-		}
-	
-	});
-	
-	// ALWAYS use 4 character result over a 3 character result
-	if ( typeof results[4] !== 'undefined' ) {
-	return results[4];
+	// Check for 4 character pairing configs existing FIRST
+	if ( typeof scan_pairings[last_4.toUpperCase()] !== 'undefined' ) {
+	return last_4.toUpperCase();
 	}
-	else if (typeof results[3] !== 'undefined' ) {
-	return results[3];
+	else if ( typeof scan_pairings[last_3.toUpperCase()] !== 'undefined' ) {
+	return last_3.toUpperCase();
 	}
 	else {
 	return false;
 	}
+	
 
 }
 
