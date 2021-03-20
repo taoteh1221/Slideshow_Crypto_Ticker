@@ -14,8 +14,16 @@ fi
 ######################################
 
 
+# EXPLICITLY set paths 
+#PATH=/bin:/usr/bin:/usr/local/bin:/sbin:/usr/sbin:/usr/local/sbin:$PATH
+
+
+# Bash's FULL PATH
+BASH_PATH=$(which bash)
+				
+
 # Get logged-in username (if sudo, this works best with logname)
-USERNAME=$(/usr/bin/logname)
+TERMINAL_USERNAME=$(logname)
 
 
 # Get date
@@ -23,7 +31,7 @@ DATE=$(date '+%Y-%m-%d')
 
 
 # Get the host ip address
-IP=`/bin/hostname -I` 
+IP=`hostname -I` 
 
 
 # Get the operating system and version
@@ -60,31 +68,31 @@ fi
 
 
 # Start in user home directory
-cd /home/$USERNAME
+cd /home/$TERMINAL_USERNAME
 
 
 ######################################
 
 
 echo "Enter the system username to configure installation for:"
-echo "(leave blank / hit enter for default of username '${USERNAME}')"
+echo "(leave blank / hit enter for default of username '${TERMINAL_USERNAME}')"
 echo " "
 
-read SYS_USER
+read APP_USER
         
-if [ -z "$SYS_USER" ]; then
-SYS_USER=${1:-$USERNAME}
-echo "Using default username: $SYS_USER"
+if [ -z "$APP_USER" ]; then
+APP_USER=${1:-$TERMINAL_USERNAME}
+echo "Using default username: $APP_USER"
 else
-echo "Using username: $SYS_USER"
+echo "Using username: $APP_USER"
 fi
 
 
-if [ ! -d "/home/$SYS_USER/" ]; then    		
+if [ ! -d "/home/$APP_USER/" ]; then    		
 echo " "
-echo "Directory /home/$SYS_USER/ DOES NOT exist, cannot install Slideshow Crypto Ticker."
+echo "Directory /home/$APP_USER/ DOES NOT exist, cannot install Slideshow Crypto Ticker."
 echo " "
-echo "Please create user $SYS_USER's home directory before running this installation."
+echo "Please create user $APP_USER's home directory before running this installation."
 exit
 fi
 
@@ -95,8 +103,8 @@ echo " "
 
   				
 echo "You have set the user information as..."
-echo "User: $SYS_USER"
-echo "User home directory: /home/$SYS_USER/"
+echo "User: $APP_USER"
+echo "User home directory: /home/$APP_USER/"
 echo " "
 
 echo "If this information is NOT correct, please quit installation and start again."
@@ -158,10 +166,10 @@ exit
 fi
   				
 				
-if [ -f /home/$SYS_USER/dfd-crypto-ticker/config.js ]; then
+if [ -f /home/$APP_USER/dfd-crypto-ticker/config.js ]; then
 echo "A configuration file from a previous install of Slideshow Crypto Ticker has been detected on your system."
 echo "During this upgrade / re-install, it will be backed up to:"
-echo "/home/$SYS_USER/dfd-crypto-ticker/config.js.BACKUP.$DATE"
+echo "/home/$APP_USER/dfd-crypto-ticker/config.js.BACKUP.$DATE"
 echo "This will save any custom settings within it."
 echo "You will need to manually move any custom settings in this backup file to the new config.js file with a text editor."
 echo " "
@@ -202,16 +210,16 @@ echo "Making sure your system is updated before installation, please wait..."
 
 echo " "
 			
-/usr/bin/sudo /usr/bin/apt-get update
+apt-get update
 
 #DO NOT RUN dist-upgrade, bad things can happen, lol
-/usr/bin/sudo /usr/bin/apt-get upgrade -y
+apt-get upgrade -y
 
 echo " "
 				
 echo "System update completed."
 				
-/bin/sleep 3
+sleep 3
 				
 echo " "
 
@@ -221,7 +229,7 @@ echo " "
 
 echo "Do you want this script to automatically download the latest version of"
 echo "Slideshow Crypto Ticker from Github.com, and install it?"
-echo "(auto-install will overwrite / upgrade any previous install located at: /home/$SYS_USER/dfd-crypto-ticker)"
+echo "(auto-install will overwrite / upgrade any previous install located at: /home/$APP_USER/dfd-crypto-ticker)"
 echo " "
 
 echo "Select 1, 2, or 3 to choose whether to auto-install / remove Slideshow Crypto Ticker, or skip."
@@ -239,22 +247,22 @@ select opt in $OPTIONS; do
 				
 				echo " "
 				
-				/usr/bin/sudo /usr/bin/apt-get install xdotool unclutter sed curl jq bsdtar openssl -y
+				apt-get install xdotool unclutter sed curl jq bsdtar openssl wget -y
 				
 				echo " "
 				
 				echo "Required component installation completed."
 				
-				/bin/sleep 3
+				sleep 3
 				
 				echo " "
 				
 				
-					if [ -f /home/$SYS_USER/dfd-crypto-ticker/config.js ]; then
+					if [ -f /home/$APP_USER/dfd-crypto-ticker/config.js ]; then
 					
-					\cp /home/$SYS_USER/dfd-crypto-ticker/config.js /home/$SYS_USER/dfd-crypto-ticker/config.js.BACKUP.$DATE
+					\cp /home/$APP_USER/dfd-crypto-ticker/config.js /home/$APP_USER/dfd-crypto-ticker/config.js.BACKUP.$DATE
 						
-					/bin/chown $SYS_USER:$SYS_USER /home/$SYS_USER/dfd-crypto-ticker/config.js.BACKUP.$DATE
+					chown $APP_USER:$APP_USER /home/$APP_USER/dfd-crypto-ticker/config.js.BACKUP.$DATE
 						
 					CONFIG_BACKUP=1
 					
@@ -265,61 +273,61 @@ select opt in $OPTIONS; do
 				
 				echo " "
 				
-				/usr/bin/mkdir DFD-Crypto-Ticker
+				mkdir DFD-Crypto-Ticker
 				
 				cd DFD-Crypto-Ticker
 				
-				ZIP_DL=$(/usr/bin/curl -s 'https://api.github.com/repos/taoteh1221/Slideshow_Crypto_Ticker/releases/latest' | /usr/bin/jq -r '.zipball_url')
+				ZIP_DL=$(curl -s 'https://api.github.com/repos/taoteh1221/Slideshow_Crypto_Ticker/releases/latest' | jq -r '.zipball_url')
 				
-				/usr/bin/wget -O DFD-Crypto-Ticker.zip $ZIP_DL
+				wget -O DFD-Crypto-Ticker.zip $ZIP_DL
 				
-				/usr/bin/bsdtar --strip-components=1 -xvf DFD-Crypto-Ticker.zip
+				bsdtar --strip-components=1 -xvf DFD-Crypto-Ticker.zip
 				
 				rm DFD-Crypto-Ticker.zip
 				
 				# Remove depreciated directory structure from any previous installs
-				rm -rf /home/$SYS_USER/dfd-crypto-ticker/apps 
-				rm -rf /home/$SYS_USER/dfd-crypto-ticker/scripts
-				rm -rf /home/$SYS_USER/dfd-crypto-ticker/cache/json
-				rm -rf /home/$SYS_USER/dfd-crypto-ticker/cache/js
+				rm -rf /home/$APP_USER/dfd-crypto-ticker/apps 
+				rm -rf /home/$APP_USER/dfd-crypto-ticker/scripts
+				rm -rf /home/$APP_USER/dfd-crypto-ticker/cache/json
+				rm -rf /home/$APP_USER/dfd-crypto-ticker/cache/js
 
-				/bin/sleep 1
+				sleep 1
 				
   				# Copy over the upgrade install files to the install directory, after cleaning up dev files
 				# No trailing forward slash here
 				
-  				/usr/bin/mkdir -p /home/$SYS_USER/dfd-crypto-ticker
+  				mkdir -p /home/$APP_USER/dfd-crypto-ticker
 				
 				rm -rf .git
 				rm -rf .github
 				rm .gitattributes
 				rm .gitignore
 				rm CODEOWNERS
-				rm /home/$SYS_USER/dfd-crypto-ticker/bash/cron/cron.bash
-				rm /home/$SYS_USER/dfd-crypto-ticker/bash/cron/kucoin-auth.bash
+				rm /home/$APP_USER/dfd-crypto-ticker/bash/cron/cron.bash
+				rm /home/$APP_USER/dfd-crypto-ticker/bash/cron/kucoin-auth.bash
 				
-				\cp -r ./ /home/$SYS_USER/dfd-crypto-ticker
+				\cp -r ./ /home/$APP_USER/dfd-crypto-ticker
 
-				/bin/sleep 3
+				sleep 3
 				
 				cd ../
 				
 				rm -rf DFD-Crypto-Ticker
 				
-				/bin/chmod -R 755 /home/$SYS_USER/dfd-crypto-ticker/bash
+				chmod -R 755 /home/$APP_USER/dfd-crypto-ticker/bash
 				
 				# No trailing forward slash here
-				/bin/chown -R $SYS_USER:$SYS_USER /home/$SYS_USER/dfd-crypto-ticker
+				chown -R $APP_USER:$APP_USER /home/$APP_USER/dfd-crypto-ticker
 				
 				# If an older depreciated version, just re-create the symlink after deleting to be safe
 				
-				rm /home/$SYS_USER/reload
+				rm /home/$APP_USER/reload
 				
-				/bin/sleep 1
+				sleep 1
 			
-				ln -s /home/$SYS_USER/dfd-crypto-ticker/bash/chromium-refresh.bash /home/$SYS_USER/reload
+				ln -s /home/$APP_USER/dfd-crypto-ticker/bash/chromium-refresh.bash /home/$APP_USER/reload
 				
-				/bin/chown $SYS_USER:$SYS_USER /home/$SYS_USER/reload
+				chown $APP_USER:$APP_USER /home/$APP_USER/reload
 				
 				echo " "
 				
@@ -336,7 +344,7 @@ select opt in $OPTIONS; do
 		  echo " "
 				
         # ONLY removing unclutter, AS WE DON'T WANT TO F!CK UP THE WHOLE SYSTEM, REMOVING ANY OTHER ALREADY-USED / DEPENDANT PACKAGES TOO!!
-		  /usr/bin/sudo /usr/bin/apt-get remove unclutter -y
+		  apt-get remove unclutter -y
 				
 		  echo " "
 		  echo "Removal of 'unclutter' app package completed, please wait..."
@@ -344,17 +352,17 @@ select opt in $OPTIONS; do
 		  echo " "
 				
 				
-		  /bin/sleep 3
+		  sleep 3
         
         rm /etc/cron.d/ticker
         
         rm /lib/systemd/system/ticker.service
         
-        rm /home/$SYS_USER/reload
+        rm /home/$APP_USER/reload
         
-        rm -rf /home/$SYS_USER/dfd-crypto-ticker
+        rm -rf /home/$APP_USER/dfd-crypto-ticker
 
-		  /bin/sleep 3
+		  sleep 3
         
 		  echo " "
 		  echo "Slideshow Crypto Ticker has been removed from the system, PLEASE REBOOT to complete the removal process."
@@ -407,12 +415,12 @@ After=graphical.target
 \r
 [Service]
 Environment=DISPLAY=:0  
-Environment=XAUTHORITY=/home/$SYS_USER/.Xauthority
+Environment=XAUTHORITY=/home/$APP_USER/.Xauthority
 Type=simple
-ExecStart=/bin/bash /home/$SYS_USER/dfd-crypto-ticker/bash/ticker-init.bash
+ExecStart=$BASH_PATH /home/$APP_USER/dfd-crypto-ticker/bash/ticker-init.bash
 Restart=on-abort
-User=$SYS_USER
-Group=$SYS_USER
+User=$APP_USER
+Group=$APP_USER
 \r
 [Install]
 WantedBy=graphical.target
@@ -420,12 +428,10 @@ WantedBy=graphical.target
 EOF
 
 					# Setup service to run at boot
-
-					/usr/bin/touch /lib/systemd/system/ticker.service
 					
 					echo -e "$TICKER_STARTUP" > /lib/systemd/system/ticker.service
 					
-					/bin/systemctl enable ticker.service
+					systemctl enable ticker.service
 				
 					AUTOSTART_ALERT=1
 					
@@ -438,16 +444,16 @@ EOF
 					
 				# Setup cron (to check logs after install: tail -f /var/log/syslog | grep cron -i)
 
-				CRONJOB="* * * * * $SYS_USER /bin/bash /home/$SYS_USER/dfd-crypto-ticker/bash/cron.bash > /dev/null 2>&1"
+				CRONJOB="* * * * * $APP_USER $BASH_PATH /home/$APP_USER/dfd-crypto-ticker/bash/cron.bash > /dev/null 2>&1"
 
 				# Play it safe and be sure their is a newline after this job entry
 				echo -e "$CRONJOB\n" > /etc/cron.d/ticker
 				
 		  		# cron.d entries must be a permission of 644
-		  		/bin/chmod 644 /etc/cron.d/ticker
+		  		chmod 644 /etc/cron.d/ticker
 		  		
 				# cron.d entries MUST BE OWNED BY ROOT
-				/bin/chown root:root /etc/cron.d/ticker
+				chown root:root /etc/cron.d/ticker
 				
         		CRON_SETUP=1
 				
@@ -494,32 +500,32 @@ select opt in $OPTIONS; do
 			
 			echo " "
 			
-			/usr/bin/sudo /usr/bin/apt-get install git -y
+			apt-get install git -y
 			
 			echo " "
 			
 			echo "Required component installation completed."
 			
-			/bin/sleep 3
+			sleep 3
 			
 			echo " "
 			echo "Setting up for 'goodtft LCD-show' LCD drivers, please wait..."
 			echo " "
 			
-			ln -s /home/$SYS_USER/dfd-crypto-ticker/bash/switch-display.bash /home/$SYS_USER/display
+			ln -s /home/$APP_USER/dfd-crypto-ticker/bash/switch-display.bash /home/$APP_USER/display
 				
-			/bin/chown $SYS_USER:$SYS_USER /home/$SYS_USER/display
+			chown $APP_USER:$APP_USER /home/$APP_USER/display
 			
-			/usr/bin/mkdir -p /home/$SYS_USER/goodtft/builds
+			mkdir -p /home/$APP_USER/goodtft/builds
 			
-			cd /home/$SYS_USER/goodtft/builds
+			cd /home/$APP_USER/goodtft/builds
 			
-			/usr/bin/git clone https://github.com/goodtft/LCD-show.git
+			git clone https://github.com/goodtft/LCD-show.git
 			
-			/bin/chmod -R 755 /home/$SYS_USER/goodtft/builds
+			chmod -R 755 /home/$APP_USER/goodtft/builds
 			
 			# No trailing forward slash here
-			/bin/chown -R $SYS_USER:$SYS_USER /home/$SYS_USER/goodtft/builds
+			chown -R $APP_USER:$APP_USER /home/$APP_USER/goodtft/builds
 
 				
 			echo " "
@@ -544,7 +550,7 @@ echo " "
 ######################################
 			
 # Return to user's home directory
-cd /home/$SYS_USER/
+cd /home/$APP_USER/
 
 
 echo " "
@@ -587,8 +593,8 @@ fi
 if [ "$CONFIG_BACKUP" = "1" ]; then
 
 echo "The previously-installed Slideshow Crypto Ticker configuration"
-echo "file /home/$SYS_USER/dfd-crypto-ticker/config.js has been backed up to:"
-echo "/home/$SYS_USER/dfd-crypto-ticker/config.js.BACKUP.$DATE"
+echo "file /home/$APP_USER/dfd-crypto-ticker/config.js has been backed up to:"
+echo "/home/$APP_USER/dfd-crypto-ticker/config.js.BACKUP.$DATE"
 echo "You will need to manually move any custom settings in this backup file to the new config.js file with a text editor."
 echo " "
 
@@ -598,7 +604,7 @@ fi
 
 if [ "$CRON_SETUP" = "1" ]; then
 
-echo "A cron job has been setup for user '$SYS_USER',"
+echo "A cron job has been setup for user '$APP_USER',"
 echo "as a command in /etc/cron.d/ticker:"
 echo "$CRONJOB"
 echo " "
@@ -611,7 +617,7 @@ echo "Edit the following file in a text editor to switch between different"
 echo "exchanges / crypto assets / base pairings, and to configure settings"
 echo "for slideshow speed / font sizes and colors / background color"
 echo "/ vertical position / screen orientation / google font used / monospace emulation:"
-echo "/home/$SYS_USER/dfd-crypto-ticker/config.js"
+echo "/home/$APP_USER/dfd-crypto-ticker/config.js"
 echo " "
 
 echo "Example editing config.js in nano by command-line:"
@@ -698,13 +704,13 @@ select opt in $OPTIONS; do
 			
 			echo " "
 			
-			/usr/bin/wget -O FOLIO-INSTALL.bash https://raw.githubusercontent.com/taoteh1221/Open_Crypto_Portfolio_Tracker/main/FOLIO-INSTALL.bash
+			wget -O FOLIO-INSTALL.bash https://raw.githubusercontent.com/taoteh1221/Open_Crypto_Portfolio_Tracker/main/FOLIO-INSTALL.bash
 			
-			/bin/chmod +x FOLIO-INSTALL.bash
+			chmod +x FOLIO-INSTALL.bash
 			
-			/bin/chown $SYS_USER:$SYS_USER FOLIO-INSTALL.bash
+			chown $APP_USER:$APP_USER FOLIO-INSTALL.bash
 			
-			/usr/bin/sudo ./FOLIO-INSTALL.bash
+			./FOLIO-INSTALL.bash
 			
 			
         break
