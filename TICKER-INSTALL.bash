@@ -103,7 +103,9 @@ echo " "
 
   				
 echo "You have set the user information as..."
+echo " "
 echo "User: $APP_USER"
+echo " "
 echo "User home directory: /home/$APP_USER/"
 echo " "
 
