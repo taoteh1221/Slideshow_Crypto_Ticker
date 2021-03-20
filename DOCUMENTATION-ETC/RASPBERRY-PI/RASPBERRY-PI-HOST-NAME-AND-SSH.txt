@@ -1,0 +1,72 @@
+
+
+=======================================================
+Setting Up SSH On Raspberry PI
+=======================================================
+
+
+1) Open the 'Terminal' app from the menu, or login with a remote terminal (SSH).
+
+
+2) Run this command to open Raspberry Pi Config: 
+
+sudo raspi-config
+
+
+3) Select "Interfacing Options"
+
+
+4) Select "SSH"
+
+
+5) Enable SSH
+
+
+6) Reboot the Pi:
+
+sudo reboot
+
+
+You should now be able to login remotely to your device via INTERNAL ip address / LOCAL domain name. Make sure any firewall setup on this device allows port 22 to be accessed.
+
+
+=======================================================
+Setting Up Custom Host Name On Raspberry PI
+=======================================================
+
+
+1) Open the 'Terminal' app from the menu, or login with a remote terminal (SSH).
+
+
+2) Run this command to assure you can access your device remotely (over your INTERNAL network), with YOUR_HOSTNAME.local names:
+
+sudo apt-get install avahi-daemon -y
+
+
+3) After step #2 completes, run this command to open Raspberry Pi Config: 
+
+sudo raspi-config
+
+
+4) Select "System Options"
+
+
+5) Select "Hostname"
+
+
+6) Change to your desired (alphanumeric) host name
+
+
+7) Reboot the Pi:
+
+sudo reboot
+
+
+You should now be able to easily access your device remotely (over your INTERNAL network), in this format:
+
+[http|https|ssh|ftp|smb|etc|etc]://YOUR_HOSTNAME.local
+
+
+=======================================================
+
+

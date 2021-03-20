@@ -1,0 +1,103 @@
+
+
+=======================================================
+Disabling On-Board Bluetooth On Raspberry PI
+=======================================================
+
+
+1) Open the 'Terminal' app from the menu, or login with a remote terminal (SSH).
+
+
+2) Run this command to open the config file: 
+
+sudo nano /boot/config.txt
+
+
+3) At the bottom of that file, add these lines:
+
+# Disable on-board bluetooth
+dtoverlay=pi3-disable-bt
+
+
+4) Hold down the Ctrl key and X key at the same time, choose Y, hit enter to save / exit editing the config.
+
+
+5) Run the following commands to disable bluetooth services:
+
+sudo systemctl disable hciuart.service
+
+sudo systemctl disable bluealsa.service
+
+sudo systemctl disable bluetooth.service
+
+
+6) Reboot the Pi:
+
+sudo reboot
+
+
+=======================================================
+Make sudo require a password
+=======================================================
+
+
+1) Open the 'Terminal' app from the menu, or login with a remote terminal (SSH).
+
+
+2) Run the command: 
+
+sudo nano /etc/sudoers.d/010_pi-nopasswd
+
+
+3) Change "NOPASSWD" to "PASSWD"
+
+
+4) Hold down the Ctrl key and X key at the same time, choose Y, hit enter to save / exit editing the config.
+
+
+5) Reboot the Pi:
+
+sudo reboot
+
+
+=======================================================
+Install a firewall
+=======================================================
+
+
+IMPORTANT: You must open ports after installing a firewall for any servers you have running, OR YOU WON'T BE ABLE TO CONNECT TO THEM...see step #2
+
+
+1) Open the 'Terminal' app from the menu, or login with a remote terminal (SSH).
+
+
+2) Install a firewall with this command:
+
+sudo apt install ufw
+
+
+3) Opening ports your servers are on BEFORE STARTING THE FIREWALL:
+
+If you connect via SSH (remote login)
+sudo ufw allow ssh
+
+Limit SSH attempts by hackers
+sudo ufw limit ssh/tcp
+
+Allow any other ports needed (80 and 443 for HTTP/HTTPS #USED BY THIS APP#, etc, etc)
+sudo ufw allow PORT_NUMER_HERE
+
+
+4) Enable the firewall (now AND at bootime):
+
+sudo ufw enable
+
+
+5) Review the current firewall status and rules:
+
+sudo ufw status
+
+
+=======================================================
+
+
