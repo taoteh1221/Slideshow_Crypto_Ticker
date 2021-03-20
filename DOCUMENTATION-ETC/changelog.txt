@@ -392,10 +392,6 @@ v3.02.2
 
 -Code optimization / cleanup
 
-IMPORTANT UPGRADE NOTES: The paths to the bash scripts changed in v2.13.0 and higher. Please re-run the auto-install script, 
-OR manually update (as sudo / admin) the files /lib/systemd/system/ticker.service AND /etc/cron.d/ticker, 
-and replace "/scripts/" with "/bash/". Also remove / re-create the ~/reload symbolic link.
-
 ---------------------------------------------------------
 
 
