@@ -605,7 +605,7 @@ function market_config() {
 
 // Exchange API endpoints
 
-// WE DYNAMICALLY ADD KUCOIN IN init_interface() IN index.html
+// WE DYNAMICALLY ADD THE KUCOIN ENDPOINT within render_interface()
 
 api['binance'] = 'wss://stream.binance.com:9443/ws';
 
@@ -681,7 +681,7 @@ api['bitstamp'] = 'wss://ws.bitstamp.net/';
 			});
 		
 		}
-		// Binance
+		// Kraken
 		else if ( exchange == 'kraken' ) {
 			
 		// API call config
