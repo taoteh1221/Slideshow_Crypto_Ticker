@@ -251,7 +251,25 @@ select opt in $OPTIONS; do
 				
 				echo " "
 				
-				apt-get install xdotool unclutter sed curl jq bsdtar openssl wget -y
+				# bsdtar installs may fail (essentially the same package as libarchive-tools),
+				# SO WE RUN BOTH SEPERATELY IN CASE AN ERROR THROWS, SO OTHER PACKAGES INSTALL OK AFTERWARDS
+				
+				echo "(you can safely ignore any upcoming 'bsdtar' install errors, if 'libarchive-tools'"
+				echo "installs OK...and visa versa, as they are essentially the same package)"
+				echo " "
+				
+				# Ubuntu 16.x, and other debian-based systems
+				apt-get install bsdtar -y
+				
+				sleep 3
+				
+				# Ubuntu 18.x and higher
+				apt-get install libarchive-tools -y
+				
+				sleep 3
+				
+				# Safely install other packages seperately, so they aren't cancelled by 'package missing' errors
+				apt-get install xdotool unclutter sed curl jq openssl wget -y
 				
 				echo " "
 				
