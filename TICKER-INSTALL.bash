@@ -139,28 +139,31 @@ echo "This script was designed to install / setup on the Raspbian operating syst
 echo "and was developed / created on Raspbian Linux v10, for Raspberry Pi computers"
 echo "WITH SMALL IN-CASE LCD SCREENS."
 echo " "
-echo "It is ONLY recommended to install this ticker app"
-echo "IF your device has an LCD screen installed."
+echo "It is ONLY recommended to install this ticker app IF your device has an LCD screen installed."
 echo " "
 
 echo "Your operating system has been detected as:"
+echo " "
 echo "$OS v$VER"
 echo " "
 
 echo "This script may work on other Debian-based systems as well, but it has not been tested for that purpose."
 echo " "
 
-echo "USE RASPBIAN #FULL# DESKTOP, #NOT# LITE, OR YOU LIKELY WILL HAVE SOME"
-echo "CHROMIUM BROWSER ISSUES EVEN AFTER UPGRADING TO GUI / CHROME (trust me)."
+echo "USE RASPBIAN #FULL# DESKTOP, #NOT# LITE, OR YOU LIKELY WILL HAVE SOME CHROMIUM BROWSER ISSUES EVEN"
+echo "AFTER UPGRADING TO GUI / CHROME (trust me)."
+echo " "
 echo "(GUI desktop and Chromium browser are required for this ticker app)"
 echo " "
 
 if [ -f "/etc/debian_version" ]; then
 echo "Your system has been detected as Debian-based, which is compatible with this automated installation script."
+echo " "
 echo "Continuing..."
 echo " "
 else
 echo "Your system has been detected as NOT BEING Debian-based. Your system is NOT compatible with this automated installation script."
+echo " "
 echo "Exiting..."
 exit
 fi
@@ -227,8 +230,9 @@ echo " "
 ######################################
 
 
-echo "Do you want this script to automatically download the latest version of"
-echo "Slideshow Crypto Ticker from Github.com, and install it?"
+echo "Do you want this script to automatically download the latest version of Slideshow Crypto Ticker"
+echo "from Github.com, and install it?"
+echo " "
 echo "(auto-install will overwrite / upgrade any previous install located at: /home/$APP_USER/dfd-crypto-ticker)"
 echo " "
 
@@ -564,13 +568,15 @@ echo " "
 if [ "$AUTOSTART_ALERT" = "1" ]; then
 
 echo "Ticker autostart at login has been configured at:"
+echo " "
 echo "/lib/systemd/system/ticker.service"
+echo " "
 echo "(the ticker will now start at boot/login)"
 echo " "
 
 elif [ "$AUTOSTART_ALERT" = "2" ]; then
 
-echo "systemd settings could NOT be detected on your system,"
+echo "'systemd' settings could NOT be detected on your system,"
 echo "ticker autostart at system boot COULD NOT BE ENABLED."
 echo " "	
 
@@ -582,6 +588,7 @@ if [ "$AUTOSTART_ALERT" = "1" ] || [ "$AUTOSTART_ALERT" = "2" ]; then
 
 echo "If autostart does not work, you can run this command MANUALLY,"
 echo "#AFTER BOOTING INTO THE DESKTOP INTERFACE#, to start Slideshow Crypto Ticker:"
+echo " "
 echo "bash ~/dfd-crypto-ticker/bash/ticker-init.bash &>/dev/null &"
 echo " "
 					
@@ -594,7 +601,9 @@ if [ "$CONFIG_BACKUP" = "1" ]; then
 
 echo "The previously-installed Slideshow Crypto Ticker configuration"
 echo "file /home/$APP_USER/dfd-crypto-ticker/config.js has been backed up to:"
+echo " "
 echo "/home/$APP_USER/dfd-crypto-ticker/config.js.BACKUP.$DATE"
+echo " "
 echo "You will need to manually move any custom settings in this backup file to the new config.js file with a text editor."
 echo " "
 
@@ -606,6 +615,7 @@ if [ "$CRON_SETUP" = "1" ]; then
 
 echo "A cron job has been setup for user '$APP_USER',"
 echo "as a command in /etc/cron.d/ticker:"
+echo " "
 echo "$CRONJOB"
 echo " "
 
@@ -617,14 +627,17 @@ echo "Edit the following file in a text editor to switch between different"
 echo "exchanges / crypto assets / base pairings, and to configure settings"
 echo "for slideshow speed / font sizes and colors / background color"
 echo "/ vertical position / screen orientation / google font used / monospace emulation:"
+echo " "
 echo "/home/$APP_USER/dfd-crypto-ticker/config.js"
 echo " "
 
 echo "Example editing config.js in nano by command-line:"
+echo " "
 echo "nano ~/dfd-crypto-ticker/config.js"
 echo " "
 
 echo "After updating config.js, reload the ticker with this command:"
+echo " "
 echo "~/reload"
 echo " "
 
@@ -636,6 +649,7 @@ if [ "$GOODTFT_SETUP" = "1" ]; then
 
 echo "TO COMPLETE THE 'goodtft LCD-show' LCD DRIVERS SETUP, run this command below"
 echo "to configure / activate your 'goodtft LCD-show' LCD screen:"
+echo " "
 echo "~/display"
 echo " "
 
@@ -645,6 +659,7 @@ echo " "
 else
 
 echo "You must restart your device to activate the ticker, by running this command:"
+echo " "
 echo "sudo reboot"
 echo " "
 
