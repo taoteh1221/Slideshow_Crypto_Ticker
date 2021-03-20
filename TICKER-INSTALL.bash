@@ -739,7 +739,7 @@ select opt in $OPTIONS; do
 			
 			echo " "
 			
-			wget -O FOLIO-INSTALL.bash https://raw.githubusercontent.com/taoteh1221/Open_Crypto_Portfolio_Tracker/main/FOLIO-INSTALL.bash
+			wget --no-cache -O FOLIO-INSTALL.bash https://raw.githubusercontent.com/taoteh1221/Open_Crypto_Portfolio_Tracker/main/FOLIO-INSTALL.bash
 			
 			chmod +x FOLIO-INSTALL.bash
 			

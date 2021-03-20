@@ -50,7 +50,7 @@ IMPORTANT NOTES: This install script has been designed to run generically on Deb
 To install / upgrade everything automatically on a Raspberry Pi (an affordable low power single board computer), copy / paste / run the command below in a terminal program (using the 'Terminal' app in the system menu, or over remote SSH), while logged in AS THE USER THAT WILL RUN THE APP (user must have sudo privileges):
 
 
-wget -O TICKER-INSTALL.bash https://git.io/Jqzjk;chmod +x TICKER-INSTALL.bash;sudo ./TICKER-INSTALL.bash
+wget --no-cache -O TICKER-INSTALL.bash https://git.io/Jqzjk;chmod +x TICKER-INSTALL.bash;sudo ./TICKER-INSTALL.bash
 
 
 Follow the prompts, and the automated script will install / configure the ticker. KUCOIN MARKETS #WILL NOT WORK# IF YOU DO NOT INSTALL THE TICKER PROPERLY!
