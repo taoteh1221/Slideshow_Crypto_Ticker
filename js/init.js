@@ -2,6 +2,28 @@
 // Copyright 2019-2021 GPLv3, Slideshow Crypto Ticker by Mike Kilday: http://DragonFrugal.com
 
 
+
+// Application version
+var app_version = '3.02.2';  // 2021/MARCH/20TH
+
+
+
+// Var inits
+var api = [];
+var sockets = [];
+var markets = [];
+var parsed_markets = [];
+var subscribe_msg = [];
+var trade_side_price = [];
+var trade_side_arrow = [];
+var markets_length = 0;
+
+// Save what time the app started running (works fine with refresh)
+var runtime_start = new Date().getTime(); 
+
+// Minimum-allowed error refresh time (if significant error requires refresh, to try auto-fixing it)
+var min_error_refresh_time = Number(auto_error_fix_min * 60000); // (in milliseconds)
+
 //////////////////////////////////////////////////////////////////////////////////////
 
 // Load external google font CSS file if required
@@ -24,7 +46,7 @@ $(document).ready(function() {
 	}
 
 
-	// Monospace emulation
+	// If monospace emulation is properly enabled, set the CSS attributes
 	if ( monospace_check() == true ) {
 	console.log('Enabling monospace emulation rendering.');
 	$(".ticker .monospace").css({ "width": Math.round(ticker_size * monospace_width) + "px" });
@@ -61,31 +83,10 @@ $("body, html").css({ "background": background_color });
 $("body, html").css({ "color": text_color });
 
 
-
-// Start ticker
-ticker_init();
-	
-	
-	// If more than one asset, run in slideshow mode (with delay of slideshow_speed seconds)
-	if ( window.markets_length > 1 ) {
-		
-		// If auto mode for slideshow speed (minimum of 5 seconds allowed)
-		if ( slideshow_speed == 0 ) {
-		slideshow_speed = Math.round(60 / window.markets_length);
-		slideshow_speed = slideshow_speed < 5 ? 5 : slideshow_speed;
-		}
-		
-	setInterval(ticker_init, slideshow_speed * 1000);
-	
-	}
+// Connect to exchange APIs for market data, run checks, and load the interface
+init_interface();
 
 
-	// Connect to exchange APIs for market data
-	Object.keys(markets).forEach(function(exchange) {
-	api_connect(exchange);
-	});
-	
-	
 });
 
 

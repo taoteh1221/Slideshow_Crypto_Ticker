@@ -2,12 +2,29 @@
 // Copyright 2019-2021 GPLv3, Slideshow Crypto Ticker by Mike Kilday: http://DragonFrugal.com
 
 
-
 /////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
 function uc_first(input) { 
 return input[0].toUpperCase() + input.slice(1); 
+}
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+function load_js(file) {
+
+script= document.createElement('script');
+script.src= file;
+
+head = document.getElementsByTagName('head')[0];
+head.appendChild(script);
+
+	script.onload = function(){
+   console.log('Loaded JS file: ' + file);
+   };
+
 }
 
 
@@ -55,6 +72,27 @@ return base_volume;
 /////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
+function console_alert() {
+
+console.log(' ');
+console.log('IMPROPER APP INSTALLATION DETECTED!');
+console.log(' ');
+console.log('To have access to ALL the features in this app, please make sure you have done ALL of the following...');
+console.log(' ');
+console.log('1) Open the "Terminal" app in your operating system interface menu, or login via remote terminal, AS THE USER YOU WANT RUNNING THE APP (user must have sudo privileges).');
+console.log(' ');
+console.log('2) In the terminal, copy / paste / run this command, THEN REBOOT when finished installing the app:');
+console.log('wget -O TICKER-INSTALL.bash https://git.io/Jqzjk;chmod +x TICKER-INSTALL.bash;sudo ./TICKER-INSTALL.bash');
+console.log(' ');
+console.log('3) ON REBOOT / TICKER STARTUP, you are logged-in to the GRAPHICAL DESKTOP INTERFACE, #AND# are running the app as the SAME USER YOU INSTALLED AS.');
+console.log(' ');
+
+}
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
 function trade_type(price_raw, market_id) {
 	
 	if ( !trade_side_price[market_id] ) {
@@ -70,27 +108,6 @@ function trade_type(price_raw, market_id) {
 trade_side_price[market_id] = price_raw;
 
 return trade_side_arrow[market_id];
-
-}
-
-
-/////////////////////////////////////////////////////////////////////////////////////////////////////
-
-
-function install_alert() {
-
-console.log(' ');
-console.log('IMPROPER APP INSTALLATION DETECTED!');
-console.log(' ');
-console.log('To have access to ALL the features in this app, please make sure you have done ALL of the following...');
-console.log(' ');
-console.log('1) Open the "Terminal" app in your operating system interface menu, or login via remote terminal, AS THE USER YOU WANT RUNNING THE APP.');
-console.log(' ');
-console.log('2) In the terminal, copy / paste / run this command, THEN REBOOT when finished installing the app:');
-console.log('wget -O TICKER-INSTALL.bash https://git.io/Jqzjk;chmod +x TICKER-INSTALL.bash;sudo ./TICKER-INSTALL.bash');
-console.log(' ');
-console.log('3) ON REBOOT / TICKER STARTUP, you are logged-in to the GRAPHICAL DESKTOP INTERFACE, #AND# are running the app as the SAME USER YOU INSTALLED AS.');
-console.log(' ');
 
 }
 
@@ -167,30 +184,55 @@ return results;
 }
 
 
+/////////////////////////////////////////////////////////////
 
-/////////////////////////////////////////////////////////////////////////////////////////////////////
 
-
-function ticker_init() {
+function kucoin_config() {
 	
-var divs= $('#ticker_window div.asset_tickers'),
+	// If kucoin auth data is cached, allow kucoin configs
+	if ( typeof kucoin_endpoint !== 'undefined' && typeof kucoin_token !== 'undefined' ) {
+	api['kucoin'] = kucoin_endpoint + '?token=' + kucoin_token;
+	console.log('Kucoin support enabled (valid installation detected).');
+	return true;
+	}
+	// Remove kucoin market configs if no cache data is present, to avoid script errors,
+	// and alert (to console ONLY) that app was improperly installed
+	else {
+	delete exchange_markets['kucoin']; 
+	console_alert(); 
+	console.log('Kucoin support disabled (invalid installation detected).');
+	return false;
+	}
 
-now = divs.filter(':visible'),
+}
 
-next = now.next().length ? now.next() : divs.first(),
 
-speed = 1000;
+/////////////////////////////////////////////////////////////
 
-    
-	if ( markets_length > 1 ) {
-    now.fadeOut(speed);
-    next.delay(speed + 100).fadeIn(speed);
-   }
-   else {
-   next.fadeIn(speed);
-   }
-   
-   
+
+function init_interface() {
+
+// Load cache.js dynamically, avoiding loading from the browser cache (lol, cachefest), via a timestamp url param
+script= document.createElement('script');
+script.src= 'cache/cache.js?cachebuster='+ new Date().getTime();
+
+head = document.getElementsByTagName('head')[0];
+head.appendChild(script);
+	
+	
+	// If script loads OK
+	script.onload = function(){
+	console.log('JS cache file loaded successfully (valid installation detected).');
+	render_interface();
+   };
+
+	
+	// If script loading FAILS
+	script.onerror = function(){
+	console.log('JS cache file not found (invalid installation detected).');
+	render_interface();
+   };
+
 }
 
 
@@ -262,6 +304,36 @@ return parsed_markets[market_id];
 /////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
+function regex_pairing_detection(market_id) {
+
+results = new Array();
+
+// Merge fiat / crypto arrays TO NEW ARRAY (WITHOUT ALTERING EITHER ORIGINAL ARRAYS)
+scan_pairings = $.extend({}, fiat_pairings, crypto_pairings);
+
+// last 4 / last 3 characters of the market id
+last_4 = market_id.substr(market_id.length - 4);
+last_3 = market_id.substr(market_id.length - 3);
+
+
+	// Check for 4 character pairing configs existing FIRST
+	if ( typeof scan_pairings[last_4.toUpperCase()] !== 'undefined' ) {
+	return last_4.toUpperCase();
+	}
+	else if ( typeof scan_pairings[last_3.toUpperCase()] !== 'undefined' ) {
+	return last_3.toUpperCase();
+	}
+	else {
+	return false;
+	}
+	
+
+}
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
 function monospace_check() {
 	
 check = monospace_width;
@@ -298,36 +370,6 @@ var result = (check - Math.floor(check)) !== 0;
 /////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-function regex_pairing_detection(market_id) {
-
-results = new Array();
-
-// Merge fiat / crypto arrays TO NEW ARRAY (WITHOUT ALTERING EITHER ORIGINAL ARRAYS)
-scan_pairings = $.extend({}, fiat_pairings, crypto_pairings);
-
-// last 4 / last 3 characters of the market id
-last_4 = market_id.substr(market_id.length - 4);
-last_3 = market_id.substr(market_id.length - 3);
-
-
-	// Check for 4 character pairing configs existing FIRST
-	if ( typeof scan_pairings[last_4.toUpperCase()] !== 'undefined' ) {
-	return last_4.toUpperCase();
-	}
-	else if ( typeof scan_pairings[last_3.toUpperCase()] !== 'undefined' ) {
-	return last_3.toUpperCase();
-	}
-	else {
-	return false;
-	}
-	
-
-}
-
-
-/////////////////////////////////////////////////////////////////////////////////////////////////////
-
-
 function ticker_html(market_id, exchange) {
 
 parsed_market_id = market_id_parser(market_id, exchange);
@@ -340,17 +382,19 @@ market_key = js_safe_key(market_id, exchange);
 
 	
 	// To assure appropriate ticker updated
-	if ( market_key ) {
+	if ( typeof market_key !== 'undefined' ) {
 
-	document.write('<div class="asset_tickers">');
-
-	document.write('<div class="title"><span id="asset_' + market_key + '">' + asset + '</span> (<span class="status_'+exchange+'">Connecting...</span>)</div>');
+	html = '<div id="wrapper_' + market_key + '" class="asset_tickers">'+
     
-	document.write('<div class="ticker" id="ticker_' + market_key + '">Loading...</div>');
+	'<div class="title"><span id="asset_' + market_key + '">' + asset + '</span> (<span class="status_'+exchange+'">Connecting...</span>)</div>'+
+	
+	'<div class="ticker" id="ticker_' + market_key + '">Loading...</div>'+
     
-	document.write('<div class="volume" id="volume_' + market_key + '">Loading...</div>');
-    
-	document.write('</div>');
+	'<div class="volume" id="volume_' + market_key + '"></div>'+
+	
+	'</div>';
+	
+	$(html).appendTo( "#ticker_window" );
 	
 	}
 	else {
@@ -405,7 +449,115 @@ return "'" + config_font + "', serif, monospace";
 /////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
+function ticker_init() {
+
+	
+ticker_divs = $('#ticker_window div.asset_tickers');
+	
+
+//console.log(window.slideshow_init);
+//console.log(window.ticker_next);
+
+
+	// Slideshow init
+	if ( typeof window.slideshow_init == 'undefined' ) {
+	this_ticker = ticker_divs.first();
+	window.slideshow_init = 1;
+	}
+	// Slideshow continue
+	else {
+	this_ticker = window.ticker_next;
+	window.slideshow_init = 0;
+	}
+
+transition_speed = 1000;
+
+   // If more than one market, run slideshow
+	if ( markets_length > 1 ) {
+
+	window.ticker_next = this_ticker.next().length ? this_ticker.next() : ticker_divs.first();
+
+		// Slideshow init
+		if ( window.slideshow_init == 1 ) {
+		this_ticker.delay(transition_speed).fadeIn(transition_speed);
+		//console.log('slideshow init');
+		}
+		// Slideshow continue
+		else {
+			
+		ticker_prev = this_ticker.prev().length ? this_ticker.prev() : ticker_divs.last();
+			
+   		ticker_prev.fadeOut(transition_speed, function() {
+			//console.log('slideshow continue');
+   		this_ticker.delay(transition_speed).fadeIn(transition_speed);
+			});
+		
+		}
+	
+   }
+   // If just one market, leave showing
+   else if ( markets_length == 1 ) {
+   this_ticker.delay(transition_speed).fadeIn(transition_speed);
+   }
+	
+   
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+function render_interface() {
+
+kucoin_config(); // Check / load kucoin data BEFORE MARKET CONFIG
+	
+market_config();
+
+
+		// Connect to exchange APIs for market data
+		// Render the HTML containers for each ticker
+		Object.keys(markets).forEach(function(exchange) {
+			
+		api_connect(exchange);
+		
+			if ( markets[exchange] != '' ) {
+			
+  				markets[exchange].forEach(element => {
+  				ticker_html(element, exchange);
+				});
+			
+			}
+		
+		});
+
+		
+		// Start ticker
+		// More than one asset, so run in slideshow mode (with delay of slideshow_speed seconds)
+		if ( markets_length > 1 ) {
+			
+			// If auto mode for slideshow_speed (minimum of 5 seconds allowed)
+			if ( slideshow_speed == 0 ) {
+			slideshow_speed = Math.round(60 / window.markets_length);
+			slideshow_speed = slideshow_speed < 5 ? 5 : slideshow_speed;
+			}
+			
+		setInterval(ticker_init, slideshow_speed * 1000);
+		
+		}
+		// If only one market
+		else if ( markets_length == 1 ) {
+		ticker_init();
+		}
+		
+
+}
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
 function monospace_rendering($element) {
+	
+	if (  typeof $element !== 'undefined' ) {
 	
     for (var i = 0; i < $element.childNodes.length; i++) {
     
@@ -440,6 +592,190 @@ function monospace_rendering($element) {
         
     }
     
+   }
+    
+}
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+function market_config() {
+
+
+// Exchange API endpoints
+
+// WE DYNAMICALLY ADD KUCOIN IN init_interface() IN index.html
+
+api['binance'] = 'wss://stream.binance.com:9443/ws';
+
+api['coinbase'] = 'wss://ws-feed.gdax.com';
+
+api['kraken'] = 'wss://ws.kraken.com';
+
+api['hitbtc'] = 'wss://api.hitbtc.com/api/2/ws';
+
+api['bitstamp'] = 'wss://ws.bitstamp.net/';
+
+
+
+	// Put configged markets into a multi-dimensional array, calculate number of markets total
+	Object.keys(exchange_markets).forEach(function(exchange) {
+		
+		if ( markets[exchange] != '' ) {
+		markets[exchange] = exchange_markets[exchange].split("|");
+		markets_length = markets_length + markets[exchange].length;
+		}
+			
+	});
+
+
+
+	// Websocket subscribe arrays
+	Object.keys(markets).forEach(function(exchange) {
+	
+		// Coinbase
+		if ( exchange == 'coinbase' ) {
+			
+		// API call config
+		subscribe_msg[exchange] = {
+					
+				"type": "subscribe",
+				"product_ids": [
+				],
+				"channels": [
+						{
+								"name": "ticker",
+								"product_ids": [
+								]
+						}
+				]
+				};
+		 
+		 
+			// Add markets to API call
+			var loop = 0;
+			markets[exchange].forEach(element => {
+			subscribe_msg[exchange].product_ids[loop] = element;
+			loop = loop + 1;
+			});
+		
+		}
+		// Binance
+		else if ( exchange == 'binance' ) {
+			
+		// API call config
+		subscribe_msg[exchange] = {
+			"method": "SUBSCRIBE",
+			"params": [
+			],
+			"id": 1
+		};
+		 
+		 
+			// Add markets to API call
+			var loop = 0;
+			markets[exchange].forEach(element => {
+			subscribe_msg[exchange].params[loop] = element + '@ticker'; 
+			loop = loop + 1;
+			});
+		
+		}
+		// Binance
+		else if ( exchange == 'kraken' ) {
+			
+		// API call config
+		subscribe_msg[exchange] = {
+			"event": "subscribe",
+			"pair": [
+			],
+			 "subscription": {
+				"name": "ticker"
+			 }
+		};
+		 
+		 
+			// Add markets to API call
+			var loop = 0;
+			markets[exchange].forEach(element => {
+			subscribe_msg[exchange].pair[loop] = element; 
+			loop = loop + 1;
+			});
+		
+		}
+		// HitBTC
+		else if ( exchange == 'hitbtc' ) {
+			
+		// API call config
+		subscribe_msg[exchange] = {
+			"method": "subscribeTicker",
+			"params": {
+			},
+			"id": 1
+		};
+		 
+		 
+			// Add markets to API call
+			var loop = 0;
+			markets[exchange].forEach(element => {
+			subscribe_msg[exchange].params['symbol'] = element; 
+			loop = loop + 1;
+			});
+		
+		}
+		// Kucoin
+		// https://docs.kucoin.com/#symbol-ticker
+		else if ( exchange == 'kucoin' ) {
+			
+		// API call config
+		subscribe_msg[exchange] = {        
+			"id": 1,
+			"type": "subscribe",
+			"topic": "/market/snapshot:",
+			"privateChannel": false,
+			"response": true       
+		}
+		 
+		 
+			// Add markets to API call
+			var loop = 0;
+			markets[exchange].forEach(element => {
+			subscribe_msg[exchange]['topic'] = subscribe_msg[exchange]['topic'] + element + ','; 
+			loop = loop + 1;
+			});
+			
+		subscribe_msg[exchange]['topic'] = subscribe_msg[exchange]['topic'].slice(0, -1) // remove last character
+		
+		}
+		// Bitstamp
+		// https://www.bitstamp.net/websocket/v2/
+		else if ( exchange == 'bitstamp' ) {
+			
+		// API call config
+		subscribe_msg[exchange] = { 
+			"event": "bts:subscribe",
+			"data": {
+					"channel": "live_trades_"
+			}  
+		}
+		 
+		 
+			// Add markets to API call
+			var loop = 0;
+			markets[exchange].forEach(element => {
+			subscribe_msg[exchange]['data']['channel'] = subscribe_msg[exchange]['data']['channel'] + element; 
+			loop = loop + 1;
+			});
+		
+		}
+	
+		
+	//console.log(subscribe_msg[exchange]);
+	
+	});
+
+
+
 }
 
 
@@ -529,31 +865,57 @@ function api_connect(exchange) {
 				 
 		}
 		// Kucoin
-		else if ( exchange == 'kucoin' && msg["subject"] == 'trade.snapshot' ) {
+		else if ( exchange == 'kucoin' ) {
 				 
-		market_id = msg["data"]["data"]["symbol"];
-				 
-		price_raw = msg["data"]["data"]["close"];
-				 
-		volume_raw = msg["data"]["data"]["volValue"];
-		   
-		base_volume = pair_volume('pairing', price_raw, volume_raw);
+			// If we have trade data available
+			if ( msg["subject"] == 'trade.snapshot' ) {
+					 
+			market_id = msg["data"]["data"]["symbol"];
+					 
+			price_raw = msg["data"]["data"]["close"];
+					 
+			volume_raw = msg["data"]["data"]["volValue"];
+			   
+			base_volume = pair_volume('pairing', price_raw, volume_raw);
+					 
+			}
+			// If we recieve an error reqponse
+			else if ( msg["type"] == 'error' ) {
+				
+			console.log('Kucoin API Error: ' + msg["data"]);
+			
+				// Force refresh the webpage from server (NOT cache), 
+				// if it's been at least 'min_error_refresh_time' since 'runtime_start'
+				error_detected_timestamp = Number( new Date().getTime() ); 
+				
+				refresh_threshold = Number(runtime_start + min_error_refresh_time);
+				
+				console.log(' ');
+				console.log('Refresh Alert: This app will attempt to fix the detected issue with an');
+				console.log('app reload (no more than every ' + (min_error_refresh_time / 60000) + ' minutes, until the error clears up).');
+				console.log(' ');
+				
+				// Reload, if we are within the minimum reload time window
+				if ( error_detected_timestamp >= refresh_threshold ) {
+				location.reload(true);
+				}
+			
+			}
 				 
 		}
-		// Kucoin
+		// Bitstamp
 		else if ( exchange == 'bitstamp' && msg["event"] == 'trade' ) {
 				 
 		market_id = msg["channel"].replace("live_trades_", "");
 				 
 		price_raw = msg["data"]["price"];
+		
+		// RE-SET volume_raw / base_volume AS UNDEFINED, as bitstamp provides no volume data
+		
+		var volume_raw;
+		
+		var base_volume;
 				 
-		volume_raw = null;
-		   
-		base_volume = null;
-				 
-		}
-		else {
-		market_id = null;
 		}
 	  
 	  
@@ -567,7 +929,7 @@ function api_connect(exchange) {
 		update_key = js_safe_key(market_id, exchange);
 		
 			// To assure appropriate ticker updated
-			if ( update_key ) {
+			if ( typeof update_key !== 'undefined' ) {
 			
 			parsed_market_id = market_id_parser(market_id, exchange);
 					 
@@ -582,7 +944,7 @@ function api_connect(exchange) {
 			market_symbol = market_info['asset_symbol'];
 			
 			// Price decimals
-			price_decimals = ( price_raw >= 1 ? 2 : max_price_decimals );
+			price_decimals = ( price_raw >= 1 ? 2 : max_ticker_decimals );
 			price = parseFloat(price_raw).toFixed(price_decimals);
 				
 			// HTML for rendering
@@ -595,11 +957,11 @@ function api_connect(exchange) {
 				 
 			
 				// Volume logic
-				if ( base_volume != null ) {
+				if ( typeof base_volume !== 'undefined' ) {
 					
 				volume_decimals = ( market_info['asset_type'] == 'crypto' ? 4 : 0 );
 				
-				base_volume = base_volume.toFixed(volume_decimals);
+				base_volume = Number(base_volume).toFixed(volume_decimals);
 				
 				volume_item = 
 				 "<div class='spacing'>" + pairing + " Vol: " + market_symbol +
@@ -621,21 +983,22 @@ function api_connect(exchange) {
 				 
 				 
 			// Render data to appropriate ticker
+			
 			$("#ticker_" + update_key).html(ticker_item);
 			
-			arrow_html();
+			arrow_html(); // #MUST BE# AFTER TICKER RENDERING ABOVE
 				
 			$("#volume_" + update_key).html(volume_item);
 				
 				
 				// If monospace emulation is properly enabled, run it
 				if ( monospace_check() == true ) {
-					 
+					
 				monospace_rendering(document.querySelectorAll('#ticker_' + update_key)[0]);
-				monospace_rendering(document.querySelectorAll('#volume_' + update_key)[0]);
-				 
-				$(".ticker .monospace").css({ "width": Math.round(ticker_size * monospace_width) + "px" });
-				$(".volume .monospace").css({ "width": Math.round(volume_size * monospace_width) + "px" });
+				
+					if ( typeof base_volume !== 'undefined' ) {
+					monospace_rendering(document.querySelectorAll('#volume_' + update_key)[0]);
+					}
 					 
 				}
 				

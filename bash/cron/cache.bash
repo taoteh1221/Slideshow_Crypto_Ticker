@@ -24,8 +24,8 @@ fi
 # Check to see if the kucoin cache data needs to be updated
 if [ -f ~/dfd-crypto-ticker/cache/kucoin-auth.json ]; then
 
-# 6 hours (in seconds) between refreshings
-KUCOIN_REFRESH=21600
+# 12 hours (in seconds) between kucoin cache refreshes
+KUCOIN_REFRESH=43200
 
 KUCOIN_LAST_MODIFIED=$(/usr/bin/date +%s -r ~/dfd-crypto-ticker/cache/kucoin-auth.json)
 

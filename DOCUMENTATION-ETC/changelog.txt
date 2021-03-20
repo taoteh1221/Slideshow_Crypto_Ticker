@@ -378,7 +378,15 @@ and replace "/scripts/" with "/bash/". Also remove / re-create the ~/reload symb
 
 
 ---------------------------------------------------------
-v3.03.0
+v3.02.2
+
+-Misc rendering bug fixes
+
+-Kucoin API bug fixes
+
+-Refactoring of the rendering logic
+
+-Better UX for kucoin API / other issues
 
 -Revised documentation
 

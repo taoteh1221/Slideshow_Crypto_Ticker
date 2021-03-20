@@ -5,7 +5,7 @@
 <!-- Copyright 2019-2021 GPLv3, Slideshow Crypto Ticker by Mike Kilday: http://DragonFrugal.com -->
 
     <title></title>
-    
+
     <meta charset="utf-8">
     
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -22,8 +22,6 @@
   		
 	<link rel="stylesheet" href="css/style.css" type="text/css" />
     
-    <script src="cache/cache.js"></script>
-    
     <script src="js/jquery.min.js"></script>
     
     <!-- USAGE: http://underscorejs.org -->
@@ -33,8 +31,6 @@
     
     <script src="config.js"></script>
     
-    <script src="js/pre-init.js"></script>
-    
     <script src="js/init.js"></script>
     
 </head>
@@ -42,26 +38,7 @@
 
 <div align='center' id='main_wrapper'>
  
-  <div id="ticker_window">
-
-  	<script>
-	
-	// Render the HTML containers for each ticker
-	Object.keys(markets).forEach(function(exchange) {
-	
-		if ( markets[exchange] != '' ) {
-		
-  			markets[exchange].forEach(element => {
-  			ticker_html(element, exchange);
-			});
-		
-		}
-	
-	});
-
-  	</script>
-
-  </div>
+  <div id="ticker_window"></div>
   
 </div>
 
