@@ -3,7 +3,13 @@
 # Copyright 2019-2021 GPLv3, Slideshow Crypto Ticker by Mike Kilday: http://DragonFrugal.com
 
 
-USERNAME=$(/usr/bin/logname)
+# EXPLICITLY set paths 
+#PATH=/bin:/usr/bin:/usr/local/bin:/sbin:/usr/sbin:/usr/local/sbin:$PATH
+				
+
+# Get logged-in username (if sudo, this works best with logname)
+TERMINAL_USERNAME=$(logname)
+
 
 export DISPLAY=:0 
 
@@ -12,31 +18,43 @@ export DISPLAY=:0
 
 
 # Start in user home directory
-cd /home/$USERNAME
+cd /home/$TERMINAL_USERNAME
 
-/usr/bin/xset s off
+xset s off
 
-/usr/bin/xset -dpms
+xset -dpms
 
-/usr/bin/xset s noblank
+xset s noblank
 
-/usr/bin/unclutter -idle 0.5 -root &
+unclutter -idle 0.5 -root &
 
 
 # Kucoin auth cache updating (MAKE SURE IT EXISTS BEFORE RUNNING THE TICKER)
 ~/dfd-crypto-ticker/bash/cron/kucoin-auth.bash
 
 
-/bin/sed -i 's/"exited_cleanly":false/"exited_cleanly":true/' ~/.config/chromium/Default/Preferences
-/bin/sed -i 's/"exit_type":"Crashed"/"exit_type":"Normal"/' ~/.config/chromium/Default/Preferences
-
+# Remove crash notices (for UX)
+sed -i 's/"exited_cleanly":false/"exited_cleanly":true/' ~/.config/chromium/Default/Preferences
+sed -i 's/"exit_type":"Crashed"/"exit_type":"Normal"/' ~/.config/chromium/Default/Preferences
 
 
 sleep 2
 
+
+# Chromium's FULL PATH
+CHROMIUM_PATH=$(which chromium)
+
+# If 'chromium' wasn't found, look for 'chromium-browser'
+if [ -z "$CHROMIUM_PATH" ]
+then
+CHROMIUM_PATH=$(which chromium-browser)
+fi
+
+
 # Incognito mode doesn't prompt to restore previous session, yay
-# We also set it to not check for upgrades for 7 days (SETTING TO ZERO DOES NOT WORK), to avoid the upgrade prompt popup
-/usr/bin/chromium-browser --check-for-update-interval=604800 --noerrdialogs --disable-infobars --incognito --kiosk ~/dfd-crypto-ticker/index.html
+# We also set it to not check for upgrades for 7 days (SETTING TO ZERO DOES NOT WORK), 
+# to avoid the upgrade prompt popup on non-touch screens (for UX)
+$CHROMIUM_PATH --check-for-update-interval=604800 --noerrdialogs --disable-infobars --incognito --kiosk ~/dfd-crypto-ticker/index.html
 
 
 

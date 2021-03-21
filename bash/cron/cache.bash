@@ -3,22 +3,26 @@
 # Copyright 2019-2021 GPLv3, Slideshow Crypto Ticker by Mike Kilday: http://DragonFrugal.com
 
 
-# Username
-USERNAME=$(/usr/bin/logname)
+# EXPLICITLY set paths 
+#PATH=/bin:/usr/bin:/usr/local/bin:/sbin:/usr/sbin:/usr/local/sbin:$PATH
+				
+
+# Get logged-in username (if sudo, this works best with logname)
+TERMINAL_USERNAME=$(logname)
+
 
 # Start in user home directory
-cd /home/$USERNAME
+cd /home/$TERMINAL_USERNAME
+
 
 # Current timestamp
 CURRENT_TIMESTAMP=$(/usr/bin/date +%s)
-
 
 
 # Create cache directory if it doesn't exist yet
 if [ ! -d ~/dfd-crypto-ticker/cache ]; then
 /usr/bin/mkdir -p ~/dfd-crypto-ticker/cache
 fi
-
 
 
 # Check to see if the kucoin cache data needs to be updated
@@ -41,7 +45,6 @@ UPDATE_KUCOIN=1
 fi
 
 
-
 # If KUCOIN update flagged, cache new kucoin data to kucoin-auth.json, AND flag a JS CACHE update
 if [ "$UPDATE_KUCOIN" == 1 ]; then
 
@@ -52,7 +55,6 @@ if [ "$UPDATE_KUCOIN" == 1 ]; then
 UPDATE_JS=1
 
 fi
-
 
 
 # If JS CACHE update flagged, ready all desired json cache vars for cache.js updating

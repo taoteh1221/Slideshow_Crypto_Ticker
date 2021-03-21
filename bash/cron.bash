@@ -3,11 +3,16 @@
 # Copyright 2019-2021 GPLv3, Slideshow Crypto Ticker by Mike Kilday: http://DragonFrugal.com
 
 
-USERNAME=$(/usr/bin/logname)
+# EXPLICITLY set paths 
+#PATH=/bin:/usr/bin:/usr/local/bin:/sbin:/usr/sbin:/usr/local/sbin:$PATH
+				
+
+# Get logged-in username (if sudo, this works best with logname)
+TERMINAL_USERNAME=$(logname)
 
 
 # Start in user home directory
-cd /home/$USERNAME
+cd /home/$TERMINAL_USERNAME
 
 
 # Keep screensaver off
