@@ -402,6 +402,8 @@ v3.02.3
 
 -Bug fixes for auto-install script
 
+-Bug fixes for runtime bash scripts
+
 ---------------------------------------------------------
 
 
