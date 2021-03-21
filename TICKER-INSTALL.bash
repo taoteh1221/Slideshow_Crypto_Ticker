@@ -137,9 +137,8 @@ echo " "
 
 
 echo "TECHNICAL NOTE:"
-echo "This script was designed to install / setup on the Raspbian operating system,"
-echo "and was developed / created on Raspbian Linux v10, for Raspberry Pi computers"
-echo "WITH SMALL IN-CASE LCD SCREENS."
+echo "This script was designed to install / setup on the Raspbian operating system, and was "
+echo "developed on Raspbian Linux v10, for Raspberry Pi computers WITH SMALL IN-CASE LCD SCREENS."
 echo " "
 echo "It is ONLY recommended to install this ticker app IF your device has an LCD screen installed."
 echo " "
@@ -173,9 +172,13 @@ fi
 				
 if [ -f /home/$APP_USER/dfd-crypto-ticker/config.js ]; then
 echo "A configuration file from a previous install of Slideshow Crypto Ticker has been detected on your system."
+echo " "
 echo "During this upgrade / re-install, it will be backed up to:"
+echo " "
 echo "/home/$APP_USER/dfd-crypto-ticker/config.js.BACKUP.$DATE"
+echo " "
 echo "This will save any custom settings within it."
+echo " "
 echo "You will need to manually move any custom settings in this backup file to the new config.js file with a text editor."
 echo " "
 fi
