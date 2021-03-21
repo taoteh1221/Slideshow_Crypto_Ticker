@@ -50,19 +50,27 @@ var orient_screen = 'flip'; // 'upright' or 'flip'
 
 
 // Vertical position (adjusts the ticker's vertical position up/down)
-var vertical_position = 38; // Default = 38
+// CAN BE NEGATIVE, TO GO THE OPPOSITE WAY
+var vertical_position = 36; // Default = 36
+
+
+// Vertical position (adjusts the ticker's vertical position up/down)
+// CAN BE NEGATIVE, TO GO THE OPPOSITE WAY
+var horizontal_position = 10; // Default = 10
 
 
 // Title font size
-var title_size = 54; // Default = 54
+var title_size = 55; // Default = 55
 
 
-// Ticker arrow size, DECIMAL NUMBER FORMAT X.XX OF 1.00 OR LESS
+// Ticker arrow size ratio (to ticker size), DECIMAL NUMBER FORMAT X.XX OF 1.00 OR LESS
+// THIS #ALREADY AUTO-RESIZES# BASED ON THE TICKER SIZE, SO YOU USUALLY CAN LEAVE THIS
+// #AS-IS#, UNLESS YOU WANT THE RATIO TO TICKER SIZE DIFFERENT!
 var arrow_size = 0.65; // Default = 0.65
 
 
 // Ticker font size
-var ticker_size = 63; // Default = 63
+var ticker_size = 66; // Default = 66
 
 
 // Maximum decimal places for values worth under 1.00 in unit value, for prettier / less-cluttered interface
@@ -70,7 +78,7 @@ var max_ticker_decimals = 7; // Default = 7
 
 
 // 24 hour volume font size
-var volume_size = 34; // Default = 34
+var volume_size = 40; // Default = 40
 
 
 // Text color (https://www.w3schools.com/colors/colors_picker.asp)

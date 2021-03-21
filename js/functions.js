@@ -2,6 +2,7 @@
 // Copyright 2019-2021 GPLv3, Slideshow Crypto Ticker by Mike Kilday: http://DragonFrugal.com
 
 
+
 /////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
@@ -386,11 +387,11 @@ market_key = js_safe_key(market_id, exchange);
 
 	html = '<div id="wrapper_' + market_key + '" class="asset_tickers">'+
     
-	'<div class="title"><span id="asset_' + market_key + '">' + asset + '</span> (<span class="status_'+exchange+'">Connecting...</span>)</div>'+
+	'<div class="title" style="font-size: '+title_size+'px;"><span id="asset_' + market_key + '">' + asset + '</span> (<span class="status_'+exchange+'">Connecting...</span>)</div>'+
 	
-	'<div class="ticker" id="ticker_' + market_key + '">Loading...</div>'+
+	'<div class="ticker" style="font-size: '+ticker_size+'px;" id="ticker_' + market_key + '">Loading...</div>'+
     
-	'<div class="volume" id="volume_' + market_key + '"></div>'+
+	'<div class="volume" style="font-size: '+volume_size+'px;" id="volume_' + market_key + '"></div>'+
 	
 	'</div>';
 	
@@ -453,10 +454,6 @@ function ticker_init() {
 
 	
 ticker_divs = $('#ticker_window div.asset_tickers');
-	
-
-//console.log(window.slideshow_init);
-//console.log(window.ticker_next);
 
 
 	// Slideshow init
@@ -480,7 +477,6 @@ transition_speed = 1000;
 		// Slideshow init
 		if ( window.slideshow_init == 1 ) {
 		this_ticker.delay(transition_speed).fadeIn(transition_speed);
-		//console.log('slideshow init');
 		}
 		// Slideshow continue
 		else {
@@ -488,7 +484,6 @@ transition_speed = 1000;
 		ticker_prev = this_ticker.prev().length ? this_ticker.prev() : ticker_divs.last();
 			
    		ticker_prev.fadeOut(transition_speed, function() {
-			//console.log('slideshow continue');
    		this_ticker.delay(transition_speed).fadeIn(transition_speed);
 			});
 		
@@ -964,7 +959,7 @@ function api_connect(exchange) {
 				base_volume = Number(base_volume).toFixed(volume_decimals);
 				
 				volume_item = 
-				 "<div class='spacing'>" + pairing + " Vol: " + market_symbol +
+				 "<div class='spacing'>Vol: " + market_symbol +
 				 number_commas(base_volume, volume_decimals) +
 				 "</div>";
 				
@@ -976,7 +971,7 @@ function api_connect(exchange) {
 					volume_item = "<div class='spacing'></div>";
 					}
 					else {
-					volume_item = "<div class='spacing'>" + pairing + " Vol: (not provided)</div>";
+					volume_item = "<div class='spacing'>Vol: (not provided)</div>";
 					}
 					
 				}

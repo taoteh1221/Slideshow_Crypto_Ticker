@@ -112,14 +112,18 @@ top: 0px;
 
 
 #main_wrapper {
-width: 100%;
+  position: relative;
+  text-align: center;
+  width: auto;
+  border: 0px;
+  padding: 0px;
+  margin: auto;
 }
 
 
 #ticker_window {
   display: inline-block;
   position: relative;
-  top: 40px;
   text-align: center;
   white-space: nowrap;
   height: auto;

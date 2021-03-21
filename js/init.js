@@ -4,7 +4,7 @@
 
 
 // Application version
-var app_version = '3.02.2';  // 2021/MARCH/20TH
+var app_version = '3.02.3';  // 2021/MARCH/20TH
 
 
 
@@ -63,18 +63,6 @@ $(document).ready(function() {
 	}
 
 
-	
-// Title font size
-$(".title").css({ "font-size": title_size + "px" });
-
-// Ticker font size
-$(".ticker").css({ "font-size": ticker_size + "px" });
-
-// Volume font size
-$(".volume").css({ "font-size": volume_size + "px" });
-
-// Bottom margin
-$("#ticker_window").css({ "top": vertical_position + "px" });
 
 // Background color
 $("body, html").css({ "background": background_color });

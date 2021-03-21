@@ -375,7 +375,8 @@ select opt in $OPTIONS; do
 				
 		  echo " "
 		  echo "Removal of 'unclutter' app package completed, please wait..."
-		  echo "(IF YOU USED unclutter FOR ANOTHER APP, RE-INSTALL WITH: sudo apt-get install unclutter) "
+		  echo " "
+		  echo "(IF YOU USED unclutter FOR ANOTHER APP, RE-INSTALL WITH: sudo apt-get install unclutter)"
 		  echo " "
 				
 				
@@ -409,8 +410,7 @@ echo " "
 ######################################
 
 
-echo "Do you want to automatically configure Slideshow Crypto Ticker for"
-echo "your system (autostart at login / keep screen turned on)?"
+echo "Do you want to automatically configure Slideshow Crypto Ticker for your system (autostart at login / keep screen turned on)?"
 echo " "
 
 echo "Select 1 or 2 to choose whether to auto-configure Slideshow Crypto Ticker system settings, or skip it."
@@ -636,8 +636,7 @@ fi
 
 if [ "$CRON_SETUP" = "1" ]; then
 
-echo "A cron job has been setup for user '$APP_USER',"
-echo "as a command in /etc/cron.d/ticker:"
+echo "A cron job has been setup for user '$APP_USER', as a command in /etc/cron.d/ticker:"
 echo " "
 echo "$CRONJOB"
 echo " "
@@ -646,10 +645,9 @@ fi
 
 
 
-echo "Edit the following file in a text editor to switch between different"
-echo "exchanges / crypto assets / base pairings, and to configure settings"
-echo "for slideshow speed / font sizes and colors / background color"
-echo "/ vertical position / screen orientation / google font used / monospace emulation:"
+echo "Edit the following file in a text editor to activate different exchanges / crypto assets / base pairings,"
+echo "and to configure settings for slideshow speed / font sizes and colors / background color / vertical position /"
+echo "screen orientation / google font used / monospace emulation / activated pairings / etc / etc:"
 echo " "
 echo "/home/$APP_USER/dfd-crypto-ticker/config.js"
 echo " "
@@ -664,7 +662,8 @@ echo " "
 echo "~/reload"
 echo " "
 
-echo "Ticker installation / setup should be complete (if you chose those options), unless you saw any error messages on your screen during setup."
+echo "Ticker installation / setup should be complete (if you chose those options), unless you saw any error"
+echo "messages on your screen during setup."
 echo " "
 
 
@@ -687,9 +686,6 @@ echo "sudo reboot"
 echo " "
 
 fi
-
-echo "WITH BRAND NEW INSTALLATIONS, YOU #MAY NEED TO REBOOT TWO TIMES# TO ACTIVATE THE TICKER STARTING AT BOOT TIME AUTOMATICALLY."
-echo " "
 
 echo "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
 
