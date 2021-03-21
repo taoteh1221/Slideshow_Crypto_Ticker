@@ -1,9 +1,22 @@
 
-Add a VERY TINY upgrade ! round icon in top left corner, with VERY TINY wording 'Upgrade' to the right next to it. Use my github API logic javascript from taoteh1221.github.io, and port my version check logic in the portfolio app to javascript (even checks bug release versions). ALSO ADD A CONFIG SETTING TO DISABLE SHOWING THIS UPGRADE ALERT, DEFAULT TO 'ON'.
 
-Add Binance US / Bitmex webocket API support.
+Add jquery easing functions plugin, to give the ticker transitions different hide / show effects we can add as a config.js setting (besides jut fade in / out like we do now):
+
+https://gsgd.co.uk/sandbox/jquery/easing/
+
+Add Binance US / Bitfinex / Bitmex webocket API support.
+
+https://docs.bitfinex.com/v1/docs/ws-general
 
 https://www.bitmex.com/app/wsAPI
+
+
+Add a VERY TINY upgrade ! round icon in top left corner, with VERY TINY wording 'Upgrade' to the right next to it. Use my github API logic javascript from taoteh1221.github.io, and port my version check logic in the portfolio app to javascript (even checks bug release versions). ALSO ADD A CONFIG SETTING TO DISABLE SHOWING THIS UPGRADE ALERT, DEFAULT TO 'ON'.
+
+For a 24hr / 1hr / 1week trend stat, THE ONLY #FEASIBLE OPTION# IS TO USE DATA FROM CMC / COINGECKO, AS IT WOULD TAKE FOREVER TO BUILD UP A 1HR / 24HR / 1WEEK CYCLE OF DATA IN JAVASCRIPT'S 'sessionStorage' STORAGE.
+
+As far as adding a 24hr / 1hr / 1week trend stat in th front end, have a config to choose which trend time peroid to use, AND FIGURE OUT WHERE / HOW TO PLACE IT ON THE TICKER WITHOUT MAKING THINGS "TOO BUSY" / CONFUSING!
+
 
 Add "pkill chromium" as either notes, or an option in the install script (to close the ticker after auto-startup).
 
