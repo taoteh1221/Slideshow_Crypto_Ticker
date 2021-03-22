@@ -1,27 +1,100 @@
 
 
-Add jquery easing functions plugin, to give the ticker transitions different hide / show effects we can add as a config.js setting (besides jut fade in / out like we do now):
+############################################################################################################################
+TO-DO NOTES
+############################################################################################################################
 
-https://gsgd.co.uk/sandbox/jquery/easing/
+///////////////////////////////////////////////////////
+GENERAL NOTES SECTION
+///////////////////////////////////////////////////////
 
-Add Binance US / Bitfinex / Bitmex webocket API support.
+
+Try sticking with small infrastructure changes, and breaking up large changes into small milestones, then plenty of time is spent on UX / testing / logging / debugging.
+
+
+Always test in a WebKit-based browser [Epiphany|Safari], Firefox, and Chromium.
+
+
+Post on hive, telegram, discord, Twitter, Facebook (and r/CryptoMarkets and r/CryptoCurrency on MAJOR RELEASES) whenever there is a new release of the app.
+
+
+ALWAYS do everything in the optimizations / bugs / tests / ux / qa / other section of this list FIRST, before adding ANY new features (find every flaming turd before we start a dumpster fire).
+
+
+///////////////////////////////////////////////////////
+OPTIMIZATIONS / BUGS / TESTS / UX / QA / OTHER SECTION
+///////////////////////////////////////////////////////
+
+
+Add a configuration setting for increasing / decreasing the transition time between tickers.
+
+
+Add documentation note next to each size / position setting in config.js, about using the command ~/reload in a terminal to load new settings changes in the ticker.
+
+
+///////////////////////////////////////////////////////
+///////////////////////////////////////////////////////
+
+
+///////////////////////////////////////////////////////
+API INTEGRATION SECTION
+///////////////////////////////////////////////////////
+
 
 https://docs.bitfinex.com/v1/docs/ws-general
+
 
 https://www.bitmex.com/app/wsAPI
 
 
+https://github.com/binance-us/binance-official-api-docs/blob/master/web-socket-streams.md
+
+
+
+///////////////////////////////////////////////////////
+///////////////////////////////////////////////////////
+
+
+///////////////////////////////////////////////////////
+FEATURES / STRUCTURING SECTION
+///////////////////////////////////////////////////////
+
+
+Add other stock jquery transition effects (besides fade in / out), as configuration setting options in config.js.
+
+
 Add a VERY TINY upgrade ! round icon in top left corner, with VERY TINY wording 'Upgrade' to the right next to it. Use my github API logic javascript from taoteh1221.github.io, and port my version check logic in the portfolio app to javascript (even checks bug release versions). ALSO ADD A CONFIG SETTING TO DISABLE SHOWING THIS UPGRADE ALERT, DEFAULT TO 'ON'.
+
 
 For a 24hr / 1hr / 1week trend stat, THE ONLY #FEASIBLE OPTION# IS TO USE DATA FROM CMC / COINGECKO, AS IT WOULD TAKE FOREVER TO BUILD UP A 1HR / 24HR / 1WEEK CYCLE OF DATA IN JAVASCRIPT'S 'sessionStorage' STORAGE.
 
-As far as adding a 24hr / 1hr / 1week trend stat in th front end, have a config to choose which trend time peroid to use, AND FIGURE OUT WHERE / HOW TO PLACE IT ON THE TICKER WITHOUT MAKING THINGS "TOO BUSY" / CONFUSING!
+
+As far as adding a 24hr / 1hr / 1week trend stat in the front end, have a config to choose which trend time peroid to use, AND FIGURE OUT WHERE / HOW TO PLACE IT ON THE TICKER WITHOUT MAKING THINGS "TOO BUSY" / CONFUSING!
 
 
 Add "pkill chromium" as either notes, or an option in the install script (to close the ticker after auto-startup).
 
-Post on telegram, discord, Twitter, and Facebook whenever there is a new release of the app.
 
 Add SFTP setup as optional in auto-install, AND mention SSH login too (since the screen on the device will be occupied by the ticker running).
 
-Optional integration with upcoming REST API in DFD Cryptocoin Values, that prints out extra bottom row of data showing price / volume percent change for last day and last week for each market.
+
+///////////////////////////////////////////////////////
+///////////////////////////////////////////////////////
+
+
+///////////////////////////////////////////////////////
+MAYBE SECTION
+///////////////////////////////////////////////////////
+
+
+Maybe add jquery easing functions plugin, to give the ticker transitions different hide / show effects (THAT AREN'T OFFERED BY A STOCK JQUERY LIB) we can add as a config.js setting (besides jut fade in / out like we do now): https://gsgd.co.uk/sandbox/jquery/easing/
+
+
+Optional integration with the REST API in DFD Cryptocoin Values, that prints out extra bottom row of data showing price / volume percent change for last day and last week for each market.
+
+
+############################################################################################################################
+############################################################################################################################
+
+
+
