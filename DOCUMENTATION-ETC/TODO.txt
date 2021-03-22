@@ -44,6 +44,9 @@ API INTEGRATION SECTION
 https://docs.bitfinex.com/v1/docs/ws-general
 
 
+https://docs3.loopring.io/en/websocket/ticker.html
+
+
 https://www.bitmex.com/app/wsAPI
 
 
