@@ -64,7 +64,7 @@ CONFIGURING AFTER INSTALLATION
 
 Edit the following file in a text editor to switch between different exchanges / crypto assets / base pairings, and to configure settings for slideshow speed / font sizes and colors / background color / vertical position / screen orientation / google font used / monospace emulation: 
 
-/home/pi/dfd-crypto-ticker/config.js
+/home/YOUR_USER_NAME/dfd-crypto-ticker/config.js
 
 
 Example editing config.js in nano by command-line:
@@ -94,20 +94,20 @@ If you have a "goodtft LCD-show" LCD screen and you installed it's drivers, you 
 MANUAL INSTALLATION (IF AUTO-INSTALL SCRIPT FAILS, ETC)...
 
 
-IMPORTANT NOTES: USE RASPBIAN #FULL# DESKTOP, #NOT# LITE, OR YOU LIKELY WILL HAVE SOME ISSUES EVEN AFTER UPGRADING TO GUI (trust me). If your system is NOT a Raspberry Pi, or you are logged in / running as a user other than 'pi', just substitute that username in place of the 'pi' user in references below.
+IMPORTANT NOTES: USE RASPBIAN #FULL# DESKTOP, #NOT# LITE, OR YOU LIKELY WILL HAVE SOME ISSUES EVEN AFTER UPGRADING TO GUI (trust me). If your system is NOT a Raspberry Pi, or you are logged in / running as a user other than 'pi', just substitute that username in place of the 'YOUR_USER_NAME' user in references below.
 
 
 UPGRADE NOTES: For v2.13.0 and higher, delete any OLDER install's /scripts/ and /apps/ sub-directories WITHIN the main 'dfd-crypto-ticker' directory (THESE ARE NO LONGER USED).
 
 
-Create a new directory / folder named 'dfd-crypto-ticker' in /home/pi/ on your Raspberry Pi,
+Create a new directory / folder named 'dfd-crypto-ticker' in /home/YOUR_USER_NAME/ on your Raspberry Pi,
 and put all the app's files and folders into this directory.
 
 
 ---------------------
 
 
-Run these commands (logged in as user pi):
+Run these commands (logged in as user YOUR_USER_NAME):
 
 sudo apt-get update && sudo apt-get upgrade
 
@@ -130,12 +130,12 @@ After=graphical.target
 
 [Service]
 Environment=DISPLAY=:0  
-Environment=XAUTHORITY=/home/pi/.Xauthority
+Environment=XAUTHORITY=/home/YOUR_USER_NAME/.Xauthority
 Type=simple
-ExecStart=/bin/bash /home/pi/dfd-crypto-ticker/bash/ticker-init.bash
+ExecStart=/bin/bash /home/YOUR_USER_NAME/dfd-crypto-ticker/bash/ticker-init.bash
 Restart=on-abort
-User=pi
-Group=pi
+User=YOUR_USER_NAME
+Group=YOUR_USER_NAME
 
 [Install]
 WantedBy=graphical.target
@@ -151,13 +151,13 @@ sudo systemctl enable ticker.service
 
 Add this as a cron job every minute, by creating the following file (you'll need sudo/root permissions): /etc/cron.d/ticker and add the following line (and a carriage return AFTER it to be safe):
 
-* * * * * pi /bin/bash /home/pi/dfd-crypto-ticker/bash/cron.bash > /dev/null 2>&1
+* * * * * YOUR_USER_NAME /bin/bash /home/YOUR_USER_NAME/dfd-crypto-ticker/bash/cron.bash > /dev/null 2>&1
 
 
 
 If your system DOES NOT have /etc/cron.d/ on it, then NEARLY the same format (minus the username) can be installed via the 'crontab -e' command (logged in as the user you want running the cron job):
 
-* * * * * /bin/bash /home/pi/dfd-crypto-ticker/bash/cron.bash > /dev/null 2>&1
+* * * * * /bin/bash /home/YOUR_USER_NAME/dfd-crypto-ticker/bash/cron.bash > /dev/null 2>&1
 
 
 

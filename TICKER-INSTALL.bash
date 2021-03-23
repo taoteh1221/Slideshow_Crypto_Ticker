@@ -191,6 +191,10 @@ fi
 echo "PLEASE REPORT ANY ISSUES HERE: https://github.com/taoteh1221/Slideshow_Crypto_Ticker/issues"
 echo " "
 
+
+echo "THIS TICKER INSTALL #REQUIRES# RUNNING THE RASPBERRY PI GRAPHICAL DESKTOP INTERFACE (LXDE) AT STARTUP, AS THE USER: '${APP_USER}'"
+echo " "
+
   				
 echo "Select 1 or 2 to choose whether to continue, or quit."
 echo " "
@@ -690,6 +694,10 @@ echo "sudo reboot"
 echo " "
 
 fi
+
+
+echo "THIS TICKER INSTALL #REQUIRES# RUNNING THE RASPBERRY PI GRAPHICAL DESKTOP INTERFACE (LXDE) AT STARTUP, AS THE USER: '${APP_USER}'"
+echo " "
 
 echo "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
 
