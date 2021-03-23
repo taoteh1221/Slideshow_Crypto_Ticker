@@ -778,11 +778,13 @@ api['bitstamp'] = 'wss://ws.bitstamp.net/';
 
 
 function api_connect(exchange) {
-
-	//console.log('api_connect = ' + exchange);
 	
-	// Exit function if no endpoint set
-	if ( api[exchange] == '' ) {
+	
+	// Skip, if no endpoint or markets are set for this exchange
+	if ( api[exchange] == '' 
+	|| typeof api[exchange] == 'undefined'
+	|| exchange_markets[exchange] == ''
+	|| typeof exchange_markets[exchange] == 'undefined' ) {
 	return;
 	}
 	

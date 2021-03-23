@@ -4,7 +4,7 @@
 
 
 // Application version
-var app_version = '3.02.3';  // 2021/MARCH/20TH
+var app_version = '3.02.4';  // 2021/MARCH/23RD
 
 
 

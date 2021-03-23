@@ -26,9 +26,6 @@ OPTIMIZATIONS / BUGS / TESTS / UX / QA / OTHER SECTION
 ///////////////////////////////////////////////////////
 
 
-Make sure that no websocket is opened if no markets are configured for that exchange.
-
-
 Add a configuration setting for increasing / decreasing the transition time between tickers.
 
 

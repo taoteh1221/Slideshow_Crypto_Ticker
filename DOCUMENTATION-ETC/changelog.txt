@@ -407,6 +407,18 @@ v3.02.3
 ---------------------------------------------------------
 
 
+---------------------------------------------------------
+v3.02.4
+
+-Bug fix so exchange API endpoint connects won't happen, unless markets are configured for that exchange
+
+-Revised documentation
+
+---------------------------------------------------------
+
+
+
+
 
 
 
