@@ -3,13 +3,13 @@ Slideshow Crypto Ticker - Developed by Michael Kilday <mike@dragonfrugal.com>, r
 
 Copyright 2019-2021 GPLv3
 
-Real Time Crypto Price Ticker For Raspberry Pis With LCD Screens, including 24 hour volume and Binance / Coinbase Pro / Kraken / Kucoin / Bitstamp / HitBTC support (more exchanges coming in the future).
+Open source / 100% FREE real time slideshow crypto price ticker for Raspberry Pi LCD screens, including 24 hour volume and Binance / Coinbase Pro / Kraken / Kucoin / Bitstamp / HitBTC support (more exchanges coming in the future).
 
 Supports running in "slideshow mode", to show all the markets you want.
 
-Developed on a Raspi v3 B+, with this screen / case: https://smile.amazon.com/gp/product/B07N38B86S
-
 Example on a 3.5" LCD: https://www.youtube.com/watch?v=bvPQ6PLy_ME
+
+Developed on a Raspi v3 B+, with this screen / case: https://smile.amazon.com/gp/product/B07N38B86S
 
 Project Website: https://sourceforge.net/projects/dfd-crypto-ticker
 
