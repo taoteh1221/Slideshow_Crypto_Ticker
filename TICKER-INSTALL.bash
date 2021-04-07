@@ -321,10 +321,10 @@ select opt in $OPTIONS; do
 				rm DFD-Crypto-Ticker.zip
 				
 				# Remove depreciated directory structure from any previous installs
-				rm -rf /home/$APP_USER/dfd-crypto-ticker/apps 
-				rm -rf /home/$APP_USER/dfd-crypto-ticker/scripts
-				rm -rf /home/$APP_USER/dfd-crypto-ticker/cache/json
-				rm -rf /home/$APP_USER/dfd-crypto-ticker/cache/js
+				rm -rf /home/$APP_USER/dfd-crypto-ticker/apps > /dev/null 2>&1
+				rm -rf /home/$APP_USER/dfd-crypto-ticker/scripts > /dev/null 2>&1
+				rm -rf /home/$APP_USER/dfd-crypto-ticker/cache/json > /dev/null 2>&1
+				rm -rf /home/$APP_USER/dfd-crypto-ticker/cache/js > /dev/null 2>&1
 
 				sleep 1
 				
@@ -333,13 +333,13 @@ select opt in $OPTIONS; do
 				
   				mkdir -p /home/$APP_USER/dfd-crypto-ticker
 				
-				rm -rf .git
-				rm -rf .github
-				rm .gitattributes
-				rm .gitignore
-				rm CODEOWNERS
-				rm /home/$APP_USER/dfd-crypto-ticker/bash/cron/cron.bash
-				rm /home/$APP_USER/dfd-crypto-ticker/bash/cron/kucoin-auth.bash
+				rm -rf .git > /dev/null 2>&1
+				rm -rf .github > /dev/null 2>&1
+				rm .gitattributes > /dev/null 2>&1
+				rm .gitignore > /dev/null 2>&1
+				rm CODEOWNERS > /dev/null 2>&1
+				rm /home/$APP_USER/dfd-crypto-ticker/bash/cron/cron.bash > /dev/null 2>&1
+				rm /home/$APP_USER/dfd-crypto-ticker/bash/cron/kucoin-auth.bash > /dev/null 2>&1
 				
 				\cp -r ./ /home/$APP_USER/dfd-crypto-ticker
 

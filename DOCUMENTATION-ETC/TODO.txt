@@ -53,6 +53,9 @@ https://www.bitmex.com/app/wsAPI
 https://github.com/binance-us/binance-official-api-docs/blob/master/web-socket-streams.md
 
 
+https://docs.binance.org/api-reference/dex-api/ws-streams.html
+
+
 
 ///////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////

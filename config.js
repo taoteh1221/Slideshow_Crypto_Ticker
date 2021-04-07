@@ -54,7 +54,7 @@ var orient_screen = 'flip'; // 'upright' or 'flip'
 var vertical_position = 36; // Default = 36
 
 
-// Vertical position (adjusts the ticker's vertical position up/down)
+// Horizontal position (adjusts the ticker's horizontal position up/down)
 // CAN BE NEGATIVE, TO GO THE OPPOSITE WAY
 var horizontal_position = 10; // Default = 10
 
