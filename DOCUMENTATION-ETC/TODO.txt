@@ -26,6 +26,9 @@ OPTIMIZATIONS / BUGS / TESTS / UX / QA / OTHER SECTION
 ///////////////////////////////////////////////////////
 
 
+Add ability to rotate the screen 90 degrees left or right (besides just flipping it).
+
+
 Add a configuration setting for increasing / decreasing the transition time between tickers.
 
 
