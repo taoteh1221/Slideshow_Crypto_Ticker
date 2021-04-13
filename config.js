@@ -25,11 +25,11 @@ exchange_markets['bitstamp'] = 'btceur';// !!BITSTAMP WEBSOCKET API ONLY SUPPORT
 ////
 ////
 // Coinbase markets (set to '' to disable)
-exchange_markets['coinbase'] = 'BTC-USD|ETH-USD|ETH-BTC|LRC-USD|LRC-BTC'; 
+exchange_markets['coinbase'] = 'BTC-USD|ETH-USD|ETH-BTC|UNI-USD|UNI-BTC'; 
 ////
 ////
 // Binance markets (set to '' to disable)
-exchange_markets['binance'] = 'uniusdt|unibtc|mkrusdt|mkrbtc'; 
+exchange_markets['binance'] = 'mkrusdt|mkrbtc|lrcusdt|lrcbtc'; 
 ////
 ////
 // Kraken markets (set to '' to disable)
@@ -92,7 +92,7 @@ var background_color = '#000000'; // Default = '#000000'
 
 
 // Use a google font...set as null for default system serif font
-// Runs the ticker in ANY google font found at: https://fonts.google.com/
+// Runs the ticker in ANY google font found at: https://fonts.google.com
 // 'fontname' IN QUOTES for ANY google font, OR null to skip (null MUST BE LOWERCASE WITHOUT QUOTES)
 var google_font = 'Varela Round'; // Default = 'Varela Round'
 
