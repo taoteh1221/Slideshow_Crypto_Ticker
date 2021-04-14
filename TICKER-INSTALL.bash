@@ -733,7 +733,7 @@ echo " "
 
 # Mark the ticker install as having run already, to avoid showing
 # the OPTIONAL ticker install options at end of the portfolio install
-TICKER_INSTALL_RAN=1
+export TICKER_INSTALL_RAN=1
 
                     
 if [ -z "$FOLIO_INSTALL_RAN" ]; then
