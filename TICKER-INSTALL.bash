@@ -708,7 +708,7 @@ echo " "
 
 
 echo " "
-echo "BE SURE TO SAVE ALL THE ACCESS DETAILS PRINTED OUT ABOVE, BEFORE YOU SIGN OFF FROM THIS TERMINAL SESSION."
+echo "BE SURE TO SCROLL UP TO SAVE ALL THE DOCUMENTATION PRINTED OUT ABOVE, BEFORE YOU SIGN OFF FROM THIS TERMINAL SESSION."
 echo " "
 echo "Also check out my 100% FREE open source private cryptocurrency investment portfolio tracker,"
 echo "with email / text / Alexa / Ghome / Telegram alerts, charts, mining calculators,"
@@ -731,8 +731,15 @@ echo " "
 ######################################
 
 
+# Mark the ticker install as having run already, to avoid showing
+# the OPTIONAL ticker install options at end of the portfolio install
+TICKER_INSTALL_RAN=1
 
-echo "Would you like to ADDITIONALLY install Open Crypto Portfolio Tracker (server edition), private portfolio tracker on this machine?"
+                    
+if [ -z "$FOLIO_INSTALL_RAN" ]; then
+
+
+echo "Would you like to ADDITIONALLY / OPTIONALLY install Open Crypto Portfolio Tracker (server edition), private portfolio tracker on this machine?"
 echo " "
 
 echo "Select 1 or 2 to choose whether to install the private portfolio tracker, or skip."
@@ -740,7 +747,7 @@ echo " "
 
 OPTIONS="install_portfolio_tracker skip"
 
-select opt in $OPTIONS; do
+	select opt in $OPTIONS; do
         if [ "$opt" = "install_portfolio_tracker" ]; then
          
 			
@@ -761,13 +768,28 @@ select opt in $OPTIONS; do
 			
         break
        elif [ "$opt" = "skip" ]; then
+       
         echo " "
-        echo "Skipping portfolio tracker install..."
+        echo "Skipping the OPTIONAL portfolio tracker install..."
+		  echo " "
+		  echo "Installation / setup has finished, exiting to terminal..."
+		  echo " "
+		  exit
+		  
         break
+        
        fi
-done
+	done
+
+
+else
 
 echo " "
+echo "Installation / setup has finished, exiting to terminal..."
+echo " "
+exit
+
+fi
 
 
 ######################################
