@@ -69,19 +69,22 @@ FEATURES / STRUCTURING SECTION
 ///////////////////////////////////////////////////////
 
 
-Add other stock jquery transition effects (besides fade in / out), as configuration setting options in config.js.
+Add changing font-weight for all ticker text.
+
+
+Add changing the slideshow transition time (in seconds) as a config option.
+
+
+Add other stock jquery transition effects (besides fade in / out), as config options.
 
 
 Add a VERY TINY upgrade ! round icon in top left corner, with VERY TINY wording 'Upgrade' to the right next to it. Use my github API logic javascript from taoteh1221.github.io, and port my version check logic in the portfolio app to javascript (even checks bug release versions). ALSO ADD A CONFIG SETTING TO DISABLE SHOWING THIS UPGRADE ALERT, DEFAULT TO 'ON'.
 
 
-For a 24hr / 1hr / 1week trend stat, THE ONLY #FEASIBLE OPTION# IS TO USE DATA FROM CMC / COINGECKO, AS IT WOULD TAKE FOREVER TO BUILD UP A 1HR / 24HR / 1WEEK CYCLE OF DATA IN JAVASCRIPT'S 'sessionStorage' STORAGE.
+For a 24hr / 1hr / 1week trend stat, THE ONLY #FEASIBLE OPTION# IS TO USE DATA FROM COINGECKO (coingecko allows in-browser js-compatible API queries as simple GET requests), AS IT WOULD TAKE FOREVER TO BUILD UP A 1HR / 24HR / 1WEEK CYCLE OF DATA IN JAVASCRIPT'S 'sessionStorage' STORAGE. As far as the front end goes, look into an optional 4th row (config defaulting to 'off').
 
 
-As far as adding a 24hr / 1hr / 1week trend stat in the front end, have a config to choose which trend time peroid to use, AND FIGURE OUT WHERE / HOW TO PLACE IT ON THE TICKER WITHOUT MAKING THINGS "TOO BUSY" / CONFUSING!
-
-
-Add "pkill chromium" as either notes, or an option in the install script (to close the ticker after auto-startup).
+Add "pkill -o chromium" as a ticker stop script in the bash folder. Rename 'reload' symb link in home dir to 'ticker-restart', AND add 'ticker-start' / 'ticker-stop' symb links in home dir as well. UPDATED DOCS ON USAGE TOO.
 
 
 Add SFTP setup as optional in auto-install, AND mention SSH login too (since the screen on the device will be occupied by the ticker running).
