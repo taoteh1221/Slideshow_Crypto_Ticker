@@ -708,8 +708,6 @@ echo " "
 
 
 echo " "
-echo "BE SURE TO SCROLL UP TO SAVE ALL THE DOCUMENTATION PRINTED OUT ABOVE, BEFORE YOU SIGN OFF FROM THIS TERMINAL SESSION."
-echo " "
 echo "Also check out my 100% FREE open source private cryptocurrency investment portfolio tracker,"
 echo "with email / text / Alexa / Ghome / Telegram alerts, charts, mining calculators,"
 echo "leverage / gain / loss / balance stats, news feeds and more:"
@@ -724,6 +722,8 @@ echo " "
 echo "Bitcoin: 3Nw6cvSgnLEFmQ1V4e8RSBG23G7pDjF3hW"
 echo " "
 echo "Ethereum: 0x644343e8D0A4cF33eee3E54fE5d5B8BFD0285EF8"
+echo " "
+echo "!!!!!BE SURE TO SCROLL UP, TO SAVE #ALL THE TICKER APP USAGE DOCUMENTATION# PRINTED OUT ABOVE, BEFORE YOU SIGN OFF FROM THIS TERMINAL SESSION!!!!!"
 echo " "
 
 
