@@ -21,7 +21,7 @@ var exchange_markets = []; // LEAVE ALONE, AND DON'T DELETE (REQUIRED!)
 ////
 ////
 // Bitstamp markets (set to '' to disable)
-exchange_markets['bitstamp'] = 'btceur';// !!BITSTAMP WEBSOCKET API ONLY SUPPORTS ONE ASSET!!
+exchange_markets['bitstamp'] = 'btceur'; // !!BITSTAMP WEBSOCKET API ONLY SUPPORTS ONE ASSET!!
 ////
 ////
 // Coinbase markets (set to '' to disable)
@@ -37,7 +37,7 @@ exchange_markets['kraken'] = 'KEEP/USD|MANA/USD';
 ////
 ////
 // Kucoin markets (set to '' to disable)
-exchange_markets['kucoin'] = 'MANA-BTC|ENJ-BTC|SXP-USDT';
+exchange_markets['kucoin'] = 'MANA-BTC|ENJ-BTC|SXP-USDT'; // !!KUCOIN REQUIRES USING THE INSTALL SCRIPT!!
 ////
 ////
 // HitBTC markets (set to '' to disable) 
