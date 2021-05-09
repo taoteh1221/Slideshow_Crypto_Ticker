@@ -988,7 +988,7 @@ function api_connect(exchange) {
 	    }
 	    
   
-	   // Render (IF market_id AND price_raw are defined)
+	   // Render (IF market_id is defined)
 		if ( typeof market_id !== 'undefined' ) {
 			 
 		//console.log('asset = ' + asset);
