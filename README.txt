@@ -160,13 +160,13 @@ sudo systemctl enable ticker.service
 
 Add this as a cron job every minute, by creating the following file (you'll need sudo/root permissions): /etc/cron.d/ticker and add the following line (and a carriage return AFTER it to be safe):
 
-* * * * * YOUR_USER_NAME /bin/bash /home/YOUR_USER_NAME/slideshow-crypto-ticker/bash/cron.bash > /dev/null 2>&1
+* * * * * YOUR_USER_NAME /bin/bash /home/YOUR_USER_NAME/slideshow-crypto-ticker/bash/cron/cron.bash > /dev/null 2>&1
 
 
 
 If your system DOES NOT have /etc/cron.d/ on it, then NEARLY the same format (minus the username) can be installed via the 'crontab -e' command (logged in as the user you want running the cron job):
 
-* * * * * /bin/bash /home/YOUR_USER_NAME/slideshow-crypto-ticker/bash/cron.bash > /dev/null 2>&1
+* * * * * /bin/bash /home/YOUR_USER_NAME/slideshow-crypto-ticker/bash/cron/cron.bash > /dev/null 2>&1
 
 
 
