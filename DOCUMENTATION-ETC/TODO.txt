@@ -38,9 +38,6 @@ API INTEGRATION SECTION
 ///////////////////////////////////////////////////////
 
 
-https://docs.bitfinex.com/v1/docs/ws-general
-
-
 https://docs3.loopring.io/en/websocket/ticker.html
 
 
@@ -85,9 +82,6 @@ MAYBE SECTION
 
 
 Maybe add jquery easing functions plugin, to give the ticker transitions different hide / show effects (THAT AREN'T OFFERED BY A STOCK JQUERY LIB) we can add as a config.js setting (besides jut fade in / out like we do now): https://gsgd.co.uk/sandbox/jquery/easing/
-
-
-Optional integration with the REST API in DFD Cryptocoin Values, that prints out extra bottom row of data showing price / volume percent change for last day and last week for each market.
 
 
 ############################################################################################################################

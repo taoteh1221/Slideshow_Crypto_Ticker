@@ -420,6 +420,8 @@ v3.02.4
 
 -Font weight config setting
 
+-Orient screen in 90 degree increments
+
 -Easy-to-use Start / Stop / Restart ticker commands
 
 -Revised documentation
