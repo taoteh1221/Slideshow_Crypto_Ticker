@@ -249,16 +249,16 @@ function number_commas(num, decimals) {
 		if ( typeof num == 'string' ) {
 		
 			num = parseFloat(num).toLocaleString(undefined, {
-   		minimumFractionDigits: decimals,
-   		maximumFractionDigits: decimals
+   		    minimumFractionDigits: decimals,
+   		    maximumFractionDigits: decimals
 			});
 		
 		}
 		else {
 		
 			num = num.toLocaleString(undefined, {
-   		minimumFractionDigits: decimals,
-   		maximumFractionDigits: decimals
+   		    minimumFractionDigits: decimals,
+   		    maximumFractionDigits: decimals
 			});
 		
 		}
@@ -305,6 +305,37 @@ return parsed_markets[market_id];
 /////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
+function valid_config(exchange, mode) {
+
+// Allows alphanumeric and symbols: / - _ |
+alph_symb_regex = /^[a-z0-9\/\-_|]+$/i;
+
+	// Skip, if no endpoint or markets are set for this exchange
+	if ( 
+	api[exchange] == '' 
+	|| typeof api[exchange] == 'undefined'
+	) {
+	console.log(exchange + ' endpoint not defined, skipping ' + mode);
+	return false;
+	}
+	else if ( typeof exchange_markets[exchange] == 'undefined' ) {
+	console.log(exchange + ' markets not defined, skipping ' + mode);
+	return false;
+	}
+	else if ( !exchange_markets[exchange].match(alph_symb_regex) ) {
+	console.log(exchange + ' markets not properly setup (CHECK FOR BAD FORMATTING), skipping ' + mode);
+	return false;
+	}
+	else {
+	return true;
+	}
+
+}
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
 function regex_pairing_detection(market_id) {
 
 results = new Array();
@@ -340,10 +371,10 @@ function monospace_check() {
 check = monospace_width;
 
 
-	// Not a number check
-	if ( isNaN(check) ) {
-   return false;
-	}
+  // Not a number check
+  if ( isNaN(check) ) {
+  return false;
+  }
 
 
 // Second number check, with check for decimals with value of 1.00 or less
@@ -373,6 +404,11 @@ var result = (check - Math.floor(check)) !== 0;
 
 function ticker_html(market_id, exchange) {
 
+    // Skip invalid exchange setups
+    if ( valid_config(exchange, 'ticker_html') == false ) {
+    return;
+    }
+	
 parsed_market_id = market_id_parser(market_id, exchange);
 				 
 asset = parsed_market_id.asset;
@@ -387,11 +423,11 @@ market_key = js_safe_key(market_id, exchange);
 
 	html = '<div id="wrapper_' + market_key + '" class="asset_tickers">'+
     
-	'<div class="title" style="font-size: '+title_size+'px;"><span id="asset_' + market_key + '">' + asset + '</span> (<span class="status_'+exchange+'">Connecting...</span>)</div>'+
+	'<div class="title" style="font-size: '+title_size+'px; font-weight: '+font_weight+';"><span id="asset_' + market_key + '">' + asset + '</span> (<span class="status_'+exchange+'">Connecting...</span>)</div>'+
 	
-	'<div class="ticker" style="font-size: '+ticker_size+'px;" id="ticker_' + market_key + '">Loading...</div>'+
+	'<div class="ticker" style="font-size: '+ticker_size+'px; font-weight: '+font_weight+';" id="ticker_' + market_key + '">Loading...</div>'+
     
-	'<div class="volume" style="font-size: '+volume_size+'px;" id="volume_' + market_key + '"></div>'+
+	'<div class="volume" style="font-size: '+volume_size+'px; font-weight: '+font_weight+';" id="volume_' + market_key + '"></div>'+
 	
 	'</div>';
 	
@@ -467,7 +503,7 @@ ticker_divs = $('#ticker_window div.asset_tickers');
 	window.slideshow_init = 0;
 	}
 
-transition_speed = 1000;
+t_speed = Math.round(window.transition_speed * 1000);
 
    // If more than one market, run slideshow
 	if ( markets_length > 1 ) {
@@ -476,15 +512,15 @@ transition_speed = 1000;
 
 		// Slideshow init
 		if ( window.slideshow_init == 1 ) {
-		this_ticker.delay(transition_speed).fadeIn(transition_speed);
+		this_ticker.fadeIn(t_speed);
 		}
 		// Slideshow continue
 		else {
 			
 		ticker_prev = this_ticker.prev().length ? this_ticker.prev() : ticker_divs.last();
 			
-   		ticker_prev.fadeOut(transition_speed, function() {
-   		this_ticker.delay(transition_speed).fadeIn(transition_speed);
+   		ticker_prev.fadeOut(t_speed, function() {
+   		this_ticker.fadeIn(t_speed);
 			});
 		
 		}
@@ -492,7 +528,7 @@ transition_speed = 1000;
    }
    // If just one market, leave showing
    else if ( markets_length == 1 ) {
-   this_ticker.delay(transition_speed).fadeIn(transition_speed);
+   this_ticker.fadeIn(t_speed);
    }
 	
    
@@ -611,6 +647,8 @@ api['kraken'] = 'wss://ws.kraken.com';
 api['hitbtc'] = 'wss://api.hitbtc.com/api/2/ws';
 
 api['bitstamp'] = 'wss://ws.bitstamp.net/';
+
+api['bitfinex'] = 'wss://api.bitfinex.com/ws/1';
 
 
 
@@ -763,7 +801,25 @@ api['bitstamp'] = 'wss://ws.bitstamp.net/';
 			});
 		
 		}
-	
+		// Bitfinex
+		else if ( exchange == 'bitfinex' ) {
+			
+		// API call config
+		subscribe_msg[exchange] = {
+			"event": "subscribe",
+			"channel": "ticker",
+			"pair": ""
+		};
+		 
+		 
+			// Add markets to API call
+			var loop = 0;
+			markets[exchange].forEach(element => {
+			subscribe_msg[exchange]['pair'] = element; 
+			loop = loop + 1;
+			});
+		
+		}
 		
 	//console.log(subscribe_msg[exchange]);
 	
@@ -778,27 +834,23 @@ api['bitstamp'] = 'wss://ws.bitstamp.net/';
 
 
 function api_connect(exchange) {
-	
-	
-	// Skip, if no endpoint or markets are set for this exchange
-	if ( api[exchange] == '' 
-	|| typeof api[exchange] == 'undefined'
-	|| exchange_markets[exchange] == ''
-	|| typeof exchange_markets[exchange] == 'undefined' ) {
-	return;
-	}
+
+
+    // Skip invalid exchange setups
+    if ( valid_config(exchange, 'api_connect') == false ) {
+    return;
+    }
 	
 	
 	// Create new socket
 	sockets[exchange] = new WebSocket(api[exchange]);
-	
    
 	// Open socket ///////////////////////////////////////////////////
 	sockets[exchange].onopen = function() {
    
 	sockets[exchange].send(JSON.stringify(subscribe_msg[exchange]));
 	   
-	 	markets[exchange].forEach(element => {
+	   markets[exchange].forEach(element => {
 	   $(".status_" + exchange).text( render_names(exchange) ).css("color", "#2bbf7b");
 	   });
 	   
@@ -889,7 +941,7 @@ function api_connect(exchange) {
 				
 				console.log(' ');
 				console.log('Refresh Alert: This app will attempt to fix the detected issue with an');
-				console.log('app reload (no more than every ' + (min_error_refresh_time / 60000) + ' minutes, until the error clears up).');
+				console.log('app restart (no more than every ' + (min_error_refresh_time / 60000) + ' minutes, until the error clears up).');
 				console.log(' ');
 				
 				// Reload, if we are within the minimum reload time window
@@ -914,10 +966,29 @@ function api_connect(exchange) {
 		var base_volume;
 				 
 		}
+		// Bitfinex
+		else if ( exchange == 'bitfinex' && msg.length == 11 ) {
+				 
+		market_id = subscribe_msg[exchange]['pair'];
+				 
+		price_raw = msg[7];
+				 
+		volume_raw = msg[8];
+		   
+		base_volume = pair_volume('asset', price_raw, volume_raw);
+				 
+		}
 	  
-	  
+	    
+	    // Nullify rendering under these circumstances (msg is not our data set)
+	    if ( 
+	    exchange == 'bitfinex' && msg[1] == 'hb' // Bitfinex
+	    ) {
+	    var market_id;
+	    }
+	    
   
-	   // Render (IF market_id defined)
+	   // Render (IF market_id AND price_raw are defined)
 		if ( typeof market_id !== 'undefined' ) {
 			 
 		//console.log('asset = ' + asset);

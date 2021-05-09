@@ -29,8 +29,8 @@ xset s noblank
 unclutter -idle 0.5 -root &
 
 
-# Kucoin auth cache updating (MAKE SURE IT EXISTS BEFORE RUNNING THE TICKER)
-~/dfd-crypto-ticker/bash/cron/kucoin-auth.bash
+# Cache updating (MAKE SURE IT EXISTS BEFORE RUNNING THE TICKER)
+~/slideshow-crypto-ticker/bash/cron/cache.bash
 
 
 # Remove crash notices (for UX)
@@ -54,7 +54,7 @@ fi
 # Incognito mode doesn't prompt to restore previous session, yay
 # We also set it to not check for upgrades for 7 days (SETTING TO ZERO DOES NOT WORK), 
 # to avoid the upgrade prompt popup on non-touch screens (for UX)
-$CHROMIUM_PATH --check-for-update-interval=604800 --noerrdialogs --disable-infobars --incognito --kiosk ~/dfd-crypto-ticker/index.html
+$CHROMIUM_PATH --check-for-update-interval=604800 --noerrdialogs --disable-infobars --incognito --kiosk ~/slideshow-crypto-ticker/index.html &>/dev/null &
 
 
 

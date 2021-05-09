@@ -58,8 +58,8 @@ $(document).ready(function() {
 	
 
 	// Screen orientation
-	if ( orient_screen == 'flip' ) {
-	$("#ticker_window").addClass("flip");
+	if ( orient_screen > 0 ) {
+	$("#ticker_window").addClass("orient_" + orient_screen);
 	}
 
 

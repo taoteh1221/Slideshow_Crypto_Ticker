@@ -20,18 +20,18 @@ CURRENT_TIMESTAMP=$(/usr/bin/date +%s)
 
 
 # Create cache directory if it doesn't exist yet
-if [ ! -d ~/dfd-crypto-ticker/cache ]; then
-/usr/bin/mkdir -p ~/dfd-crypto-ticker/cache
+if [ ! -d ~/slideshow-crypto-ticker/cache ]; then
+/usr/bin/mkdir -p ~/slideshow-crypto-ticker/cache
 fi
 
 
 # Check to see if the kucoin cache data needs to be updated
-if [ -f ~/dfd-crypto-ticker/cache/kucoin-auth.json ]; then
+if [ -f ~/slideshow-crypto-ticker/cache/kucoin-auth.json ]; then
 
 # 12 hours (in seconds) between kucoin cache refreshes
 KUCOIN_REFRESH=43200
 
-KUCOIN_LAST_MODIFIED=$(/usr/bin/date +%s -r ~/dfd-crypto-ticker/cache/kucoin-auth.json)
+KUCOIN_LAST_MODIFIED=$(/usr/bin/date +%s -r ~/slideshow-crypto-ticker/cache/kucoin-auth.json)
 
 KUCOIN_THRESHOLD=$((KUCOIN_LAST_MODIFIED + KUCOIN_REFRESH))
 
@@ -48,7 +48,7 @@ fi
 # If KUCOIN update flagged, cache new kucoin data to kucoin-auth.json, AND flag a JS CACHE update
 if [ "$UPDATE_KUCOIN" == 1 ]; then
 
-/usr/bin/curl -X POST https://api.kucoin.com/api/v1/bullet-public > ~/dfd-crypto-ticker/cache/kucoin-auth.json
+/usr/bin/curl -X POST https://api.kucoin.com/api/v1/bullet-public > ~/slideshow-crypto-ticker/cache/kucoin-auth.json
 
 /bin/sleep 3
 
@@ -62,9 +62,9 @@ if [ "$UPDATE_JS" == 1 ]; then
 
 
 # Kucoin data
-KUCOIN_TOKEN=$(/usr/bin/jq .data.token ~/dfd-crypto-ticker/cache/kucoin-auth.json)
+KUCOIN_TOKEN=$(/usr/bin/jq .data.token ~/slideshow-crypto-ticker/cache/kucoin-auth.json)
 
-KUCOIN_ENDPOINT=$(/usr/bin/jq .data.instanceServers[0].endpoint ~/dfd-crypto-ticker/cache/kucoin-auth.json)
+KUCOIN_ENDPOINT=$(/usr/bin/jq .data.instanceServers[0].endpoint ~/slideshow-crypto-ticker/cache/kucoin-auth.json)
 
 
 # Don't nest / indent, or it could malform the settings            
@@ -79,7 +79,7 @@ EOF
 
 
 # Write to cache.js
-echo -e "$JS_CACHE" > ~/dfd-crypto-ticker/cache/cache.js
+echo -e "$JS_CACHE" > ~/slideshow-crypto-ticker/cache/cache.js
 
 /bin/sleep 3
 

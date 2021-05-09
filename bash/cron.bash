@@ -16,9 +16,9 @@ cd /home/$TERMINAL_USERNAME
 
 
 # Keep screensaver off
-~/dfd-crypto-ticker/bash/cron/keep-screensaver-off.bash
+~/slideshow-crypto-ticker/bash/cron/keep-screensaver-off.bash
 
 
 # Cache updating
-~/dfd-crypto-ticker/bash/cron/cache.bash
+~/slideshow-crypto-ticker/bash/cron/cache.bash
 

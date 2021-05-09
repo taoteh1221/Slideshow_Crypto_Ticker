@@ -410,7 +410,17 @@ v3.02.3
 ---------------------------------------------------------
 v3.02.4
 
--Bug fix so exchange API endpoint connects won't happen, unless markets are configured for that exchange
+-SECURITY BUG FIX: Removed underscore-js library (not impressed with the vulnerabilities)
+
+-Bug fix so exchange API endpoint connects / ticker rendering won't happen, unless API and markets are properly configured for that exchange
+
+-Bitfinex API support
+
+-Transition speed config setting
+
+-Font weight config setting
+
+-Easy-to-use Start / Stop / Restart ticker commands
 
 -Revised documentation
 

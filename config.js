@@ -12,16 +12,21 @@ var exchange_markets = []; // LEAVE ALONE, AND DON'T DELETE (REQUIRED!)
 // Which crypto asset(s) to display on the ticker
 // Separate with pipe | symbol to "slideshow" between multiple tickers on the same exchange
 ////
+// Bitstamp formatting example (MULTIPLE TICKERS NOT SUPPORTED): 'btcgbp'
+// Bitfinex formatting example (MULTIPLE TICKERS NOT SUPPORTED): 'BTCEUR'
 // Kraken formatting example: 'XBT/USD|XBT/CAD|XBT/EUR|ETH/USD|ETH/EUR|ETH/CAD'
 // Coinbase formatting example: 'BTC-USD|BTC-GBP|ETH-USD|ETH-BTC|ETH-EUR|MKR-USD|MKR-BTC|MANA-USDC'
 // Binance formatting example: 'btcusdt|ethusdt|ethbtc|mkrusdt'
 // Kucoin formatting example: 'MANA-BTC|ENJ-BTC|SXP-USDT'
 // Hitbtc formatting example (MULTIPLE TICKERS NOT SUPPORTED): 'MYSTBTC'
-// Bitstamp formatting example (MULTIPLE TICKERS NOT SUPPORTED): 'btceur'
 ////
 ////
 // Bitstamp markets (set to '' to disable)
-exchange_markets['bitstamp'] = 'btceur'; // !!BITSTAMP WEBSOCKET API ONLY SUPPORTS ONE ASSET!!
+exchange_markets['bitstamp'] = 'btcgbp'; // !!BITSTAMP WEBSOCKET API ONLY SUPPORTS ONE ASSET!!
+////
+////
+// Bitfinex markets (set to '' to disable) 
+exchange_markets['bitfinex'] = 'BTCEUR';  // !!BITFINEX WEBSOCKET API ONLY SUPPORTS ONE ASSET!!
 ////
 ////
 // Coinbase markets (set to '' to disable)
@@ -44,9 +49,14 @@ exchange_markets['kucoin'] = 'MANA-BTC|ENJ-BTC|SXP-USDT'; // !!KUCOIN REQUIRES U
 exchange_markets['hitbtc'] = 'MYSTBTC'; // !!HITBTC WEBSOCKET API ONLY SUPPORTS ONE ASSET!!
 
 
+// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+// I M P O R T A N T   S E T U P   I N F O R M A T I O N !!!!!!!!!!!!!!!!!!!!
+// Run COMMAND "~/ticker-restart" (WITHOUT QUOTES) TO SHOW UPDATED SETUP!!!!!
+// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
-// Screen orientation (upright, or flip upside-down)
-var orient_screen = 'flip'; // 'upright' or 'flip'
+
+// Screen orientation (offset in degrees)
+var orient_screen = 180; // Normal = 0, Flipped = 180, Sideways = 90 or 270
 
 
 // Vertical position (adjusts the ticker's vertical position up/down)
@@ -57,6 +67,14 @@ var vertical_position = 36; // Default = 36
 // Horizontal position (adjusts the ticker's horizontal position up/down)
 // CAN BE NEGATIVE, TO GO THE OPPOSITE WAY
 var horizontal_position = 10; // Default = 10
+
+
+// Slideshow transition speed IN SECONDS (can be decimals)
+var transition_speed = 0.75; // Default = 0.75
+
+
+// ALL font weights (for ALL ticker text)
+var font_weight = 'normal'; // Default = 'normal', can be any proper CSS font weight value
 
 
 // Title font size

@@ -140,6 +140,10 @@ echo " "
 ######################################
 
 
+# MIGRATE SAFELY TO NEW APP NAMED DIR (we delete the old one if the user completes installation)
+\cp -r /home/$APP_USER/dfd-crypto-ticker /home/$APP_USER/slideshow-crypto-ticker > /dev/null 2>&1
+
+
 echo "TECHNICAL NOTE:"
 echo "This script was designed to install / setup on the Raspbian operating system, and was "
 echo "developed on Raspbian Linux v10, for Raspberry Pi computers WITH SMALL IN-CASE LCD SCREENS."
@@ -174,12 +178,12 @@ exit
 fi
   				
 				
-if [ -f /home/$APP_USER/dfd-crypto-ticker/config.js ]; then
+if [ -f /home/$APP_USER/slideshow-crypto-ticker/config.js ]; then
 echo "A configuration file from a previous install of Slideshow Crypto Ticker has been detected on your system."
 echo " "
 echo "During this upgrade / re-install, it will be backed up to:"
 echo " "
-echo "/home/$APP_USER/dfd-crypto-ticker/config.js.BACKUP.$DATE"
+echo "/home/$APP_USER/slideshow-crypto-ticker/config.js.BACKUP.$DATE"
 echo " "
 echo "This will save any custom settings within it."
 echo " "
@@ -246,7 +250,7 @@ echo " "
 echo "Do you want this script to automatically download the latest version of Slideshow Crypto Ticker"
 echo "from Github.com, and install it?"
 echo " "
-echo "(auto-install will overwrite / upgrade any previous install located at: /home/$APP_USER/dfd-crypto-ticker)"
+echo "(auto-install will overwrite / upgrade any previous install located at: /home/$APP_USER/slideshow-crypto-ticker)"
 echo " "
 
 echo "Select 1, 2, or 3 to choose whether to auto-install / remove Slideshow Crypto Ticker, or skip."
@@ -293,11 +297,11 @@ select opt in $OPTIONS; do
 				echo " "
 				
 				
-					if [ -f /home/$APP_USER/dfd-crypto-ticker/config.js ]; then
+					if [ -f /home/$APP_USER/slideshow-crypto-ticker/config.js ]; then
 					
-					\cp /home/$APP_USER/dfd-crypto-ticker/config.js /home/$APP_USER/dfd-crypto-ticker/config.js.BACKUP.$DATE
+					\cp /home/$APP_USER/slideshow-crypto-ticker/config.js /home/$APP_USER/slideshow-crypto-ticker/config.js.BACKUP.$DATE
 						
-					chown $APP_USER:$APP_USER /home/$APP_USER/dfd-crypto-ticker/config.js.BACKUP.$DATE
+					chown $APP_USER:$APP_USER /home/$APP_USER/slideshow-crypto-ticker/config.js.BACKUP.$DATE
 						
 					CONFIG_BACKUP=1
 					
@@ -308,61 +312,73 @@ select opt in $OPTIONS; do
 				
 				echo " "
 				
-				mkdir DFD-Crypto-Ticker
+				mkdir slideshow-crypto-ticker
 				
-				cd DFD-Crypto-Ticker
+				cd slideshow-crypto-ticker
 				
 				ZIP_DL=$(curl -s 'https://api.github.com/repos/taoteh1221/Slideshow_Crypto_Ticker/releases/latest' | jq -r '.zipball_url')
 				
-				wget -O DFD-Crypto-Ticker.zip $ZIP_DL
+				wget -O slideshow-crypto-ticker.zip $ZIP_DL
 				
-				bsdtar --strip-components=1 -xvf DFD-Crypto-Ticker.zip
+				bsdtar --strip-components=1 -xvf slideshow-crypto-ticker.zip
 				
-				rm DFD-Crypto-Ticker.zip
+				rm slideshow-crypto-ticker.zip
 				
 				# Remove depreciated directory structure from any previous installs
-				rm -rf /home/$APP_USER/dfd-crypto-ticker/apps > /dev/null 2>&1
-				rm -rf /home/$APP_USER/dfd-crypto-ticker/scripts > /dev/null 2>&1
-				rm -rf /home/$APP_USER/dfd-crypto-ticker/cache/json > /dev/null 2>&1
-				rm -rf /home/$APP_USER/dfd-crypto-ticker/cache/js > /dev/null 2>&1
+				rm -rf /home/$APP_USER/slideshow-crypto-ticker/apps > /dev/null 2>&1
+				rm -rf /home/$APP_USER/slideshow-crypto-ticker/scripts > /dev/null 2>&1
+				rm -rf /home/$APP_USER/slideshow-crypto-ticker/cache/json > /dev/null 2>&1
+				rm -rf /home/$APP_USER/slideshow-crypto-ticker/cache/js > /dev/null 2>&1
 
 				sleep 1
 				
   				# Copy over the upgrade install files to the install directory, after cleaning up dev files
 				# No trailing forward slash here
 				
-  				mkdir -p /home/$APP_USER/dfd-crypto-ticker
+  				mkdir -p /home/$APP_USER/slideshow-crypto-ticker
 				
 				rm -rf .git > /dev/null 2>&1
 				rm -rf .github > /dev/null 2>&1
 				rm .gitattributes > /dev/null 2>&1
 				rm .gitignore > /dev/null 2>&1
 				rm CODEOWNERS > /dev/null 2>&1
-				rm /home/$APP_USER/dfd-crypto-ticker/bash/cron/cron.bash > /dev/null 2>&1
-				rm /home/$APP_USER/dfd-crypto-ticker/bash/cron/kucoin-auth.bash > /dev/null 2>&1
+				rm /home/$APP_USER/slideshow-crypto-ticker/bash/switch-display.bash > /dev/null 2>&1
+				rm /home/$APP_USER/slideshow-crypto-ticker/bash/chromium-refresh.bash > /dev/null 2>&1
+				rm /home/$APP_USER/slideshow-crypto-ticker/bash/ticker-init.bash > /dev/null 2>&1
+				rm /home/$APP_USER/slideshow-crypto-ticker/bash/cron/cron.bash > /dev/null 2>&1
+				rm /home/$APP_USER/slideshow-crypto-ticker/bash/cron/kucoin-auth.bash > /dev/null 2>&1
+				rm /home/$APP_USER/reload > /dev/null 2>&1
 				
-				\cp -r ./ /home/$APP_USER/dfd-crypto-ticker
+				\cp -r ./ /home/$APP_USER/slideshow-crypto-ticker
 
 				sleep 3
 				
 				cd ../
 				
-				rm -rf DFD-Crypto-Ticker
+				rm -rf slideshow-crypto-ticker
 				
-				chmod -R 755 /home/$APP_USER/dfd-crypto-ticker/bash
+				chmod -R 755 /home/$APP_USER/slideshow-crypto-ticker/bash
 				
 				# No trailing forward slash here
-				chown -R $APP_USER:$APP_USER /home/$APP_USER/dfd-crypto-ticker
+				chown -R $APP_USER:$APP_USER /home/$APP_USER/slideshow-crypto-ticker
 				
 				# If an older depreciated version, just re-create the symlink after deleting to be safe
 				
-				rm /home/$APP_USER/reload
+				rm /home/$APP_USER/ticker-restart
 				
 				sleep 1
 			
-				ln -s /home/$APP_USER/dfd-crypto-ticker/bash/chromium-refresh.bash /home/$APP_USER/reload
+				ln -s /home/$APP_USER/slideshow-crypto-ticker/bash/ticker-restart.bash /home/$APP_USER/ticker-restart
 				
-				chown $APP_USER:$APP_USER /home/$APP_USER/reload
+				chown $APP_USER:$APP_USER /home/$APP_USER/ticker-restart
+			
+				ln -s /home/$APP_USER/slideshow-crypto-ticker/bash/ticker-start.bash /home/$APP_USER/ticker-start
+				
+				chown $APP_USER:$APP_USER /home/$APP_USER/ticker-start
+			
+				ln -s /home/$APP_USER/slideshow-crypto-ticker/bash/ticker-stop.bash /home/$APP_USER/ticker-stop
+				
+				chown $APP_USER:$APP_USER /home/$APP_USER/ticker-stop
 				
 				echo " "
 				
@@ -394,9 +410,9 @@ select opt in $OPTIONS; do
         
         rm /lib/systemd/system/ticker.service
         
-        rm /home/$APP_USER/reload
+        rm /home/$APP_USER/ticker-restart
         
-        rm -rf /home/$APP_USER/dfd-crypto-ticker
+        rm -rf /home/$APP_USER/slideshow-crypto-ticker
 
 		  sleep 3
         
@@ -416,6 +432,10 @@ echo " "
 
 
 ######################################
+
+
+# REMOVE OLD DIRECTORY LOCATION (if we got this far in this script, new location is now the live install)
+rm -rf /home/$APP_USER/dfd-crypto-ticker > /dev/null 2>&1
 
 
 echo "Do you want to automatically configure Slideshow Crypto Ticker for your system (autostart at login / keep screen turned on)?"
@@ -452,7 +472,7 @@ After=graphical.target
 Environment=DISPLAY=:0  
 Environment=XAUTHORITY=/home/$APP_USER/.Xauthority
 Type=simple
-ExecStart=$BASH_PATH /home/$APP_USER/dfd-crypto-ticker/bash/ticker-init.bash
+ExecStart=$BASH_PATH /home/$APP_USER/slideshow-crypto-ticker/bash/ticker-start.bash
 Restart=on-abort
 User=$APP_USER
 Group=$APP_USER
@@ -479,7 +499,7 @@ EOF
 					
 				# Setup cron (to check logs after install: tail -f /var/log/syslog | grep cron -i)
 
-				CRONJOB="* * * * * $APP_USER $BASH_PATH /home/$APP_USER/dfd-crypto-ticker/bash/cron.bash > /dev/null 2>&1"
+				CRONJOB="* * * * * $APP_USER $BASH_PATH /home/$APP_USER/slideshow-crypto-ticker/bash/cron.bash > /dev/null 2>&1"
 
 				# Play it safe and be sure their is a newline after this job entry
 				echo -e "$CRONJOB\n" > /etc/cron.d/ticker
@@ -547,9 +567,9 @@ select opt in $OPTIONS; do
 			echo "Setting up for 'goodtft LCD-show' LCD drivers, please wait..."
 			echo " "
 			
-			ln -s /home/$APP_USER/dfd-crypto-ticker/bash/switch-display.bash /home/$APP_USER/display
+			ln -s /home/$APP_USER/slideshow-crypto-ticker/bash/goodtft-only.bash /home/$APP_USER/goodtft-only
 				
-			chown $APP_USER:$APP_USER /home/$APP_USER/display
+			chown $APP_USER:$APP_USER /home/$APP_USER/goodtft-only
 			
 			mkdir -p /home/$APP_USER/goodtft/builds
 			
@@ -595,6 +615,18 @@ echo "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
 echo " "
 
 
+if [ "$CONFIG_BACKUP" = "1" ]; then
+
+echo "The previously-installed Slideshow Crypto Ticker configuration"
+echo "file /home/$APP_USER/slideshow-crypto-ticker/config.js has been backed up to:"
+echo " "
+echo "/home/$APP_USER/slideshow-crypto-ticker/config.js.BACKUP.$DATE"
+echo " "
+echo "You will need to manually move any custom settings in this backup file to the new config.js file with a text editor."
+echo " "
+
+fi
+
 
 if [ "$AUTOSTART_ALERT" = "1" ]; then
 
@@ -614,34 +646,6 @@ echo " "
 fi
 
 
-
-if [ "$AUTOSTART_ALERT" = "1" ] || [ "$AUTOSTART_ALERT" = "2" ]; then
-
-echo "If autostart does not work, you can run this command MANUALLY,"
-echo "#AFTER BOOTING INTO THE DESKTOP INTERFACE#, to start Slideshow Crypto Ticker:"
-echo " "
-echo "bash ~/dfd-crypto-ticker/bash/ticker-init.bash &>/dev/null &"
-echo " "
-					
-
-fi
-
-
-
-if [ "$CONFIG_BACKUP" = "1" ]; then
-
-echo "The previously-installed Slideshow Crypto Ticker configuration"
-echo "file /home/$APP_USER/dfd-crypto-ticker/config.js has been backed up to:"
-echo " "
-echo "/home/$APP_USER/dfd-crypto-ticker/config.js.BACKUP.$DATE"
-echo " "
-echo "You will need to manually move any custom settings in this backup file to the new config.js file with a text editor."
-echo " "
-
-fi
-
-
-
 if [ "$CRON_SETUP" = "1" ]; then
 
 echo "A cron job has been setup for user '$APP_USER', as a command in /etc/cron.d/ticker:"
@@ -652,22 +656,36 @@ echo " "
 fi
 
 
+if [ "$AUTOSTART_ALERT" = "1" ] || [ "$AUTOSTART_ALERT" = "2" ]; then
+
+echo "If autostart does not work / is not setup, you can run this command MANUALLY,"
+echo "#AFTER BOOTING INTO THE DESKTOP INTERFACE#, to start Slideshow Crypto Ticker:"
+echo " "
+echo "~/ticker-start"
+echo " "
+echo "To stop Slideshow Crypto Ticker:"
+echo " "
+echo "~/ticker-stop"
+					
+
+fi
+
 
 echo "Edit the following file in a text editor to activate different exchanges / crypto assets / base pairings,"
 echo "and to configure settings for slideshow speed / font sizes and colors / background color / vertical position /"
 echo "screen orientation / google font used / monospace emulation / activated pairings / etc / etc:"
 echo " "
-echo "/home/$APP_USER/dfd-crypto-ticker/config.js"
+echo "/home/$APP_USER/slideshow-crypto-ticker/config.js"
 echo " "
 
 echo "Example editing config.js in nano by command-line:"
 echo " "
-echo "nano ~/dfd-crypto-ticker/config.js"
+echo "nano ~/slideshow-crypto-ticker/config.js"
 echo " "
 
-echo "After updating config.js, reload the ticker with this command:"
+echo "After updating config.js, restart the ticker with this command:"
 echo " "
-echo "~/reload"
+echo "~/ticker-restart"
 echo " "
 
 echo "Ticker installation / setup should be complete (if you chose those options), unless you saw any error"
@@ -680,7 +698,7 @@ if [ "$GOODTFT_SETUP" = "1" ]; then
 echo "TO COMPLETE THE 'goodtft LCD-show' LCD DRIVERS SETUP, run this command below"
 echo "to configure / activate your 'goodtft LCD-show' LCD screen:"
 echo " "
-echo "~/display"
+echo "~/goodtft-only"
 echo " "
 
 echo "(your device will restart automatically afterwards)"
@@ -696,7 +714,7 @@ echo " "
 fi
 
 
-echo "THIS TICKER INSTALL #REQUIRES# RUNNING THE RASPBERRY PI GRAPHICAL DESKTOP INTERFACE (LXDE) AT STARTUP, AS THE USER: '${APP_USER}'"
+echo "TICKER AUTO-START #REQUIRES# RUNNING THE RASPBERRY PI GRAPHICAL DESKTOP INTERFACE (LXDE) AT STARTUP, AS THE USER: '${APP_USER}'"
 echo " "
 
 echo "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"

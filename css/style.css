@@ -65,13 +65,30 @@ div .monospace {
 }
 
 
-.flip {
-/* flip upsidedown because my power plug is in the way */
-  -moz-transform:rotate(-180deg); /* Firefox */
-  -webkit-transform:rotate(-180deg); /* Webkit */        
-  -ms-transform:rotate(-180deg); /* IE */
-  -o-transform:rotate(-180deg); /* Opera */
-  transform:rotate(-180deg); /* future */
+.orient_90 {
+  -moz-transform:rotate(90deg); /* Firefox */
+  -webkit-transform:rotate(90deg); /* Webkit */        
+  -ms-transform:rotate(90deg); /* IE */
+  -o-transform:rotate(90deg); /* Opera */
+  transform:rotate(90deg); /* future */
+}
+
+
+.orient_180 {
+  -moz-transform:rotate(180deg); /* Firefox */
+  -webkit-transform:rotate(180deg); /* Webkit */        
+  -ms-transform:rotate(180deg); /* IE */
+  -o-transform:rotate(180deg); /* Opera */
+  transform:rotate(180deg); /* future */
+}
+
+
+.orient_270 {
+  -moz-transform:rotate(270deg); /* Firefox */
+  -webkit-transform:rotate(270deg); /* Webkit */        
+  -ms-transform:rotate(270deg); /* IE */
+  -o-transform:rotate(270deg); /* Opera */
+  transform:rotate(270deg); /* future */
 }
 
 
