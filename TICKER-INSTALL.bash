@@ -312,17 +312,17 @@ select opt in $OPTIONS; do
 				
 				echo " "
 				
-				mkdir slideshow-crypto-ticker
+				mkdir Slideshow-Crypto-Ticker-TEMP
 				
-				cd slideshow-crypto-ticker
+				cd Slideshow-Crypto-Ticker-TEMP
 				
 				ZIP_DL=$(curl -s 'https://api.github.com/repos/taoteh1221/Slideshow_Crypto_Ticker/releases/latest' | jq -r '.zipball_url')
 				
-				wget -O slideshow-crypto-ticker.zip $ZIP_DL
+				wget -O Slideshow-Crypto-Ticker-TEMP.zip $ZIP_DL
 				
-				bsdtar --strip-components=1 -xvf slideshow-crypto-ticker.zip
+				bsdtar --strip-components=1 -xvf Slideshow-Crypto-Ticker-TEMP.zip
 				
-				rm slideshow-crypto-ticker.zip
+				rm Slideshow-Crypto-Ticker-TEMP.zip
 				
 				# Remove depreciated directory structure from any previous installs
 				rm -rf /home/$APP_USER/slideshow-crypto-ticker/apps > /dev/null 2>&1
@@ -355,7 +355,7 @@ select opt in $OPTIONS; do
 				
 				cd ../
 				
-				rm -rf slideshow-crypto-ticker
+				rm -rf Slideshow-Crypto-Ticker-TEMP
 				
 				chmod -R 755 /home/$APP_USER/slideshow-crypto-ticker/bash
 				
