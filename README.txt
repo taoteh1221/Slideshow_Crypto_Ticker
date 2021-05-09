@@ -141,7 +141,7 @@ After=graphical.target
 Environment=DISPLAY=:0  
 Environment=XAUTHORITY=/home/YOUR_USER_NAME/.Xauthority
 Type=simple
-ExecStart=/bin/bash /home/YOUR_USER_NAME/slideshow-crypto-ticker/bash/ticker-start.bash
+ExecStart=/bin/bash /home/YOUR_USER_NAME/slideshow-crypto-ticker/bash/ticker-auto-start.bash
 Restart=on-abort
 User=YOUR_USER_NAME
 Group=YOUR_USER_NAME

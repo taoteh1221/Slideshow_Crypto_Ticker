@@ -434,6 +434,8 @@ v3.02.5
 
 -BUG FIX for auto installer (sorry!)
 
+-BUG FIX for auto startup (sorry again!)
+
 ---------------------------------------------------------
 
 

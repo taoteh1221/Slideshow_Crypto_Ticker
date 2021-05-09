@@ -472,7 +472,7 @@ After=graphical.target
 Environment=DISPLAY=:0  
 Environment=XAUTHORITY=/home/$APP_USER/.Xauthority
 Type=simple
-ExecStart=$BASH_PATH /home/$APP_USER/slideshow-crypto-ticker/bash/ticker-start.bash
+ExecStart=$BASH_PATH /home/$APP_USER/slideshow-crypto-ticker/bash/ticker-auto-start.bash
 Restart=on-abort
 User=$APP_USER
 Group=$APP_USER
@@ -666,6 +666,7 @@ echo " "
 echo "To stop Slideshow Crypto Ticker:"
 echo " "
 echo "~/ticker-stop"
+echo " "
 					
 
 fi
