@@ -11,7 +11,7 @@ Example on a 3.5" LCD: https://www.youtube.com/watch?v=bvPQ6PLy_ME
 
 Developed on a Raspi v3 B+, with this screen / case: https://smile.amazon.com/gp/product/B07N38B86S
 
-Project Website: https://sourceforge.net/projects/slideshow-crypto-ticker
+Project Website: https://sourceforge.net/projects/dfd-crypto-ticker/
 
 Download Latest Version: https://github.com/taoteh1221/Slideshow_Crypto_Ticker/releases
 
