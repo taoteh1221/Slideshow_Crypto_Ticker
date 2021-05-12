@@ -640,7 +640,7 @@ function market_config() {
 
 api['binance'] = 'wss://stream.binance.com:9443/ws';
 
-api['coinbase'] = 'wss://ws-feed.gdax.com';
+api['coinbase'] = 'wss://ws-feed-public.sandbox.pro.coinbase.com';
 
 api['kraken'] = 'wss://ws.kraken.com';
 
