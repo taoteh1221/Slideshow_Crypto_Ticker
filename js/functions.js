@@ -153,6 +153,7 @@ render = render.replace(/stamp/gi, "Stamp");
 render = render.replace(/flyer/gi, "Flyer");
 render = render.replace(/panda/gi, "Panda");
 render = render.replace(/pay/gi, "Pay");
+render = render.replace(/okex/gi, "OKex");
 
 return render;
 
@@ -278,20 +279,21 @@ function market_id_parser(market_id, exchange) {
 	
 market_id = market_id.toUpperCase(); // Uppercase
 
-// So we only have to regex a hyphen, #CONVERT ALL DELIMITERS TO HYPHENS HERE#
+// So we only have to search for a hyphen, #CONVERT ALL API MARKET PAIRING DELIMITERS TO HYPHENS HERE#
 market_id = market_id.replace("/", "-"); 
+market_id = market_id.replace("_", "-"); 
 
 
-	// HYPHEN-delimited market IDs 
-	// (ALL DELIMITERS ARE CONVERTED TO HYPHENS [IN THIS FUNCTION ONLY]...SEE market_id ABOVE)
-	if ( exchange == 'coinbase' || exchange == 'kraken' || exchange == 'kucoin' ) {
-	pairing = market_id.replace(/\b([A-Za-z]*)-/g, "");
-	asset = market_id.replace(/-[A-Za-z0-9]*/g, "");
-	}
 	// NON-delimited market IDs
-	else {
+	if ( market_id.indexOf("-") == -1 ) {
 	pairing = regex_pairing_detection(market_id);
 	asset = market_id.replace(pairing, "");
+	}
+	// HYPHEN-delimited market IDs 
+	// (ALL DELIMITERS ARE CONVERTED TO HYPHENS [IN THIS FUNCTION ONLY]...SEE market_id AT FUNCTION TOP)
+	else {
+	pairing = market_id.replace(/\b([A-Za-z]*)-/g, "");
+	asset = market_id.replace(/-[A-Za-z0-9]*/g, "");
 	}
 
 
@@ -650,6 +652,10 @@ api['bitstamp'] = 'wss://ws.bitstamp.net/';
 
 api['bitfinex'] = 'wss://api.bitfinex.com/ws/1';
 
+api['okex'] = 'wss://ws.okex.com:8443/ws/v5/public';
+
+api['loopring'] = 'wss://ws.api3.loopring.io/v3/ws';
+
 
 
 	// Put configged markets into a multi-dimensional array, calculate number of markets total
@@ -670,8 +676,8 @@ api['bitfinex'] = 'wss://api.bitfinex.com/ws/1';
 		// Coinbase
 		if ( exchange == 'coinbase' ) {
 			
-		// API call config
-		subscribe_msg[exchange] = {
+		    // API call config
+		    subscribe_msg[exchange] = {
 					
 				"type": "subscribe",
 				"product_ids": [
@@ -683,7 +689,7 @@ api['bitfinex'] = 'wss://api.bitfinex.com/ws/1';
 								]
 						}
 				]
-				};
+		    };
 		 
 		 
 			// Add markets to API call
@@ -697,13 +703,13 @@ api['bitfinex'] = 'wss://api.bitfinex.com/ws/1';
 		// Binance
 		else if ( exchange == 'binance' ) {
 			
-		// API call config
-		subscribe_msg[exchange] = {
-			"method": "SUBSCRIBE",
-			"params": [
-			],
-			"id": 1
-		};
+    		// API call config
+    		subscribe_msg[exchange] = {
+    			"method": "SUBSCRIBE",
+    			"params": [
+    			],
+    			"id": 1
+    		};
 		 
 		 
 			// Add markets to API call
@@ -717,15 +723,14 @@ api['bitfinex'] = 'wss://api.bitfinex.com/ws/1';
 		// Kraken
 		else if ( exchange == 'kraken' ) {
 			
-		// API call config
-		subscribe_msg[exchange] = {
-			"event": "subscribe",
-			"pair": [
-			],
-			 "subscription": {
-				"name": "ticker"
-			 }
-		};
+    		// API call config
+    		subscribe_msg[exchange] = {
+    			"event": "subscribe",
+    			"pair": [],
+    			 "subscription": {
+    				"name": "ticker"
+    			 }
+    		};
 		 
 		 
 			// Add markets to API call
@@ -739,13 +744,13 @@ api['bitfinex'] = 'wss://api.bitfinex.com/ws/1';
 		// HitBTC
 		else if ( exchange == 'hitbtc' ) {
 			
-		// API call config
-		subscribe_msg[exchange] = {
-			"method": "subscribeTicker",
-			"params": {
-			},
-			"id": 1
-		};
+    		// API call config
+    		subscribe_msg[exchange] = {
+    			"method": "subscribeTicker",
+    			"params": {
+    			},
+    			"id": 1
+    		};
 		 
 		 
 			// Add markets to API call
@@ -760,14 +765,14 @@ api['bitfinex'] = 'wss://api.bitfinex.com/ws/1';
 		// https://docs.kucoin.com/#symbol-ticker
 		else if ( exchange == 'kucoin' ) {
 			
-		// API call config
-		subscribe_msg[exchange] = {        
-			"id": 1,
-			"type": "subscribe",
-			"topic": "/market/snapshot:",
-			"privateChannel": false,
-			"response": true       
-		}
+    		// API call config
+    		subscribe_msg[exchange] = {        
+    			"id": 1,
+    			"type": "subscribe",
+    			"topic": "/market/snapshot:",
+    			"privateChannel": false,
+    			"response": true       
+    		}
 		 
 		 
 			// Add markets to API call
@@ -784,13 +789,13 @@ api['bitfinex'] = 'wss://api.bitfinex.com/ws/1';
 		// https://www.bitstamp.net/websocket/v2/
 		else if ( exchange == 'bitstamp' ) {
 			
-		// API call config
-		subscribe_msg[exchange] = { 
-			"event": "bts:subscribe",
-			"data": {
-					"channel": "live_trades_"
-			}  
-		}
+    		// API call config
+    		subscribe_msg[exchange] = { 
+    			"event": "bts:subscribe",
+    			"data": {
+    					"channel": "live_trades_"
+    			}  
+    		}
 		 
 		 
 			// Add markets to API call
@@ -804,18 +809,59 @@ api['bitfinex'] = 'wss://api.bitfinex.com/ws/1';
 		// Bitfinex
 		else if ( exchange == 'bitfinex' ) {
 			
-		// API call config
-		subscribe_msg[exchange] = {
-			"event": "subscribe",
-			"channel": "ticker",
-			"pair": ""
-		};
+    		// API call config
+    		subscribe_msg[exchange] = {
+    			"event": "subscribe",
+    			"channel": "ticker",
+    			"pair": ""
+    		};
 		 
 		 
 			// Add markets to API call
 			var loop = 0;
 			markets[exchange].forEach(element => {
 			subscribe_msg[exchange]['pair'] = element; 
+			loop = loop + 1;
+			});
+		
+		}
+		// OKex
+		else if ( exchange == 'okex' ) {
+			
+    		// API call config
+    		subscribe_msg[exchange] = {
+              "op": "subscribe",
+              "args": []
+    		};
+		 
+		 
+			// Add markets to API call
+			var loop = 0;
+			markets[exchange].forEach(element => {
+			     subscribe_msg[exchange].args[loop] =     {
+                  "channel": "index-tickers",
+                  "instId": element
+                 };
+			loop = loop + 1;
+			});
+		 
+		 
+		
+		}
+		// Loopring
+		else if ( exchange == 'loopring' ) {
+			
+    		// API call config
+    		subscribe_msg[exchange] = {
+            "topic": "trade",
+            "market": "LRC-ETH"
+    		};
+		 
+		 
+			// Add markets to API call
+			var loop = 0;
+			markets[exchange].forEach(element => {
+			//subscribe_msg[exchange].params['symbol'] = element; 
 			loop = loop + 1;
 			});
 		
@@ -976,6 +1022,20 @@ function api_connect(exchange) {
 		volume_raw = msg[8];
 		   
 		base_volume = pair_volume('asset', price_raw, volume_raw);
+				 
+		}
+		// OKex
+		else if ( exchange == 'okex' && msg['data'] ) {
+				 
+		market_id = msg['data'][0]['instId'];
+				 
+		price_raw = msg['data'][0]['idxPx'];
+		
+		// RE-SET volume_raw / base_volume AS UNDEFINED, as okex provides no volume data
+		
+		var volume_raw;
+		
+		var base_volume;
 				 
 		}
 	  

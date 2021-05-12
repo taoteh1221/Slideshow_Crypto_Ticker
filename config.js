@@ -42,11 +42,19 @@ exchange_markets['kraken'] = 'KEEP/USD|MANA/USD';
 ////
 ////
 // Kucoin markets (set to '' to disable)
-exchange_markets['kucoin'] = 'MANA-BTC|ENJ-BTC|SXP-USDT'; // !!KUCOIN REQUIRES USING THE INSTALL SCRIPT!!
+exchange_markets['kucoin'] = 'MANA-BTC|SXP-USDT'; // !!KUCOIN REQUIRES USING THE INSTALL SCRIPT!!
+////
+////
+// OKex markets (set to '' to disable) 
+exchange_markets['okex'] = 'ENJ-USDT|ENJ-BTC';
 ////
 ////
 // HitBTC markets (set to '' to disable) 
 exchange_markets['hitbtc'] = 'MYSTBTC'; // !!HITBTC WEBSOCKET API ONLY SUPPORTS ONE ASSET!!
+////
+////
+// Loopring markets (set to '' to disable) 
+//exchange_markets['loopring'] = 'LRC-ETH';
 
 
 // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -99,6 +107,10 @@ var max_ticker_decimals = 7; // Default = 7
 var volume_size = 40; // Default = 40
 
 
+// Hide volume section, IF NO VOLUME WAS PROVIDED
+var hide_empty_volume = 'no'; // 'no' / 'yes'
+
+
 // Text color (https://www.w3schools.com/colors/colors_picker.asp)
 // '#colorcode'
 var text_color = '#c6c6c6'; // Default = '#c6c6c6'
@@ -118,10 +130,6 @@ var google_font = 'Varela Round'; // Default = 'Varela Round'
 // Seconds between "slideshowing" multiple tickers (if multiple assets configured)
 // SET TO 0 FOR AUTO MODE (trys to show all tickers in 1 minute, BUT has a 5 second per-ticker MINIMUM)
 var slideshow_speed = 0; // Default = 0
-
-
-// Hide volume section, IF NO VOLUME WAS PROVIDED
-var hide_empty_volume = 'no'; // 'no' / 'yes'
 
 
 // EMULATED / dynamic monospace font WIDTH spacing (percent of EACH font size as a decimal) 
