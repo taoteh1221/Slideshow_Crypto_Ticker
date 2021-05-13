@@ -28,7 +28,7 @@ fi
 # Check to see if the kucoin cache data needs to be updated
 if [ -f ~/slideshow-crypto-ticker/cache/kucoin-auth.json ]; then
 
-# 12 hours (in seconds) between kucoin cache refreshes
+# 12 hours (in seconds) between cache refreshes
 KUCOIN_REFRESH=43200
 
 KUCOIN_LAST_MODIFIED=$(/usr/bin/date +%s -r ~/slideshow-crypto-ticker/cache/kucoin-auth.json)
@@ -57,6 +57,38 @@ UPDATE_JS=1
 fi
 
 
+# Check to see if the loopring cache data needs to be updated
+if [ -f ~/slideshow-crypto-ticker/cache/loopring-auth.json ]; then
+
+# 12 hours (in seconds) between cache refreshes
+LOOPRING_REFRESH=43200
+
+LOOPRING_LAST_MODIFIED=$(/usr/bin/date +%s -r ~/slideshow-crypto-ticker/cache/loopring-auth.json)
+
+LOOPRING_THRESHOLD=$((LOOPRING_LAST_MODIFIED + LOOPRING_REFRESH))
+
+	if [ "$CURRENT_TIMESTAMP" -ge "$LOOPRING_THRESHOLD" ]; then
+	UPDATE_LOOPRING=1
+	fi
+
+else
+UPDATE_LOOPRING=1
+
+fi
+
+
+# If LOOPRING update flagged, cache new loopring data to loopring-auth.json, AND flag a JS CACHE update
+if [ "$UPDATE_LOOPRING" == 1 ]; then
+
+/usr/bin/curl -X POST https://api3.loopring.io/api/v3/ws/key > ~/slideshow-crypto-ticker/cache/loopring-auth.json
+
+/bin/sleep 3
+
+UPDATE_JS=1
+
+fi
+
+
 # If JS CACHE update flagged, ready all desired json cache vars for cache.js updating
 if [ "$UPDATE_JS" == 1 ]; then
 
@@ -67,12 +99,18 @@ KUCOIN_TOKEN=$(/usr/bin/jq .data.token ~/slideshow-crypto-ticker/cache/kucoin-au
 KUCOIN_ENDPOINT=$(/usr/bin/jq .data.instanceServers[0].endpoint ~/slideshow-crypto-ticker/cache/kucoin-auth.json)
 
 
+# Loopring data
+LOOPRING_TOKEN=$(/usr/bin/jq .key ~/slideshow-crypto-ticker/cache/loopring-auth.json)
+
+
 # Don't nest / indent, or it could malform the settings            
 read -r -d '' JS_CACHE <<- EOF
 \r
 var kucoin_token = $KUCOIN_TOKEN;
 \r
 var kucoin_endpoint = $KUCOIN_ENDPOINT;
+\r
+var loopring_token = $LOOPRING_TOKEN;
 \r
 \r
 EOF

@@ -74,6 +74,10 @@ return base_volume;
 
 
 function console_alert() {
+    
+    if  ( api_alert !== 'undefined' ) {
+    return;
+    }
 
 console.log(' ');
 console.log('IMPROPER APP INSTALLATION DETECTED!');
@@ -200,9 +204,34 @@ function kucoin_config() {
 	// Remove kucoin market configs if no cache data is present, to avoid script errors,
 	// and alert (to console ONLY) that app was improperly installed
 	else {
-	delete exchange_markets['kucoin']; 
+	delete exchange_markets['kucoin'];
+	var api_alert = 1; 
 	console_alert(); 
 	console.log('Kucoin support disabled (invalid installation detected).');
+	return false;
+	}
+
+}
+
+
+/////////////////////////////////////////////////////////////
+
+
+function loopring_config() {
+	
+	// If loopring auth data is cached, allow loopring configs
+	if ( typeof loopring_token !== 'undefined' ) {
+	api['loopring'] = 'wss://ws.api3.loopring.io/v3/ws' + '?wsApiKey=' + loopring_token;
+	console.log('Loopring support enabled (valid installation detected).');
+	return true;
+	}
+	// Remove loopring market configs if no cache data is present, to avoid script errors,
+	// and alert (to console ONLY) that app was improperly installed
+	else {
+	delete exchange_markets['loopring']; 
+	var api_alert = 1;
+	console_alert(); 
+	console.log('Loopring support disabled (invalid installation detected).');
 	return false;
 	}
 
@@ -542,6 +571,8 @@ t_speed = Math.round(window.transition_speed * 1000);
 function render_interface() {
 
 kucoin_config(); // Check / load kucoin data BEFORE MARKET CONFIG
+
+loopring_config(); // Check / load loopring data BEFORE MARKET CONFIG
 	
 market_config();
 
@@ -638,7 +669,7 @@ function market_config() {
 
 // Exchange API endpoints
 
-// WE DYNAMICALLY ADD THE KUCOIN ENDPOINT within render_interface()
+// WE DYNAMICALLY ADD THE KUCOIN / LOOPRING ENDPOINTS within render_interface()
 
 api['binance'] = 'wss://stream.binance.com:9443/ws';
 
@@ -653,8 +684,6 @@ api['bitstamp'] = 'wss://ws.bitstamp.net/';
 api['bitfinex'] = 'wss://api.bitfinex.com/ws/1';
 
 api['okex'] = 'wss://ws.okex.com:8443/ws/v5/public';
-
-api['loopring'] = 'wss://ws.api3.loopring.io/v3/ws';
 
 
 
