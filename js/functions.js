@@ -75,8 +75,11 @@ return base_volume;
 
 function console_alert() {
     
-    if  ( api_alert !== 'undefined' ) {
+    if  ( window.api_alert == 1 ) {
     return;
+    }
+    else {
+	window.api_alert = 1; 
     }
 
 console.log(' ');
@@ -205,7 +208,6 @@ function kucoin_config() {
 	// and alert (to console ONLY) that app was improperly installed
 	else {
 	delete exchange_markets['kucoin'];
-	var api_alert = 1; 
 	console_alert(); 
 	console.log('Kucoin support disabled (invalid installation detected).');
 	return false;
@@ -229,7 +231,6 @@ function loopring_config() {
 	// and alert (to console ONLY) that app was improperly installed
 	else {
 	delete exchange_markets['loopring']; 
-	var api_alert = 1;
 	console_alert(); 
 	console.log('Loopring support disabled (invalid installation detected).');
 	return false;

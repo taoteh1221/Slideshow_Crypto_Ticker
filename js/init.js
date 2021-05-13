@@ -17,6 +17,7 @@ var subscribe_msg = [];
 var trade_side_price = [];
 var trade_side_arrow = [];
 var markets_length = 0;
+var api_alert; // MUST at least be set as 'undefined' here
 
 // Save what time the app started running (works fine with refresh)
 var runtime_start = new Date().getTime(); 

@@ -54,7 +54,7 @@ exchange_markets['hitbtc'] = 'MYSTBTC'; // !!HITBTC WEBSOCKET API ONLY SUPPORTS 
 ////
 ////
 // Loopring markets (set to '' to disable) 
-//exchange_markets['loopring'] = 'LRC-ETH';
+//exchange_markets['loopring'] = 'LRC-ETH'; // NOT FULLY SUPPORTED YET!!
 
 
 // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
