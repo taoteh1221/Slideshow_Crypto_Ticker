@@ -97,20 +97,40 @@ if [ "$UPDATE_JS" == 1 ]; then
 KUCOIN_TOKEN=$(/usr/bin/jq .data.token ~/slideshow-crypto-ticker/cache/kucoin-auth.json)
 
 KUCOIN_ENDPOINT=$(/usr/bin/jq .data.instanceServers[0].endpoint ~/slideshow-crypto-ticker/cache/kucoin-auth.json)
+    
+    # Properly render the js
+    if [ -z "$KUCOIN_TOKEN" ]; then
+    KUCOIN_TOKEN=";"
+    else
+    KUCOIN_TOKEN=" = ${KUCOIN_TOKEN};"
+    fi
+    
+    if [ -z "$KUCOIN_ENDPOINT" ]; then
+    KUCOIN_ENDPOINT=";"
+    else
+    KUCOIN_ENDPOINT=" = ${KUCOIN_ENDPOINT};"
+    fi
 
 
 # Loopring data
 LOOPRING_TOKEN=$(/usr/bin/jq .key ~/slideshow-crypto-ticker/cache/loopring-auth.json)
 
+    # Properly render the js
+    if [ -z "$LOOPRING_TOKEN" ]; then
+    LOOPRING_TOKEN=";"
+    else
+    LOOPRING_TOKEN=" = ${LOOPRING_TOKEN};"
+    fi
+
 
 # Don't nest / indent, or it could malform the settings            
 read -r -d '' JS_CACHE <<- EOF
 \r
-var kucoin_token = $KUCOIN_TOKEN;
+var kucoin_token$KUCOIN_TOKEN
 \r
-var kucoin_endpoint = $KUCOIN_ENDPOINT;
+var kucoin_endpoint$KUCOIN_ENDPOINT
 \r
-var loopring_token = $LOOPRING_TOKEN;
+var loopring_token$LOOPRING_TOKEN
 \r
 \r
 EOF

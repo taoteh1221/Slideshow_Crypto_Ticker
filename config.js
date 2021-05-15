@@ -46,7 +46,7 @@ exchange_markets['kucoin'] = 'MANA-BTC|SXP-USDT'; // !!KUCOIN REQUIRES USING THE
 ////
 ////
 // OKex markets (set to '' to disable) 
-exchange_markets['okex'] = 'ENJ-USDT|ENJ-BTC';
+exchange_markets['okex'] = 'ENJ-USDT|ENJ-BTC|XCH-USDT|XCH-BTC';
 ////
 ////
 // HitBTC markets (set to '' to disable) 
