@@ -220,21 +220,39 @@ function kucoin_config() {
 
 
 function loopring_config() {
-	
-	// If loopring auth data is cached, allow loopring configs
-	if ( typeof loopring_token !== 'undefined' ) {
-	api['loopring'] = 'wss://ws.api3.loopring.io/v3/ws' + '?wsApiKey=' + loopring_token;
-	console.log('Loopring support enabled (valid installation detected).');
-	return true;
-	}
-	// Remove loopring market configs if no cache data is present, to avoid script errors,
-	// and alert (to console ONLY) that app was improperly installed
-	else {
-	delete exchange_markets['loopring']; 
-	console_alert(); 
-	console.log('Loopring support disabled (invalid installation detected).');
-	return false;
-	}
+    
+    if ( typeof api['loopring'] == 'undefined' ) {
+        
+    api['loopring'] = 'wait';
+        
+    	$.getJSON("https://api3.loopring.io/v3/ws/key", function(data) {
+    	})
+    	
+          .done(function(data) {
+              
+            var loopring_token = data.key;
+        	
+            	// If loopring auth data is cached, allow loopring configs
+            	if ( typeof loopring_token !== 'undefined' ) {
+            	api['loopring'] = 'wss://ws.api3.loopring.io/v3/ws' + '?wsApiKey=' + loopring_token;
+            	console.log('Loopring support enabled (valid installation detected).');
+            	return true;
+            	}
+            	// Remove loopring market configs if no cache data is present, to avoid script errors,
+            	// and alert (to console ONLY) that app was improperly installed
+            	else {
+            	// Whitespace will be detected as an invalid config, since we don't want the
+            	// endpoint 'undefined' becuase that's how we trigger a check / recheck 
+            	api['loopring'] = ' '; 
+            	delete exchange_markets['loopring']; 
+            	console_alert(); 
+            	console.log('Loopring support disabled (invalid installation detected).');
+            	return false;
+            	}
+        	
+          });
+    	
+    }
 
 }
 
@@ -578,6 +596,14 @@ loopring_config(); // Check / load loopring data BEFORE MARKET CONFIG
 market_config();
 
 
+    // Wait for loopring to get a temp API key
+    if ( api['loopring'] == 'wait' ) {
+    setTimeout(render_interface, 1000); // Wait 1000 millisecnds then recheck
+    return;
+    }
+    else {
+    
+
 		// Connect to exchange APIs for market data
 		// Render the HTML containers for each ticker
 		Object.keys(markets).forEach(function(exchange) {
@@ -612,7 +638,10 @@ market_config();
 		else if ( markets_length == 1 ) {
 		ticker_init();
 		}
-		
+
+
+    }
+
 
 }
 
@@ -883,7 +912,7 @@ api['okex'] = 'wss://ws.okex.com:8443/ws/v5/public';
 			
     		// API call config
     		subscribe_msg[exchange] = {
-            "topic": "trade",
+            "topic": "ticker",
             "market": "LRC-ETH"
     		};
 		 
@@ -1178,7 +1207,23 @@ function api_connect(exchange) {
 	   
 		setTimeout(function() {
 	   $(".status_" + exchange).text("Connecting").css("color", "red");
-		api_connect(exchange);
+	   
+	       if ( exchange == 'loopring' ) {
+	           
+	       api[exchange] = void 0;
+	       
+	       loopring_config(); // GET A NEW TEMP KEY FROM LOOPRING'S REST API
+	       
+	           setTimeout(function() {
+	           api_connect(exchange);
+	           }, 10000); // WAIT 10 SECONDS FOR GETTING A NEW TEMP KEY
+	       
+	       }
+	       else {
+	       api_connect(exchange);
+	       }
+	       
+		
 	   }, 60000); // Reconnect after no data received for 1 minute
 	   
 	};
