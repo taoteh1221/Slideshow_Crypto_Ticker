@@ -28,7 +28,7 @@ fi
 # Check to see if the kucoin cache data needs to be updated
 if [ -f ~/slideshow-crypto-ticker/cache/kucoin-auth.json ]; then
 
-# 12 hours (in seconds) between kucoin cache refreshes
+# 12 hours (in seconds) between cache refreshes
 KUCOIN_REFRESH=43200
 
 KUCOIN_LAST_MODIFIED=$(/usr/bin/date +%s -r ~/slideshow-crypto-ticker/cache/kucoin-auth.json)
@@ -65,14 +65,27 @@ if [ "$UPDATE_JS" == 1 ]; then
 KUCOIN_TOKEN=$(/usr/bin/jq .data.token ~/slideshow-crypto-ticker/cache/kucoin-auth.json)
 
 KUCOIN_ENDPOINT=$(/usr/bin/jq .data.instanceServers[0].endpoint ~/slideshow-crypto-ticker/cache/kucoin-auth.json)
+    
+    # Properly render the js
+    if [ -z "$KUCOIN_TOKEN" ]; then
+    KUCOIN_TOKEN=";"
+    else
+    KUCOIN_TOKEN=" = ${KUCOIN_TOKEN};"
+    fi
+    
+    if [ -z "$KUCOIN_ENDPOINT" ]; then
+    KUCOIN_ENDPOINT=";"
+    else
+    KUCOIN_ENDPOINT=" = ${KUCOIN_ENDPOINT};"
+    fi
 
 
 # Don't nest / indent, or it could malform the settings            
 read -r -d '' JS_CACHE <<- EOF
 \r
-var kucoin_token = $KUCOIN_TOKEN;
+var kucoin_token$KUCOIN_TOKEN
 \r
-var kucoin_endpoint = $KUCOIN_ENDPOINT;
+var kucoin_endpoint$KUCOIN_ENDPOINT
 \r
 \r
 EOF

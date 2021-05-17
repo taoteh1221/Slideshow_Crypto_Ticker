@@ -3,7 +3,7 @@ Slideshow Crypto Ticker - Developed by Michael Kilday <mike@dragonfrugal.com>, r
 
 Copyright 2019-2021 GPLv3
 
-Open source / 100% FREE real time slideshow crypto price ticker for Raspberry Pi LCD screens, including 24 hour volume and Binance / Coinbase Pro / Kraken / Kucoin / Bitstamp / Bitfinex / HitBTC support (more exchanges coming in the future).
+Open source / 100% FREE real time slideshow crypto price ticker for Raspberry Pi LCD screens, including 24 hour volume and Binance / Coinbase Pro / Kraken / Kucoin / Bitstamp / Bitfinex / HitBTC / OKex / LoopRing support (more exchanges coming in the future).
 
 Supports running in "slideshow mode", to show all the markets you want.
 
@@ -11,7 +11,7 @@ Example on a 3.5" LCD: https://www.youtube.com/watch?v=bvPQ6PLy_ME
 
 Developed on a Raspi v3 B+, with this screen / case: https://smile.amazon.com/gp/product/B07N38B86S
 
-Project Website: https://sourceforge.net/projects/slideshow-crypto-ticker
+Project Website: https://sourceforge.net/projects/dfd-crypto-ticker
 
 Download Latest Version: https://github.com/taoteh1221/Slideshow_Crypto_Ticker/releases
 
@@ -20,6 +20,8 @@ Issue Reporting (Features / Issues / Help): https://github.com/taoteh1221/Slides
 Discord: https://discord.gg/WZVK2nm
 
 Telegram: https://t.me/joinchat/Oo2XZRS2HsOXSMGejgSO0A
+
+Keybase: https://keybase.io/team/dragonfrugaltech
 
 Twitter: https://twitter.com/taoteh1221
 

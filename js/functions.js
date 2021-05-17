@@ -74,6 +74,13 @@ return base_volume;
 
 
 function console_alert() {
+    
+    if  ( window.api_alert == 1 ) {
+    return;
+    }
+    else {
+	window.api_alert = 1; 
+    }
 
 console.log(' ');
 console.log('IMPROPER APP INSTALLATION DETECTED!');
@@ -153,6 +160,7 @@ render = render.replace(/stamp/gi, "Stamp");
 render = render.replace(/flyer/gi, "Flyer");
 render = render.replace(/panda/gi, "Panda");
 render = render.replace(/pay/gi, "Pay");
+render = render.replace(/okex/gi, "OKex");
 
 return render;
 
@@ -199,11 +207,52 @@ function kucoin_config() {
 	// Remove kucoin market configs if no cache data is present, to avoid script errors,
 	// and alert (to console ONLY) that app was improperly installed
 	else {
-	delete exchange_markets['kucoin']; 
+	delete exchange_markets['kucoin'];
 	console_alert(); 
 	console.log('Kucoin support disabled (invalid installation detected).');
 	return false;
 	}
+
+}
+
+
+/////////////////////////////////////////////////////////////
+
+
+function loopring_config() {
+    
+    if ( typeof api['loopring'] == 'undefined' ) {
+        
+    api['loopring'] = 'wait';
+        
+    	$.getJSON("https://api3.loopring.io/v3/ws/key", function(data) {
+    	})
+    	
+          .done(function(data) {
+              
+            var loopring_token = data.key;
+        	
+            	// If loopring auth data is cached, allow loopring configs
+            	if ( typeof loopring_token !== 'undefined' ) {
+            	api['loopring'] = 'wss://ws.api3.loopring.io/v3/ws' + '?wsApiKey=' + loopring_token;
+            	console.log('Loopring support enabled (valid installation detected).');
+            	return true;
+            	}
+            	// Remove loopring market configs if no cache data is present, to avoid script errors,
+            	// and alert (to console ONLY) that app was improperly installed
+            	else {
+            	// Whitespace will be detected as an invalid config, since we don't want the
+            	// endpoint 'undefined' becuase that's how we trigger a check / recheck 
+            	api['loopring'] = ' '; 
+            	delete exchange_markets['loopring']; 
+            	console_alert(); 
+            	console.log('Loopring support disabled (invalid installation detected).');
+            	return false;
+            	}
+        	
+          });
+    	
+    }
 
 }
 
@@ -278,20 +327,21 @@ function market_id_parser(market_id, exchange) {
 	
 market_id = market_id.toUpperCase(); // Uppercase
 
-// So we only have to regex a hyphen, #CONVERT ALL DELIMITERS TO HYPHENS HERE#
+// So we only have to search for a hyphen, #CONVERT ALL API MARKET PAIRING DELIMITERS TO HYPHENS HERE#
 market_id = market_id.replace("/", "-"); 
+market_id = market_id.replace("_", "-"); 
 
 
-	// HYPHEN-delimited market IDs 
-	// (ALL DELIMITERS ARE CONVERTED TO HYPHENS [IN THIS FUNCTION ONLY]...SEE market_id ABOVE)
-	if ( exchange == 'coinbase' || exchange == 'kraken' || exchange == 'kucoin' ) {
-	pairing = market_id.replace(/\b([A-Za-z]*)-/g, "");
-	asset = market_id.replace(/-[A-Za-z0-9]*/g, "");
-	}
 	// NON-delimited market IDs
-	else {
+	if ( market_id.indexOf("-") == -1 ) {
 	pairing = regex_pairing_detection(market_id);
 	asset = market_id.replace(pairing, "");
+	}
+	// HYPHEN-delimited market IDs 
+	// (ALL DELIMITERS ARE CONVERTED TO HYPHENS [IN THIS FUNCTION ONLY]...SEE market_id AT FUNCTION TOP)
+	else {
+	pairing = market_id.replace(/\b([A-Za-z]*)-/g, "");
+	asset = market_id.replace(/-[A-Za-z0-9]*/g, "");
 	}
 
 
@@ -540,9 +590,19 @@ t_speed = Math.round(window.transition_speed * 1000);
 function render_interface() {
 
 kucoin_config(); // Check / load kucoin data BEFORE MARKET CONFIG
+
+loopring_config(); // Check / load loopring data BEFORE MARKET CONFIG
 	
 market_config();
 
+
+    // Wait for loopring to get a temp API key
+    if ( api['loopring'] == 'wait' ) {
+    setTimeout(render_interface, 1000); // Wait 1000 millisecnds then recheck
+    return;
+    }
+    else {
+    
 
 		// Connect to exchange APIs for market data
 		// Render the HTML containers for each ticker
@@ -578,7 +638,10 @@ market_config();
 		else if ( markets_length == 1 ) {
 		ticker_init();
 		}
-		
+
+
+    }
+
 
 }
 
@@ -636,11 +699,11 @@ function market_config() {
 
 // Exchange API endpoints
 
-// WE DYNAMICALLY ADD THE KUCOIN ENDPOINT within render_interface()
+// WE DYNAMICALLY ADD THE KUCOIN / LOOPRING ENDPOINTS within render_interface()
 
 api['binance'] = 'wss://stream.binance.com:9443/ws';
 
-api['coinbase'] = 'wss://ws-feed.gdax.com';
+api['coinbase'] = 'wss://ws-feed.pro.coinbase.com';
 
 api['kraken'] = 'wss://ws.kraken.com';
 
@@ -649,6 +712,8 @@ api['hitbtc'] = 'wss://api.hitbtc.com/api/2/ws';
 api['bitstamp'] = 'wss://ws.bitstamp.net/';
 
 api['bitfinex'] = 'wss://api.bitfinex.com/ws/1';
+
+api['okex'] = 'wss://ws.okex.com:8443/ws/v5/public';
 
 
 
@@ -670,8 +735,8 @@ api['bitfinex'] = 'wss://api.bitfinex.com/ws/1';
 		// Coinbase
 		if ( exchange == 'coinbase' ) {
 			
-		// API call config
-		subscribe_msg[exchange] = {
+		    // API call config
+		    subscribe_msg[exchange] = {
 					
 				"type": "subscribe",
 				"product_ids": [
@@ -683,7 +748,7 @@ api['bitfinex'] = 'wss://api.bitfinex.com/ws/1';
 								]
 						}
 				]
-				};
+		    };
 		 
 		 
 			// Add markets to API call
@@ -697,13 +762,13 @@ api['bitfinex'] = 'wss://api.bitfinex.com/ws/1';
 		// Binance
 		else if ( exchange == 'binance' ) {
 			
-		// API call config
-		subscribe_msg[exchange] = {
-			"method": "SUBSCRIBE",
-			"params": [
-			],
-			"id": 1
-		};
+    		// API call config
+    		subscribe_msg[exchange] = {
+    			"method": "SUBSCRIBE",
+    			"params": [
+    			],
+    			"id": 1
+    		};
 		 
 		 
 			// Add markets to API call
@@ -717,15 +782,14 @@ api['bitfinex'] = 'wss://api.bitfinex.com/ws/1';
 		// Kraken
 		else if ( exchange == 'kraken' ) {
 			
-		// API call config
-		subscribe_msg[exchange] = {
-			"event": "subscribe",
-			"pair": [
-			],
-			 "subscription": {
-				"name": "ticker"
-			 }
-		};
+    		// API call config
+    		subscribe_msg[exchange] = {
+    			"event": "subscribe",
+    			"pair": [],
+    			 "subscription": {
+    				"name": "ticker"
+    			 }
+    		};
 		 
 		 
 			// Add markets to API call
@@ -739,13 +803,13 @@ api['bitfinex'] = 'wss://api.bitfinex.com/ws/1';
 		// HitBTC
 		else if ( exchange == 'hitbtc' ) {
 			
-		// API call config
-		subscribe_msg[exchange] = {
-			"method": "subscribeTicker",
-			"params": {
-			},
-			"id": 1
-		};
+    		// API call config
+    		subscribe_msg[exchange] = {
+    			"method": "subscribeTicker",
+    			"params": {
+    			},
+    			"id": 1
+    		};
 		 
 		 
 			// Add markets to API call
@@ -760,14 +824,14 @@ api['bitfinex'] = 'wss://api.bitfinex.com/ws/1';
 		// https://docs.kucoin.com/#symbol-ticker
 		else if ( exchange == 'kucoin' ) {
 			
-		// API call config
-		subscribe_msg[exchange] = {        
-			"id": 1,
-			"type": "subscribe",
-			"topic": "/market/snapshot:",
-			"privateChannel": false,
-			"response": true       
-		}
+    		// API call config
+    		subscribe_msg[exchange] = {        
+    			"id": 1,
+    			"type": "subscribe",
+    			"topic": "/market/snapshot:",
+    			"privateChannel": false,
+    			"response": true       
+    		}
 		 
 		 
 			// Add markets to API call
@@ -784,13 +848,13 @@ api['bitfinex'] = 'wss://api.bitfinex.com/ws/1';
 		// https://www.bitstamp.net/websocket/v2/
 		else if ( exchange == 'bitstamp' ) {
 			
-		// API call config
-		subscribe_msg[exchange] = { 
-			"event": "bts:subscribe",
-			"data": {
-					"channel": "live_trades_"
-			}  
-		}
+    		// API call config
+    		subscribe_msg[exchange] = { 
+    			"event": "bts:subscribe",
+    			"data": {
+    					"channel": "live_trades_"
+    			}  
+    		}
 		 
 		 
 			// Add markets to API call
@@ -804,18 +868,59 @@ api['bitfinex'] = 'wss://api.bitfinex.com/ws/1';
 		// Bitfinex
 		else if ( exchange == 'bitfinex' ) {
 			
-		// API call config
-		subscribe_msg[exchange] = {
-			"event": "subscribe",
-			"channel": "ticker",
-			"pair": ""
-		};
+    		// API call config
+    		subscribe_msg[exchange] = {
+    			"event": "subscribe",
+    			"channel": "ticker",
+    			"pair": ""
+    		};
 		 
 		 
 			// Add markets to API call
 			var loop = 0;
 			markets[exchange].forEach(element => {
 			subscribe_msg[exchange]['pair'] = element; 
+			loop = loop + 1;
+			});
+		
+		}
+		// OKex
+		else if ( exchange == 'okex' ) {
+			
+    		// API call config
+    		subscribe_msg[exchange] = {
+              "op": "subscribe",
+              "args": []
+    		};
+		 
+		 
+			// Add markets to API call
+			var loop = 0;
+			markets[exchange].forEach(element => {
+			     subscribe_msg[exchange].args[loop] =     {
+                  "channel": "index-tickers",
+                  "instId": element
+                 };
+			loop = loop + 1;
+			});
+		 
+		 
+		
+		}
+		// Loopring
+		else if ( exchange == 'loopring' ) {
+			
+    		// API call config
+    		subscribe_msg[exchange] = {
+            "topic": "ticker",
+            "market": "LRC-ETH"
+    		};
+		 
+		 
+			// Add markets to API call
+			var loop = 0;
+			markets[exchange].forEach(element => {
+			//subscribe_msg[exchange].params['symbol'] = element; 
 			loop = loop + 1;
 			});
 		
@@ -978,6 +1083,20 @@ function api_connect(exchange) {
 		base_volume = pair_volume('asset', price_raw, volume_raw);
 				 
 		}
+		// OKex
+		else if ( exchange == 'okex' && msg['data'] ) {
+				 
+		market_id = msg['data'][0]['instId'];
+				 
+		price_raw = msg['data'][0]['idxPx'];
+		
+		// RE-SET volume_raw / base_volume AS UNDEFINED, as okex provides no volume data
+		
+		var volume_raw;
+		
+		var base_volume;
+				 
+		}
 	  
 	    
 	    // Nullify rendering under these circumstances (msg is not our data set)
@@ -1088,7 +1207,23 @@ function api_connect(exchange) {
 	   
 		setTimeout(function() {
 	   $(".status_" + exchange).text("Connecting").css("color", "red");
-		api_connect(exchange);
+	   
+	       if ( exchange == 'loopring' ) {
+	           
+	       api[exchange] = void 0;
+	       
+	       loopring_config(); // GET A NEW TEMP KEY FROM LOOPRING'S REST API
+	       
+	           setTimeout(function() {
+	           api_connect(exchange);
+	           }, 10000); // WAIT 10 SECONDS FOR GETTING A NEW TEMP KEY
+	       
+	       }
+	       else {
+	       api_connect(exchange);
+	       }
+	       
+		
 	   }, 60000); // Reconnect after no data received for 1 minute
 	   
 	};
