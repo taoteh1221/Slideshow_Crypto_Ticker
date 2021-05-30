@@ -347,6 +347,7 @@ select opt in $OPTIONS; do
 				rm /home/$APP_USER/slideshow-crypto-ticker/bash/ticker-init.bash > /dev/null 2>&1
 				rm /home/$APP_USER/slideshow-crypto-ticker/bash/cron.bash > /dev/null 2>&1
 				rm /home/$APP_USER/slideshow-crypto-ticker/bash/cron/kucoin-auth.bash > /dev/null 2>&1
+				rm /home/$APP_USER/slideshow-crypto-ticker/js/jquery.min.js > /dev/null 2>&1
 				rm /home/$APP_USER/reload > /dev/null 2>&1
 				
 				\cp -r ./ /home/$APP_USER/slideshow-crypto-ticker
