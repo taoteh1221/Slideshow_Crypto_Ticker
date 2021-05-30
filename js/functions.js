@@ -14,6 +14,19 @@ return input[0].toUpperCase() + input.slice(1);
 /////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
+function is_json(str) {
+    try {
+        JSON.parse(str);
+    } catch (e) {
+        return false;
+    }
+    return true;
+}
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
 function load_js(file) {
 
 script= document.createElement('script');
@@ -160,10 +173,17 @@ render = render.replace(/stamp/gi, "Stamp");
 render = render.replace(/flyer/gi, "Flyer");
 render = render.replace(/panda/gi, "Panda");
 render = render.replace(/pay/gi, "Pay");
+render = render.replace(/swap/gi, "Swap");
+render = render.replace(/iearn/gi, "iEarn");
+render = render.replace(/pulse/gi, "Pulse");
+render = render.replace(/defi/gi, "DeFi");
+render = render.replace(/ring/gi, "Ring");
+render = render.replace(/amm/gi, "AMM");
+render = render.replace(/ico/gi, "ICO");
+render = render.replace(/erc20/gi, "ERC-20");
 render = render.replace(/okex/gi, "OKex");
 
 return render;
-
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -197,11 +217,18 @@ return results;
 
 
 function kucoin_config() {
+    
+    if  ( window.kucoin_alert == 1 ) {
+    return;
+    }
+    else {
+	window.kucoin_alert = 1; 
+    }
 	
 	// If kucoin auth data is cached, allow kucoin configs
 	if ( typeof kucoin_endpoint !== 'undefined' && typeof kucoin_token !== 'undefined' ) {
 	api['kucoin'] = kucoin_endpoint + '?token=' + kucoin_token;
-	console.log('Kucoin support enabled (valid installation detected).');
+	console.log('Kucoin support enabled (VALID installation detected).');
 	return true;
 	}
 	// Remove kucoin market configs if no cache data is present, to avoid script errors,
@@ -209,7 +236,7 @@ function kucoin_config() {
 	else {
 	delete exchange_markets['kucoin'];
 	console_alert(); 
-	console.log('Kucoin support disabled (invalid installation detected).');
+	console.log('Kucoin support disabled (INVALID installation detected).');
 	return false;
 	}
 
@@ -220,6 +247,13 @@ function kucoin_config() {
 
 
 function loopring_config() {
+    
+    if  ( window.loopring_alert == 1 ) {
+    return;
+    }
+    else {
+	window.loopring_alert = 1; 
+    }
     
     if ( typeof api['loopring'] == 'undefined' ) {
         
@@ -235,7 +269,7 @@ function loopring_config() {
             	// If loopring auth data is cached, allow loopring configs
             	if ( typeof loopring_token !== 'undefined' ) {
             	api['loopring'] = 'wss://ws.api3.loopring.io/v3/ws' + '?wsApiKey=' + loopring_token;
-            	console.log('Loopring support enabled (valid installation detected).');
+            	console.log('Loopring support enabled (VALID installation detected).');
             	return true;
             	}
             	// Remove loopring market configs if no cache data is present, to avoid script errors,
@@ -246,7 +280,7 @@ function loopring_config() {
             	api['loopring'] = ' '; 
             	delete exchange_markets['loopring']; 
             	console_alert(); 
-            	console.log('Loopring support disabled (invalid installation detected).');
+            	console.log('Loopring support disabled (INVALID installation detected).');
             	return false;
             	}
         	
@@ -910,17 +944,22 @@ api['okex'] = 'wss://ws.okex.com:8443/ws/v5/public';
 		// Loopring
 		else if ( exchange == 'loopring' ) {
 			
-    		// API call config
+    		// API call config 
+    		// ('unsubscribeAll' cancels any previous subscriptions)
     		subscribe_msg[exchange] = {
-            "topic": "ticker",
-            "market": "LRC-ETH"
-    		};
+            "op": "sub",
+            "unsubscribeAll": true,
+            "topics": []
+            };
 		 
 		 
 			// Add markets to API call
 			var loop = 0;
 			markets[exchange].forEach(element => {
-			//subscribe_msg[exchange].params['symbol'] = element; 
+			     subscribe_msg[exchange].topics[loop] =     {
+                  "topic": "ticker",
+                  "market": element
+                 };
 			loop = loop + 1;
 			});
 		
@@ -965,9 +1004,27 @@ function api_connect(exchange) {
 	// Socket response ///////////////////////////////////////////////////
 	sockets[exchange].onmessage = function(e) {
 	   
-	msg = JSON.parse(e.data);
-	//console.log(msg);
+	   
+	   // Check if response is JSON, or just a regular string
+	   if ( is_json(e.data) == true ) {
+	   msg = JSON.parse(e.data);
+	   }
+	   else {
+	   msg = e.data;
+	   }
 		
+		
+	//console.log(e.data); // DEBUGGING
+	//console.log(msg); // DEBUGGING
+	   
+	   
+	   // Loopring requires a response of 'pong', when message is 'ping'
+	   if ( exchange == 'loopring' && msg == 'ping' ) {
+	   sockets[exchange].send('pong');
+	   //console.log('pong'); // DEBUGGING
+	   }
+	   
+	   
 		// Parse exchange data
 		
 		// Coinbase
@@ -1064,7 +1121,7 @@ function api_connect(exchange) {
 				 
 		price_raw = msg["data"]["price"];
 		
-		// RE-SET volume_raw / base_volume AS UNDEFINED, as bitstamp provides no volume data
+		// RE-SET volume_raw / base_volume AS UNDEFINED, as bitstamp provides no 24hr volume data
 		
 		var volume_raw;
 		
@@ -1090,7 +1147,21 @@ function api_connect(exchange) {
 				 
 		price_raw = msg['data'][0]['idxPx'];
 		
-		// RE-SET volume_raw / base_volume AS UNDEFINED, as okex provides no volume data
+		// RE-SET volume_raw / base_volume AS UNDEFINED, as okex provides no 24hr volume data
+		
+		var volume_raw;
+		
+		var base_volume;
+				 
+		}
+		// Loopring
+		else if ( exchange == 'loopring' && msg['data'] ) {
+				 
+		market_id = msg['data'][0];
+				 
+		price_raw = msg['data'][7];
+		
+		// RE-SET volume_raw / base_volume AS UNDEFINED, as loopring provides no 24hr volume data
 		
 		var volume_raw;
 		
@@ -1103,7 +1174,7 @@ function api_connect(exchange) {
 	    if ( 
 	    exchange == 'bitfinex' && msg[1] == 'hb' // Bitfinex
 	    ) {
-	    var market_id;
+	    var market_id; // Set as UNDEFINED
 	    }
 	    
   
@@ -1210,7 +1281,7 @@ function api_connect(exchange) {
 	   
 	       if ( exchange == 'loopring' ) {
 	           
-	       api[exchange] = void 0;
+	       api[exchange] = void 0; // RE-SET API PARAMS AS UNDEFINED
 	       
 	       loopring_config(); // GET A NEW TEMP KEY FROM LOOPRING'S REST API
 	       

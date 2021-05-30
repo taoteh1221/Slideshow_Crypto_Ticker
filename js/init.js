@@ -8,7 +8,7 @@ var app_version = '3.03.1';  // 2021/MAY/15TH
 
 
 
-// Var inits
+// BLANK var inits
 var api = [];
 var sockets = [];
 var markets = [];
@@ -17,7 +17,11 @@ var subscribe_msg = [];
 var trade_side_price = [];
 var trade_side_arrow = [];
 var markets_length = 0;
-var api_alert; // MUST at least be set as 'undefined' here
+// BELOW MUST at least be set as 'undefined' here
+var api_alert; 
+var kucoin_alert; 
+var loopring_alert; 
+// END BLANK var inits
 
 // Save what time the app started running (works fine with refresh)
 var runtime_start = new Date().getTime(); 

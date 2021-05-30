@@ -454,7 +454,9 @@ v3.03.0
 ---------------------------------------------------------
 v3.03.1
 
--Bug fix for kucoin support
+-Bug fix for kucoin markets support
+
+-Full LoopRing markets support
 
 ---------------------------------------------------------
 

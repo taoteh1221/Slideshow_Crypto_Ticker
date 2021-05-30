@@ -38,9 +38,6 @@ API INTEGRATION SECTION
 ///////////////////////////////////////////////////////
 
 
-https://docs3.loopring.io/en/websocket/ticker.html
-
-
 https://www.bitmex.com/app/wsAPI
 
 

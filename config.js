@@ -19,6 +19,8 @@ var exchange_markets = []; // LEAVE ALONE, AND DON'T DELETE (REQUIRED!)
 // Binance formatting example: 'btcusdt|ethusdt|ethbtc|mkrusdt'
 // Kucoin formatting example: 'MANA-BTC|ENJ-BTC|SXP-USDT'
 // Hitbtc formatting example (MULTIPLE TICKERS NOT SUPPORTED): 'MYSTBTC'
+// Okex formatting example: 'ENJ-USDT|ENJ-BTC|XCH-USDT'
+// Loopring formatting example: 'LRC-USDT|LRC-ETH'
 ////
 ////
 // Bitstamp markets (set to '' to disable)
@@ -34,7 +36,11 @@ exchange_markets['coinbase'] = 'BTC-USD|ETH-USD|ETH-BTC|UNI-USD|UNI-BTC';
 ////
 ////
 // Binance markets (set to '' to disable)
-exchange_markets['binance'] = 'mkrusdt|mkrbtc|lrcusdt|lrcbtc'; 
+exchange_markets['binance'] = 'mkrusdt|mkrbtc|lrcbtc'; 
+////
+////
+// Loopring markets (set to '' to disable) 
+exchange_markets['loopring'] = 'LRC-USDT|LRC-ETH';
 ////
 ////
 // Kraken markets (set to '' to disable)
@@ -51,10 +57,6 @@ exchange_markets['okex'] = 'ENJ-USDT|ENJ-BTC|XCH-USDT|XCH-BTC';
 ////
 // HitBTC markets (set to '' to disable) 
 exchange_markets['hitbtc'] = 'MYSTBTC'; // !!HITBTC WEBSOCKET API ONLY SUPPORTS ONE ASSET!!
-////
-////
-// Loopring markets (set to '' to disable) 
-//exchange_markets['loopring'] = 'LRC-ETH'; // NOT FULLY SUPPORTED YET!!
 
 
 // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
