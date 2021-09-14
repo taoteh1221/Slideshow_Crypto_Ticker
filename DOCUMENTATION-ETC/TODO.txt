@@ -26,7 +26,7 @@ OPTIMIZATIONS / BUGS / TESTS / UX / QA / OTHER SECTION
 ///////////////////////////////////////////////////////
 
 
-(EMPTY)
+Add same new "pretty number" logic for >= 100 and >= 1 that we recently added to the portfolio app.
 
 
 ///////////////////////////////////////////////////////
