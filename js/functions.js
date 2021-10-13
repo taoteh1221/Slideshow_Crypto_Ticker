@@ -182,6 +182,7 @@ render = render.replace(/amm/gi, "AMM");
 render = render.replace(/ico/gi, "ICO");
 render = render.replace(/erc20/gi, "ERC-20");
 render = render.replace(/okex/gi, "OKex");
+render = render.replace(/mart/gi, "Mart");
 
 return render;
 }
@@ -295,6 +296,8 @@ function loopring_config() {
 
 
 function init_interface() {
+
+console.log('init_interface'); // DEBUGGING
 
 // Load cache.js dynamically, avoiding loading from the browser cache (lol, cachefest), via a timestamp url param
 script= document.createElement('script');
@@ -623,11 +626,11 @@ t_speed = Math.round(window.transition_speed * 1000);
 
 function render_interface() {
 
+console.log('render_interface'); // DEBUGGING
+
 kucoin_config(); // Check / load kucoin data BEFORE MARKET CONFIG
 
 loopring_config(); // Check / load loopring data BEFORE MARKET CONFIG
-	
-market_config();
 
 
     // Wait for loopring to get a temp API key
@@ -636,6 +639,8 @@ market_config();
     return;
     }
     else {
+	
+    market_config();
     
 
 		// Connect to exchange APIs for market data
@@ -730,6 +735,8 @@ function monospace_rendering($element) {
 
 function market_config() {
 
+console.log('market_config'); // DEBUGGING
+
 
 // Exchange API endpoints
 
@@ -749,18 +756,23 @@ api['bitfinex'] = 'wss://api.bitfinex.com/ws/1';
 
 api['okex'] = 'wss://ws.okex.com:8443/ws/v5/public';
 
+api['bitmart'] = 'wss://ws-manager-compress.bitmart.com?protocol=1.1';
+
 
 
 	// Put configged markets into a multi-dimensional array, calculate number of markets total
 	Object.keys(exchange_markets).forEach(function(exchange) {
 		
-		if ( markets[exchange] != '' ) {
+		// If markets exist for this exchange in config.js, and haven't been added yet to the 'markets' (ALL exchange markets) array yet
+		if ( exchange_markets[exchange] != '' && typeof markets[exchange] == 'undefined' ) {
 		markets[exchange] = exchange_markets[exchange].split("|");
 		markets_length = markets_length + markets[exchange].length;
 		}
 			
 	});
 
+
+console.log(markets); // DEBUGGING
 
 
 	// Websocket subscribe arrays
@@ -964,8 +976,27 @@ api['okex'] = 'wss://ws.okex.com:8443/ws/v5/public';
 			});
 		
 		}
+		// Bitmart
+		else if ( exchange == 'bitmart' ) {
+			
+    		// API call config
+    		subscribe_msg[exchange] = {
+    			"op": "subscribe",
+    			"args": [
+    			]
+    		};
+		 
+		 
+			// Add markets to API call
+			var loop = 0;
+			markets[exchange].forEach(element => {
+			subscribe_msg[exchange].args[loop] = "spot/ticker:" + element; 
+			loop = loop + 1;
+			});
 		
-	//console.log(subscribe_msg[exchange]);
+		}
+		
+	console.log(subscribe_msg[exchange]);
 	
 	});
 
@@ -978,6 +1009,8 @@ api['okex'] = 'wss://ws.okex.com:8443/ws/v5/public';
 
 
 function api_connect(exchange) {
+
+console.log('api_connect'); // DEBUGGING
 
 
     // Skip invalid exchange setups
@@ -1005,17 +1038,41 @@ function api_connect(exchange) {
 	sockets[exchange].onmessage = function(e) {
 	   
 	   
-	   // Check if response is JSON, or just a regular string
+	   // Check if response is JSON, blob, or just a regular string
 	   if ( is_json(e.data) == true ) {
 	   msg = JSON.parse(e.data);
+	   msg_type = 'json';
+	   }
+	   else if ( e.data instanceof Blob == true ) {
+	   
+       reader = new FileReader();
+        
+           reader.addEventListener("loadend", function(e) {
+            
+           msg = e.currentTarget.result;
+            
+    	   console.log(msg); // DEBUGGING
+    	    
+           });
+          
+       reader.readAsText(e.data);
+	   
 	   }
 	   else {
 	   msg = e.data;
 	   }
 		
 		
+	
+	console.log(typeof msg); // DEBUGGING
+	
 	//console.log(e.data); // DEBUGGING
+	
 	//console.log(msg); // DEBUGGING
+	
+	//const blob_read = await msg.text();
+	
+	//console.log(blob_read); // DEBUGGING
 	   
 	   
 	   // Loopring requires a response of 'pong', when message is 'ping'
@@ -1166,6 +1223,18 @@ function api_connect(exchange) {
 		var volume_raw;
 		
 		var base_volume;
+				 
+		}
+		// Bitmart
+		else if ( exchange == 'bitmart' && typeof msg != 'undefined' ) {
+				 
+		market_id = msg["symbol"];
+				 
+		price_raw = msg["last_price"];
+				 
+		volume_raw = msg["base_volume_24h"];
+		   
+		base_volume = pair_volume('asset', price_raw, volume_raw);
 				 
 		}
 	  

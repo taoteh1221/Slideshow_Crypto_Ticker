@@ -7,7 +7,6 @@
 var app_version = '3.04.0';  // 2021/AUGUST/25TH
 
 
-
 // BLANK var inits
 var api = [];
 var sockets = [];
