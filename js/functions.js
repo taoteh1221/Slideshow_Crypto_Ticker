@@ -1047,10 +1047,14 @@ console.log('api_connect'); // DEBUGGING
 
        // Change binary type from "blob" to "arraybuffer"
        //sockets[exchange].binaryType = "arraybuffer";
-    
+       
+       
+       // NOTES ON IN-PROGRESS WORK
        // https://developer-pro.bitmart.com/en/ws/spot_ws/compress.html
 	   // https://nodeca.github.io/pako/
 	   // https://stackoverflow.com/questions/4507316/zlib-decompression-client-side
+	   // https://www.npmjs.com/package/buffer
+	   // https://www.npmjs.com/package/zlib
 
        // Pako magic
        var data = pako.inflateRaw(e.data);
