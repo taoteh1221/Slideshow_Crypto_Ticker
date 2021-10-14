@@ -7,7 +7,7 @@ Open source / 100% FREE real time slideshow crypto price ticker for Raspberry Pi
 
 Supports running in "slideshow mode", to show all the markets you want.
 
-Example on a 3.5" LCD: https://www.youtube.com/watch?v=bvPQ6PLy_ME
+Example on a 3.5" LCD: https://www.youtube.com/watch?v=dXAhs8HXCn4
 
 Developed on a Raspi v3 B+, with this screen / case: https://smile.amazon.com/gp/product/B07N38B86S
 
