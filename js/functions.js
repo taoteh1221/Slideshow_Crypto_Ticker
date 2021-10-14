@@ -1045,7 +1045,7 @@ console.log('api_connect'); // DEBUGGING
 	sockets[exchange].onmessage = function(e) {
 	   
 	   
-	   // Check if response is JSON, blob, or just a regular string
+	   // Check if response is JSON format or bitmart's compressed websocket data, otherwise presume just a regular string
 	   if ( is_json(e.data) == true ) {
 	   msg = JSON.parse(e.data);
 	   }
