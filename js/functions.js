@@ -1044,6 +1044,78 @@ console.log('api_connect'); // DEBUGGING
 	   msg_type = 'json';
 	   }
 	   else if ( e.data instanceof Blob == true ) {
+
+       // Change binary type from "blob" to "arraybuffer"
+       //sockets[exchange].binaryType = "arraybuffer";
+    
+       // https://developer-pro.bitmart.com/en/ws/spot_ws/compress.html
+	   // https://nodeca.github.io/pako/
+	   // https://stackoverflow.com/questions/4507316/zlib-decompression-client-side
+
+       // Pako magic
+       var data = pako.inflateRaw(e.data);
+
+       // Convert gunzipped byteArray back to ascii string:
+       var strData = String.fromCharCode.apply(null, new Uint16Array(data));
+
+       // Output to console
+       console.log(strData);
+       
+/*
+       output = pako.inflateRaw(e.data, { to: 'string' });
+       console.log(JSON.parse(output));
+
+       compressed = e.data;
+
+       const stream = compressed.stream();
+       const reader = stream.getReader();
+            
+        
+           reader.read().then(({ done, value }) => {
+           
+               if(done) {
+               console.log('DONE', value,  done);
+               } 
+               else {
+               
+               var b = Buffer.from(value);
+               
+                   pako.inflateRaw(b,{flush: 3, info: true}, (err, buffer) => {
+                   console.log(err,JSON.parse(buffer.toString('UTF-8')));
+                   });   
+                            
+               }
+                       
+           })
+
+
+
+	       
+	       try {
+           output = pako.inflateRaw(e.data,{flush: 3, info: true}, (err, buffer) => {
+                   console.log(err,JSON.parse(buffer.toString('UTF-8')));
+                   });
+           } 
+           catch (err) {
+           console.log(err);
+           }
+
+	 
+try {
+          console.log(JSON.parse(pako.inflateRaw(e.data, {
+            to: 'string'
+          })))
+        } catch (err) {
+          console.log(err)
+        }
+	       //try {
+           //output = pako.inflateRaw(e.data);
+           //} 
+           //catch (err) {
+           //console.log(err);
+           //}
+           
+       //console.log(buffer);
 	   
        reader = new FileReader();
         
@@ -1057,6 +1129,8 @@ console.log('api_connect'); // DEBUGGING
           
        reader.readAsText(e.data);
 	   
+*/  
+      
 	   }
 	   else {
 	   msg = e.data;
