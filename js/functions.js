@@ -772,7 +772,7 @@ api['bitmart'] = 'wss://ws-manager-compress.bitmart.com?protocol=1.1';
 	});
 
 
-console.log(markets); // DEBUGGING
+//console.log(markets); // DEBUGGING
 
 
 	// Websocket subscribe arrays
@@ -996,7 +996,7 @@ console.log(markets); // DEBUGGING
 		
 		}
 		
-	console.log(subscribe_msg[exchange]);
+	//console.log(subscribe_msg[exchange]);
 	
 	});
 
@@ -1021,6 +1021,13 @@ console.log('api_connect'); // DEBUGGING
 	
 	// Create new socket
 	sockets[exchange] = new WebSocket(api[exchange]);
+    
+    
+        if ( exchange == 'bitmart' ) {
+        // Change binary type from "blob" to "arraybuffer"
+        sockets[exchange].binaryType = "arraybuffer";
+        }
+   
    
 	// Open socket ///////////////////////////////////////////////////
 	sockets[exchange].onopen = function() {
@@ -1041,100 +1048,28 @@ console.log('api_connect'); // DEBUGGING
 	   // Check if response is JSON, blob, or just a regular string
 	   if ( is_json(e.data) == true ) {
 	   msg = JSON.parse(e.data);
-	   msg_type = 'json';
 	   }
-	   else if ( e.data instanceof Blob == true ) {
-
-       // Change binary type from "blob" to "arraybuffer"
-       //sockets[exchange].binaryType = "arraybuffer";
+	   else if ( exchange == 'bitmart' ) {
        
+       // NOTES ON DECOMPRESSING (ALSO NEEDED sockets[exchange].binaryType = "arraybuffer"; before opening websocket)
        
-       // NOTES ON IN-PROGRESS WORK
        // https://developer-pro.bitmart.com/en/ws/spot_ws/compress.html
 	   // https://nodeca.github.io/pako/
 	   // https://stackoverflow.com/questions/4507316/zlib-decompression-client-side
-	   // https://www.npmjs.com/package/buffer
-	   // https://www.npmjs.com/package/zlib
-
-       // Pako magic
-       var data = pako.inflateRaw(e.data);
-
-       // Convert gunzipped byteArray back to ascii string:
-       var strData = String.fromCharCode.apply(null, new Uint16Array(data));
-
-       // Output to console
-       console.log(strData);
+	   // https://stackoverflow.com/questions/57264517/pako-js-error-invalid-stored-block-lengths-when-trying-to-inflate-websocket-m
        
-/*
-       output = pako.inflateRaw(e.data, { to: 'string' });
-       console.log(JSON.parse(output));
-
-       compressed = e.data;
-
-       const stream = compressed.stream();
-       const reader = stream.getReader();
-            
-        
-           reader.read().then(({ done, value }) => {
-           
-               if(done) {
-               console.log('DONE', value,  done);
-               } 
-               else {
-               
-               var b = Buffer.from(value);
-               
-                   pako.inflateRaw(b,{flush: 3, info: true}, (err, buffer) => {
-                   console.log(err,JSON.parse(buffer.toString('UTF-8')));
-                   });   
-                            
-               }
-                       
-           })
-
-
-
-	       
-	       try {
-           output = pako.inflateRaw(e.data,{flush: 3, info: true}, (err, buffer) => {
-                   console.log(err,JSON.parse(buffer.toString('UTF-8')));
-                   });
-           } 
-           catch (err) {
-           console.log(err);
-           }
-
-	 
-try {
-          console.log(JSON.parse(pako.inflateRaw(e.data, {
-            to: 'string'
-          })))
-        } catch (err) {
-          console.log(err)
-        }
-	       //try {
-           //output = pako.inflateRaw(e.data);
-           //} 
-           //catch (err) {
-           //console.log(err);
-           //}
-           
-       //console.log(buffer);
-	   
-       reader = new FileReader();
-        
-           reader.addEventListener("loadend", function(e) {
-            
-           msg = e.currentTarget.result;
-            
-    	   console.log(msg); // DEBUGGING
-    	    
-           });
-          
-       reader.readAsText(e.data);
-	   
-*/  
-      
+          try {
+              
+              // Decompress the data, convert to string
+              msg = JSON.parse(pako.inflateRaw(e.data, {
+              to: 'string'
+              }));
+              
+          }
+          catch (err) {
+          console.log(err);
+          }
+  
 	   }
 	   else {
 	   msg = e.data;
@@ -1142,15 +1077,11 @@ try {
 		
 		
 	
-	console.log(typeof msg); // DEBUGGING
-	
-	//console.log(e.data); // DEBUGGING
+	//console.log(typeof msg); // DEBUGGING
 	
 	//console.log(msg); // DEBUGGING
 	
-	//const blob_read = await msg.text();
-	
-	//console.log(blob_read); // DEBUGGING
+	//console.log(e.data); // DEBUGGING
 	   
 	   
 	   // Loopring requires a response of 'pong', when message is 'ping'
@@ -1304,15 +1235,15 @@ try {
 				 
 		}
 		// Bitmart
-		else if ( exchange == 'bitmart' && typeof msg != 'undefined' ) {
+		else if ( exchange == 'bitmart' && msg['table'] == 'spot/ticker' ) {
 				 
-		market_id = msg["symbol"];
+		market_id = msg["data"][0]["symbol"];
 				 
-		price_raw = msg["last_price"];
+		price_raw = msg["data"][0]["last_price"];
 				 
-		volume_raw = msg["base_volume_24h"];
+		volume_raw = msg["data"][0]["base_volume_24h"];
 		   
-		base_volume = pair_volume('asset', price_raw, volume_raw);
+		base_volume = pair_volume('pairing', price_raw, volume_raw);
 				 
 		}
 	  
@@ -1348,9 +1279,12 @@ try {
 		 
 			market_symbol = market_info['asset_symbol'];
 			
-			// Price decimals
+			// Price decimals (none if >= 100, 2 if >= 1, 'max_ticker_decimals' if < 1 )
 			price_decimals = ( price_raw >= 1 ? 2 : max_ticker_decimals );
-			price = parseFloat(price_raw).toFixed(price_decimals);
+			price_decimals = ( price_raw >= 100 ? 0 : price_decimals );
+			
+			price_max_dec = parseFloat(price_raw).toFixed(price_decimals); // Set max decimals
+			price = parseFloat(price_max_dec); // Remove any trailing zeros in decimals
 				
 			// HTML for rendering
 			ticker_item =

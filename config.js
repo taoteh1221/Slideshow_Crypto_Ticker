@@ -14,53 +14,54 @@ var exchange_markets = []; // LEAVE ALONE, AND DON'T DELETE (REQUIRED!)
 ////
 // Bitstamp formatting example (MULTIPLE TICKERS NOT SUPPORTED): 'btcgbp'
 // Bitfinex formatting example (MULTIPLE TICKERS NOT SUPPORTED): 'BTCEUR'
-// Kraken formatting example: 'XBT/USD|XBT/CAD|XBT/EUR|ETH/USD|ETH/EUR|ETH/CAD'
 // Coinbase formatting example: 'BTC-USD|BTC-GBP|ETH-USD|ETH-BTC|ETH-EUR|MKR-USD|MKR-BTC|MANA-USDC'
 // Binance formatting example: 'btcusdt|ethusdt|ethbtc|mkrusdt'
-// Kucoin formatting example: 'MANA-BTC|ENJ-BTC|SXP-USDT'
-// Hitbtc formatting example (MULTIPLE TICKERS NOT SUPPORTED): 'MYSTBTC'
-// Okex formatting example: 'ENJ-USDT|ENJ-BTC|XCH-USDT'
 // Loopring formatting example: 'LRC-USDT|LRC-ETH'
+// Kraken formatting example: 'XBT/USD|XBT/CAD|XBT/EUR|ETH/USD|ETH/EUR|ETH/CAD'
+// Kucoin formatting example: 'MANA-BTC|ENJ-BTC|SXP-USDT'
+// Okex formatting example: 'ENJ-USDT|ENJ-BTC'
+// Hitbtc formatting example (MULTIPLE TICKERS NOT SUPPORTED): 'MYSTBTC'
+// Bitmart formatting example: 'SG_USDT|SG_BTC'
 ////
 ////
 // Bitstamp markets (set to '' to disable)
-//exchange_markets['bitstamp'] = 'btcgbp'; // !!BITSTAMP WEBSOCKET API ONLY SUPPORTS ONE ASSET!!
+exchange_markets['bitstamp'] = ''; // !!BITSTAMP WEBSOCKET API ONLY SUPPORTS ONE ASSET!!
 ////
 ////
 // Bitfinex markets (set to '' to disable) 
-//exchange_markets['bitfinex'] = 'BTCEUR';  // !!BITFINEX WEBSOCKET API ONLY SUPPORTS ONE ASSET!!
+exchange_markets['bitfinex'] = '';  // !!BITFINEX WEBSOCKET API ONLY SUPPORTS ONE ASSET!!
 ////
 ////
 // Coinbase markets (set to '' to disable)
-//exchange_markets['coinbase'] = 'BTC-USD|ETH-USD|ETH-BTC|UNI-USD|UNI-BTC'; 
+exchange_markets['coinbase'] = 'BTC-USD|ETH-USD|ETH-BTC'; 
 ////
 ////
 // Binance markets (set to '' to disable)
-//exchange_markets['binance'] = 'mkrusdt|mkrbtc|lrcbtc'; 
+exchange_markets['binance'] = 'lrcusdt|hntusdt'; 
 ////
 ////
 // Loopring markets (set to '' to disable) 
-//exchange_markets['loopring'] = 'LRC-USDT|LRC-ETH';
+exchange_markets['loopring'] = '';
 ////
 ////
 // Kraken markets (set to '' to disable)
-//exchange_markets['kraken'] = 'KEEP/USD|MANA/USD'; 
+exchange_markets['kraken'] = 'MANA/USD|ENJ/USD'; 
 ////
 ////
 // Kucoin markets (set to '' to disable)
-//exchange_markets['kucoin'] = 'MANA-BTC|SXP-USDT'; // !!KUCOIN REQUIRES USING THE INSTALL SCRIPT!!
+exchange_markets['kucoin'] = ''; // !!KUCOIN REQUIRES USING THE INSTALL SCRIPT!!
 ////
 ////
 // OKex markets (set to '' to disable) 
-//exchange_markets['okex'] = 'ENJ-USDT|ENJ-BTC|XCH-USDT|XCH-BTC';
+exchange_markets['okex'] = '';
 ////
 ////
 // HitBTC markets (set to '' to disable) 
-//exchange_markets['hitbtc'] = 'MYSTBTC'; // !!HITBTC WEBSOCKET API ONLY SUPPORTS ONE ASSET!!
+exchange_markets['hitbtc'] = ''; // !!HITBTC WEBSOCKET API ONLY SUPPORTS ONE ASSET!!
 ////
 ////
 // Bitmart markets (set to '' to disable) 
-exchange_markets['bitmart'] = 'SG_USDT|SG_BTC';
+exchange_markets['bitmart'] = 'SG_USDT';
 
 
 // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -70,7 +71,7 @@ exchange_markets['bitmart'] = 'SG_USDT|SG_BTC';
 
 
 // Screen orientation (offset in degrees)
-var orient_screen = 0; // Normal = 0, Flipped = 180, Sideways = 90 or 270
+var orient_screen = 180; // Normal = 0, Flipped = 180, Sideways = 90 or 270
 
 
 // Vertical position (adjusts the ticker's vertical position up/down)
@@ -135,7 +136,7 @@ var google_font = 'Varela Round'; // Default = 'Varela Round'
 
 // Seconds between "slideshowing" multiple tickers (if multiple assets configured)
 // SET TO 0 FOR AUTO MODE (trys to show all tickers in 1 minute, BUT has a 5 second per-ticker MINIMUM)
-var slideshow_speed = 5; // Default = 0
+var slideshow_speed = 5; // Default = 5
 
 
 // EMULATED / dynamic monospace font WIDTH spacing (percent of EACH font size as a decimal) 

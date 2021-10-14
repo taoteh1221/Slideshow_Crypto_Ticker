@@ -474,6 +474,10 @@ v3.04.0
 
 -Bitmart API support
 
+-Removed trailing decimals
+
+-Limit max decimals dynamically, based off unit value (for UX)
+
 ---------------------------------------------------------
 
 
