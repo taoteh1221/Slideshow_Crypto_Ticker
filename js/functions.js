@@ -183,6 +183,7 @@ render = render.replace(/ico/gi, "ICO");
 render = render.replace(/erc20/gi, "ERC-20");
 render = render.replace(/okex/gi, "OKex");
 render = render.replace(/mart/gi, "Mart");
+render = render.replace(/ftx/gi, "FTX");
 
 return render;
 }

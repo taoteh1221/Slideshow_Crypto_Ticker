@@ -37,6 +37,12 @@ API INTEGRATION SECTION
 ///////////////////////////////////////////////////////
 
 
+https://docs.ftx.com/#websocket-api
+
+
+https://exchange-docs.crypto.com/spot/index.html#websocket-subscriptions
+
+
 https://www.bitmex.com/app/wsAPI
 
 
