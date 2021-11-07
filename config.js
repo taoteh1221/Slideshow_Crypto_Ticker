@@ -12,17 +12,17 @@ var exchange_markets = []; // LEAVE ALONE, AND DON'T DELETE (REQUIRED!)
 // Which crypto asset(s) to display on the ticker
 // Separate with pipe | symbol to "slideshow" between multiple tickers on the same exchange
 ////
-// Bitstamp formatting example (MULTIPLE TICKERS NOT SUPPORTED): 'btcgbp'
-// Bitfinex formatting example (MULTIPLE TICKERS NOT SUPPORTED): 'BTCEUR'
+// Bitstamp formatting example  (MULTIPLE TICKERS NOT SUPPORTED): 'btcgbp'
+// Bitfinex formatting example  (MULTIPLE TICKERS NOT SUPPORTED): 'BTCEUR'
+// Hitbtc formatting example    (MULTIPLE TICKERS NOT SUPPORTED): 'MYSTBTC'
 // Coinbase formatting example: 'BTC-USD|BTC-GBP|ETH-USD|ETH-BTC|ETH-EUR|MKR-USD|MKR-BTC|MANA-USDC'
-// Binance formatting example: 'btcusdt|ethusdt|ethbtc|mkrusdt'
+// Binance formatting example:  'btcusdt|ethusdt|ethbtc|mkrusdt'
 // Loopring formatting example: 'LRC-USDT|LRC-ETH'
-// Kraken formatting example: 'XBT/USD|XBT/CAD|XBT/EUR|ETH/USD|ETH/EUR|ETH/CAD'
-// Kucoin formatting example: 'MANA-BTC|ENJ-BTC|SXP-USDT'
-// Okex formatting example: 'ENJ-USDT|ENJ-BTC'
-// Hitbtc formatting example (MULTIPLE TICKERS NOT SUPPORTED): 'MYSTBTC'
-// Gate.io formatting example: 'MANA_USDT|SAMO_USDT'
-// Bitmart formatting example: 'SG_USDT|SG_BTC'
+// Kraken formatting example:   'XBT/USD|XBT/CAD|XBT/EUR|ETH/USD|ETH/EUR|ETH/CAD'
+// Kucoin formatting example:   'MANA-BTC|ENJ-BTC|SXP-USDT'
+// Okex formatting example:     'ENJ-USDT|ENJ-BTC'
+// Gate.io formatting example:  'MANA_USDT|SAMO_USDT'
+// Bitmart formatting example:  'SG_USDT|SG_BTC'
 ////
 ////
 // Bitstamp markets (set to '' to disable)
@@ -34,11 +34,11 @@ exchange_markets['bitfinex'] = '';  // !!BITFINEX WEBSOCKET API ONLY SUPPORTS ON
 ////
 ////
 // Coinbase markets (set to '' to disable)
-exchange_markets['coinbase'] = 'BTC-USD|ETH-USD|ETH-BTC'; 
+exchange_markets['coinbase'] = 'BTC-USD|ETH-USD|SOL-USD|SOL-BTC'; 
 ////
 ////
 // Binance markets (set to '' to disable)
-exchange_markets['binance'] = 'lrcusdt|hntusdt'; 
+exchange_markets['binance'] = 'hntusdt|lrcusdt'; 
 ////
 ////
 // Loopring markets (set to '' to disable) 
