@@ -1,5 +1,5 @@
 
-// Copyright 2019-2021 GPLv3, Slideshow Crypto Ticker by Mike Kilday: http://DragonFrugal.com
+// Copyright 2019-2022 GPLv3, Slideshow Crypto Ticker by Mike Kilday: http://DragonFrugal.com
 
 
 
@@ -184,6 +184,7 @@ render = render.replace(/erc20/gi, "ERC-20");
 render = render.replace(/okex/gi, "OKex");
 render = render.replace(/mart/gi, "Mart");
 render = render.replace(/ftx/gi, "FTX");
+render = render.replace(/gateio/gi, "Gate.io");
 
 return render;
 }
@@ -759,6 +760,8 @@ api['okex'] = 'wss://ws.okex.com:8443/ws/v5/public';
 
 api['bitmart'] = 'wss://ws-manager-compress.bitmart.com?protocol=1.1';
 
+api['gateio'] = 'wss://ws.gate.io/v3/';
+
 
 
 	// Put configged markets into a multi-dimensional array, calculate number of markets total
@@ -973,6 +976,25 @@ api['bitmart'] = 'wss://ws-manager-compress.bitmart.com?protocol=1.1';
                   "topic": "ticker",
                   "market": element
                  };
+			loop = loop + 1;
+			});
+		
+		}
+		// Gate.io
+		else if ( exchange == 'gateio' ) {
+			
+    		// API call config
+    		subscribe_msg[exchange] = {
+    		"id": 12312,
+    		"method": "ticker.subscribe",
+    		"params": []
+    		};
+		 
+		 
+			// Add markets to API call
+			var loop = 0;
+			markets[exchange].forEach(element => {
+			subscribe_msg[exchange].params[loop] = element; 
 			loop = loop + 1;
 			});
 		
@@ -1233,6 +1255,18 @@ console.log('api_connect'); // DEBUGGING
 		var volume_raw;
 		
 		var base_volume;
+				 
+		}
+		// Gateio
+		else if ( exchange == 'gateio' && msg['method'] == 'ticker.update' ) {
+				 
+		market_id = msg['params'][0];
+				 
+		price_raw = msg['params'][1]['last'];
+		
+		volume_raw = msg['params'][1]['baseVolume'];
+		
+		base_volume = pair_volume('pairing', price_raw, volume_raw);
 				 
 		}
 		// Bitmart

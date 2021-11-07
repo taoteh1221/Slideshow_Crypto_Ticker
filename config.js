@@ -1,5 +1,5 @@
 
-// Copyright 2019-2021 GPLv3, Slideshow Crypto Ticker by Mike Kilday: http://DragonFrugal.com
+// Copyright 2019-2022 GPLv3, Slideshow Crypto Ticker by Mike Kilday: http://DragonFrugal.com
 
 var exchange_markets = []; // LEAVE ALONE, AND DON'T DELETE (REQUIRED!)
 
@@ -21,6 +21,7 @@ var exchange_markets = []; // LEAVE ALONE, AND DON'T DELETE (REQUIRED!)
 // Kucoin formatting example: 'MANA-BTC|ENJ-BTC|SXP-USDT'
 // Okex formatting example: 'ENJ-USDT|ENJ-BTC'
 // Hitbtc formatting example (MULTIPLE TICKERS NOT SUPPORTED): 'MYSTBTC'
+// Gate.io formatting example: 'MANA_USDT|SAMO_USDT'
 // Bitmart formatting example: 'SG_USDT|SG_BTC'
 ////
 ////
@@ -45,7 +46,7 @@ exchange_markets['loopring'] = '';
 ////
 ////
 // Kraken markets (set to '' to disable)
-exchange_markets['kraken'] = 'MANA/USD|ENJ/USD'; 
+exchange_markets['kraken'] = 'ENJ/USD'; 
 ////
 ////
 // Kucoin markets (set to '' to disable)
@@ -58,6 +59,10 @@ exchange_markets['okex'] = '';
 ////
 // HitBTC markets (set to '' to disable) 
 exchange_markets['hitbtc'] = ''; // !!HITBTC WEBSOCKET API ONLY SUPPORTS ONE ASSET!!
+////
+////
+// Bitmart markets (set to '' to disable) 
+exchange_markets['gateio'] = 'MANA_USDT|SAMO_USDT';
 ////
 ////
 // Bitmart markets (set to '' to disable) 
