@@ -1054,6 +1054,8 @@ console.log('api_connect'); // DEBUGGING
    
 	// Open socket ///////////////////////////////////////////////////
 	sockets[exchange].onopen = function() {
+	    
+	//console.log(subscribe_msg[exchange]);
    
 	sockets[exchange].send(JSON.stringify(subscribe_msg[exchange]));
 	   

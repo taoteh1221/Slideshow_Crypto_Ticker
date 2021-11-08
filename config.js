@@ -177,6 +177,7 @@ var fiat_pairings = {
 								'USD': '$',
 								'USDC': 'Ⓢ ',
 								'USDT': '₮ ',
+								'UST': 'Ⓢ ',
 								};
 
 
