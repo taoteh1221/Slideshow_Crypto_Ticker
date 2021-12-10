@@ -13,13 +13,13 @@ var exchange_markets = []; // LEAVE ALONE, AND DON'T DELETE (REQUIRED!)
 // Separate with pipe | symbol to "slideshow" between multiple tickers on the same exchange
 ////
 // Bitstamp formatting example  (MULTIPLE TICKERS NOT SUPPORTED): 'btcgbp'
-// Bitfinex formatting example  (MULTIPLE TICKERS NOT SUPPORTED): 'BTCEUR'
+// Bitfinex formatting example  (MULTIPLE TICKERS NOT SUPPORTED): 'BTCEUR', OR 'PLANETS:UST' FOR OVER 4 CHARACTER SYMBOLS
 // Hitbtc formatting example    (MULTIPLE TICKERS NOT SUPPORTED): 'MYSTBTC'
 // Coinbase formatting example: 'BTC-USD|BTC-GBP|ETH-USD|ETH-BTC|ETH-EUR|MKR-USD|MKR-BTC|MANA-USDC'
 // Binance formatting example:  'btcusdt|ethusdt|ethbtc|mkrusdt'
 // Loopring formatting example: 'LRC-USDT|LRC-ETH'
 // Kraken formatting example:   'XBT/USD|XBT/CAD|XBT/EUR|ETH/USD|ETH/EUR|ETH/CAD'
-// Kucoin formatting example:   'MANA-BTC|ENJ-BTC|SXP-USDT'
+// Kucoin formatting example:   'MANA-USDT|ENJ-BTC'
 // Okex formatting example:     'ENJ-USDT|ENJ-BTC'
 // Gate.io formatting example:  'MANA_USDT|SAMO_USDT'
 // Bitmart formatting example:  'SG_USDT|SG_BTC'
@@ -50,7 +50,7 @@ exchange_markets['kraken'] = 'ENJ/USD';
 ////
 ////
 // Kucoin markets (set to '' to disable)
-exchange_markets['kucoin'] = ''; // !!KUCOIN REQUIRES USING THE INSTALL SCRIPT!!
+exchange_markets['kucoin'] = 'MANA-USDT'; // !!KUCOIN REQUIRES USING THE INSTALL SCRIPT!!
 ////
 ////
 // OKex markets (set to '' to disable) 
@@ -62,7 +62,7 @@ exchange_markets['hitbtc'] = ''; // !!HITBTC WEBSOCKET API ONLY SUPPORTS ONE ASS
 ////
 ////
 // Bitmart markets (set to '' to disable) 
-exchange_markets['gateio'] = 'MANA_USDT|SAMO_USDT';
+exchange_markets['gateio'] = 'SAMO_USDT';
 ////
 ////
 // Bitmart markets (set to '' to disable) 
@@ -75,18 +75,22 @@ exchange_markets['bitmart'] = 'SG_USDT';
 // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 
+// DEBUG MODE (turns on console logging for certain logic)
+var debug_mode = 'off'; // 'on' / 'off', Default = 'off'
+
+
 // Screen orientation (offset in degrees)
-var orient_screen = 180; // Normal = 0, Flipped = 180, Sideways = 90 or 270
+var orient_screen = 0; // Normal (upright) = 0, Flipped (upside down) = 180, Sideways (left or right) = 90 or 270
 
 
 // Vertical position (adjusts the ticker's vertical position up/down)
 // CAN BE NEGATIVE, TO GO THE OPPOSITE WAY
-var vertical_position = 36; // Default = 36
+var vertical_position = 70; // Default = 35 (SMALL SCREEN), 70 (LARGE SCREEN)
 
 
 // Horizontal position (adjusts the ticker's horizontal position left/right)
 // CAN BE NEGATIVE, TO GO THE OPPOSITE WAY
-var horizontal_position = 10; // Default = 10
+var horizontal_position = 0; // Default = 10 (SMALL SCREEN), 0 (LARGE SCREEN)
 
 
 // Slideshow transition speed IN SECONDS (can be decimals)
@@ -98,7 +102,7 @@ var font_weight = 'normal'; // Default = 'normal', can be any proper CSS font we
 
 
 // Title font size
-var title_size = 55; // Default = 55
+var title_size = 110; // Default = 55 (SMALL SCREEN), 110 (LARGE SCREEN)
 
 
 // Ticker arrow size ratio (to ticker size), DECIMAL NUMBER FORMAT X.XX OF 1.00 OR LESS
@@ -108,15 +112,20 @@ var arrow_size = 0.65; // Default = 0.65
 
 
 // Ticker font size
-var ticker_size = 66; // Default = 66
+var ticker_size = 160; // Default = 66 (SMALL SCREEN), 160 (LARGE SCREEN)
 
 
-// Maximum decimal places for values worth under 1.00 in unit value, for prettier / less-cluttered interface
-var max_ticker_decimals = 7; // Default = 7
+// Maximum decimal places for ticker values worth under 1.00 in unit value, for prettier / less-cluttered interface
+var max_ticker_decimals = 6; // Default = 6
+
+
+// Minimum decimal places for ANY ticker values
+// 0 disables
+var min_ticker_decimals = 0; // Default = 0
 
 
 // 24 hour volume font size
-var volume_size = 40; // Default = 40
+var volume_size = 80; // Default = 40 (SMALL SCREEN), 80 (LARGE SCREEN)
 
 
 // Hide volume section, IF NO VOLUME WAS PROVIDED

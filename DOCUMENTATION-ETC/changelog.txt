@@ -492,7 +492,13 @@ v3.05.0
 ---------------------------------------------------------
 v3.06.0
 
+-Color coding for auto-install script UX
+
 -UST pairing support added to default config
+
+-Better Bitfinex API support (for tickers greater than 4 characters)
+
+-'min_ticker_decimals' and 'debug_mode' settings in config.js
 
 ---------------------------------------------------------
 

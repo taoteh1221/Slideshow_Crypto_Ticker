@@ -1,13 +1,33 @@
 #!/bin/bash
 
+
+
 ######################################
 
-echo " "
+# https://stackoverflow.com/questions/5947742/how-to-change-the-output-color-of-echo-in-linux
 
-if [ "$EUID" -ne 0 ]; then 
- echo "Please run as root (or sudo)."
- echo "Exiting..."
- exit
+if hash tput > /dev/null 2>&1; then
+
+red=`tput setaf 1`
+green=`tput setaf 2`
+yellow=`tput setaf 3`
+blue=`tput setaf 4`
+magenta=`tput setaf 5`
+cyan=`tput setaf 6`
+
+reset=`tput sgr0`
+
+else
+
+red=``
+green=``
+yellow=``
+blue=``
+magenta=``
+cyan=``
+
+reset=``
+
 fi
 
 
@@ -66,6 +86,18 @@ else
 fi
 
 
+######################################
+
+echo " "
+
+if [ "$EUID" -ne 0 ] || [ "$TERMINAL_USERNAME" == "root" ]; then 
+ echo "${red}Please run with 'sudo' permissions (NOT LOGGED IN AS 'root').${reset}"
+ echo "${cyan}Exiting...${reset}"
+ exit
+fi
+
+######################################
+
 
 # Start in user home directory
 # WE DON'T USE ~/ FOR PATHS IN THIS SCRIPT BECAUSE:
@@ -78,25 +110,25 @@ cd /home/$TERMINAL_USERNAME
 ######################################
 
 
-echo "Enter the system username to configure installation for:"
-echo "(leave blank / hit enter for default of username '${TERMINAL_USERNAME}')"
+echo "${yellow}Enter the system username to configure installation for:"
+echo "(leave blank / hit enter for default of username '${TERMINAL_USERNAME}')${reset}"
 echo " "
 
 read APP_USER
         
 if [ -z "$APP_USER" ]; then
 APP_USER=${1:-$TERMINAL_USERNAME}
-echo "Using default username: $APP_USER"
+echo "${green}Using default username: $APP_USER${reset}"
 else
-echo "Using username: $APP_USER"
+echo "${green}Using username: $APP_USER${reset}"
 fi
 
 
 if [ ! -d "/home/$APP_USER/" ]; then    		
 echo " "
-echo "Directory /home/$APP_USER/ DOES NOT exist, cannot install Slideshow Crypto Ticker."
+echo "${red}Directory /home/$APP_USER/ DOES NOT exist, cannot install Slideshow Crypto Ticker."
 echo " "
-echo "Please create user $APP_USER's home directory before running this installation."
+echo "Please create user $APP_USER's home directory before running this installation.${reset}"
 exit
 fi
 
@@ -106,17 +138,17 @@ echo " "
 ######################################
 
   				
-echo "You have set the user information as..."
+echo "${green}You have set the user information as..."
 echo " "
 echo "User: $APP_USER"
 echo " "
-echo "User home directory: /home/$APP_USER/"
+echo "User home directory: /home/$APP_USER/${reset}"
 echo " "
 
-echo "If this information is NOT correct, please quit installation and start again."
+echo "${yellow}If this information is NOT correct, please quit installation and start again.${reset}"
 echo " "
 
-echo "Select 1 or 2 to choose whether to continue, or quit."
+echo "${yellow}Select 1 or 2 to choose whether to continue, or quit.${reset}"
 echo " "
 
 OPTIONS="continue quit"
@@ -144,42 +176,42 @@ echo " "
 \cp -r /home/$APP_USER/dfd-crypto-ticker /home/$APP_USER/slideshow-crypto-ticker > /dev/null 2>&1
 
 
-echo "TECHNICAL NOTE:"
+echo "${yellow}TECHNICAL NOTE:"
 echo "This script was designed to install / setup on the Raspbian operating system, and was "
 echo "developed on Raspbian Linux v10, for Raspberry Pi computers WITH SMALL IN-CASE LCD SCREENS."
 echo " "
-echo "It is ONLY recommended to install this ticker app IF your device has an LCD screen installed."
+echo "It is ONLY recommended to install this ticker app IF your device has an LCD screen installed.${reset}"
 echo " "
 
-echo "Your operating system has been detected as:"
+echo "${cyan}Your operating system has been detected as:"
 echo " "
-echo "$OS v$VER"
-echo " "
-
-echo "This script may work on other Debian-based systems as well, but it has not been tested for that purpose."
+echo "$OS v$VER${reset}"
 echo " "
 
-echo "USE RASPBIAN #FULL# DESKTOP, #NOT# LITE, OR YOU LIKELY WILL HAVE SOME CHROMIUM BROWSER ISSUES EVEN"
+echo "${yellow}This script may work on other Debian-based systems as well, but it has not been tested for that purpose.${reset}"
+echo " "
+
+echo "${red}USE RASPBIAN #FULL# DESKTOP, #NOT# LITE, OR YOU LIKELY WILL HAVE SOME CHROMIUM BROWSER ISSUES EVEN"
 echo "AFTER UPGRADING TO GUI / CHROME (trust me)."
 echo " "
-echo "(GUI desktop and Chromium browser are required for this ticker app)"
+echo "(GUI desktop and Chromium browser are required for this ticker app)${reset}"
 echo " "
 
 if [ -f "/etc/debian_version" ]; then
-echo "Your system has been detected as Debian-based, which is compatible with this automated installation script."
+echo "${cyan}Your system has been detected as Debian-based, which is compatible with this automated installation script."
 echo " "
-echo "Continuing..."
+echo "Continuing...${reset}"
 echo " "
 else
-echo "Your system has been detected as NOT BEING Debian-based. Your system is NOT compatible with this automated installation script."
+echo "${red}Your system has been detected as NOT BEING Debian-based. Your system is NOT compatible with this automated installation script."
 echo " "
-echo "Exiting..."
+echo "Exiting...${reset}"
 exit
 fi
   				
 				
 if [ -f /home/$APP_USER/slideshow-crypto-ticker/config.js ]; then
-echo "A configuration file from a previous install of Slideshow Crypto Ticker has been detected on your system."
+echo "${yellow}A configuration file from a previous install of Slideshow Crypto Ticker has been detected on your system."
 echo " "
 echo "During this upgrade / re-install, it will be backed up to:"
 echo " "
@@ -187,7 +219,7 @@ echo "/home/$APP_USER/slideshow-crypto-ticker/config.js.BACKUP.$DATE"
 echo " "
 echo "This will save any custom settings within it."
 echo " "
-echo "You will need to manually move any custom settings in this backup file to the new config.js file with a text editor."
+echo "You will need to manually move any custom settings in this backup file to the new config.js file with a text editor.${reset}"
 echo " "
 fi
 
@@ -196,11 +228,11 @@ echo "PLEASE REPORT ANY ISSUES HERE: https://github.com/taoteh1221/Slideshow_Cry
 echo " "
 
 
-echo "THIS TICKER INSTALL #REQUIRES# RUNNING THE RASPBERRY PI GRAPHICAL DESKTOP INTERFACE (LXDE) AT STARTUP, AS THE USER: '${APP_USER}'"
+echo "${yellow}THIS TICKER INSTALL #REQUIRES# RUNNING THE RASPBERRY PI GRAPHICAL DESKTOP INTERFACE (LXDE) AT STARTUP, AS THE USER: '${APP_USER}'"
 echo " "
 
   				
-echo "Select 1 or 2 to choose whether to continue, or quit."
+echo "Select 1 or 2 to choose whether to continue, or quit.${reset}"
 echo " "
 
 OPTIONS="continue quit"
@@ -208,11 +240,11 @@ OPTIONS="continue quit"
 select opt in $OPTIONS; do
         if [ "$opt" = "continue" ]; then
         echo " "
-        echo "Continuing with setup..."
+        echo "${green}Continuing with setup...${reset}"
         break
        elif [ "$opt" = "quit" ]; then
         echo " "
-        echo "Exiting setup..."
+        echo "${green}Exiting setup...${reset}"
         exit
         break
        fi
@@ -226,7 +258,7 @@ echo " "
 
 echo " "
 
-echo "Making sure your system is updated before installation, please wait..."
+echo "${cyan}Making sure your system is updated before installation, please wait...${reset}"
 
 echo " "
 			
@@ -237,7 +269,7 @@ apt-get upgrade -y
 
 echo " "
 				
-echo "System update completed."
+echo "${cyan}System update completed.${reset}"
 				
 sleep 3
 				
@@ -253,7 +285,7 @@ echo " "
 echo "(auto-install will overwrite / upgrade any previous install located at: /home/$APP_USER/slideshow-crypto-ticker)"
 echo " "
 
-echo "Select 1, 2, or 3 to choose whether to auto-install / remove Slideshow Crypto Ticker, or skip."
+echo "${yellow}Select 1, 2, or 3 to choose whether to auto-install / remove Slideshow Crypto Ticker, or skip.${reset}"
 echo " "
 
 OPTIONS="install_ticker_app remove_ticker_app skip"
@@ -264,15 +296,15 @@ select opt in $OPTIONS; do
         	
 				echo " "
 				
-				echo "Proceeding with required component installation, please wait..."
+				echo "${cyan}Proceeding with required component installation, please wait...${reset}"
 				
 				echo " "
 				
 				# bsdtar installs may fail (essentially the same package as libarchive-tools),
 				# SO WE RUN BOTH SEPERATELY IN CASE AN ERROR THROWS, SO OTHER PACKAGES INSTALL OK AFTERWARDS
 				
-				echo "(you can safely ignore any upcoming 'bsdtar' install errors, if 'libarchive-tools'"
-				echo "installs OK...and visa versa, as they are essentially the same package)"
+				echo "${yellow}(you can safely ignore any upcoming 'bsdtar' install errors, if 'libarchive-tools'"
+				echo "installs OK...and visa versa, as they are essentially the same package)${reset}"
 				echo " "
 				
 				# Ubuntu 16.x, and other debian-based systems
@@ -290,7 +322,7 @@ select opt in $OPTIONS; do
 				
 				echo " "
 				
-				echo "Required component installation completed."
+				echo "${cyan}Required component installation completed.${reset}"
 				
 				sleep 3
 				
@@ -308,7 +340,7 @@ select opt in $OPTIONS; do
 					fi
 				
 				
-				echo "Downloading and installing the latest version of Slideshow Crypto Ticker, from Github.com, please wait..."
+				echo "${cyan}Downloading and installing the latest version of Slideshow Crypto Ticker, from Github.com, please wait...${reset}"
 				
 				echo " "
 				
@@ -365,7 +397,7 @@ select opt in $OPTIONS; do
 				
 				# If an older depreciated version, just re-create the symlink after deleting to be safe
 				
-				rm /home/$APP_USER/ticker-restart
+				rm /home/$APP_USER/ticker-restart > /dev/null 2>&1
 				
 				sleep 1
 			
@@ -383,7 +415,7 @@ select opt in $OPTIONS; do
 				
 				echo " "
 				
-				echo "Slideshow Crypto Ticker has been installed."
+				echo "${green}Slideshow Crypto Ticker has been installed.${reset}"
 				
 	        	INSTALL_SETUP=1
    	     	
@@ -392,16 +424,16 @@ select opt in $OPTIONS; do
        elif [ "$opt" = "remove_ticker_app" ]; then
        
         echo " "
-        echo "Removing Slideshow Crypto Ticker and some required components, please wait..."
+        echo "${cyan}Removing Slideshow Crypto Ticker and some required components, please wait...${reset}"
 		  echo " "
 				
         # ONLY removing unclutter, AS WE DON'T WANT TO F!CK UP THE WHOLE SYSTEM, REMOVING ANY OTHER ALREADY-USED / DEPENDANT PACKAGES TOO!!
 		  apt-get remove unclutter -y
 				
 		  echo " "
-		  echo "Removal of 'unclutter' app package completed, please wait..."
+		  echo "${cyan}Removal of 'unclutter' app package completed, please wait...${reset}"
 		  echo " "
-		  echo "(IF YOU USED unclutter FOR ANOTHER APP, RE-INSTALL WITH: sudo apt-get install unclutter)"
+		  echo "${yellow}(IF YOU USED unclutter FOR ANOTHER APP, RE-INSTALL WITH: sudo apt-get install unclutter)${reset}"
 		  echo " "
 				
 				
@@ -418,12 +450,12 @@ select opt in $OPTIONS; do
 		  sleep 3
         
 		  echo " "
-		  echo "Slideshow Crypto Ticker has been removed from the system, PLEASE REBOOT to complete the removal process."
+		  echo "${green}Slideshow Crypto Ticker has been removed from the system, PLEASE REBOOT to complete the removal process.${reset}"
         
         break
        elif [ "$opt" = "skip" ]; then
         echo " "
-        echo "Skipping auto-install of Slideshow Crypto Ticker."
+        echo "${green}Skipping auto-install of Slideshow Crypto Ticker.${reset}"
         break
        fi
 done
@@ -442,7 +474,7 @@ rm -rf /home/$APP_USER/dfd-crypto-ticker > /dev/null 2>&1
 echo "Do you want to automatically configure Slideshow Crypto Ticker for your system (autostart at login / keep screen turned on)?"
 echo " "
 
-echo "Select 1 or 2 to choose whether to auto-configure Slideshow Crypto Ticker system settings, or skip it."
+echo "${yellow}Select 1 or 2 to choose whether to auto-configure Slideshow Crypto Ticker system settings, or skip it.${reset}"
 echo " "
 
 OPTIONS="auto_config_ticker_system skip"
@@ -453,7 +485,7 @@ select opt in $OPTIONS; do
 
 				echo " "
 				
-				echo "Configuring Slideshow Crypto Ticker on your system, please wait..."
+				echo "${cyan}Configuring Slideshow Crypto Ticker on your system, please wait...${reset}"
 
 				echo " "
 				
@@ -514,7 +546,7 @@ EOF
         		CRON_SETUP=1
 				
 				echo " "
-				echo "Slideshow Crypto Ticker system configuration complete."
+				echo "${green}Slideshow Crypto Ticker system configuration complete.${reset}"
 
 				echo " "
 				
@@ -524,7 +556,7 @@ EOF
         break
        elif [ "$opt" = "skip" ]; then
         echo " "
-        echo "Skipping auto-configuration of Slideshow Crypto Ticker system settings."
+        echo "${green}Skipping auto-configuration of Slideshow Crypto Ticker system settings.${reset}"
         break
        fi
 done
@@ -537,11 +569,11 @@ echo " "
 
 
 
-echo "WARNING:"
-echo "#DO NOT INSTALL# THE 'goodtft LCD-show' LCD DRIVERS BELOW, UNLESS YOU HAVE A 'goodtft LCD-show' LCD SCREEN!"
+echo "${red}WARNING:"
+echo "#DO NOT INSTALL# THE 'goodtft LCD-show' LCD DRIVERS BELOW, UNLESS YOU HAVE A 'goodtft LCD-show' LCD SCREEN!${reset}"
 echo " "
 
-echo "Select 1 or 2 to choose whether to install 'goodtft LCD-show' LCD drivers, or skip."
+echo "${yellow}Select 1 or 2 to choose whether to install 'goodtft LCD-show' LCD drivers, or skip.${reset}"
 echo " "
 
 OPTIONS="install_goodtft skip"
@@ -552,7 +584,7 @@ select opt in $OPTIONS; do
 			
 			echo " "
 			
-			echo "Proceeding with required component installation, please wait..."
+			echo "${cyan}Proceeding with required component installation, please wait...${reset}"
 			
 			echo " "
 			
@@ -560,12 +592,12 @@ select opt in $OPTIONS; do
 			
 			echo " "
 			
-			echo "Required component installation completed."
+			echo "${cyan}Required component installation completed.${reset}"
 			
 			sleep 3
 			
 			echo " "
-			echo "Setting up for 'goodtft LCD-show' LCD drivers, please wait..."
+			echo "${cyan}Setting up for 'goodtft LCD-show' LCD drivers, please wait...${reset}"
 			echo " "
 			
 			ln -s /home/$APP_USER/slideshow-crypto-ticker/bash/goodtft-only.bash /home/$APP_USER/goodtft-only
@@ -585,7 +617,7 @@ select opt in $OPTIONS; do
 
 				
 			echo " "
-			echo "'goodtft LCD-show' LCD driver setup completed."
+			echo "${green}'goodtft LCD-show' LCD driver setup completed.${reset}"
 				
 			echo " "
 			
@@ -595,7 +627,7 @@ select opt in $OPTIONS; do
         break
        elif [ "$opt" = "skip" ]; then
         echo " "
-        echo "Skipping 'goodtft LCD-show' LCD driver setup..."
+        echo "${green}Skipping 'goodtft LCD-show' LCD driver setup...${reset}"
         break
        fi
 done
@@ -609,21 +641,21 @@ echo " "
 cd /home/$APP_USER/
 
 
-echo " "
+echo "${yellow} "
 echo "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
 echo "# SAVE THE INFORMATION BELOW FOR FUTURE ACCESS TO THIS APP #"
 echo "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
-echo " "
+echo "${reset} "
 
 
 if [ "$CONFIG_BACKUP" = "1" ]; then
 
-echo "The previously-installed Slideshow Crypto Ticker configuration"
+echo "${green}The previously-installed Slideshow Crypto Ticker configuration"
 echo "file /home/$APP_USER/slideshow-crypto-ticker/config.js has been backed up to:"
 echo " "
-echo "/home/$APP_USER/slideshow-crypto-ticker/config.js.BACKUP.$DATE"
+echo "/home/$APP_USER/slideshow-crypto-ticker/config.js.BACKUP.$DATE${reset}"
 echo " "
-echo "You will need to manually move any custom settings in this backup file to the new config.js file with a text editor."
+echo "${yellow}You will need to manually move any custom settings in this backup file to the new config.js file with a text editor.${reset}"
 echo " "
 
 fi
@@ -631,17 +663,17 @@ fi
 
 if [ "$AUTOSTART_ALERT" = "1" ]; then
 
-echo "Ticker autostart at login has been configured at:"
+echo "${green}Ticker autostart at login has been configured at:"
 echo " "
-echo "/lib/systemd/system/ticker.service"
+echo "/lib/systemd/system/ticker.service${reset}"
 echo " "
-echo "(the ticker will now start at boot/login)"
+echo "${yellow}(the ticker will now start at boot/login)${reset}"
 echo " "
 
 elif [ "$AUTOSTART_ALERT" = "2" ]; then
 
-echo "'systemd' settings could NOT be detected on your system,"
-echo "ticker autostart at system boot COULD NOT BE ENABLED."
+echo "${red}'systemd' settings could NOT be detected on your system,"
+echo "ticker autostart at system boot COULD NOT BE ENABLED.${reset}"
 echo " "	
 
 fi
@@ -649,17 +681,17 @@ fi
 
 if [ "$CRON_SETUP" = "1" ]; then
 
-echo "A cron job has been setup for user '$APP_USER', as a command in /etc/cron.d/ticker:"
+echo "${green}A cron job has been setup for user '$APP_USER', as a command in /etc/cron.d/ticker:"
 echo " "
 echo "$CRONJOB"
-echo " "
+echo "${reset} "
 
 fi
 
 
 if [ "$AUTOSTART_ALERT" = "1" ] || [ "$AUTOSTART_ALERT" = "2" ]; then
 
-echo "If autostart does not work / is not setup, you can run this command MANUALLY,"
+echo "${yellow}If autostart does not work / is not setup, you can run this command MANUALLY,"
 echo "#AFTER BOOTING INTO THE DESKTOP INTERFACE#, to start Slideshow Crypto Ticker:"
 echo " "
 echo "~/ticker-start"
@@ -667,13 +699,13 @@ echo " "
 echo "To stop Slideshow Crypto Ticker:"
 echo " "
 echo "~/ticker-stop"
-echo " "
+echo "${reset} "
 					
 
 fi
 
 
-echo "Edit the following file in a text editor to activate different exchanges / crypto assets / base pairings,"
+echo "${yellow}Edit the following file in a text editor to activate different exchanges / crypto assets / base pairings,"
 echo "and to configure settings for slideshow speed / font sizes and colors / background color / vertical position /"
 echo "screen orientation / google font used / monospace emulation / activated pairings / etc / etc:"
 echo " "
@@ -688,35 +720,35 @@ echo " "
 echo "After updating config.js, restart the ticker with this command:"
 echo " "
 echo "~/ticker-restart"
-echo " "
+echo "${reset} "
 
-echo "Ticker installation / setup should be complete (if you chose those options), unless you saw any error"
+echo "${cyan}Ticker installation / setup should be complete (if you chose those options), unless you saw any error"
 echo "messages on your screen during setup."
-echo " "
+echo "${reset} "
 
 
 if [ "$GOODTFT_SETUP" = "1" ]; then
 
-echo "TO COMPLETE THE 'goodtft LCD-show' LCD DRIVERS SETUP, run this command below"
+echo "${yellow}TO COMPLETE THE 'goodtft LCD-show' LCD DRIVERS SETUP, run this command below"
 echo "to configure / activate your 'goodtft LCD-show' LCD screen:"
 echo " "
 echo "~/goodtft-only"
 echo " "
 
 echo "(your device will restart automatically afterwards)"
-echo " "
+echo "${reset} "
 
 else
 
-echo "You must restart your device to activate the ticker, by running this command:"
+echo "${yellow}You must restart your device to activate the ticker, by running this command:"
 echo " "
 echo "sudo reboot"
-echo " "
+echo "${reset} "
 
 fi
 
 
-echo "TICKER AUTO-START #REQUIRES# RUNNING THE RASPBERRY PI GRAPHICAL DESKTOP INTERFACE (LXDE) AT STARTUP, AS THE USER: '${APP_USER}'"
+echo "${yellow}TICKER AUTO-START #REQUIRES# RUNNING THE RASPBERRY PI GRAPHICAL DESKTOP INTERFACE (LXDE) AT STARTUP, AS THE USER: '${APP_USER}'${reset}"
 echo " "
 
 echo "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
@@ -737,13 +769,18 @@ echo " "
 echo "https://github.com/taoteh1221/Open_Crypto_Portfolio_Tracker"
 echo " "
 
-echo "ANY DONATIONS (LARGE OR SMALL) HELP SUPPORT DEVELOPMENT OF MY APPS..."
+echo "${yellow}ANY DONATIONS (LARGE OR SMALL) HELP SUPPORT DEVELOPMENT OF MY APPS..."
 echo " "
-echo "Bitcoin: 3Nw6cvSgnLEFmQ1V4e8RSBG23G7pDjF3hW"
+echo "${cyan}Bitcoin: ${green}3Nw6cvSgnLEFmQ1V4e8RSBG23G7pDjF3hW"
 echo " "
-echo "Ethereum: 0x644343e8D0A4cF33eee3E54fE5d5B8BFD0285EF8"
+echo "${cyan}Ethereum: ${green}0x644343e8D0A4cF33eee3E54fE5d5B8BFD0285EF8"
 echo " "
-echo "!!!!!BE SURE TO SCROLL UP, TO SAVE #ALL THE TICKER APP USAGE DOCUMENTATION# PRINTED OUT ABOVE, BEFORE YOU SIGN OFF FROM THIS TERMINAL SESSION!!!!!"
+echo "${cyan}Helium: ${green}13xs559435FGkh39qD9kXasaAnB8JRF8KowqPeUmKHWU46VYG1h"
+echo " "
+echo "${cyan}Solana: ${green}GvX4AU4V9atTBof9dT9oBnLPmPiz3mhoXBdqcxyRuQnU"
+echo " "
+echo "${red}!!!!!BE SURE TO SCROLL UP, TO SAVE #ALL THE TICKER APP USAGE DOCUMENTATION#"
+echo "PRINTED OUT ABOVE, BEFORE YOU SIGN OFF FROM THIS TERMINAL SESSION!!!!!${reset}"
 echo " "
 
 
@@ -759,10 +796,10 @@ export TICKER_INSTALL_RAN=1
 if [ -z "$FOLIO_INSTALL_RAN" ]; then
 
 
-echo "Would you like to ADDITIONALLY / OPTIONALLY install Open Crypto Portfolio Tracker (server edition), private portfolio tracker on this machine?"
+echo "Would you like to ${red}ADDITIONALLY / OPTIONALLY${reset} install Open Crypto Portfolio Tracker (server edition), private portfolio tracker on this machine?"
 echo " "
 
-echo "Select 1 or 2 to choose whether to install the private portfolio tracker, or skip."
+echo "Select 1 or 2 to choose whether to ${red}optionally${reset} install the private portfolio tracker, or skip."
 echo " "
 
 OPTIONS="install_portfolio_tracker skip"
@@ -773,7 +810,7 @@ OPTIONS="install_portfolio_tracker skip"
 			
 			echo " "
 			
-			echo "Proceeding with portfolio tracker installation, please wait..."
+			echo "${green}Proceeding with portfolio tracker installation, please wait...${reset}"
 			
 			echo " "
 			
@@ -790,11 +827,11 @@ OPTIONS="install_portfolio_tracker skip"
        elif [ "$opt" = "skip" ]; then
        
         echo " "
-        echo "Skipping the OPTIONAL portfolio tracker install..."
-		  echo " "
-		  echo "Installation / setup has finished, exiting to terminal..."
-		  echo " "
-		  exit
+        echo "${green}Skipping the OPTIONAL portfolio tracker install...${reset}"
+		echo " "
+		echo "${cyan}Installation / setup has finished, exiting to terminal...${reset}"
+		echo " "
+		exit
 		  
         break
         
@@ -805,7 +842,7 @@ OPTIONS="install_portfolio_tracker skip"
 else
 
 echo " "
-echo "Installation / setup has finished, exiting to terminal..."
+echo "${cyan}Installation / setup has finished, exiting to terminal...${reset}"
 echo " "
 exit
 

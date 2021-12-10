@@ -37,6 +37,12 @@ API INTEGRATION SECTION
 ///////////////////////////////////////////////////////
 
 
+https://docs.bitfinex.com/reference#ws-public-ticker
+
+
+https://docs.bonfida.com/#websocket
+
+
 https://docs.ftx.com/#websocket-api
 
 

@@ -35,7 +35,7 @@ script.src= file;
 head = document.getElementsByTagName('head')[0];
 head.appendChild(script);
 
-	script.onload = function(){
+   script.onload = function(){
    console.log('Loaded JS file: ' + file);
    };
 
@@ -48,6 +48,7 @@ head.appendChild(script);
 function js_safe_key(key, exchange) {
 
 key = key.replace("/", "-"); // So we only have to regex a hyphen
+key = key.replace(":", "-"); // So we only have to regex a hyphen
 key = key.replace(/-/g, "") + '_key_' + exchange;
 key = key.toLowerCase();
 
@@ -162,7 +163,11 @@ function render_names(name) {
 	
 render = name.charAt(0).toUpperCase() + name.slice(1);
 
+render = render.replace(/usd/gi, "USD");
 render = render.replace(/btc/gi, "BTC");
+render = render.replace(/eth/gi, "ETH");
+render = render.replace(/sol/gi, "SOL");
+render = render.replace(/nft/gi, "NFT");
 render = render.replace(/coin/gi, "Coin");
 render = render.replace(/bitcoin/gi, "Bitcoin");
 render = render.replace(/exchange/gi, "Exchange");
@@ -196,19 +201,19 @@ function asset_symbols(asset_abrv) {
 
 results = new Array();
 
-			// Unicode asset symbols
-			if ( typeof fiat_pairings[asset_abrv] !== 'undefined' ) {
-			results['asset_symbol'] = fiat_pairings[asset_abrv];
-			results['asset_type'] = 'fiat';
-			}
-			else if ( typeof crypto_pairings[asset_abrv] !== 'undefined' ) {
-			results['asset_symbol'] = crypto_pairings[asset_abrv];
-			results['asset_type'] = 'crypto';
-			}
-			else {
-			results['asset_symbol'] = null;
-			results['asset_type'] = null;
-			}
+	// Unicode asset symbols
+	if ( typeof fiat_pairings[asset_abrv] !== 'undefined' ) {
+	results['asset_symbol'] = fiat_pairings[asset_abrv];
+	results['asset_type'] = 'fiat';
+	}
+	else if ( typeof crypto_pairings[asset_abrv] !== 'undefined' ) {
+    results['asset_symbol'] = crypto_pairings[asset_abrv];
+	results['asset_type'] = 'crypto';
+	}
+	else {
+	results['asset_symbol'] = null;
+	results['asset_type'] = null;
+	}
 
 
 return results;
@@ -251,16 +256,19 @@ function kucoin_config() {
 
 function loopring_config() {
     
+    
     if  ( window.loopring_alert == 1 ) {
     return;
     }
     else {
 	window.loopring_alert = 1; 
     }
+
     
     if ( typeof api['loopring'] == 'undefined' ) {
         
     api['loopring'] = 'wait';
+        
         
     	$.getJSON("https://api3.loopring.io/v3/ws/key", function(data) {
     	})
@@ -288,8 +296,10 @@ function loopring_config() {
             	}
         	
           });
+          
     	
     }
+    
 
 }
 
@@ -313,14 +323,14 @@ head.appendChild(script);
 	script.onload = function(){
 	console.log('JS cache file loaded successfully (valid installation detected).');
 	render_interface();
-   };
+    };
 
 	
 	// If script loading FAILS
 	script.onerror = function(){
 	console.log('JS cache file not found (invalid installation detected).');
 	render_interface();
-   };
+    };
 
 }
 
@@ -367,6 +377,7 @@ function market_id_parser(market_id, exchange) {
 market_id = market_id.toUpperCase(); // Uppercase
 
 // So we only have to search for a hyphen, #CONVERT ALL API MARKET PAIRING DELIMITERS TO HYPHENS HERE#
+market_id = market_id.replace(":", "-"); 
 market_id = market_id.replace("/", "-"); 
 market_id = market_id.replace("_", "-"); 
 
@@ -397,7 +408,7 @@ return parsed_markets[market_id];
 function valid_config(exchange, mode) {
 
 // Allows alphanumeric and symbols: / - _ |
-alph_symb_regex = /^[a-z0-9\/\-_|]+$/i;
+alph_symb_regex = /^[a-z0-9\/\-_|:]+$/i;
 
 	// Skip, if no endpoint or markets are set for this exchange
 	if ( 
@@ -592,7 +603,9 @@ ticker_divs = $('#ticker_window div.asset_tickers');
 	window.slideshow_init = 0;
 	}
 
+
 t_speed = Math.round(window.transition_speed * 1000);
+
 
    // If more than one market, run slideshow
 	if ( markets_length > 1 ) {
@@ -1019,7 +1032,11 @@ api['gateio'] = 'wss://ws.gate.io/v3/';
 		
 		}
 		
-	//console.log(subscribe_msg[exchange]);
+		
+		if ( debug_mode == 'on' ) {
+	    console.log(subscribe_msg[exchange]);
+		}
+
 	
 	});
 
@@ -1101,12 +1118,10 @@ console.log('api_connect'); // DEBUGGING
 	   }
 		
 		
-	
-	//console.log(typeof msg); // DEBUGGING
-	
-	//console.log(msg); // DEBUGGING
-	
-	//console.log(e.data); // DEBUGGING
+	   if ( debug_mode == 'on' ) {
+	   console.log(typeof msg); // DEBUGGING
+	   console.log(msg); // DEBUGGING
+	   }
 	   
 	   
 	   // Loopring requires a response of 'pong', when message is 'ping'
@@ -1320,8 +1335,20 @@ console.log('api_connect'); // DEBUGGING
 			price_decimals = ( price_raw >= 1 ? 2 : max_ticker_decimals );
 			price_decimals = ( price_raw >= 100 ? 0 : price_decimals );
 			
+			// If MINIMUM decimals IS set, and 'price_decimals' is smaller, force decimals to 'min_ticker_decimals'
+			price_decimals = ( min_ticker_decimals > price_decimals ? min_ticker_decimals : price_decimals );
+			
 			price_max_dec = parseFloat(price_raw).toFixed(price_decimals); // Set max decimals
-			price = parseFloat(price_max_dec); // Remove any trailing zeros in decimals
+			
+			
+			   // If MINIMUM decimals NOT set, remove any trailing zeros in decimals
+			   if ( min_ticker_decimals == 0 ) {
+			   price = parseFloat(price_max_dec);
+			   }
+			   else {
+			   price = price_max_dec;
+			   }
+			   
 				
 			// HTML for rendering
 			ticker_item =
