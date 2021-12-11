@@ -1,0 +1,61 @@
+
+
+===================================
+T R O U B L E S H O O T I N G
+===================================
+
+
+Please review the possible solutions below for any issues you may have, before contacting the developers for support. If you are still having issues after trying everything relevant in this document, please reach out to the developers for help in the comm channels listed below. Any feedback is GREATLY appreciated, as it helps make this app better for everyone! :)
+
+
+Have a question, feature you'd like to see added, or an issue to report? You can do that at the following URLs...
+
+Issue Reporting (Features / Issues / Help): https://github.com/taoteh1221/Open_Crypto_Tracker/issues
+
+Discord Chat: https://discord.gg/WZVK2nm
+
+Telegram Chat: https://t.me/joinchat/Oo2XZRS2HsOXSMGejgSO0A
+
+Private Contact: https://dragonfrugal.com/contact
+
+
+Donations support further development... 
+
+Bitcoin:  3Nw6cvSgnLEFmQ1V4e8RSBG23G7pDjF3hW
+
+Ethereum:  0x644343e8D0A4cF33eee3E54fE5d5B8BFD0285EF8
+
+Helium:  13xs559435FGkh39qD9kXasaAnB8JRF8KowqPeUmKHWU46VYG1h
+
+Solana:  GvX4AU4V9atTBof9dT9oBnLPmPiz3mhoXBdqcxyRuQnU
+
+Github Sponsors:  https://github.com/sponsors/taoteh1221
+
+Patreon:   https://www.patreon.com/dragonfrugal
+
+PayPal:    https://www.paypal.me/dragonfrugal
+
+
+=========================================================================================================================================
+
+  Ticker Won't Run With Command: ~/ticker-start
+  
+-----------------------------------------------------------------------------------------------------------------------------------------
+
+If you think you have installed this application correctly, but the command ~/ticker-start does not start the ticker, please try a fresh install onto your MicroSD card of the download titled "Raspberry Pi OS with desktop and recommended software", located here:
+
+https://www.raspberrypi.com/software/operating-systems/#raspberry-pi-os-32-bit
+
+
+The recommended way to install this version of Raspberry Pi OS to your MicroSD card is with Raspberry Pi Imager, located here:
+
+https://www.raspberrypi.com/software/
+
+
+=========================================================================================================================================
+
+
+
+
+
+

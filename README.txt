@@ -205,3 +205,11 @@ ln -s ~/slideshow-crypto-ticker/bash/goodtft-only.bash ~/goodtft-only
 #############################################################################################
 
 
+See TROUBLESHOOTING.txt for additional tips / troubleshooting FAQs.
+
+
+
+
+
+
+
