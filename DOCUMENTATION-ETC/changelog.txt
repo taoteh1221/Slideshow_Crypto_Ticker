@@ -490,7 +490,9 @@ v3.05.0
 
 
 ---------------------------------------------------------
-v3.06.0
+v3.05.1
+
+-Fix for kucoin API
 
 -Color coding for auto-install script UX
 

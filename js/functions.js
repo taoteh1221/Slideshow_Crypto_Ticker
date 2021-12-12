@@ -87,6 +87,30 @@ return base_volume;
 /////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
+function kucoin_reload() {
+
+// Force refresh the webpage from server (NOT cache), 
+// if it's been at least 'min_error_refresh_time' since 'runtime_start'
+error_detected_timestamp = Number( new Date().getTime() ); 
+				
+refresh_threshold = Number(runtime_start + min_error_refresh_time);
+				
+console.log(' ');
+console.log('Refresh Alert: This app will attempt to fix the detected issue with an');
+console.log('app restart (no more than every ' + (min_error_refresh_time / 60000) + ' minutes, until the error clears up).');
+console.log(' ');
+				
+	// Reload, if we are within the minimum reload time window
+	if ( error_detected_timestamp >= refresh_threshold ) {
+	location.reload(true);
+	}
+
+}
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
 function console_alert() {
     
     if  ( window.api_alert == 1 ) {
@@ -1198,25 +1222,8 @@ console.log('api_connect'); // DEBUGGING
 			}
 			// If we recieve an error reqponse
 			else if ( msg["type"] == 'error' ) {
-				
 			console.log('Kucoin API Error: ' + msg["data"]);
-			
-				// Force refresh the webpage from server (NOT cache), 
-				// if it's been at least 'min_error_refresh_time' since 'runtime_start'
-				error_detected_timestamp = Number( new Date().getTime() ); 
-				
-				refresh_threshold = Number(runtime_start + min_error_refresh_time);
-				
-				console.log(' ');
-				console.log('Refresh Alert: This app will attempt to fix the detected issue with an');
-				console.log('app restart (no more than every ' + (min_error_refresh_time / 60000) + ' minutes, until the error clears up).');
-				console.log(' ');
-				
-				// Reload, if we are within the minimum reload time window
-				if ( error_detected_timestamp >= refresh_threshold ) {
-				location.reload(true);
-				}
-			
+			kucoin_reload();
 			}
 				 
 		}
@@ -1448,9 +1455,17 @@ console.log('api_connect'); // DEBUGGING
    
 	// Socket error ///////////////////////////////////////////////////
 	sockets[exchange].onerror = function(err) {
+	    
 	$(".status_" + exchange).text("Error").css("color", "red");
+	
 	console.log('Socket encountered error: ', err.message, 'Closing socket');
+	
 	sockets[exchange].close();
+	
+	    if ( exchange == 'kucoin' ) {
+	    kucoin_reload();
+	    }
+	
 	};
 	
   

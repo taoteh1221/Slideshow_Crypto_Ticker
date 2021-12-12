@@ -28,8 +28,8 @@ fi
 # Check to see if the kucoin cache data needs to be updated
 if [ -f ~/slideshow-crypto-ticker/cache/kucoin-auth.json ]; then
 
-# 12 hours (in seconds) between cache refreshes
-KUCOIN_REFRESH=43200
+# 1 hour (in seconds) between cache refreshes
+KUCOIN_REFRESH=3600
 
 KUCOIN_LAST_MODIFIED=$(/usr/bin/date +%s -r ~/slideshow-crypto-ticker/cache/kucoin-auth.json)
 
