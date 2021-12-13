@@ -26,11 +26,13 @@ var exchange_markets = []; // LEAVE ALONE, AND DON'T DELETE (REQUIRED!)
 ////
 ////
 // Bitstamp markets (set to '' to disable)
-exchange_markets['bitstamp'] = ''; // !!BITSTAMP WEBSOCKET API ONLY SUPPORTS ONE ASSET!!
+// !!BITSTAMP WEBSOCKET API ONLY SUPPORTS ONE ASSET!!
+exchange_markets['bitstamp'] = ''; 
 ////
 ////
 // Bitfinex markets (set to '' to disable) 
-exchange_markets['bitfinex'] = '';  // !!BITFINEX WEBSOCKET API ONLY SUPPORTS ONE ASSET!!
+// !!BITFINEX WEBSOCKET API ONLY SUPPORTS ONE ASSET!!
+exchange_markets['bitfinex'] = '';  
 ////
 ////
 // Coinbase markets (set to '' to disable)
@@ -50,7 +52,8 @@ exchange_markets['kraken'] = 'ENJ/USD';
 ////
 ////
 // Kucoin markets (set to '' to disable)
-exchange_markets['kucoin'] = 'MANA-USDT'; // !!KUCOIN REQUIRES USING THE INSTALL SCRIPT!!
+// !!KUCOIN REQUIRES USING THE INSTALL SCRIPT!!
+exchange_markets['kucoin'] = 'MANA-USDT'; 
 ////
 ////
 // OKex markets (set to '' to disable) 
@@ -58,11 +61,12 @@ exchange_markets['okex'] = '';
 ////
 ////
 // HitBTC markets (set to '' to disable) 
-exchange_markets['hitbtc'] = ''; // !!HITBTC WEBSOCKET API ONLY SUPPORTS ONE ASSET!!
+// !!HITBTC WEBSOCKET API ONLY SUPPORTS ONE ASSET!!
+exchange_markets['hitbtc'] = ''; 
 ////
 ////
 // Bitmart markets (set to '' to disable) 
-exchange_markets['gateio'] = 'SAMO_USDT';
+exchange_markets['gateio'] = 'SLRS_USDT|SAMO_USDT';
 ////
 ////
 // Bitmart markets (set to '' to disable) 
