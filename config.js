@@ -89,7 +89,7 @@ var orient_screen = 0; // Normal (upright) = 0, Flipped (upside down) = 180, Sid
 
 // Vertical position (adjusts the ticker's vertical position up/down)
 // CAN BE NEGATIVE, TO GO THE OPPOSITE WAY
-var vertical_position = 70; // Default = 35 (SMALL SCREEN), 70 (LARGE SCREEN)
+var vertical_position = 50; // Default = 25 (SMALL SCREEN), 50 (LARGE SCREEN)
 
 
 // Horizontal position (adjusts the ticker's horizontal position left/right)
@@ -106,7 +106,11 @@ var font_weight = 'normal'; // Default = 'normal', can be any proper CSS font we
 
 
 // Title font size
-var title_size = 110; // Default = 55 (SMALL SCREEN), 110 (LARGE SCREEN)
+var title_size = 130; // Default = 65 (SMALL SCREEN), 130 (LARGE SCREEN)
+
+
+// Show exchange name (in title next to asset ticker symbol)
+var show_exchange_name = 'on'; // 'on' / 'off', Default = 'on'
 
 
 // Ticker arrow size ratio (to ticker size), DECIMAL NUMBER FORMAT X.XX OF 1.00 OR LESS
@@ -116,11 +120,11 @@ var arrow_size = 0.65; // Default = 0.65
 
 
 // Ticker font size
-var ticker_size = 160; // Default = 66 (SMALL SCREEN), 160 (LARGE SCREEN)
+var ticker_size = 175; // Default = 88 (SMALL SCREEN), 175 (LARGE SCREEN)
 
 
 // Maximum decimal places for ticker values worth under 1.00 in unit value, for prettier / less-cluttered interface
-var max_ticker_decimals = 6; // Default = 6
+var max_ticker_decimals = 5; // Default = 5
 
 
 // Minimum decimal places for ANY ticker values
@@ -129,7 +133,7 @@ var min_ticker_decimals = 0; // Default = 0
 
 
 // 24 hour volume font size
-var volume_size = 80; // Default = 40 (SMALL SCREEN), 80 (LARGE SCREEN)
+var volume_size = 84; // Default = 42 (SMALL SCREEN), 84 (LARGE SCREEN)
 
 
 // Hide volume section, IF NO VOLUME WAS PROVIDED

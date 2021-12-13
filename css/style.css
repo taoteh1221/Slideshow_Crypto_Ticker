@@ -38,7 +38,7 @@ div .monospace {
 
 
 .ticker {
-	white-space: nowrap;
+  white-space: nowrap;
   overflow: hidden;
   font-weight: 350;
   font-size: 60px;
@@ -55,7 +55,7 @@ div .monospace {
 
 
 .volume {
-	white-space: nowrap;
+  white-space: nowrap;
   overflow: hidden;
   font-weight: 350;
   font-size: 29px;
@@ -94,7 +94,7 @@ div .monospace {
 
 .spacing {
   position: relative;
-	margin-top: 30px;
+  margin-top: 30px;
 }
 
 
@@ -113,7 +113,7 @@ display: inline-block;
 position: relative;
 padding: 0px;
 margin: 0px;
-margin-right: 10px;
+margin-right: 20px;
 top: 0px;
 }
 

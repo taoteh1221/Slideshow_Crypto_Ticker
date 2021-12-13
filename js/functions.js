@@ -547,7 +547,7 @@ market_key = js_safe_key(market_id, exchange);
 
 	html = '<div id="wrapper_' + market_key + '" class="asset_tickers">'+
     
-	'<div class="title" style="font-size: '+title_size+'px; font-weight: '+font_weight+';"><span id="asset_' + market_key + '">' + asset + '</span> (<span class="status_'+exchange+'">Connecting...</span>)</div>'+
+	'<div class="title" style="font-size: '+title_size+'px; font-weight: '+font_weight+';"><span id="asset_' + market_key + '">' + asset + '</span> <span class="status_wrapper_'+exchange+'">(<span class="status_'+exchange+'" style="color: #FFFF00;">Connecting...</span>)</span></div>'+
 	
 	'<div class="ticker" style="font-size: '+ticker_size+'px; font-weight: '+font_weight+';" id="ticker_' + market_key + '">Loading...</div>'+
     
@@ -1074,7 +1074,10 @@ api['gateio'] = 'wss://ws.gate.io/v3/';
 
 function api_connect(exchange) {
 
-console.log('api_connect'); // DEBUGGING
+		
+	if ( debug_mode == 'on' ) {
+    console.log('api_connect'); // DEBUGGING
+    }
 
 
     // Skip invalid exchange setups
@@ -1087,28 +1090,32 @@ console.log('api_connect'); // DEBUGGING
 	sockets[exchange] = new WebSocket(api[exchange]);
     
     
+        // Fopr bitmart, hange binary type from "blob" to "arraybuffer"
         if ( exchange == 'bitmart' ) {
-        // Change binary type from "blob" to "arraybuffer"
         sockets[exchange].binaryType = "arraybuffer";
         }
    
    
 	// Open socket ///////////////////////////////////////////////////
 	sockets[exchange].onopen = function() {
-	    
-	//console.log(subscribe_msg[exchange]);
-   
 	sockets[exchange].send(JSON.stringify(subscribe_msg[exchange]));
-	   
-	   markets[exchange].forEach(element => {
-	   $(".status_" + exchange).text( render_names(exchange) ).css("color", "#2bbf7b");
-	   });
-	   
 	};
    
    
 	// Socket response ///////////////////////////////////////////////////
 	sockets[exchange].onmessage = function(e) {
+	   
+	
+       if ( show_exchange_name == 'off' ) {
+       $(".status_wrapper_" + exchange).css({ "display": "none" });
+       }
+       else {
+       
+    	   markets[exchange].forEach(element => {
+    	   $(".status_" + exchange).text( render_names(exchange) ).css("color", "#2bbf7b");
+    	   });
+	   
+       }
 	   
 	   
 	   // Check if response is JSON format or bitmart's compressed websocket data, otherwise presume just a regular string
@@ -1429,7 +1436,10 @@ console.log('api_connect'); // DEBUGGING
 	//console.log('Connecting', e.reason);
 	   
 		setTimeout(function() {
-	   $(".status_" + exchange).text("Connecting").css("color", "red");
+		    
+	    $(".status_wrapper_" + exchange).css({ "display": "inline" });
+	    
+	    $(".status_" + exchange).text("Connecting...").css("color", "#FFFF00");
 	   
 	       if ( exchange == 'loopring' ) {
 	           
@@ -1455,6 +1465,8 @@ console.log('api_connect'); // DEBUGGING
    
 	// Socket error ///////////////////////////////////////////////////
 	sockets[exchange].onerror = function(err) {
+	
+	$(".status_wrapper_" + exchange).css({ "display": "inline" });
 	    
 	$(".status_" + exchange).text("Error").css("color", "red");
 	

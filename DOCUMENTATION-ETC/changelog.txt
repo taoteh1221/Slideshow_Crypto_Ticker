@@ -500,7 +500,7 @@ v3.05.1
 
 -Better Bitfinex API support (for tickers greater than 4 characters)
 
--'min_ticker_decimals' and 'debug_mode' settings in config.js
+-'show_exchange_name', 'min_ticker_decimals' and 'debug_mode' settings in config.js
 
 ---------------------------------------------------------
 
