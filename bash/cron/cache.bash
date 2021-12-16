@@ -65,6 +65,9 @@ if [ "$UPDATE_JS" == 1 ]; then
 KUCOIN_TOKEN=$(/usr/bin/jq .data.token ~/slideshow-crypto-ticker/cache/kucoin-auth.json)
 
 KUCOIN_ENDPOINT=$(/usr/bin/jq .data.instanceServers[0].endpoint ~/slideshow-crypto-ticker/cache/kucoin-auth.json)
+
+KUCOIN_UPDATE_TIME=$(date +%s%N | cut -b1-13) # Javascript timestamping uses milliseconds
+    
     
     # Properly render the js
     if [ -z "$KUCOIN_TOKEN" ]; then
@@ -78,6 +81,12 @@ KUCOIN_ENDPOINT=$(/usr/bin/jq .data.instanceServers[0].endpoint ~/slideshow-cryp
     else
     KUCOIN_ENDPOINT=" = ${KUCOIN_ENDPOINT};"
     fi
+    
+    if [ -z "$KUCOIN_UPDATE_TIME" ]; then
+    KUCOIN_UPDATE_TIME=";"
+    else
+    KUCOIN_UPDATE_TIME=" = ${KUCOIN_UPDATE_TIME};"
+    fi
 
 
 # Don't nest / indent, or it could malform the settings            
@@ -86,6 +95,8 @@ read -r -d '' JS_CACHE <<- EOF
 var kucoin_token$KUCOIN_TOKEN
 \r
 var kucoin_endpoint$KUCOIN_ENDPOINT
+\r
+var kucoin_update_time$KUCOIN_UPDATE_TIME
 \r
 \r
 EOF

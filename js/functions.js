@@ -100,10 +100,18 @@ console.log('Refresh Alert: This app will attempt to fix the detected issue with
 console.log('app restart (no more than every ' + (min_error_refresh_time / 60000) + ' minutes, until the error clears up).');
 console.log(' ');
 				
-	// Reload, if we are within the minimum reload time window
-	if ( error_detected_timestamp >= refresh_threshold ) {
-	location.reload(true);
+				
+	// Reload, if we are within the minimum reload time window, AND the kucoin auth cache has been refreshed since app load time
+	if ( error_detected_timestamp >= refresh_threshold && typeof kucoin_update_time !== 'undefined' ) {
+	    
+	kucoin_refreshed_by = kucoin_update_time + 3660000; // 61 minutes after last kucoin auth cache refresh (in milliseconds)
+	    
+	    if ( kucoin_refreshed_by < error_detected_timestamp ) {
+	    location.reload(true);
+	    }
+	
 	}
+
 
 }
 
