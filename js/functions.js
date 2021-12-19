@@ -107,7 +107,12 @@ console.log(' ');
 	kucoin_refreshed_by = kucoin_update_time + 3660000; // 61 minutes after last kucoin auth cache refresh (in milliseconds)
 	    
 	    if ( kucoin_refreshed_by < error_detected_timestamp ) {
-	    location.reload(true);
+
+            // Wait one additional minute before reload, in case any bash script updating the cache has time to finish
+            setTimeout(function() {
+            location.reload(true);
+            }, 60000);  // 60000 milliseconds = 1 minute
+	    
 	    }
 	
 	}
@@ -196,6 +201,8 @@ function render_names(name) {
 render = name.charAt(0).toUpperCase() + name.slice(1);
 
 render = render.replace(/usd/gi, "USD");
+render = render.replace(/eur/gi, "EUR");
+render = render.replace(/gbp/gi, "GBP");
 render = render.replace(/btc/gi, "BTC");
 render = render.replace(/eth/gi, "ETH");
 render = render.replace(/sol/gi, "SOL");
