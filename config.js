@@ -13,18 +13,30 @@ var exchange_markets = []; // LEAVE ALONE, AND DON'T DELETE (REQUIRED!)
 // Separate with pipe | symbol to "slideshow" between multiple tickers on the same exchange
 ////
 // Bitstamp formatting example  (MULTIPLE TICKERS NOT SUPPORTED): 'btcgbp'
+
 // Bitfinex formatting example  (MULTIPLE TICKERS NOT SUPPORTED): 'BTCEUR', OR 'PLANETS:UST' FOR OVER 4 CHARACTER SYMBOLS
+
 // Hitbtc formatting example    (MULTIPLE TICKERS NOT SUPPORTED): 'MYSTBTC'
+
 // Coinbase formatting example: 'BTC-USD|BTC-GBP|ETH-USD|ETH-BTC|ETH-EUR|MKR-USD|MKR-BTC|MANA-USDC'
+
 // Binance formatting example:  'btcusdt|ethusdt|ethbtc|mkrusdt'
+
+// CoinGecko formatting example: 'bitcoin:btc/usd|bitcoin:btc/eur|bitcoin:btc/chf|grape-2:grape/usd|invictus:in/usd|raydium:ray/btc'
+
 // Loopring formatting example: 'LRC-USDT|LRC-ETH'
+
 // Kraken formatting example:   'XBT/USD|XBT/CAD|XBT/EUR|ETH/USD|ETH/EUR|ETH/CAD'
+
 // Kucoin formatting example:   'MANA-USDT|ENJ-BTC'
+
 // Okex formatting example:     'ENJ-USDT|ENJ-BTC'
+
 // Gate.io formatting example:  'MANA_USDT|SAMO_USDT'
+
 // Bitmart formatting example:  'SG_USDT|SG_BTC'
 ////
-////
+//// 
 // Bitstamp markets (set to '' to disable)
 // !!BITSTAMP WEBSOCKET API ONLY SUPPORTS ONE ASSET!!
 exchange_markets['bitstamp'] = ''; 
@@ -36,7 +48,14 @@ exchange_markets['bitfinex'] = '';
 ////
 ////
 // Coinbase markets (set to '' to disable)
-exchange_markets['coinbase'] = 'BTC-USD|ETH-USD|SOL-USD|SOL-BTC'; 
+exchange_markets['coinbase'] = 'BTC-USD|SOL-USD|SOL-BTC|ETH-USD'; 
+////
+//// 
+// Coingecko markets (set to '' to disable)
+// USE COINGECKO'S API ID FOR EACH ASSET! (SEE COINGECKO ASSET PAGE'S INFO SECTION) 
+// PAIRING ASSET MUST BE SUPPORTED BY COINGECKO'S 'vs_currencies' API PARAMETER!
+// FORMAT IS 'api-id-here:symbol/pairing'
+exchange_markets['coingecko'] = 'ethereum:eth/btc|grape-2:grape/usd|invictus:in/usd|mysterium:myst/usd';
 ////
 ////
 // Binance markets (set to '' to disable)
@@ -44,7 +63,7 @@ exchange_markets['binance'] = 'hntusdt|lrcusdt';
 ////
 ////
 // Loopring markets (set to '' to disable) 
-exchange_markets['loopring'] = '';
+exchange_markets['loopring'] = 'LRC-ETH';
 ////
 ////
 // Kraken markets (set to '' to disable)
@@ -79,17 +98,13 @@ exchange_markets['bitmart'] = 'SG_USDT';
 // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 
-// DEBUG MODE (turns on console logging for certain logic)
-var debug_mode = 'off'; // 'on' / 'off', Default = 'off'
-
-
 // Screen orientation (offset in degrees)
 var orient_screen = 0; // Normal (upright) = 0, Flipped (upside down) = 180, Sideways (left or right) = 90 or 270
 
 
 // Vertical position (adjusts the ticker's vertical position up/down)
 // CAN BE NEGATIVE, TO GO THE OPPOSITE WAY
-var vertical_position = 50; // Default = 25 (SMALL SCREEN), 50 (LARGE SCREEN)
+var vertical_position = 70; // Default = 35 (SMALL SCREEN), 70 (LARGE SCREEN)
 
 
 // Horizontal position (adjusts the ticker's horizontal position left/right)
@@ -97,7 +112,20 @@ var vertical_position = 50; // Default = 25 (SMALL SCREEN), 50 (LARGE SCREEN)
 var horizontal_position = 0; // Default = 10 (SMALL SCREEN), 0 (LARGE SCREEN)
 
 
-// Slideshow transition speed IN SECONDS (can be decimals)
+// Show exchange name in title (next to asset ticker symbol)
+var show_exchange_name = 'on'; // 'on' / 'off', Default = 'on'
+
+
+// Show volume section EVEN IF NO VOLUME WAS PROVIDED
+var show_empty_volume = 'on'; // 'off' / 'on', Default = 'on'
+
+
+// Seconds between "slideshowing" multiple tickers (if multiple assets configured)
+// SET TO 0 FOR AUTO MODE (trys to show all tickers in 1 minute, BUT has a 5 second per-ticker MINIMUM)
+var slideshow_speed = 5; // Default = 5
+
+
+// Slideshow transition speed (fade out / fade in) IN SECONDS (can be decimals)
 var transition_speed = 0.75; // Default = 0.75
 
 
@@ -106,11 +134,7 @@ var font_weight = 'normal'; // Default = 'normal', can be any proper CSS font we
 
 
 // Title font size
-var title_size = 130; // Default = 65 (SMALL SCREEN), 130 (LARGE SCREEN)
-
-
-// Show exchange name (in title next to asset ticker symbol)
-var show_exchange_name = 'on'; // 'on' / 'off', Default = 'on'
+var title_size = 115; // Default = 57 (SMALL SCREEN), 115 (LARGE SCREEN)
 
 
 // Ticker arrow size ratio (to ticker size), DECIMAL NUMBER FORMAT X.XX OF 1.00 OR LESS
@@ -120,24 +144,20 @@ var arrow_size = 0.65; // Default = 0.65
 
 
 // Ticker font size
-var ticker_size = 175; // Default = 88 (SMALL SCREEN), 175 (LARGE SCREEN)
-
-
-// Maximum decimal places for ticker values worth under 1.00 in unit value, for prettier / less-cluttered interface
-var max_ticker_decimals = 5; // Default = 5
-
-
-// Minimum decimal places for ANY ticker values
-// 0 disables
-var min_ticker_decimals = 0; // Default = 0
+var ticker_size = 150; // Default = 75 (SMALL SCREEN), 150 (LARGE SCREEN)
 
 
 // 24 hour volume font size
 var volume_size = 84; // Default = 42 (SMALL SCREEN), 84 (LARGE SCREEN)
 
 
-// Hide volume section, IF NO VOLUME WAS PROVIDED
-var hide_empty_volume = 'no'; // 'no' / 'yes'
+// Maximum decimal places for ticker values worth under 1.00 in unit value, for prettier / less-cluttered interface
+var max_ticker_decimals = 6; // Default = 6
+
+
+// Minimum decimal places for ANY ticker values
+// 0 disables
+var min_ticker_decimals = 0; // Default = 0
 
 
 // Text color (https://www.w3schools.com/colors/colors_picker.asp)
@@ -156,15 +176,15 @@ var background_color = '#000000'; // Default = '#000000'
 var google_font = 'Varela Round'; // Default = 'Varela Round'
 
 
-// Seconds between "slideshowing" multiple tickers (if multiple assets configured)
-// SET TO 0 FOR AUTO MODE (trys to show all tickers in 1 minute, BUT has a 5 second per-ticker MINIMUM)
-var slideshow_speed = 5; // Default = 5
-
-
 // EMULATED / dynamic monospace font WIDTH spacing (percent of EACH font size as a decimal) 
 // (ALL font widths for ticker/volume numbers are emulated as monospace, so numbers don't "jump around" when changing in real-time)
 // DECIMAL NUMBER FORMAT X.XX OF 1.00 OR LESS, OR null to skip (null MUST BE LOWERCASE WITHOUT QUOTES)
 var monospace_width = 0.65; // Default = 0.65
+
+
+// Minutes before refreshing non-websocket API endpoints (coingecko)
+// #DON'T ADJUST TOO LOW#, OR NON-WEBSOCKET APIs LIKE COINGECKO MAY DROP YOUR CONNECTION!
+var rest_api_refresh = 5; // Default = 5
 
 
 // Minimum number of minutes to wait before auto-reloading the app IF ERRORS ARE DETECTED THAT MAY BE FIXED WITH A RELOAD
@@ -173,39 +193,109 @@ var monospace_width = 0.65; // Default = 0.65
 var auto_error_fix_min = 5; // Default = 5
 
 
+// DEBUG MODE (turns on console logging for certain logic)
+var debug_mode = 'off'; // 'on' / 'off', Default = 'off'
+
 
 // All #ACTIVATED# market pairings (what the asset is paired with in markets), AND their currency symbols
 // ADD ANY NEW SUPPORTED (CHECK WITH THE EXCHANGE) MARKET PAIRINGS HERE YOU WANT #ACTIVATED# IN THIS APP
 
 
-// Fiat-equivelent market pairings (KEYS #MUST BE# UPPERCASE)
-var fiat_pairings = {
-								'AUD': 'A$',
-								'BRL': 'R$',
-								'CAD': 'C$',
-								'CHF': 'CHf',
-								'EUR': '€',
-								'GBP': '£',
-								'HKD': 'HK$',
-								'JPY': 'J¥',
-								'RUB': '₽',
-								'SGD': 'S$',
-								'TUSD': 'Ⓢ ',
-								'USD': '$',
-								'USDC': 'Ⓢ ',
-								'USDT': '₮ ',
-								'UST': 'Ⓢ ',
-								};
-
 
 // Crypto market pairings (KEYS #MUST BE# UPPERCASE)
 var crypto_pairings = {
-								'BNB': 'Ⓑ ',
-								'BTC': 'Ƀ ',
-								'ETH': 'Ξ ',
-								'KCS': 'Ḵ ',
-								'XBT': 'Ƀ ',
-								};
+				        'BNB': 'Ⓑ ',
+						'BTC': 'Ƀ ',
+						'ETH': 'Ξ ',
+						'KCS': 'Ḵ ',
+						'XBT': 'Ƀ ',
+					   };
+								
+								
+
+// Fiat-equivelent market pairings (KEYS #MUST BE# UPPERCASE)
+var fiat_pairings = {
+						'AED': 'د.إ',
+						'ARS': 'ARS$',
+						'AUD': 'A$',
+						'BAM': 'KM ',
+						'BDT': '৳',
+						'BOB': 'Bs ',
+						'BRL': 'R$',
+						'BWP': 'P ',
+						'BYN': 'Br ',
+						'CAD': 'C$',
+						'CHF': 'CHf ',
+						'CLP': 'CLP$',
+						'CNY': 'C¥',
+						'COP': 'Col$',
+						'CRC': '₡',
+						'CZK': 'Kč ',
+						'DAI': '◈ ',
+						'DKK': 'Kr. ',
+						'DOP': 'RD$',
+						'EGP': 'ج.م',
+						'EUR': '€',
+						'GBP': '£',
+						'GEL': 'ლ',
+						'GHS': 'GH₵',
+						'GTQ': 'Q ',
+						'HKD': 'HK$',
+						'HUF': 'Ft ',
+						'IDR': 'Rp ',
+						'ILS': '₪',
+						'INR': '₹',
+						'IRR': '﷼',
+						'JMD': 'JA$',
+						'JOD': 'د.ا',
+						'JPY': 'J¥',
+						'KES': 'Ksh ',
+						'KRW': '₩',
+						'KWD': 'د.ك',
+						'KZT': '₸',
+						'LKR': 'රු, ரூ',
+						'MAD': 'د.م.',
+						'MUR': '₨ ',
+						'MWK': 'MK ',
+						'MXN': 'Mex$',
+						'MYR': 'RM ',
+						'NGN': '₦',
+						'NIS': '₪',
+						'NOK': 'kr ',
+						'NZD': 'NZ$',
+						'PAB': 'B/. ',
+						'PEN': 'S/ ',
+						'PHP': '₱',
+						'PKR': '₨ ',
+						'PLN': 'zł ',
+						'PYG': '₲',
+						'QAR': 'ر.ق',
+						'RON': 'lei ',
+						'RSD': 'din ',
+						'RUB': '₽',
+						'RQF': 'R₣ ',
+						'SAR': '﷼',
+						'SEK': 'kr ',
+						'SGD': 'S$',
+						'THB': '฿',
+						'TRY': '₺',
+						'TUSD': 'Ⓢ ',
+						'TWD': 'NT$',
+						'TZS': 'TSh ',
+						'UAH': '₴',
+						'UGX': 'USh ',
+						'USD': '$',
+						'USDC': 'Ⓢ ',
+						'USDT': '₮ ',
+						'UST': 'Ⓢ ',
+						'UYU': '$U ',
+						'VND': '₫',
+						'VES': 'Bs ',
+						'XAF': 'FCFA ',
+						'XOF': 'CFA ',
+						'ZAR': 'R ',
+						'ZMW': 'ZK ',
+					};
 
 
 

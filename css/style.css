@@ -37,6 +37,11 @@ div .monospace {
 }
 
 
+.status {
+color: #FFFF00;
+}
+
+
 .ticker {
   white-space: nowrap;
   overflow: hidden;

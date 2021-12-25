@@ -87,36 +87,87 @@ return base_volume;
 /////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-function kucoin_reload() {
+function arrow_html() {
 
-// Force refresh the webpage from server (NOT cache), 
-// if it's been at least 'min_error_refresh_time' since 'runtime_start'
-error_detected_timestamp = Number( new Date().getTime() ); 
-				
-refresh_threshold = Number(runtime_start + min_error_refresh_time);
-				
-console.log(' ');
-console.log('Refresh Alert: This app will attempt to fix the detected issue with an');
-console.log('app restart (no more than every ' + (min_error_refresh_time / 60000) + ' minutes, until the error clears up).');
-console.log(' ');
-				
-				
-	// Reload, if we are within the minimum reload time window, AND the kucoin auth cache has been refreshed since app load time
-	if ( error_detected_timestamp >= refresh_threshold && typeof kucoin_update_time !== 'undefined' ) {
-	    
-	kucoin_refreshed_by = kucoin_update_time + 3660000; // 61 minutes after last kucoin auth cache refresh (in milliseconds)
-	    
-	    if ( kucoin_refreshed_by < error_detected_timestamp ) {
-
-            // Wait one additional minute before reload, in case any bash script updating the cache has time to finish
-            setTimeout(function() {
-            location.reload(true);
-            }, 60000);  // 60000 milliseconds = 1 minute
-	    
-	    }
+arrow_height = Math.round(ticker_size * arrow_size);
+arrow_width = Math.round(arrow_height * 0.84);
+arrow_border_width = Math.round(arrow_width / 2);
 	
+// Arrow height
+$("div.arrow_wrapper").css({ "height": arrow_height + "px" });
+$("span.buy").css({ "border-bottom": arrow_height + "px solid rgb(105, 199, 115)" });
+$("span.sell").css({ "border-top": arrow_height + "px solid rgb(199, 105, 105)" });
+
+// Arrow width
+$("div.arrow_wrapper").css({ "width": arrow_width + "px" });
+$("span.arrow").css({ "border-left": arrow_border_width + "px solid transparent" });
+$("span.arrow").css({ "border-right": arrow_border_width + "px solid transparent" });
+
+}
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+function trade_type(price_raw, market_id) {
+	
+	if ( !trade_side_price[market_id] ) {
+	trade_side_arrow[market_id] = 'buy'; // If just initiated, with no change yet
+	}
+	else if ( price_raw < trade_side_price[market_id] ) {
+	trade_side_arrow[market_id] = 'sell';
+	}
+	else if ( price_raw > trade_side_price[market_id] ) {
+	trade_side_arrow[market_id] = 'buy';
+	}
+		
+trade_side_price[market_id] = price_raw;
+
+return trade_side_arrow[market_id];
+
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+function asset_symbols(asset_abrv) {
+
+results = new Array();
+
+	// Unicode asset symbols
+	if ( typeof fiat_pairings[asset_abrv] !== 'undefined' ) {
+	results['asset_symbol'] = fiat_pairings[asset_abrv];
+	results['asset_type'] = 'fiat';
+	}
+	else if ( typeof crypto_pairings[asset_abrv] !== 'undefined' ) {
+    results['asset_symbol'] = crypto_pairings[asset_abrv];
+	results['asset_type'] = 'crypto';
+	}
+	else {
+	results['asset_symbol'] = null;
+	results['asset_type'] = null;
 	}
 
+
+return results;
+
+}
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+function valid_endpoint(exchange) {
+
+	// Skip, if no endpoint or markets are set for this exchange
+	if ( typeof api[exchange] == 'undefined' || api[exchange].trim() == '' ) {
+	console.log(exchange + ' endpoint not defined, removing it\'s market config...');
+	markets[exchange] = '';
+	return false;
+	}
+	else {
+	return true;
+	}
 
 }
 
@@ -149,200 +200,6 @@ console.log(' ');
 }
 
 
-/////////////////////////////////////////////////////////////////////////////////////////////////////
-
-
-function trade_type(price_raw, market_id) {
-	
-	if ( !trade_side_price[market_id] ) {
-	trade_side_arrow[market_id] = 'buy'; // If just initiated, with no change yet
-	}
-	else if ( price_raw < trade_side_price[market_id] ) {
-	trade_side_arrow[market_id] = 'sell';
-	}
-	else if ( price_raw > trade_side_price[market_id] ) {
-	trade_side_arrow[market_id] = 'buy';
-	}
-		
-trade_side_price[market_id] = price_raw;
-
-return trade_side_arrow[market_id];
-
-}
-
-
-/////////////////////////////////////////////////////////////////////////////////////////////////////
-
-
-function arrow_html() {
-
-arrow_height = Math.round(ticker_size * arrow_size);
-arrow_width = Math.round(arrow_height * 0.84);
-arrow_border_width = Math.round(arrow_width / 2);
-	
-// Arrow height
-$("div.arrow_wrapper").css({ "height": arrow_height + "px" });
-$("span.buy").css({ "border-bottom": arrow_height + "px solid rgb(105, 199, 115)" });
-$("span.sell").css({ "border-top": arrow_height + "px solid rgb(199, 105, 105)" });
-
-// Arrow width
-$("div.arrow_wrapper").css({ "width": arrow_width + "px" });
-$("span.arrow").css({ "border-left": arrow_border_width + "px solid transparent" });
-$("span.arrow").css({ "border-right": arrow_border_width + "px solid transparent" });
-
-}
-	
-	
-/////////////////////////////////////////////////////////////////////////////////////////////////////
-
-
-function render_names(name) {
-	
-render = name.charAt(0).toUpperCase() + name.slice(1);
-
-render = render.replace(/usd/gi, "USD");
-render = render.replace(/eur/gi, "EUR");
-render = render.replace(/gbp/gi, "GBP");
-render = render.replace(/btc/gi, "BTC");
-render = render.replace(/eth/gi, "ETH");
-render = render.replace(/sol/gi, "SOL");
-render = render.replace(/nft/gi, "NFT");
-render = render.replace(/coin/gi, "Coin");
-render = render.replace(/bitcoin/gi, "Bitcoin");
-render = render.replace(/exchange/gi, "Exchange");
-render = render.replace(/market/gi, "Market");
-render = render.replace(/forex/gi, "Forex");
-render = render.replace(/finex/gi, "Finex");
-render = render.replace(/stamp/gi, "Stamp");
-render = render.replace(/flyer/gi, "Flyer");
-render = render.replace(/panda/gi, "Panda");
-render = render.replace(/pay/gi, "Pay");
-render = render.replace(/swap/gi, "Swap");
-render = render.replace(/iearn/gi, "iEarn");
-render = render.replace(/pulse/gi, "Pulse");
-render = render.replace(/defi/gi, "DeFi");
-render = render.replace(/ring/gi, "Ring");
-render = render.replace(/amm/gi, "AMM");
-render = render.replace(/ico/gi, "ICO");
-render = render.replace(/erc20/gi, "ERC-20");
-render = render.replace(/okex/gi, "OKex");
-render = render.replace(/mart/gi, "Mart");
-render = render.replace(/ftx/gi, "FTX");
-render = render.replace(/gateio/gi, "Gate.io");
-
-return render;
-}
-
-/////////////////////////////////////////////////////////////////////////////////////////////////////
-
-
-function asset_symbols(asset_abrv) {
-
-results = new Array();
-
-	// Unicode asset symbols
-	if ( typeof fiat_pairings[asset_abrv] !== 'undefined' ) {
-	results['asset_symbol'] = fiat_pairings[asset_abrv];
-	results['asset_type'] = 'fiat';
-	}
-	else if ( typeof crypto_pairings[asset_abrv] !== 'undefined' ) {
-    results['asset_symbol'] = crypto_pairings[asset_abrv];
-	results['asset_type'] = 'crypto';
-	}
-	else {
-	results['asset_symbol'] = null;
-	results['asset_type'] = null;
-	}
-
-
-return results;
-
-}
-
-
-/////////////////////////////////////////////////////////////
-
-
-function kucoin_config() {
-    
-    if  ( window.kucoin_alert == 1 ) {
-    return;
-    }
-    else {
-	window.kucoin_alert = 1; 
-    }
-	
-	// If kucoin auth data is cached, allow kucoin configs
-	if ( typeof kucoin_endpoint !== 'undefined' && typeof kucoin_token !== 'undefined' ) {
-	api['kucoin'] = kucoin_endpoint + '?token=' + kucoin_token;
-	console.log('Kucoin support enabled (VALID installation detected).');
-	return true;
-	}
-	// Remove kucoin market configs if no cache data is present, to avoid script errors,
-	// and alert (to console ONLY) that app was improperly installed
-	else {
-	delete exchange_markets['kucoin'];
-	console_alert(); 
-	console.log('Kucoin support disabled (INVALID installation detected).');
-	return false;
-	}
-
-}
-
-
-/////////////////////////////////////////////////////////////
-
-
-function loopring_config() {
-    
-    
-    if  ( window.loopring_alert == 1 ) {
-    return;
-    }
-    else {
-	window.loopring_alert = 1; 
-    }
-
-    
-    if ( typeof api['loopring'] == 'undefined' ) {
-        
-    api['loopring'] = 'wait';
-        
-        
-    	$.getJSON("https://api3.loopring.io/v3/ws/key", function(data) {
-    	})
-    	
-          .done(function(data) {
-              
-            var loopring_token = data.key;
-        	
-            	// If loopring auth data is cached, allow loopring configs
-            	if ( typeof loopring_token !== 'undefined' ) {
-            	api['loopring'] = 'wss://ws.api3.loopring.io/v3/ws' + '?wsApiKey=' + loopring_token;
-            	console.log('Loopring support enabled (VALID installation detected).');
-            	return true;
-            	}
-            	// Remove loopring market configs if no cache data is present, to avoid script errors,
-            	// and alert (to console ONLY) that app was improperly installed
-            	else {
-            	// Whitespace will be detected as an invalid config, since we don't want the
-            	// endpoint 'undefined' becuase that's how we trigger a check / recheck 
-            	api['loopring'] = ' '; 
-            	delete exchange_markets['loopring']; 
-            	console_alert(); 
-            	console.log('Loopring support disabled (INVALID installation detected).');
-            	return false;
-            	}
-        	
-          });
-          
-    	
-    }
-    
-
-}
-
-
 /////////////////////////////////////////////////////////////
 
 
@@ -370,104 +227,6 @@ head.appendChild(script);
 	console.log('JS cache file not found (invalid installation detected).');
 	render_interface();
     };
-
-}
-
-
-/////////////////////////////////////////////////////////////////////////////////////////////////////
-
-
-function number_commas(num, decimals) {
-	
-//console.log(typeof num);
-	
-	if ( num >= 1 ) {
-		
-		if ( typeof num == 'string' ) {
-		
-			num = parseFloat(num).toLocaleString(undefined, {
-   		    minimumFractionDigits: decimals,
-   		    maximumFractionDigits: decimals
-			});
-		
-		}
-		else {
-		
-			num = num.toLocaleString(undefined, {
-   		    minimumFractionDigits: decimals,
-   		    maximumFractionDigits: decimals
-			});
-		
-		}
-	
-	}
-
-
-return num;
-   
-}
-
-
-/////////////////////////////////////////////////////////////////////////////////////////////////////
-
-
-function market_id_parser(market_id, exchange) {
-	
-market_id = market_id.toUpperCase(); // Uppercase
-
-// So we only have to search for a hyphen, #CONVERT ALL API MARKET PAIRING DELIMITERS TO HYPHENS HERE#
-market_id = market_id.replace(":", "-"); 
-market_id = market_id.replace("/", "-"); 
-market_id = market_id.replace("_", "-"); 
-
-
-	// NON-delimited market IDs
-	if ( market_id.indexOf("-") == -1 ) {
-	pairing = regex_pairing_detection(market_id);
-	asset = market_id.replace(pairing, "");
-	}
-	// HYPHEN-delimited market IDs 
-	// (ALL DELIMITERS ARE CONVERTED TO HYPHENS [IN THIS FUNCTION ONLY]...SEE market_id AT FUNCTION TOP)
-	else {
-	pairing = market_id.replace(/\b([A-Za-z]*)-/g, "");
-	asset = market_id.replace(/-[A-Za-z0-9]*/g, "");
-	}
-
-
-parsed_markets[market_id] = { "pairing" : pairing, "asset" : asset };
-
-return parsed_markets[market_id];
-
-}
-
-
-/////////////////////////////////////////////////////////////////////////////////////////////////////
-
-
-function valid_config(exchange, mode) {
-
-// Allows alphanumeric and symbols: / - _ |
-alph_symb_regex = /^[a-z0-9\/\-_|:]+$/i;
-
-	// Skip, if no endpoint or markets are set for this exchange
-	if ( 
-	api[exchange] == '' 
-	|| typeof api[exchange] == 'undefined'
-	) {
-	console.log(exchange + ' endpoint not defined, skipping ' + mode);
-	return false;
-	}
-	else if ( typeof exchange_markets[exchange] == 'undefined' ) {
-	console.log(exchange + ' markets not defined, skipping ' + mode);
-	return false;
-	}
-	else if ( !exchange_markets[exchange].match(alph_symb_regex) ) {
-	console.log(exchange + ' markets not properly setup (CHECK FOR BAD FORMATTING), skipping ' + mode);
-	return false;
-	}
-	else {
-	return true;
-	}
 
 }
 
@@ -541,12 +300,288 @@ var result = (check - Math.floor(check)) !== 0;
 /////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-function ticker_html(market_id, exchange) {
+function number_commas(num, decimals) {
+	
+//console.log(typeof num);
+	
+	if ( num >= 1 ) {
+		
+		if ( typeof num == 'string' ) {
+		
+			num = parseFloat(num).toLocaleString(undefined, {
+   		    minimumFractionDigits: decimals,
+   		    maximumFractionDigits: decimals
+			});
+		
+		}
+		else {
+		
+			num = num.toLocaleString(undefined, {
+   		    minimumFractionDigits: decimals,
+   		    maximumFractionDigits: decimals
+			});
+		
+		}
+	
+	}
 
-    // Skip invalid exchange setups
-    if ( valid_config(exchange, 'ticker_html') == false ) {
+
+return num;
+   
+}
+
+
+/////////////////////////////////////////////////////////////
+
+
+function kucoin_config() {
+    
+    if  ( window.kucoin_alert == 1 ) {
     return;
     }
+    else {
+	window.kucoin_alert = 1; 
+    }
+	
+	// If kucoin auth data is cached, allow kucoin configs
+	if ( typeof kucoin_endpoint !== 'undefined' && typeof kucoin_token !== 'undefined' ) {
+	api['kucoin'] = kucoin_endpoint + '?token=' + kucoin_token;
+	console.log('Kucoin support enabled (VALID installation detected).');
+	return true;
+	}
+	// Remove kucoin market configs if no cache data is present, to avoid script errors,
+	// and alert (to console ONLY) that app was improperly installed
+	else {
+	delete exchange_markets['kucoin'];
+	console_alert(); 
+	console.log('Kucoin support disabled (INVALID installation detected).');
+	return false;
+	}
+
+}
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+function kucoin_reload() {
+
+// Force refresh the webpage from server (NOT cache), 
+// if it's been at least 'min_error_refresh_time' since 'runtime_start'
+error_detected_timestamp = Number( new Date().getTime() ); 
+				
+refresh_threshold = Number(runtime_start + min_error_refresh_time);
+				
+console.log(' ');
+console.log('Refresh Alert: This app will attempt to fix the detected issue with an');
+console.log('app restart (no more than every ' + (min_error_refresh_time / 60000) + ' minutes, until the error clears up).');
+console.log(' ');
+				
+				
+	// Reload, if we are within the minimum reload time window, AND the kucoin auth cache has been refreshed since app load time
+	if ( error_detected_timestamp >= refresh_threshold && typeof kucoin_update_time !== 'undefined' ) {
+	    
+	kucoin_refreshed_by = kucoin_update_time + 3660000; // 61 minutes after last kucoin auth cache refresh (in milliseconds)
+	    
+	    if ( kucoin_refreshed_by < error_detected_timestamp ) {
+
+            // Wait one additional minute before reload, in case any bash script updating the cache has time to finish
+            setTimeout(function() {
+            location.reload(true);
+            }, 60000);  // 60000 milliseconds = 1 minute
+	    
+	    }
+	
+	}
+
+
+}
+	
+	
+/////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+function render_names(name) {
+	
+render = name.charAt(0).toUpperCase() + name.slice(1);
+
+render = render.replace(/usd/gi, "USD");
+render = render.replace(/eur/gi, "EUR");
+render = render.replace(/gbp/gi, "GBP");
+render = render.replace(/btc/gi, "BTC");
+render = render.replace(/eth/gi, "ETH");
+render = render.replace(/sol/gi, "SOL");
+render = render.replace(/nft/gi, "NFT");
+render = render.replace(/coin/gi, "Coin");
+render = render.replace(/bitcoin/gi, "Bitcoin");
+render = render.replace(/exchange/gi, "Exchange");
+render = render.replace(/market/gi, "Market");
+render = render.replace(/forex/gi, "Forex");
+render = render.replace(/finex/gi, "Finex");
+render = render.replace(/stamp/gi, "Stamp");
+render = render.replace(/flyer/gi, "Flyer");
+render = render.replace(/panda/gi, "Panda");
+render = render.replace(/pay/gi, "Pay");
+render = render.replace(/swap/gi, "Swap");
+render = render.replace(/iearn/gi, "iEarn");
+render = render.replace(/pulse/gi, "Pulse");
+render = render.replace(/defi/gi, "DeFi");
+render = render.replace(/loopring/gi, "LRing");
+render = render.replace(/amm/gi, "AMM");
+render = render.replace(/ico/gi, "ICO");
+render = render.replace(/erc20/gi, "ERC-20");
+render = render.replace(/okex/gi, "OKex");
+render = render.replace(/mart/gi, "Mart");
+render = render.replace(/ftx/gi, "FTX");
+render = render.replace(/gateio/gi, "Gate.io");
+render = render.replace(/coingecko/gi, "CGecko");
+
+return render;
+
+}
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+function market_id_parser(market_id, exchange) {
+    
+    
+    if ( exchange == 'coingecko' ) {
+    market_id = market_id.split(":").pop();
+    }
+
+	
+market_id = market_id.toUpperCase(); // Uppercase
+
+// So we only have to search for a hyphen, #CONVERT ALL API MARKET PAIRING DELIMITERS TO HYPHENS HERE#
+market_id = market_id.replace(":", "-"); 
+market_id = market_id.replace("/", "-"); 
+market_id = market_id.replace("_", "-"); 
+
+
+	// NON-delimited market IDs
+	if ( market_id.indexOf("-") == -1 ) {
+	pairing = regex_pairing_detection(market_id);
+	asset = market_id.replace(pairing, "");
+	}
+	// HYPHEN-delimited market IDs 
+	// (ALL DELIMITERS ARE CONVERTED TO HYPHENS [IN THIS FUNCTION ONLY]...SEE market_id AT FUNCTION TOP)
+	else {
+	pairing = market_id.replace(/\b([A-Za-z]*)-/g, "");
+	asset = market_id.replace(/-[A-Za-z0-9]*/g, "");
+	}
+
+
+parsed_markets[market_id] = { "pairing" : pairing, "asset" : asset };
+
+return parsed_markets[market_id];
+
+}
+
+
+/////////////////////////////////////////////////////////////
+
+
+function loopring_config() {
+    
+    
+    if  ( window.loopring_alert == 1 ) {
+    return;
+    }
+    else {
+	window.loopring_alert = 1; 
+    }
+
+    
+    if ( typeof api['loopring'] == 'undefined' ) {
+        
+    api['loopring'] = 'wait';
+        
+        
+    	$.getJSON("https://api3.loopring.io/v3/ws/key", function(data) {
+    	})
+    	
+          .done(function(data) {
+              
+            var loopring_token = data.key;
+        	
+            	// If loopring auth data is cached, allow loopring configs
+            	if ( typeof loopring_token !== 'undefined' ) {
+            	api['loopring'] = 'wss://ws.api3.loopring.io/v3/ws' + '?wsApiKey=' + loopring_token;
+            	console.log('Loopring support enabled (VALID parameters detected).');
+            	return true;
+            	}
+            	// Remove loopring market configs if no cache data is present, to avoid script errors,
+            	// and alert (to console ONLY) that app was improperly installed
+            	else {
+            	// Whitespace will be detected as an invalid config, since we don't want the
+            	// endpoint 'undefined' becuase that's how we trigger a check / recheck 
+            	api['loopring'] = ' '; 
+            	delete exchange_markets['loopring']; 
+            	console_alert(); 
+            	console.log('Loopring support disabled (INVALID parameters detected).');
+            	return false;
+            	}
+        	
+          });
+          
+    	
+    }
+    
+
+}
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+function monospace_rendering($element) {
+	
+	if (  typeof $element !== 'undefined' ) {
+	
+    for (var i = 0; i < $element.childNodes.length; i++) {
+    
+    var $child = $element.childNodes[i];
+
+        if ($child.nodeType === Node.TEXT_NODE) {
+        	
+        var $wrapper = document.createDocumentFragment();
+
+            for (var i = 0; i < $child.nodeValue.length; i++) {
+            	
+            	if ( isNaN($child.nodeValue.charAt(i)) || $child.nodeValue.charAt(i) == ' ' ) { // Space not detected well here, lol...so we work-around
+                var $char = document.createElement('span');
+                $char.textContent = $child.nodeValue.charAt(i);
+                }
+                else {
+                var $char = document.createElement('span');
+                $char.className = 'monospace';
+                $char.textContent = $child.nodeValue.charAt(i);
+                }
+
+            $wrapper.appendChild($char);
+                
+            }
+
+        $element.replaceChild($wrapper, $child);
+        
+        } 
+        else if ($child.nodeType === Node.ELEMENT_NODE) {
+        monospace_rendering($child);
+        }
+        
+    }
+    
+   }
+    
+}
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+function ticker_html(market_id, exchange) {
 	
 parsed_market_id = market_id_parser(market_id, exchange);
 				 
@@ -562,9 +597,9 @@ market_key = js_safe_key(market_id, exchange);
 
 	html = '<div id="wrapper_' + market_key + '" class="asset_tickers">'+
     
-	'<div class="title" style="font-size: '+title_size+'px; font-weight: '+font_weight+';"><span id="asset_' + market_key + '">' + asset + '</span> <span class="status_wrapper_'+exchange+'">(<span class="status_'+exchange+'" style="color: #FFFF00;">Connecting...</span>)</span></div>'+
+	'<div class="title" style="font-size: '+title_size+'px; font-weight: '+font_weight+';"><span id="asset_' + market_key + '">' + asset + '</span> <span class="status_wrapper_'+exchange+'"><span class="parenth_'+market_key+'">(<span class="status status_'+exchange+' status_'+market_key+'">Loading...</span>)</span></span></div>'+
 	
-	'<div class="ticker" style="font-size: '+ticker_size+'px; font-weight: '+font_weight+';" id="ticker_' + market_key + '">Loading...</div>'+
+	'<div class="ticker" style="font-size: '+ticker_size+'px; font-weight: '+font_weight+';" id="ticker_' + market_key + '"></div>'+
     
 	'<div class="volume" style="font-size: '+volume_size+'px; font-weight: '+font_weight+';" id="volume_' + market_key + '"></div>'+
 	
@@ -675,6 +710,48 @@ t_speed = Math.round(window.transition_speed * 1000);
    
 }
 
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+// https://gist.github.com/jiggzson/b5f489af9ad931e3d186
+var scientificToDecimal = function (num) {
+    var nsign = Math.sign(num);
+    //remove the sign
+    num = Math.abs(num);
+    //if the number is in scientific notation remove it
+    if (/\d+\.?\d*e[\+\-]*\d+/i.test(num)) {
+        var zero = '0',
+                parts = String(num).toLowerCase().split('e'), //split into coeff and exponent
+                e = parts.pop(), //store the exponential part
+                l = Math.abs(e), //get the number of zeros
+                sign = e / l,
+                coeff_array = parts[0].split('.');
+        if (sign === -1) {
+            l = l - coeff_array[0].length;
+            if (l < 0) {
+              num = coeff_array[0].slice(0, l) + '.' + coeff_array[0].slice(l) + (coeff_array.length === 2 ? coeff_array[1] : '');
+            } 
+            else {
+              num = zero + '.' + new Array(l + 1).join(zero) + coeff_array.join('');
+            }
+        } 
+        else {
+            var dec = coeff_array[1];
+            if (dec)
+                l = l - dec.length;
+            if (l < 0) {
+              num = coeff_array[0] + dec.slice(0, l) + '.' + dec.slice(l);
+            } else {
+              num = coeff_array.join('') + new Array(l + 1).join(zero);
+            }
+        }
+    }
+
+    return nsign < 0 ? '-'+num : num;
+};
+
+
 /////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
@@ -682,41 +759,47 @@ function render_interface() {
 
 console.log('render_interface'); // DEBUGGING
 
-kucoin_config(); // Check / load kucoin data BEFORE MARKET CONFIG
 
-loopring_config(); // Check / load loopring data BEFORE MARKET CONFIG
-
-
-    // Wait for loopring to get a temp API key
-    if ( api['loopring'] == 'wait' ) {
+    // If we already setup the market configs
+    if ( Object.keys(markets).length > 0 ) {
+    console.log('market_config was already setup, skipping.');
+    }
+    // Wait for market_config()
+    else if ( market_config() == 'wait' ) {
+    console.log('Waiting for market_config to complete processing...');
     setTimeout(render_interface, 1000); // Wait 1000 millisecnds then recheck
     return;
     }
-    else {
-	
-    market_config();
     
-
-		// Connect to exchange APIs for market data
-		// Render the HTML containers for each ticker
-		Object.keys(markets).forEach(function(exchange) {
-			
-		api_connect(exchange);
+        
+	// Connect to exchange APIs for market data
+	// Render the HTML containers for each ticker
+	Object.keys(markets).forEach(function(exchange) {
+                
 		
 			if ( markets[exchange] != '' ) {
+                
+    			if ( exchange == 'coingecko' ) {
+    		    rest_connect(exchange);
+    		    }
+    		    else {
+    		    websocket_connect(exchange);
+    		    }
 			
   				markets[exchange].forEach(element => {
   				ticker_html(element, exchange);
 				});
 			
 			}
+			
 		
-		});
+	});
 
 		
-		// Start ticker
-		// More than one asset, so run in slideshow mode (with delay of slideshow_speed seconds)
-		if ( markets_length > 1 ) {
+		
+	// Start ticker
+	// More than one asset, so run in slideshow mode (with delay of slideshow_speed seconds)
+	if ( markets_length > 1 ) {
 			
 			// If auto mode for slideshow_speed (minimum of 5 seconds allowed)
 			if ( slideshow_speed == 0 ) {
@@ -726,15 +809,12 @@ loopring_config(); // Check / load loopring data BEFORE MARKET CONFIG
 			
 		setInterval(ticker_init, slideshow_speed * 1000);
 		
-		}
-		// If only one market
-		else if ( markets_length == 1 ) {
-		ticker_init();
-		}
-
-
-    }
-
+	}
+	// If only one market
+	else if ( markets_length == 1 ) {
+	ticker_init();
+	}
+    
 
 }
 
@@ -742,45 +822,206 @@ loopring_config(); // Check / load loopring data BEFORE MARKET CONFIG
 /////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-function monospace_rendering($element) {
-	
-	if (  typeof $element !== 'undefined' ) {
-	
-    for (var i = 0; i < $element.childNodes.length; i++) {
-    
-    var $child = $element.childNodes[i];
+function rest_connect(exchange) {
 
-        if ($child.nodeType === Node.TEXT_NODE) {
-        	
-        var $wrapper = document.createDocumentFragment();
-
-            for (var i = 0; i < $child.nodeValue.length; i++) {
-            	
-            	if ( isNaN($child.nodeValue.charAt(i)) || $child.nodeValue.charAt(i) == ' ' ) { // Space not detected well here, lol...so we work-around
-                var $char = document.createElement('span');
-                $char.textContent = $child.nodeValue.charAt(i);
-                }
-                else {
-                var $char = document.createElement('span');
-                $char.className = 'monospace';
-                $char.textContent = $child.nodeValue.charAt(i);
-                }
-
-            $wrapper.appendChild($char);
-                
-            }
-
-        $element.replaceChild($wrapper, $child);
-        
-        } 
-        else if ($child.nodeType === Node.ELEMENT_NODE) {
-        monospace_rendering($child);
-        }
-        
+		
+	if ( debug_mode == 'on' ) {
+    console.log('rest_connect'); // DEBUGGING
     }
     
+  
+   $.get(api[exchange], function(data) {
+   
+   
+	   if ( debug_mode == 'on' ) {
+       console.log(exchange + ' API endpoint: ' + api[exchange]);
+       console.log('Loading / reloading REST API for: ' + exchange);
+	   console.log(data);
+	   }
+		
+	    
+       Object.keys(rest_ids[exchange]).forEach(function(api_id) {
+           
+           
+           Object.keys(rest_ids[exchange][api_id]).forEach(function(market_id) {
+           
+           market_id = rest_ids[exchange][api_id][market_id];
+          
+          
+        	   // Render (IF market_id is defined)
+        		if ( typeof market_id !== 'undefined' ) {
+        		
+        		update_key = js_safe_key(api_id + market_id, exchange);
+                
+        		
+        			// To assure appropriate ticker updated
+        			if ( typeof update_key !== 'undefined' ) {
+                       
+        			
+        			parsed_market_id = market_id_parser(market_id, exchange);
+        					 
+        			asset = parsed_market_id.asset;
+        			
+        			pairing = parsed_market_id.pairing;
+        			
+        			
+        			  if ( typeof data[api_id] !== 'undefined' ) {
+            		  price_raw = data[api_id][pairing.toLowerCase()];
+            		  volume_raw = data[api_id][pairing.toLowerCase() + '_24h_vol'];
+        			  }
+        			  else if ( typeof data !== 'undefined' ) {
+            		  price_raw = false;
+            		  volume_raw = false;
+        			  }
+        			  else {
+            		  price_raw = 0;
+            		  volume_raw = 0;
+        			  }
+    				 
+            				 
+                    base_volume = pair_volume('pairing', price_raw, volume_raw);
+            		   
+        		    update_ticker(update_key, market_id, asset, pairing, price_raw, base_volume, exchange);
+        				
+        			}
+        			
+        		
+        		}
+        	   
+                	
+            });
+    	   
+            	
+        });
+	
+
+	})
+   
+   .fail(function() {
+   $(".status_wrapper_" + exchange).css({ "display": "inline" });
+   $(".status_" + exchange).text("Error").css("color", "red", "important");
+   });
+	
+
+   // Rerun rest_connect() again after rest_api_refresh_milliseconds
+   setTimeout(function() {
+   rest_connect(exchange);
+   }, rest_api_refresh_milliseconds);  
+            
+            
+}
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+function update_ticker(update_key, market_id, asset, pairing, price_raw, base_volume, exchange=false) {
+				 
+price_raw = scientificToDecimal(price_raw); // Convert scientific format to string (decimal), if needed
+
+   
+   // Show or hide exchange / api status
+   if ( exchange != false ) {
+	
+	   // Using ".status_" + update_key INSTEAD, TO SHOW PER-ASSET 
+       if ( price_raw == 0 ) {
+       $(".parenth_" + update_key).css({ "display": "inline" });
+       $(".status_" + update_key).text("Loading...").css("color", "#FFFF00");
+       return;
+       }
+       else if ( show_exchange_name == 'off' ) {
+       $(".parenth_" + update_key).css({ "display": "none" });
+       }
+       else if ( price_raw >= 0.00000001 ) {
+       $(".parenth_" + update_key).css({ "display": "inline" });
+       $(".status_" + update_key).text( render_names(exchange) ).css("color", "#2bbf7b");
+       }
+       
+   
    }
-    
+                       
+            		
+trade_side = trade_type(price_raw, market_id);
+        		 
+market_info = asset_symbols(pairing);
+        		 
+market_symbol = market_info['asset_symbol'];
+        			
+// Price decimals (none if >= 100, 2 if >= 1, 'max_ticker_decimals' if < 1 )
+price_decimals = ( price_raw >= 1 ? 2 : max_ticker_decimals );
+price_decimals = ( price_raw >= 100 ? 0 : price_decimals );
+        			
+// If MINIMUM decimals IS set, and 'price_decimals' is smaller, force decimals to 'min_ticker_decimals'
+price_decimals = ( min_ticker_decimals > price_decimals ? min_ticker_decimals : price_decimals );
+        			
+price_max_dec = parseFloat(price_raw).toFixed(price_decimals); // Set max decimals
+        			
+        			
+     // If MINIMUM decimals NOT set, remove any trailing zeros in decimals
+     if ( min_ticker_decimals == 0 ) {
+     price = parseFloat(price_max_dec);
+     }
+     else {
+     price = price_max_dec;
+     }
+        			   
+        				
+// HTML for rendering
+ticker_item =
+      "<div class='spacing'><div class='arrow_wrapper' style=''><span class='arrow " +
+      trade_side +
+      "'></span></div><span class='tick_text'>" + market_symbol +
+      number_commas(price, price_decimals) +
+      "</span></div>";
+        				 
+        			
+     // Volume logic
+     if ( typeof base_volume !== 'undefined' ) {
+        					
+     volume_decimals = ( market_info['asset_type'] == 'crypto' ? 4 : 0 );
+        				
+     base_volume = Number(base_volume).toFixed(volume_decimals);
+        				
+     volume_item = 
+       "<div class='spacing'>Vol: " + market_symbol +
+       number_commas(base_volume, volume_decimals) +
+       "</div>";
+        				
+     }
+     else {
+        					
+        if ( show_empty_volume == 'on' ) {
+        volume_item = "<div class='spacing'>Vol: (not provided)</div>";
+        }
+        else {
+        $("#volume_" + update_key).css({ "display": "none" });
+        volume_item = "<div class='spacing'></div>";
+        }
+        					
+     }
+        				 
+        				 
+// Render data to appropriate ticker
+        			
+$("#ticker_" + update_key).html(ticker_item);
+        			
+arrow_html(); // #MUST BE# AFTER TICKER RENDERING ABOVE
+        				
+$("#volume_" + update_key).html(volume_item);
+        				
+        				
+     // If monospace emulation is properly enabled, run it
+     if ( monospace_check() == true ) {
+        					
+     monospace_rendering(document.querySelectorAll('#ticker_' + update_key)[0]);
+        				
+        if ( typeof base_volume !== 'undefined' ) {
+        monospace_rendering(document.querySelectorAll('#volume_' + update_key)[0]);
+        }
+        					 
+     }
+
+
 }
 
 
@@ -791,6 +1032,18 @@ function market_config() {
 
 console.log('market_config'); // DEBUGGING
 
+kucoin_config(); // Check / load kucoin data BEFORE MARKET CONFIG
+
+loopring_config(); // Check / load loopring data BEFORE MARKET CONFIG
+
+
+    // Wait for loopring to get a temp API key
+    if ( api['loopring'] == 'wait' ) {
+    console.log('Waiting on loopring market configuration to complete...');
+    setTimeout(market_config, 1000); // Wait 1000 millisecnds then recheck
+    return 'wait';
+    }
+    
 
 // Exchange API endpoints
 
@@ -815,12 +1068,20 @@ api['bitmart'] = 'wss://ws-manager-compress.bitmart.com?protocol=1.1';
 api['gateio'] = 'wss://ws.gate.io/v3/';
 
 
+// Allows alphanumeric and symbols: / - _ | :
+alph_symb_regex = /^[a-z0-9\/\-_|:]+$/i;
 
 	// Put configged markets into a multi-dimensional array, calculate number of markets total
 	Object.keys(exchange_markets).forEach(function(exchange) {
 		
 		// If markets exist for this exchange in config.js, and haven't been added yet to the 'markets' (ALL exchange markets) array yet
-		if ( exchange_markets[exchange] != '' && typeof markets[exchange] == 'undefined' ) {
+    	if ( typeof exchange_markets[exchange] == 'undefined' || exchange_markets[exchange].trim() == '' ) {
+    	console.log(exchange + ' markets not defined, skipping...');
+    	}
+    	else if ( !exchange_markets[exchange].match(alph_symb_regex) ) {
+    	console.log(exchange + ' markets not properly setup (CHECK FOR BAD FORMATTING), skipping...');
+    	}
+		else if ( exchange_markets[exchange].trim() != '' && typeof markets[exchange] == 'undefined' ) {
 		markets[exchange] = exchange_markets[exchange].split("|");
 		markets_length = markets_length + markets[exchange].length;
 		}
@@ -833,7 +1094,93 @@ api['gateio'] = 'wss://ws.gate.io/v3/';
 
 	// Websocket subscribe arrays
 	Object.keys(markets).forEach(function(exchange) {
+		    
+	rest_ids[exchange] = [];
+		    
+	rest_other[exchange] = [];
+		
+		
+		// REST APIs
 	
+		// Coingecko
+		if ( exchange == 'coingecko' ) {
+		
+		    
+        	Object.keys(markets[exchange]).forEach(function(market) {
+            
+            //console.log(markets[exchange][market]);
+            
+            temp = markets[exchange][market].split(":");
+            
+        	
+        	   if ( typeof rest_ids[exchange][temp[0]] === 'undefined' ) {
+        	   rest_ids[exchange][temp[0]] = [];
+        	   }
+        	
+            
+               // Create data array for ticker
+               if ( rest_ids[exchange][temp[0]].includes(temp[1]) != true ) {
+               rest_ids[exchange][temp[0]].push(temp[1]);
+               }
+        	
+        			
+        	});
+	        
+	        
+	        ids = '';
+	        currencies = '';
+	        // Render endpoint URL
+	        Object.keys(rest_ids[exchange]).forEach(function(api_id) {
+	        
+        	
+        	   if ( ids == '' ) {
+        	   ids = api_id;
+        	   }
+        	   else {
+        	   ids = ids + ',' + api_id;
+        	   }
+        	
+        	
+        	   Object.keys(rest_ids[exchange][api_id]).forEach(function(market) {
+               
+               temp2 = rest_ids[exchange][api_id][market].split("/");
+        	
+            
+                   // Create data array for API endpoint
+                   if ( rest_other[exchange].includes(temp2[1]) != true ) {
+        	               	       
+                	   if ( currencies == '' ) {
+                	   currencies = temp2[1];
+                	   }
+                	   else {
+                	   currencies = currencies + ',' + temp2[1];
+                	   }
+            	   
+            	   rest_other[exchange].push(temp2[1]);
+            	   
+                   }
+                   
+	        
+        	   });
+	        
+	        
+        	});
+
+
+        api[exchange] = 'https://api.coingecko.com/api/v3/simple/price?ids=' + ids + '&vs_currencies=' + currencies + '&include_24hr_vol=true';
+		
+		
+		}
+		
+	    
+        // Skip invalid exchange configs (RUN #AFTER# REST APIs CONFIGS / #BEFORE# WEBSOCKET APIs CONFIGS)
+        if ( valid_endpoint(exchange) == false ) {
+        return;
+        }
+		
+		
+		// WEBSOCKET APIs
+		
 		// Coinbase
 		if ( exchange == 'coinbase' ) {
 			
@@ -1075,7 +1422,7 @@ api['gateio'] = 'wss://ws.gate.io/v3/';
 		if ( debug_mode == 'on' ) {
 	    console.log(subscribe_msg[exchange]);
 		}
-
+        
 	
 	});
 
@@ -1087,17 +1434,11 @@ api['gateio'] = 'wss://ws.gate.io/v3/';
 /////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-function api_connect(exchange) {
+function websocket_connect(exchange) {
 
 		
 	if ( debug_mode == 'on' ) {
-    console.log('api_connect'); // DEBUGGING
-    }
-
-
-    // Skip invalid exchange setups
-    if ( valid_config(exchange, 'api_connect') == false ) {
-    return;
+    console.log('websocket_connect'); // DEBUGGING
     }
 	
 	
@@ -1119,19 +1460,7 @@ function api_connect(exchange) {
    
 	// Socket response ///////////////////////////////////////////////////
 	sockets[exchange].onmessage = function(e) {
-	   
-	
-       if ( show_exchange_name == 'off' ) {
-       $(".status_wrapper_" + exchange).css({ "display": "none" });
-       }
-       else {
-       
-    	   markets[exchange].forEach(element => {
-    	   $(".status_" + exchange).text( render_names(exchange) ).css("color", "#2bbf7b");
-    	   });
-	   
-       }
-	   
+	    
 	   
 	   // Check if response is JSON format or bitmart's compressed websocket data, otherwise presume just a regular string
 	   if ( is_json(e.data) == true ) {
@@ -1339,105 +1668,32 @@ function api_connect(exchange) {
   
 	   // Render (IF market_id is defined)
 		if ( typeof market_id !== 'undefined' ) {
-			 
-		//console.log('asset = ' + asset);
-		//console.log('pairing = ' + pairing);
 		
 		update_key = js_safe_key(market_id, exchange);
 		
 			// To assure appropriate ticker updated
 			if ( typeof update_key !== 'undefined' ) {
+	
+	           // Using ".status_" + update_key INSTEAD, TO SHOW PER-ASSET 
+               if ( show_exchange_name == 'off' ) { 
+               $(".parenth_" + update_key).css({ "display": "none" });
+               }
+               else {
+               $(".parenth_" + update_key).css({ "display": "inline" });
+               $(".status_" + update_key).text( render_names(exchange) ).css("color", "#2bbf7b", "important");
+               }
+       
+        			
+        	parsed_market_id = market_id_parser(market_id, exchange);
+        					 
+        	asset = parsed_market_id.asset;
+        			
+        	pairing = parsed_market_id.pairing;
+        			
+			update_ticker(update_key, market_id, asset, pairing, price_raw, base_volume);
 			
-			parsed_market_id = market_id_parser(market_id, exchange);
-					 
-			asset = parsed_market_id.asset;
-			
-			pairing = parsed_market_id.pairing;
-			
-			trade_side = trade_type(price_raw, market_id);
-		 
-			market_info = asset_symbols(pairing);
-		 
-			market_symbol = market_info['asset_symbol'];
-			
-			// Price decimals (none if >= 100, 2 if >= 1, 'max_ticker_decimals' if < 1 )
-			price_decimals = ( price_raw >= 1 ? 2 : max_ticker_decimals );
-			price_decimals = ( price_raw >= 100 ? 0 : price_decimals );
-			
-			// If MINIMUM decimals IS set, and 'price_decimals' is smaller, force decimals to 'min_ticker_decimals'
-			price_decimals = ( min_ticker_decimals > price_decimals ? min_ticker_decimals : price_decimals );
-			
-			price_max_dec = parseFloat(price_raw).toFixed(price_decimals); // Set max decimals
-			
-			
-			   // If MINIMUM decimals NOT set, remove any trailing zeros in decimals
-			   if ( min_ticker_decimals == 0 ) {
-			   price = parseFloat(price_max_dec);
-			   }
-			   else {
-			   price = price_max_dec;
-			   }
-			   
-				
-			// HTML for rendering
-			ticker_item =
-				 "<div class='spacing'><div class='arrow_wrapper' style=''><span class='arrow " +
-				 trade_side +
-				 "'></span></div><span class='tick_text'>" + market_symbol +
-				 number_commas(price, price_decimals) +
-				 "</span></div>";
-				 
-			
-				// Volume logic
-				if ( typeof base_volume !== 'undefined' ) {
-					
-				volume_decimals = ( market_info['asset_type'] == 'crypto' ? 4 : 0 );
-				
-				base_volume = Number(base_volume).toFixed(volume_decimals);
-				
-				volume_item = 
-				 "<div class='spacing'>Vol: " + market_symbol +
-				 number_commas(base_volume, volume_decimals) +
-				 "</div>";
-				
-				}
-				else {
-					
-					if ( hide_empty_volume == 'yes' ) {
-					$("#volume_" + update_key).css({ "display": "none" });
-					volume_item = "<div class='spacing'></div>";
-					}
-					else {
-					volume_item = "<div class='spacing'>Vol: (not provided)</div>";
-					}
-					
-				}
-				 
-				 
-			// Render data to appropriate ticker
-			
-			$("#ticker_" + update_key).html(ticker_item);
-			
-			arrow_html(); // #MUST BE# AFTER TICKER RENDERING ABOVE
-				
-			$("#volume_" + update_key).html(volume_item);
-				
-				
-				// If monospace emulation is properly enabled, run it
-				if ( monospace_check() == true ) {
-					
-				monospace_rendering(document.querySelectorAll('#ticker_' + update_key)[0]);
-				
-					if ( typeof base_volume !== 'undefined' ) {
-					monospace_rendering(document.querySelectorAll('#volume_' + update_key)[0]);
-					}
-					 
-				}
-				
-				
 			}
 			
-		
 		}
 	   
 	   
@@ -1454,7 +1710,7 @@ function api_connect(exchange) {
 		    
 	    $(".status_wrapper_" + exchange).css({ "display": "inline" });
 	    
-	    $(".status_" + exchange).text("Connecting...").css("color", "#FFFF00");
+	    $(".status_" + exchange).text("Re-Connecting...").css("color", "#FFFF00", "important");
 	   
 	       if ( exchange == 'loopring' ) {
 	           
@@ -1463,12 +1719,12 @@ function api_connect(exchange) {
 	       loopring_config(); // GET A NEW TEMP KEY FROM LOOPRING'S REST API
 	       
 	           setTimeout(function() {
-	           api_connect(exchange);
+	           websocket_connect(exchange);
 	           }, 10000); // WAIT 10 SECONDS FOR GETTING A NEW TEMP KEY
 	       
 	       }
 	       else {
-	       api_connect(exchange);
+		   websocket_connect(exchange);
 	       }
 	       
 		
@@ -1483,7 +1739,7 @@ function api_connect(exchange) {
 	
 	$(".status_wrapper_" + exchange).css({ "display": "inline" });
 	    
-	$(".status_" + exchange).text("Error").css("color", "red");
+	$(".status_" + exchange).text("Error").css("color", "red", "important");
 	
 	console.log('Socket encountered error: ', err.message, 'Closing socket');
 	

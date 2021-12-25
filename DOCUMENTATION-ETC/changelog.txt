@@ -513,6 +513,22 @@ v3.05.2
 ---------------------------------------------------------
 
 
+---------------------------------------------------------
+v3.06.0
+
+-REST API endpoint support
+
+-Coingecko market data support
+
+-TONS more out-of-the-box support for fiat market pairings (bottom of config.js)
+
+-Code cleanup / optimizations
+
+-Misc. UX
+
+---------------------------------------------------------
+
+
 
 
 

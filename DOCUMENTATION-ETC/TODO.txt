@@ -26,18 +26,6 @@ OPTIMIZATIONS / BUGS / TESTS / UX / QA / OTHER SECTION
 ///////////////////////////////////////////////////////
 
 
-Create an EMULATED websocket function, so we can add non-websocket APIs like coingecko (use setTimeout to reload SAME FUNCTION / PARAMS ever X minutes based off config setting, or something like that).
-
-function emulate_websocket(params) {
-
-// logic here
-
-     // Rerun emulate_websocket(params) again after 5 minutes
-     setTimeout(function() {
-     emulate_websocket(params);
-     }, 300000);  // 300000 milliseconds = 5 minutes
-            
-}
 
 ///////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////
@@ -46,9 +34,6 @@ function emulate_websocket(params) {
 ///////////////////////////////////////////////////////
 API INTEGRATION SECTION
 ///////////////////////////////////////////////////////
-
-
-https://api.coingecko.com/api/v3/simple/price?ids=grape-2,invictus&vs_currencies=usd,eur&include_24hr_vol=true
 
 
 https://docs.bitfinex.com/reference#ws-public-ticker

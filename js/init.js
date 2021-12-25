@@ -4,12 +4,14 @@
 
 
 // Application version
-var app_version = '3.05.2';  // 2021/DECEMBER/16TH
+var app_version = '3.06.0';  // 2021/DECEMBER/24TH
 
 
 // BLANK var inits
 var api = [];
 var sockets = [];
+var rest_ids = [];
+var rest_other = [];
 var markets = [];
 var parsed_markets = [];
 var subscribe_msg = [];
@@ -28,6 +30,9 @@ var runtime_start = new Date().getTime();
 // Minimum-allowed error refresh time (if significant error requires refresh, to try auto-fixing it)
 var min_error_refresh_time = Number(auto_error_fix_min * 60000); // (in milliseconds)
 
+// REST API REFRESH TIME
+var rest_api_refresh_milliseconds = Number(rest_api_refresh * 60000); // (in milliseconds)
+
 //////////////////////////////////////////////////////////////////////////////////////
 
 // Load external google font CSS file if required
@@ -38,7 +43,7 @@ var google_font_css = load_google_font();
 
 // Initiate once page is fully loaded...
 $(document).ready(function() {
-	
+
 
 	// Custom google font
 	if ( google_font_css == false ) {
