@@ -156,11 +156,11 @@ OPTIONS="continue quit"
 select opt in $OPTIONS; do
         if [ "$opt" = "continue" ]; then
         echo " "
-        echo "Continuing with setup..."
+        echo "${green}Continuing with setup...${reset}"
         break
        elif [ "$opt" = "quit" ]; then
         echo " "
-        echo "Exiting setup..."
+        echo "${green}Exiting setup...${reset}"
         exit
         break
        fi
@@ -213,9 +213,9 @@ fi
 if [ -f /home/$APP_USER/slideshow-crypto-ticker/config.js ]; then
 echo "${yellow}A configuration file from a previous install of Slideshow Crypto Ticker has been detected on your system."
 echo " "
-echo "During this upgrade / re-install, it will be backed up to:"
+echo "${green}During this upgrade / re-install, it will be backed up to:"
 echo " "
-echo "/home/$APP_USER/slideshow-crypto-ticker/config.js.BACKUP.$DATE"
+echo "/home/$APP_USER/slideshow-crypto-ticker/config.js.BACKUP.$DATE${reset}"
 echo " "
 echo "This will save any custom settings within it."
 echo " "
@@ -228,11 +228,11 @@ echo "PLEASE REPORT ANY ISSUES HERE: https://github.com/taoteh1221/Slideshow_Cry
 echo " "
 
 
-echo "${yellow}THIS TICKER INSTALL #REQUIRES# RUNNING THE RASPBERRY PI GRAPHICAL DESKTOP INTERFACE (LXDE) AT STARTUP, AS THE USER: '${APP_USER}'"
+echo "${red}THIS TICKER INSTALL #REQUIRES# RUNNING THE RASPBERRY PI GRAPHICAL DESKTOP INTERFACE (LXDE) AT STARTUP, AS THE USER: '${APP_USER}'${reset}"
 echo " "
 
   				
-echo "Select 1 or 2 to choose whether to continue, or quit.${reset}"
+echo "${yellow}Select 1 or 2 to choose whether to continue, or quit.${reset}"
 echo " "
 
 OPTIONS="continue quit"
@@ -748,7 +748,7 @@ echo "${reset} "
 fi
 
 
-echo "${yellow}TICKER AUTO-START #REQUIRES# RUNNING THE RASPBERRY PI GRAPHICAL DESKTOP INTERFACE (LXDE) AT STARTUP, AS THE USER: '${APP_USER}'${reset}"
+echo "${red}TICKER AUTO-START #REQUIRES# RUNNING THE RASPBERRY PI GRAPHICAL DESKTOP INTERFACE (LXDE) AT STARTUP, AS THE USER: '${APP_USER}'${reset}"
 echo " "
 
 echo "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
