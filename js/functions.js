@@ -825,11 +825,12 @@ console.log('render_interface'); // DEBUGGING
 function rest_connect(exchange) {
 
 		
-	if ( debug_mode == 'on' ) {
-    console.log('rest_connect'); // DEBUGGING
-    }
+   if ( debug_mode == 'on' ) {
+   console.log('rest_connect'); // DEBUGGING
+   }
     
-  
+   
+   // Get REST API endpoint data
    $.get(api[exchange], function(data) {
    
    
@@ -839,69 +840,78 @@ function rest_connect(exchange) {
 	   console.log(data);
 	   }
 		
-	    
-       Object.keys(rest_ids[exchange]).forEach(function(api_id) {
-           
-           
-           Object.keys(rest_ids[exchange][api_id]).forEach(function(market_id) {
-           
-           market_id = rest_ids[exchange][api_id][market_id];
-          
-          
-        	   // Render (IF market_id is defined)
-        		if ( typeof market_id !== 'undefined' ) {
-        		
-        		update_key = js_safe_key(api_id + market_id, exchange);
-                
-        		
-        			// To assure appropriate ticker updated
-        			if ( typeof update_key !== 'undefined' ) {
-                       
-        			
-        			parsed_market_id = market_id_parser(market_id, exchange);
-        					 
-        			asset = parsed_market_id.asset;
-        			
-        			pairing = parsed_market_id.pairing;
-        			
-        			
-        			  if ( typeof data[api_id] !== 'undefined' ) {
-            		  price_raw = data[api_id][pairing.toLowerCase()];
-            		  volume_raw = data[api_id][pairing.toLowerCase() + '_24h_vol'];
-        			  }
-        			  else if ( typeof data !== 'undefined' ) {
-            		  price_raw = false;
-            		  volume_raw = false;
-        			  }
-        			  else {
-            		  price_raw = 0;
-            		  volume_raw = 0;
-        			  }
-    				 
-            				 
-                    base_volume = pair_volume('pairing', price_raw, volume_raw);
-            		   
-        		    update_ticker(update_key, market_id, asset, pairing, price_raw, base_volume, exchange);
-        				
-        			}
-        			
-        		
-        		}
+       
+       // Coingecko
+       if ( exchange == 'coingecko' )	{
+    	    
+    	    
+           Object.keys(rest_ids[exchange]).forEach(function(api_id) {
+               
+               
+               Object.keys(rest_ids[exchange][api_id]).forEach(function(market_id) {
+               
+               market_id = rest_ids[exchange][api_id][market_id];
+              
+              
+            	   // Render (IF market_id is defined)
+            		if ( typeof market_id !== 'undefined' ) {
+            		
+            		update_key = js_safe_key(api_id + market_id, exchange);
+                    
+            		
+            			// To assure appropriate ticker updated
+            			if ( typeof update_key !== 'undefined' ) {
+                           
+            			
+            			parsed_market_id = market_id_parser(market_id, exchange);
+            					 
+            			asset = parsed_market_id.asset;
+            			
+            			pairing = parsed_market_id.pairing;
+            			
+            			
+            			  if ( typeof data[api_id] !== 'undefined' ) {
+                		  price_raw = data[api_id][pairing.toLowerCase()];
+                		  volume_raw = data[api_id][pairing.toLowerCase() + '_24h_vol'];
+            			  }
+            			  else if ( typeof data !== 'undefined' ) {
+                		  price_raw = false;
+                		  volume_raw = false;
+            			  }
+            			  else {
+                		  price_raw = 0;
+                		  volume_raw = 0;
+            			  }
+        				 
+                				 
+                        base_volume = pair_volume('pairing', price_raw, volume_raw);
+                		   
+            		    update_ticker(update_key, market_id, asset, pairing, price_raw, base_volume, exchange);
+            				
+            			}
+            			
+            		
+            		}
+            	   
+                    	
+                });
         	   
                 	
             });
-    	   
-            	
-        });
-	
+    	
+    	
+       } // END coingecko
 
-	})
+
+   }) // END .get
    
+   
+   // If .get endpoint fails
    .fail(function() {
    $(".status_wrapper_" + exchange).css({ "display": "inline" });
    $(".status_" + exchange).text("Error").css("color", "red", "important");
    });
-	
+
 
    // Rerun rest_connect() again after rest_api_refresh_milliseconds
    setTimeout(function() {
@@ -1100,7 +1110,7 @@ alph_symb_regex = /^[a-z0-9\/\-_|:]+$/i;
 	rest_other[exchange] = [];
 		
 		
-		// REST APIs
+		// REST API configs
 	
 		// Coingecko
 		if ( exchange == 'coingecko' ) {
@@ -1170,16 +1180,16 @@ alph_symb_regex = /^[a-z0-9\/\-_|:]+$/i;
         api[exchange] = 'https://api.coingecko.com/api/v3/simple/price?ids=' + ids + '&vs_currencies=' + currencies + '&include_24hr_vol=true';
 		
 		
-		}
+		} // END Coingecko
 		
 	    
-        // Skip invalid exchange configs (RUN #AFTER# REST APIs CONFIGS / #BEFORE# WEBSOCKET APIs CONFIGS)
+        // Skip invalid exchange configs (RUN #AFTER# REST API CONFIGS / #BEFORE# WEBSOCKET API CONFIGS)
         if ( valid_endpoint(exchange) == false ) {
         return;
         }
 		
 		
-		// WEBSOCKET APIs
+		// WEBSOCKET API configs
 		
 		// Coinbase
 		if ( exchange == 'coinbase' ) {
