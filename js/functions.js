@@ -597,7 +597,7 @@ market_key = js_safe_key(market_id, exchange);
 
 	html = '<div id="wrapper_' + market_key + '" class="asset_tickers">'+
     
-	'<div class="title" style="font-size: '+title_size+'px; font-weight: '+font_weight+';"><span id="asset_' + market_key + '">' + asset + '</span> <span class="status_wrapper_'+exchange+'"><span class="parenth_'+market_key+'">(<span class="status status_'+exchange+' status_'+market_key+'">Loading...</span>)</span></span></div>'+
+	'<div class="title" style="font-size: '+title_size+'px; font-weight: '+font_weight+';"><span id="asset_' + market_key + '">' + asset + '</span> <span class="status_wrapper_'+exchange+'"><span class="parenth_'+market_key+'">(<span class="status status_'+exchange+' status_'+market_key+'">Loading</span>)</span></span></div>'+
 	
 	'<div class="ticker" style="font-size: '+ticker_size+'px; font-weight: '+font_weight+';" id="ticker_' + market_key + '"></div>'+
     
@@ -926,7 +926,7 @@ price_raw = scientificToDecimal(price_raw); // Convert scientific format to stri
 	   // Using ".status_" + update_key INSTEAD, TO SHOW PER-ASSET 
        if ( price_raw == 0 ) {
        $(".parenth_" + update_key).css({ "display": "inline" });
-       $(".status_" + update_key).text("Loading...").css("color", "#FFFF00");
+       $(".status_" + update_key).text("Loading").css("color", "#FFFF00");
        return;
        }
        else if ( show_exchange_name == 'off' ) {
@@ -1710,7 +1710,7 @@ function websocket_connect(exchange) {
 		    
 	    $(".status_wrapper_" + exchange).css({ "display": "inline" });
 	    
-	    $(".status_" + exchange).text("Re-Connecting...").css("color", "#FFFF00", "important");
+	    $(".status_" + exchange).text("Reloading").css("color", "#FFFF00", "important");
 	   
 	       if ( exchange == 'loopring' ) {
 	           
