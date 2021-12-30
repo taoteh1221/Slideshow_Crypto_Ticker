@@ -22,7 +22,7 @@ var exchange_markets = []; // LEAVE ALONE, AND DON'T DELETE (REQUIRED!)
 
 // Binance formatting example:  'btcusdt|ethusdt|ethbtc|mkrusdt'
 
-// CoinGecko formatting example: 'bitcoin:btc/usd|bitcoin:btc/eur|bitcoin:btc/chf|grape-2:grape/usd|invictus:in/usd|raydium:ray/btc'
+// CoinGecko formatting example: 'bitcoin:btc/usd|bitcoin:btc/eur|bitcoin:btc/chf|invictus:in/usd|raydium:ray/btc'
 
 // Loopring formatting example: 'LRC-USDT|LRC-ETH'
 
@@ -55,7 +55,7 @@ exchange_markets['coinbase'] = 'BTC-USD|SOL-USD|SOL-BTC|ETH-USD';
 // USE COINGECKO'S API ID FOR EACH ASSET! (SEE COINGECKO ASSET PAGE'S INFO SECTION) 
 // PAIRING ASSET MUST BE SUPPORTED BY COINGECKO'S 'vs_currencies' API PARAMETER!
 // FORMAT IS 'api-id-here:symbol/pairing'
-exchange_markets['coingecko'] = 'ethereum:eth/btc|grape-2:grape/usd|invictus:in/usd|mysterium:myst/usd';
+exchange_markets['coingecko'] = 'ethereum:eth/btc|invictus:in/usd|mysterium:myst/usd';
 ////
 ////
 // Binance markets (set to '' to disable)
