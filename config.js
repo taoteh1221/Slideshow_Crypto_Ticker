@@ -48,14 +48,14 @@ exchange_markets['bitfinex'] = '';
 ////
 ////
 // Coinbase markets (set to '' to disable)
-exchange_markets['coinbase'] = 'BTC-USD|SOL-USD|SOL-BTC|ETH-USD'; 
+exchange_markets['coinbase'] = 'BTC-USD|ETH-USD|ETH-BTC|SOL-USD'; 
 ////
 //// 
 // Coingecko markets (set to '' to disable)
 // USE COINGECKO'S API ID FOR EACH ASSET! (SEE COINGECKO ASSET PAGE'S INFO SECTION) 
 // PAIRING ASSET MUST BE SUPPORTED BY COINGECKO'S 'vs_currencies' API PARAMETER!
 // FORMAT IS 'api-id-here:symbol/pairing'
-exchange_markets['coingecko'] = 'ethereum:eth/btc|grape-2:grape/usd|invictus:in/usd|mysterium:myst/usd';
+exchange_markets['coingecko'] = 'solana:sol/btc|grape-2:grape/usd|invictus:in/usd|mysterium:myst/usd';
 ////
 ////
 // Binance markets (set to '' to disable)
@@ -85,7 +85,7 @@ exchange_markets['hitbtc'] = '';
 ////
 ////
 // Bitmart markets (set to '' to disable) 
-exchange_markets['gateio'] = 'SLRS_USDT|SAMO_USDT';
+exchange_markets['gateio'] = 'SLC_USDT|SLRS_USDT|SAMO_USDT';
 ////
 ////
 // Bitmart markets (set to '' to disable) 
@@ -122,7 +122,7 @@ var show_empty_volume = 'on'; // 'off' / 'on', Default = 'on'
 
 // Seconds between "slideshowing" multiple tickers (if multiple assets configured)
 // SET TO 0 FOR AUTO MODE (trys to show all tickers in 1 minute, BUT has a 5 second per-ticker MINIMUM)
-var slideshow_speed = 5; // Default = 5
+var slideshow_speed = 4; // Default = 4
 
 
 // Slideshow transition speed (fade out / fade in) IN SECONDS (can be decimals)
