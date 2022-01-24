@@ -254,7 +254,7 @@ function rest_connect(exchange) {
    // If .get endpoint fails
    .fail(function() {
    $(".status_wrapper_" + exchange).css({ "display": "inline" });
-   $(".status_" + exchange).text("Error").css("color", "red", "important");
+   $(".status_" + exchange).text("Error").css("color", "#fc4e4e", "important");
    });
 
 
@@ -985,7 +985,7 @@ function websocket_connect(exchange) {
 	
 	$(".status_wrapper_" + exchange).css({ "display": "inline" });
 	    
-	$(".status_" + exchange).text("Error").css("color", "red", "important");
+	$(".status_" + exchange).text("Error").css("color", "#fc4e4e", "important");
 	
 	console.log('Socket encountered error: ', err.message, 'Closing socket');
 	

@@ -179,6 +179,7 @@ margin-top: 10px;
 z-index: 9999999;
 background: #808080;
 padding: 10px;
+min-width: 90%;
 border-radius: 5px;
 text-align: center;
 font-weight: bold;

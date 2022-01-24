@@ -4,7 +4,7 @@
 
 
 // Application version
-var app_version = '3.07.1';  // 2022/JANUARY/24TH
+var app_version = '3.07.2';  // 2022/JANUARY/24TH
 
 
 // BLANK var inits
@@ -52,7 +52,7 @@ is_online = navigator.onLine;
     console.log('Internet is offline');
     is_online = false;
     $("#internet_alert").css({ "display": "block" });
-    $("#internet_alert").text("Internet offline!").css("color", "red"); 
+    $("#internet_alert").text("Internet is offline!").css("color", "#fc4e4e"); 
     });
     
 
@@ -65,12 +65,12 @@ is_online = navigator.onLine;
         is_online = true;   
         
     $("#internet_alert").css({ "display": "block" });
-    $("#internet_alert").text("Online, reloading...").css("color", "#FFFF00");        
+    $("#internet_alert").text("Internet is back online, reloading in 60 seconds...").css("color", "#FFFF00");        
         
-            // Wait 5 additional seconds for internet connectivity to be fully restored
+            // Wait 1 minute for internet connectivity to be fully restored
             setTimeout(function() {
             location.reload(true); // Reload app, to avoid blank screen after losing internet
-            }, 5000);  // 5000 milliseconds = 5 seconds
+            }, 60000);  // 60000 milliseconds = 1 minute
             
         }
         

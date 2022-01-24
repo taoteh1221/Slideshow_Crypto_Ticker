@@ -510,7 +510,7 @@ console.log('render_interface'); // DEBUGGING
     else if ( market_config() == false ) {
     console.log('No internet connection...');
     $("#internet_alert").css({ "display": "block" });
-    $("#internet_alert").text("Internet Offline!").css("color", "red"); 
+    $("#internet_alert").text("Internet is Offline!").css("color", "#fc4e4e"); 
     return;
     }
     // Wait for market_config()
