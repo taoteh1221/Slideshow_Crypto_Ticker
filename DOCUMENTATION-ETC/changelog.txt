@@ -538,9 +538,13 @@ v3.07.0
 
 
 ---------------------------------------------------------
-v3.08.0
+v3.07.1
 
--
+-Fix for blank screen after losing internet
+
+-Warning if internet is offline
+
+-Code cleanup
 
 ---------------------------------------------------------
 

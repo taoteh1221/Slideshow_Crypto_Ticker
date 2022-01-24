@@ -4,7 +4,7 @@
 
 
 // Application version
-var app_version = '3.08.0';  // 2022/JANUARY/7TH
+var app_version = '3.07.1';  // 2022/JANUARY/24TH
 
 
 // BLANK var inits
@@ -22,6 +22,7 @@ var markets_length = 0;
 var api_alert; 
 var kucoin_alert; 
 var loopring_alert; 
+var is_online;
 // END BLANK var inits
 
 // Save what time the app started running (works fine with refresh)
@@ -43,6 +44,37 @@ var google_font_css = load_google_font();
 
 // Initiate once page is fully loaded...
 $(document).ready(function() {
+
+is_online = navigator.onLine; 
+
+
+    window.addEventListener("offline", function() {
+    console.log('Internet is offline');
+    is_online = false;
+    $("#internet_alert").css({ "display": "block" });
+    $("#internet_alert").text("Internet offline!").css("color", "red"); 
+    });
+    
+
+    window.addEventListener("online", function() {
+        
+        if ( is_online == false ) {
+            
+        console.log('Internet is back online');
+        
+        is_online = true;   
+        
+    $("#internet_alert").css({ "display": "block" });
+    $("#internet_alert").text("Online, reloading...").css("color", "#FFFF00");        
+        
+            // Wait 5 additional seconds for internet connectivity to be fully restored
+            setTimeout(function() {
+            location.reload(true); // Reload app, to avoid blank screen after losing internet
+            }, 5000);  // 5000 milliseconds = 5 seconds
+            
+        }
+        
+    });
 
 
 	// Custom google font

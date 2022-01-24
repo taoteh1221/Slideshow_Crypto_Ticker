@@ -168,5 +168,23 @@ top: 0px;
 }
 
 
+#internet_alert {
+position: absolute;
+  top: 0%;
+  left: 50%;
+  transform: translate(-50%, -0%);
+  opacity: 0.9;
+margin: auto;
+margin-top: 10px;
+z-index: 9999999;
+background: #808080;
+padding: 10px;
+border-radius: 5px;
+text-align: center;
+font-weight: bold;
+font-size: 7.5vw;
+display: none;
+}
+
 
 
