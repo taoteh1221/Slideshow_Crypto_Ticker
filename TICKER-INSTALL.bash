@@ -742,7 +742,7 @@ echo "${reset} "
 
 else
 
-echo "${yellow}You must restart your device to activate the ticker, by running this command:"
+echo "${red}You must restart your device to activate the ticker, by running this command:"
 echo " "
 echo "sudo reboot"
 echo "${reset} "
@@ -762,7 +762,7 @@ echo " "
 
 
 echo " "
-echo "Also check out my 100% FREE open source private cryptocurrency investment portfolio tracker,"
+echo "Also check out my 100% FREE open source PRIVATE cryptocurrency investment portfolio tracker,"
 echo "with email / text / Alexa / Ghome / Telegram alerts, charts, mining calculators,"
 echo "leverage / gain / loss / balance stats, news feeds and more:"
 echo " "
