@@ -85,7 +85,7 @@ exchange_markets['hitbtc'] = '';
 ////
 ////
 // Bitmart markets (set to '' to disable) 
-exchange_markets['gateio'] = 'SLC_USDT|SLRS_USDT|SAMO_USDT';
+exchange_markets['gateio'] = 'SLC_USDT|RNDR_USDT|SLRS_USDT|SAMO_USDT';
 ////
 ////
 // Bitmart markets (set to '' to disable) 

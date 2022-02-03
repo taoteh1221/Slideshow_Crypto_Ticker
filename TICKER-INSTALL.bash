@@ -373,6 +373,7 @@ select opt in $OPTIONS; do
 				rm -rf .github > /dev/null 2>&1
 				rm .gitattributes > /dev/null 2>&1
 				rm .gitignore > /dev/null 2>&1
+				rm .whitesource > /dev/null 2>&1
 				rm CODEOWNERS > /dev/null 2>&1
 				rm /home/$APP_USER/slideshow-crypto-ticker/bash/switch-display.bash > /dev/null 2>&1
 				rm /home/$APP_USER/slideshow-crypto-ticker/bash/chromium-refresh.bash > /dev/null 2>&1
