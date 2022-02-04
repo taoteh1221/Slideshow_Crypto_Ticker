@@ -198,6 +198,12 @@ var rest_api_refresh = 5; // Default = 5
 var auto_error_fix_min = 5; // Default = 5
 
 
+// Enable / disable upgrade check / notice (top right corner of app screen, when an newer version is available for download)
+// (Checks latest release version via github.com API endpoint value "tag_name" 
+// @ https://api.github.com/repos/taoteh1221/Slideshow_Crypto_Ticker/releases/latest)
+var upgrade_notice = 'on'; // 'on' / 'off', Default = 'on'
+
+
 // DEBUG MODE (turns on console logging for certain logic)
 var debug_mode = 'off'; // 'on' / 'off', Default = 'off'
 

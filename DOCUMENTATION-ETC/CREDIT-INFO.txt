@@ -1,4 +1,0 @@
-
-Built of snippet at: https://codepad.co/snippet/bitcoin-ticker-with-html-css-and-js
-
-Coinbase Pro websocket docs: https://docs.pro.coinbase.com/?r=1#the-ticker-channel

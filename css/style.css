@@ -188,4 +188,28 @@ display: none;
 }
 
 
+#upgrade_alert {
+position: absolute;
+  top: 0.4vw;
+  right: 1.0vw;
+  opacity: 0.33;
+z-index: 9999998;
+background: none;
+padding: 0.15vw;
+width: auto;
+text-align: center;
+font-weight: bold;
+font-size: 1.3vw;
+display: none;
+}
+
+
+#upgrade_icon {
+position: absolute;
+  top: 0.1vw;
+  left: -3.6vw;
+height: 100%;
+}
+
+
 

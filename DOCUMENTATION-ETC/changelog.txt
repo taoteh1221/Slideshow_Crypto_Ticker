@@ -562,6 +562,8 @@ v3.07.3
 
 -EVEN MORE fixes for blank screen after losing internet connectivity
 
+-Upgrade check / notice, and corrisponding new config.js setting to turn on / off
+
 ---------------------------------------------------------
 
 

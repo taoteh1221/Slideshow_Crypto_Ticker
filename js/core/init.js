@@ -77,6 +77,23 @@ is_online = navigator.onLine;
         
     });
 
+    
+    // Upgrade checks
+    if ( upgrade_notice == 'on' ) {
+        
+    	$.get( "https://api.github.com/repos/taoteh1221/Slideshow_Crypto_Ticker/releases/latest", function(data) {
+    	    
+    	var latest_version = data.tag_name;
+    	
+    	   if ( app_version != latest_version ) {
+           $("#upgrade_alert").css({ "display": "block" });
+           $("#upgrade_alert").html("<img id='upgrade_icon' src='images/upload-cloud-fill.svg' />Upgrade available: v" + latest_version + "<br />(running v" + app_version + ")").css("color", "#FFFF00"); 
+    	   }
+    	   
+    	});
+	
+	}
+	
 
 	// Custom google font
 	if ( google_font_css == false ) {

@@ -1,0 +1,10 @@
+
+Built off snippet example at: https://codepad.co/snippet/bitcoin-ticker-with-html-css-and-js
+
+Original author's snippet description at above URL:
+
+Bitcoin Ticker with HTML, CSS, and JS (Realtime via www.gdax.com).
+Bitcoin Ticker Widget displays and monitors the current BTC exchange rates.
+
+Feel free to edit this code, #enjoy
+Twitter @_anesena #chaoo
