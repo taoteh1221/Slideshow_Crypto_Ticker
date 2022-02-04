@@ -500,19 +500,21 @@ var scientificToDecimal = function (num) {
 function reload_check() {
 
 
-                // If no reload is queued
+                // Reload IS queued
                 if ( reload_queued == true ) {
                     
                 console.log('App reload countdown started...');
                     
-    			reload_countdown = app_reload_wait;
+                // Set reload_countdown with config.js value 
+                // (we don't want to use directly and overwrite user settings during countdown)
+    			reload_countdown = app_reload_wait; 
     			
                 	window.reload_logic = setInterval(function () {
                 	
-                	
+                	        // Cancel any running reload countdown logic (internet back offline, etc)
                 	        if ( is_online == false ) {
-		                    clearInterval(window.reload_logic); // Cancel any running reload countdown logic (internet back offline, etc)
-                            reload_countdown = -1; // Reset default
+		                    clearInterval(window.reload_logic); 
+                            reload_countdown = -1; // Reset to default
                             console.log('App reload canceled.');
                 	        return;
                 	        }
@@ -526,19 +528,20 @@ function reload_check() {
                  		    location.reload(true); // Full reload (NOT from cache)
             				}
                 
-                
                  	reload_countdown-- || clearInterval(reload_countdown);  // Clear if 0 reached
                  
                  	}, 1000);
                    
                 }
+                // Reload NOT queued
                 else {
                     
+                    // Cancel any running reload countdown logic (internet back offline, etc)
             		if ( window.reload_logic ) {
-            		clearInterval(window.reload_logic); // Cancel any running reload countdown logic (internet back offline, etc)
+            		clearInterval(window.reload_logic); 
             		}
 
-                reload_countdown = -1; // Reset default
+                reload_countdown = -1; // Reset to default
                 console.log('App reload canceled.');
                 return;
                 
