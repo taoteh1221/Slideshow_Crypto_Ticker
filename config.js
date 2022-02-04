@@ -120,7 +120,7 @@ var show_exchange_name = 'on'; // 'on' / 'off', Default = 'on'
 var show_empty_volume = 'on'; // 'off' / 'on', Default = 'on'
 
 
-// Seconds between "slideshowing" multiple tickers (if multiple assets configured)
+// SECONDS between "slideshowing" multiple tickers (if multiple assets configured)
 // SET TO 0 FOR AUTO MODE (trys to show all tickers in 1 minute, BUT has a 5 second per-ticker MINIMUM)
 var slideshow_speed = 4; // Default = 4
 
@@ -182,12 +182,17 @@ var google_font = 'Varela Round'; // Default = 'Varela Round'
 var monospace_width = 0.65; // Default = 0.65
 
 
-// Minutes before refreshing non-websocket API endpoints (coingecko)
+// SECONDS to wait before reloading app after internet outages
+// #DON'T ADJUST TOO LOW#, OR DEVICE'S INTERNET MAY NOT BE #FULLY / STABALY# BACK ONLINE YET!
+var app_reload_wait = 60; // Default = 60
+
+
+// MINUTES before refreshing non-websocket API endpoints (coingecko)
 // #DON'T ADJUST TOO LOW#, OR NON-WEBSOCKET APIs LIKE COINGECKO MAY DROP YOUR CONNECTION!
 var rest_api_refresh = 5; // Default = 5
 
 
-// Minimum number of minutes to wait before auto-reloading the app IF ERRORS ARE DETECTED THAT MAY BE FIXED WITH A RELOAD
+// Minimum number of MINUTES to wait before auto-reloading the app IF ERRORS ARE DETECTED THAT MAY BE FIXED WITH A RELOAD
 // (#NOT# USED FOR DROPPED API CONNECTIONS, SINCE WE AUTO-RECONNECT WITHOUT RELOADING EVERYTHING, but this is very helpful
 // if the kucoin API token expires / any other javascript app cache variables need to be reloaded with new values)
 var auto_error_fix_min = 5; // Default = 5

@@ -497,6 +497,60 @@ var scientificToDecimal = function (num) {
 /////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
+function reload_check() {
+
+
+                // If no reload is queued
+                if ( reload_queued == true ) {
+                    
+                console.log('App reload countdown started...');
+                    
+    			reload_countdown = app_reload_wait;
+    			
+                	window.reload_logic = setInterval(function () {
+                	
+                	
+                	        if ( is_online == false ) {
+		                    clearInterval(window.reload_logic); // Cancel any running reload countdown logic (internet back offline, etc)
+                            reload_countdown = -1; // Reset default
+                            console.log('App reload canceled.');
+                	        return;
+                	        }
+                	        
+            				
+            				if ( reload_countdown > 0 ) {
+                            $("#internet_alert").html("Internet back online, reloading...<br />(in " + reload_countdown + " seconds)").css("color", "#FFFF00");
+            				}
+            				else if ( reload_countdown === 0 ) {
+                            reload_queued = false; // Just for clean / readable code's sake
+                 		    location.reload(true); // Full reload (NOT from cache)
+            				}
+                
+                
+                 	reload_countdown-- || clearInterval(reload_countdown);  // Clear if 0 reached
+                 
+                 	}, 1000);
+                   
+                }
+                else {
+                    
+            		if ( window.reload_logic ) {
+            		clearInterval(window.reload_logic); // Cancel any running reload countdown logic (internet back offline, etc)
+            		}
+
+                reload_countdown = -1; // Reset default
+                console.log('App reload canceled.');
+                return;
+                
+                }
+
+
+}
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
 function render_interface() {
 
 console.log('render_interface'); // DEBUGGING
@@ -506,11 +560,12 @@ console.log('render_interface'); // DEBUGGING
     if ( Object.keys(markets).length > 0 ) {
     console.log('market_config was already setup, skipping.');
     }
-    // Wait for market_config()
-    else if ( market_config() == false ) {
-    console.log('No internet connection...');
+    // If offline
+    else if ( is_online == false ) {
+    reload_queued = true;
+    console.log('No internet connection, interface rendering stopped...');
     $("#internet_alert").css({ "display": "block" });
-    $("#internet_alert").text("Internet is Offline!").css("color", "#fc4e4e"); 
+    $("#internet_alert").text("Internet Offline!").css("color", "#fc4e4e"); 
     return;
     }
     // Wait for market_config()

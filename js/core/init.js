@@ -4,7 +4,7 @@
 
 
 // Application version
-var app_version = '3.07.2';  // 2022/JANUARY/24TH
+var app_version = '3.07.3';  // 2022/FEBUARY/4TH
 
 
 // BLANK var inits
@@ -18,6 +18,8 @@ var subscribe_msg = [];
 var trade_side_price = [];
 var trade_side_arrow = [];
 var markets_length = 0;
+var reload_queued = false;
+var reload_countdown = -1;
 // BELOW MUST at least be set as 'undefined' here
 var api_alert; 
 var kucoin_alert; 
@@ -49,28 +51,27 @@ is_online = navigator.onLine;
 
 
     window.addEventListener("offline", function() {
-    console.log('Internet is offline');
+    console.log('Internet is offline.');
     is_online = false;
+    reload_queued = true;
     $("#internet_alert").css({ "display": "block" });
-    $("#internet_alert").text("Internet is offline!").css("color", "#fc4e4e"); 
+    $("#internet_alert").text("Internet offline!").css("color", "#fc4e4e"); 
     });
     
 
     window.addEventListener("online", function() {
         
+        // Only run logic if we were offline LAST CHECK
         if ( is_online == false ) {
-            
-        console.log('Internet is back online');
         
         is_online = true;   
+            
+        console.log('Internet is back online.');
         
-    $("#internet_alert").css({ "display": "block" });
-    $("#internet_alert").text("Internet is back online, reloading in 60 seconds...").css("color", "#FFFF00");        
+        $("#internet_alert").css({ "display": "block" });
+        $("#internet_alert").html("Internet back online, reloading...<br />(in " + app_reload_wait + " seconds)").css("color", "#FFFF00");        
         
-            // Wait 1 minute for internet connectivity to be fully restored
-            setTimeout(function() {
-            location.reload(true); // Reload app, to avoid blank screen after losing internet
-            }, 60000);  // 60000 milliseconds = 1 minute
+        reload_check();
             
         }
         
