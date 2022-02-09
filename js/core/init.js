@@ -4,7 +4,7 @@
 
 
 // Application version
-var app_version = '3.07.3';  // 2022/FEBUARY/4TH
+var app_version = '3.07.4';  // 2022/FEBUARY/9TH
 
 
 // BLANK var inits
@@ -23,7 +23,6 @@ var reload_countdown = -1;
 // BELOW MUST at least be set as 'undefined' here
 var api_alert; 
 var kucoin_alert; 
-var loopring_alert; 
 var is_online;
 // END BLANK var inits
 

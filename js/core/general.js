@@ -564,17 +564,11 @@ console.log('render_interface'); // DEBUGGING
     console.log('market_config was already setup, skipping.');
     }
     // If offline
-    else if ( is_online == false ) {
+    else if ( market_config() == 'offline' ) {
     reload_queued = true;
     console.log('No internet connection, interface rendering stopped...');
     $("#internet_alert").css({ "display": "block" });
     $("#internet_alert").text("Internet Offline!").css("color", "#fc4e4e"); 
-    return;
-    }
-    // Wait for market_config()
-    else if ( market_config() == 'wait' ) {
-    console.log('Waiting for market_config to complete processing...');
-    setTimeout(render_interface, 1000); // Wait 1000 millisecnds then recheck
     return;
     }
     

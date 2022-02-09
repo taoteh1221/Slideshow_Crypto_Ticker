@@ -16,21 +16,19 @@ var exchange_markets = []; // LEAVE ALONE, AND DON'T DELETE (REQUIRED!)
 
 // Bitfinex formatting example  (MULTIPLE TICKERS NOT SUPPORTED): 'BTCEUR', OR 'PLANETS:UST' FOR OVER 4 CHARACTER SYMBOLS
 
-// Hitbtc formatting example    (MULTIPLE TICKERS NOT SUPPORTED): 'MYSTBTC'
-
 // Coinbase formatting example: 'BTC-USD|BTC-GBP|ETH-USD|ETH-BTC|ETH-EUR|MKR-USD|MKR-BTC|MANA-USDC'
 
 // Binance formatting example:  'btcusdt|ethusdt|ethbtc|mkrusdt'
 
-// CoinGecko formatting example: 'bitcoin:btc/usd|bitcoin:btc/eur|bitcoin:btc/chf|grape-2:grape/usd|invictus:in/usd|raydium:ray/btc'
-
-// Loopring formatting example: 'LRC-USDT|LRC-ETH'
-
-// Kraken formatting example:   'XBT/USD|XBT/CAD|XBT/EUR|ETH/USD|ETH/EUR|ETH/CAD'
+// CoinGecko formatting example: 'bitcoin:btc/usd|bitcoin:btc/eur|bitcoin:btc/chf|grape-2:grape/usd|raydium:ray/btc'
 
 // Kucoin formatting example:   'MANA-USDT|ENJ-BTC'
 
+// Kraken formatting example:   'XBT/USD|XBT/CAD|XBT/EUR|ETH/USD|ETH/EUR|ETH/CAD'
+
 // Okex formatting example:     'ENJ-USDT|ENJ-BTC'
+
+// Hitbtc formatting example    (MULTIPLE TICKERS NOT SUPPORTED): 'ETHBTC'
 
 // Gate.io formatting example:  'MANA_USDT|SAMO_USDT'
 
@@ -55,24 +53,20 @@ exchange_markets['coinbase'] = 'BTC-USD|ETH-USD|ETH-BTC|SOL-USD';
 // USE COINGECKO'S API ID FOR EACH ASSET! (SEE COINGECKO ASSET PAGE'S INFO SECTION) 
 // PAIRING ASSET MUST BE SUPPORTED BY COINGECKO'S 'vs_currencies' API PARAMETER!
 // FORMAT IS 'api-id-here:symbol/pairing'
-exchange_markets['coingecko'] = 'solana:sol/btc|grape-2:grape/usd|invictus:in/usd|mysterium:myst/usd';
+exchange_markets['coingecko'] = 'solana:sol/btc|grape-2:grape/usd';
 ////
 ////
 // Binance markets (set to '' to disable)
-exchange_markets['binance'] = 'hntusdt|lrcusdt'; 
-////
-////
-// Loopring markets (set to '' to disable) 
-exchange_markets['loopring'] = 'LRC-ETH';
-////
-////
-// Kraken markets (set to '' to disable)
-exchange_markets['kraken'] = 'ENJ/USD'; 
+exchange_markets['binance'] = 'hntusdt|enjusdt'; 
 ////
 ////
 // Kucoin markets (set to '' to disable)
 // !!KUCOIN REQUIRES USING THE INSTALL SCRIPT!!
 exchange_markets['kucoin'] = 'MANA-USDT'; 
+////
+////
+// Kraken markets (set to '' to disable)
+exchange_markets['kraken'] = ''; 
 ////
 ////
 // OKex markets (set to '' to disable) 
@@ -84,8 +78,8 @@ exchange_markets['okex'] = '';
 exchange_markets['hitbtc'] = ''; 
 ////
 ////
-// Bitmart markets (set to '' to disable) 
-exchange_markets['gateio'] = 'SLC_USDT|RNDR_USDT|SLRS_USDT|SAMO_USDT';
+// Gateio markets (set to '' to disable) 
+exchange_markets['gateio'] = 'SLC_USDT|RNDR_USDT|SLRS_USDT|BIT_USDT|SAMO_USDT';
 ////
 ////
 // Bitmart markets (set to '' to disable) 

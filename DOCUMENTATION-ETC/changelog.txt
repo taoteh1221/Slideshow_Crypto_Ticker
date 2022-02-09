@@ -567,6 +567,16 @@ v3.07.3
 ---------------------------------------------------------
 
 
+---------------------------------------------------------
+v3.07.4
+
+-EVEN MORE fixes for blank screen (removed unresponsive loopring websocket API)
+
+-Removal of Loopring market support (poor API UX)
+
+---------------------------------------------------------
+
+
 
 
 

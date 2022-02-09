@@ -111,59 +111,6 @@ return parsed_markets[market_id];
 }
 
 
-/////////////////////////////////////////////////////////////
-
-
-function loopring_config() {
-    
-    
-    if  ( window.loopring_alert == 1 ) {
-    return;
-    }
-    else {
-	window.loopring_alert = 1; 
-    }
-
-    
-    if ( typeof api['loopring'] == 'undefined' ) {
-        
-    api['loopring'] = 'wait';
-        
-        
-    	$.getJSON("https://api3.loopring.io/v3/ws/key", function(data) {
-    	})
-    	
-          .done(function(data) {
-              
-            var loopring_token = data.key;
-        	
-            	// If loopring auth data is cached, allow loopring configs
-            	if ( typeof loopring_token !== 'undefined' ) {
-            	api['loopring'] = 'wss://ws.api3.loopring.io/v3/ws' + '?wsApiKey=' + loopring_token;
-            	console.log('Loopring support enabled (VALID parameters detected).');
-            	return true;
-            	}
-            	// Remove loopring market configs if no cache data is present, to avoid script errors,
-            	// and alert (to console ONLY) that app was improperly installed
-            	else {
-            	// Whitespace will be detected as an invalid config, since we don't want the
-            	// endpoint 'undefined' becuase that's how we trigger a check / recheck 
-            	api['loopring'] = ' '; 
-            	delete exchange_markets['loopring']; 
-            	console_alert(); 
-            	console.log('Loopring support disabled (INVALID parameters detected).');
-            	return false;
-            	}
-        	
-          });
-          
-    	
-    }
-    
-
-}
-
-
 /////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
@@ -277,23 +224,15 @@ console.log('market_config'); // DEBUGGING
 
 kucoin_config(); // Check / load kucoin data BEFORE MARKET CONFIG
 
-loopring_config(); // Check / load loopring data BEFORE MARKET CONFIG
-
     
     if ( is_online == false ) {
-    return false;
-    }
-    // Wait for loopring to get a temp API key
-    else if ( api['loopring'] == 'wait' ) {
-    console.log('Waiting on loopring market configuration to complete...');
-    setTimeout(market_config, 1000); // Wait 1000 millisecnds then recheck
-    return 'wait';
+    return 'offline';
     }
     
 
 // Exchange API endpoints
 
-// WE DYNAMICALLY ADD THE KUCOIN / LOOPRING ENDPOINTS within render_interface()
+// WE DYNAMICALLY ADD THE KUCOIN ENDPOINT within render_interface()
 
 api['binance'] = 'wss://stream.binance.com:9443/ws';
 
@@ -602,29 +541,6 @@ alph_symb_regex = /^[a-z0-9\/\-_|:]+$/i;
 		 
 		
 		}
-		// Loopring
-		else if ( exchange == 'loopring' ) {
-			
-    		// API call config 
-    		// ('unsubscribeAll' cancels any previous subscriptions)
-    		subscribe_msg[exchange] = {
-            "op": "sub",
-            "unsubscribeAll": true,
-            "topics": []
-            };
-		 
-		 
-			// Add markets to API call
-			var loop = 0;
-			markets[exchange].forEach(element => {
-			     subscribe_msg[exchange].topics[loop] =     {
-                  "topic": "ticker",
-                  "market": element
-                 };
-			loop = loop + 1;
-			});
-		
-		}
 		// Gate.io
 		else if ( exchange == 'gateio' ) {
 			
@@ -745,13 +661,6 @@ function websocket_connect(exchange) {
 	   }
 	   
 	   
-	   // Loopring requires a response of 'pong', when message is 'ping'
-	   if ( exchange == 'loopring' && msg == 'ping' ) {
-	   sockets[exchange].send('pong');
-	   //console.log('pong'); // DEBUGGING
-	   }
-	   
-	   
 		// Parse exchange data
 		
 		// Coinbase
@@ -864,20 +773,6 @@ function websocket_connect(exchange) {
 		var base_volume;
 				 
 		}
-		// Loopring
-		else if ( exchange == 'loopring' && msg['data'] ) {
-				 
-		market_id = msg['data'][0];
-				 
-		price_raw = msg['data'][7];
-		
-		// RE-SET volume_raw / base_volume AS UNDEFINED, as loopring provides no 24hr volume data
-		
-		var volume_raw;
-		
-		var base_volume;
-				 
-		}
 		// Gateio
 		else if ( exchange == 'gateio' && msg['method'] == 'ticker.update' ) {
 				 
@@ -952,26 +847,13 @@ function websocket_connect(exchange) {
 		
 	//console.log('Connecting', e.reason);
 	   
-		setTimeout(function() {
+	   setTimeout(function() {
 		    
-	    $(".status_wrapper_" + exchange).css({ "display": "inline" });
+	   $(".status_wrapper_" + exchange).css({ "display": "inline" });
 	    
-	    $(".status_" + exchange).text("Reloading").css("color", "#FFFF00", "important");
+	   $(".status_" + exchange).text("Reloading").css("color", "#FFFF00", "important");
 	   
-	       if ( exchange == 'loopring' ) {
-	           
-	       api[exchange] = void 0; // RE-SET API PARAMS AS UNDEFINED
-	       
-	       loopring_config(); // GET A NEW TEMP KEY FROM LOOPRING'S REST API
-	       
-	           setTimeout(function() {
-	           websocket_connect(exchange);
-	           }, 10000); // WAIT 10 SECONDS FOR GETTING A NEW TEMP KEY
-	       
-	       }
-	       else {
-		   websocket_connect(exchange);
-	       }
+	   websocket_connect(exchange);
 	       
 		
 	   }, 60000); // Reconnect after no data received for 1 minute
