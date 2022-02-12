@@ -2,6 +2,13 @@
 // Copyright 2019-2022 GPLv3, Slideshow Crypto Ticker by Mike Kilday: http://DragonFrugal.com
 
 
+/////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+function nl2br(str){
+ return str.replace(/(?:\r\n|\r|\n)/g, '<br>');
+}
+
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -128,6 +135,33 @@ console.log(' ');
 console.log('3) ON REBOOT / TICKER STARTUP, you are logged-in to the GRAPHICAL DESKTOP INTERFACE, #AND# are running the app as the SAME USER YOU INSTALLED AS.');
 console.log(' ');
 
+}
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+function copy_text(elm) {
+
+  // for Internet Explorer
+  if(document.body.createTextRange) {
+    range = document.body.createTextRange();
+    range.moveToElementText(elm);
+    range.select();
+    document.execCommand("Copy");
+	 alert('Copied to clipboard.');
+  }
+  // other browsers
+  else if(window.getSelection) {
+    selection = window.getSelection();
+    range = document.createRange();
+    range.selectNodeContents(elm);
+    selection.removeAllRanges();
+    selection.addRange(range);
+    document.execCommand("Copy");
+	 alert('Copied to clipboard.');
+  }
+  
 }
 
 

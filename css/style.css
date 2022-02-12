@@ -135,6 +135,7 @@ top: 0px;
 
 #main_wrapper {
   position: relative;
+    z-index: 9999998;
   text-align: center;
   width: auto;
   border: 0px;
@@ -146,6 +147,7 @@ top: 0px;
 #ticker_window {
   display: inline-block;
   position: relative;
+    z-index: 9999998;
   text-align: center;
   white-space: nowrap;
   height: auto;
@@ -170,7 +172,7 @@ top: 0px;
 
 #internet_alert {
 position: absolute;
-  top: 0%;
+  top: 1vw;
   left: 50%;
   transform: translate(-50%, -0%);
   opacity: 0.9;
@@ -180,35 +182,61 @@ z-index: 9999999;
 background: #808080;
 padding: 10px;
 min-width: 90%;
-border-radius: 5px;
 text-align: center;
 font-weight: bold;
-font-size: 7.5vw;
+font-size: 4.5vw;
 display: none;
+border-radius: 1vw;
 }
 
 
 #upgrade_alert {
+    cursor: pointer;
 position: absolute;
   top: 0.4vw;
   right: 1.0vw;
-  opacity: 0.33;
-z-index: 9999998;
+z-index: 9999999;
 background: none;
 padding: 0.15vw;
 width: auto;
-text-align: center;
-font-weight: bold;
-font-size: 1.3vw;
 display: none;
 }
 
 
 #upgrade_icon {
+  opacity: 0.33;
 position: absolute;
-  top: 0.1vw;
-  left: -3.6vw;
+  top: 0.4vw;
+  right: 17.0vw;
 height: 100%;
+    z-index: 9999999;
+}
+
+
+#upgrade_alert .more_info {
+  opacity: 0.33;
+text-align: center;
+font-weight: bold;
+font-size: 1.3vw;
+line-height: 1.8vw;
+}
+
+
+#upgrade_alert .title {
+    position: absolute;
+    top: 4.7vw;
+    background: silver;
+    padding: 4px;
+    right: 0.2vw;
+    text-align: left;
+    padding: 1vw;
+    white-space: pre-wrap;
+    opacity: 0.95;
+    min-width: 92vw;
+    max-width: 92vw;
+    color: black !important;
+    font-size: 1.3vw;
+border-radius: 1vw;
 }
 
 

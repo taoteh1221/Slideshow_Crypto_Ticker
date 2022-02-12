@@ -4,7 +4,7 @@
 
 
 // Application version
-var app_version = '3.07.4';  // 2022/FEBUARY/9TH
+var app_version = '3.08.0';  // 2022/FEBUARY/11TH
 
 
 // BLANK var inits
@@ -80,19 +80,73 @@ is_online = navigator.onLine;
     // Upgrade checks
     if ( upgrade_notice == 'on' ) {
         
+        
     	$.get( "https://api.github.com/repos/taoteh1221/Slideshow_Crypto_Ticker/releases/latest", function(data) {
     	    
     	var latest_version = data.tag_name;
     	
-    	   if ( app_version != latest_version ) {
-           $("#upgrade_alert").css({ "display": "block" });
-           $("#upgrade_alert").html("<img id='upgrade_icon' src='images/upload-cloud-fill.svg' />Upgrade available: v" + latest_version + "<br />(running v" + app_version + ")").css("color", "#FFFF00"); 
-    	   }
+    	var latest_version_description = data.body;
+    	
+    	var latest_version_download = data.zipball_url;
+    	
+    	var latest_version_installer = "wget --no-cache -O TICKER-INSTALL.bash https://git.io/Jqzjk;chmod +x TICKER-INSTALL.bash;sudo ./TICKER-INSTALL.bash";
+    	
+    	// Remove anything AFTER formatting in brackets in the description (including the brackets)
+    	// (removes the auto-added sourceforge download link)
+    	latest_version_description = latest_version_description.split('[')[0]; 
+    	
+    	latest_version_description = "Upgrade Description:\n\n" + latest_version_description.trim();
+    	
+    	latest_version_description = latest_version_description + "\n\nAutomatic install terminal command:\n\n" + latest_version_installer + "\n\n";
+    	
+    	window.latest_version_description = latest_version_description + "Manual Install File:\n\n" + latest_version_download + "\n\n(select all the text of either install method to auto-copy to clipboard)";
+    	
+    	
+    	    if ( app_version != latest_version ) {
+            $("#upgrade_alert").css({ "display": "block" });
+            $("#upgrade_alert").html("<img id='upgrade_icon' src='images/upload-cloud-fill.svg' alt='' title='' /><span class='more_info' title=''>Upgrade available: v" + latest_version + "<br />(running v" + app_version + ")</span>").css("color", "#FFFF00"); 
+    	    }
+    	    
     	   
     	});
+    	
 	
 	}
 	
+	
+	// Touch / click to see 'tooltip' formatted upgrade description
+	$("#upgrade_alert").click(function() {
+	    
+	var opposite_click = false;
+	
+	var selected_text = window.getSelection().toString(); 
+	
+	//console.log(selected_text);
+  
+    var $title = $(this).find(".title");
+  
+        if (!$title.length) {
+        $(this).append('<span class="title">' + nl2br( window.latest_version_description ) + '</span>');
+        }
+        else {
+            
+            $( "#upgrade_alert" ).contextmenu(function() {
+            //console.log("opposite clicked");
+            var opposite_click = true;
+            }); 
+            
+            if ( !opposite_click && selected_text == '' ) {
+            $title.remove();
+            }
+            else if ( !opposite_click && selected_text != '' ) {
+            document.execCommand("Copy");
+	        alert('Copied to clipboard.');
+            }
+            
+        }
+        
+    });
+    
 
 	// Custom google font
 	if ( google_font_css == false ) {
