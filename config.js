@@ -197,6 +197,8 @@ var rest_api_refresh = 5; // Default = 5
 
 
 // HOURS before re-checking for any newly-released upgrades (at github)
+// #KEEP LOW#, AS THIS APP MAY RELOAD ITSELF DAILY IF IT DETECTS API / INTERNET ISSUES,
+// IN WHICH CASE #THE CHECK INTERVAL START TIME IS RESET#
 var upgrade_api_refresh = 1; // Default = 1
 ////
 // Enable / disable upgrade check / notice (TOP RIGHT corner of app screen, when an newer version is available for download)
