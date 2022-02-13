@@ -2,9 +2,6 @@
 // Copyright 2019-2022 GPLv3, Slideshow Crypto Ticker by Mike Kilday: http://DragonFrugal.com
 
 
-
-
-
 /////////////////////////////////////////////////////////////
 
 
@@ -107,6 +104,58 @@ market_id = market_id.replace("_", "-");
 parsed_markets[market_id] = { "pairing" : pairing, "asset" : asset };
 
 return parsed_markets[market_id];
+
+}
+
+
+/////////////////////////////////////////////////////////////
+
+
+function upgrade_check() {
+    
+    
+    // Upgrade checks
+    if ( upgrade_notice == 'on' ) {
+        
+        
+    	$.get( "https://api.github.com/repos/taoteh1221/Slideshow_Crypto_Ticker/releases/latest", function(data) {
+    	    
+    	var latest_version = data.tag_name;
+    	
+    	var latest_version_description = data.body;
+    	
+    	var latest_version_download = data.zipball_url;
+    	
+    	var latest_version_installer = "wget --no-cache -O TICKER-INSTALL.bash https://git.io/Jqzjk;chmod +x TICKER-INSTALL.bash;sudo ./TICKER-INSTALL.bash";
+    	
+    	// Remove anything AFTER formatting in brackets in the description (including the brackets)
+    	// (removes the auto-added sourceforge download link)
+    	latest_version_description = latest_version_description.split('[')[0]; 
+    	
+    	latest_version_description = "Upgrade Description:\n\n" + latest_version_description.trim();
+    	
+    	latest_version_description = latest_version_description + "\n\nAutomatic install terminal command:\n\n" + latest_version_installer + "\n\n";
+    	
+    	window.latest_version_description = latest_version_description + "Manual Install File:\n\n" + latest_version_download + "\n\n(select all the text of either install method to auto-copy to clipboard)";
+    	
+    	
+    	    if ( app_version != latest_version ) {
+            $("#upgrade_alert").css({ "display": "block" });
+            $("#upgrade_alert").html("<img id='upgrade_icon' src='images/upload-cloud-fill.svg' alt='' title='' /><span class='more_info' title=''>Upgrade available: v" + latest_version + "<br />(running v" + app_version + ")</span>").css("color", "#FFFF00"); 
+    	    }
+    	    
+    	   
+    	});
+
+
+        // Rerun upgrade_check() again after upgrade_api_refresh_milliseconds
+        setTimeout(function() {
+        upgrade_check();
+        }, upgrade_api_refresh_milliseconds);  
+    	
+	
+	}
+	
 
 }
 

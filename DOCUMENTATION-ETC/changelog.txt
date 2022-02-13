@@ -582,6 +582,8 @@ v3.08.0
 
 -Description of available upgrade, when clicking / touching upgrade notice
 
+-Temperature display option for raspberry pi devices
+
 ---------------------------------------------------------
 
 

@@ -193,7 +193,7 @@ border-radius: 1vw;
 #upgrade_alert {
     cursor: pointer;
 position: absolute;
-  top: 0.4vw;
+  top: 1.0vw;
   right: 1.0vw;
 z-index: 9999999;
 background: none;
@@ -237,6 +237,20 @@ line-height: 1.8vw;
     color: black !important;
     font-size: 1.3vw;
 border-radius: 1vw;
+}
+
+
+#raspi_data {
+  opacity: 0.33;
+position: absolute;
+  top: 1.5vw;
+  left: 1.5vw;
+z-index: 9999999;
+background: none;
+padding: 0.15vw;
+font-weight: bold;
+width: auto;
+display: none;
 }
 
 

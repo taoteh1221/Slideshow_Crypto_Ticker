@@ -1,8 +1,12 @@
 
 // Copyright 2019-2022 GPLv3, Slideshow Crypto Ticker by Mike Kilday: http://DragonFrugal.com
 
-var exchange_markets = []; // LEAVE ALONE, AND DON'T DELETE (REQUIRED!)
+var exchange_markets = []; // LEAVE ALONE, AND DON'T DELETE (REQUIRED!!)
 
+
+///////////////////////////////////////////
+// START config
+///////////////////////////////////////////
 
 //  TYPOS LIKE MISSED SEMICOLONS / MISSED QUOTES / ETC WILL BREAK THE APP, BE CAREFUL EDITING THIS CONFIG FILE!
 
@@ -98,7 +102,7 @@ var orient_screen = 0; // Normal (upright) = 0, Flipped (upside down) = 180, Sid
 
 // Vertical position (adjusts the ticker's vertical position up/down)
 // CAN BE NEGATIVE, TO GO THE OPPOSITE WAY
-var vertical_position = 70; // Default = 35 (SMALL SCREEN), 70 (LARGE SCREEN)
+var vertical_position = 75; // Default = 37 (SMALL SCREEN), 75 (LARGE SCREEN)
 
 
 // Horizontal position (adjusts the ticker's horizontal position left/right)
@@ -181,21 +185,32 @@ var monospace_width = 0.65; // Default = 0.65
 var app_reload_wait = 60; // Default = 60
 
 
-// MINUTES before refreshing non-websocket API endpoints (coingecko)
-// #DON'T ADJUST TOO LOW#, OR NON-WEBSOCKET APIs LIKE COINGECKO MAY DROP YOUR CONNECTION!
-var rest_api_refresh = 5; // Default = 5
-
-
 // Minimum number of MINUTES to wait before auto-reloading the app IF ERRORS ARE DETECTED THAT MAY BE FIXED WITH A RELOAD
 // (#NOT# USED FOR DROPPED API CONNECTIONS, SINCE WE AUTO-RECONNECT WITHOUT RELOADING EVERYTHING, but this is very helpful
 // if the kucoin API token expires / any other javascript app cache variables need to be reloaded with new values)
 var auto_error_fix_min = 5; // Default = 5
 
 
-// Enable / disable upgrade check / notice (top right corner of app screen, when an newer version is available for download)
+// MINUTES before refreshing non-websocket trading exchange API endpoints (coingecko)
+// #DON'T ADJUST TOO LOW#, OR NON-WEBSOCKET APIs LIKE COINGECKO MAY DROP YOUR CONNECTION!
+var rest_api_refresh = 5; // Default = 5
+
+
+// HOURS before re-checking for any newly-released upgrades (at github)
+var upgrade_api_refresh = 1; // Default = 1
+////
+// Enable / disable upgrade check / notice (TOP RIGHT corner of app screen, when an newer version is available for download)
 // (Checks latest release version via github.com API endpoint value "tag_name" 
 // @ https://api.github.com/repos/taoteh1221/Slideshow_Crypto_Ticker/releases/latest)
 var upgrade_notice = 'on'; // 'on' / 'off', Default = 'on'
+
+
+// Enable / disable showing raspberry pi temerature (TOP LEFT corner of app screen, if device temps are available)
+var raspi_data = 'on'; // 'on' / 'off', Default = 'on'
+////
+// Enable / disable showing raspberry pi temerature (TOP LEFT corner of app screen, if device temps are available)
+var raspi_data_size = 3.75; // Default = 3.75 (#CAN# BE DECIMALS HERE, AS WERE USING THE CSS vw STANDARD)
+
 
 
 // DEBUG MODE (turns on console logging for certain logic)
@@ -304,6 +319,9 @@ var fiat_pairings = {
 
 
 
+///////////////////////////////////////////
+// END config
+///////////////////////////////////////////
 
 
 

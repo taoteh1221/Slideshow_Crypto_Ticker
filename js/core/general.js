@@ -21,6 +21,15 @@ return input[0].toUpperCase() + input.slice(1);
 /////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
+function reload_js(src_file) {
+remove_jscss_file(src_file, 'js');
+load_js(src_file + '?cachebuster='+ new Date().getTime() );
+}
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
 function is_json(str) {
     try {
         JSON.parse(str);
@@ -34,17 +43,18 @@ function is_json(str) {
 /////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-function load_js(file) {
-
-script= document.createElement('script');
-script.src= file;
-
-head = document.getElementsByTagName('head')[0];
-head.appendChild(script);
-
-   script.onload = function(){
-   console.log('Loaded JS file: ' + file);
-   };
+function raspi_js() {
+    
+    if ( raspi_data == 'on' ) {
+        
+    reload_js('cache/raspi_data.js'); // CPU temp
+    
+        // Rerun raspi_js() again after 65000 milliseconds (65 seconds)
+        setTimeout(function() {
+        raspi_js();
+        }, 65000); 
+        
+    }
 
 }
 
@@ -67,6 +77,30 @@ key = key.toLowerCase();
 	return false;
 	}
 
+}
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+function remove_jscss_file(filename, filetype) {
+    
+var targetelement=(filetype=="js")? "script" : (filetype=="css")? "link" : "none" //determine element type to create nodelist from
+var targetattr=(filetype=="js")? "src" : (filetype=="css")? "href" : "none" //determine corresponding attribute to test for
+var allsuspects=document.getElementsByTagName(targetelement)
+    
+    for ( var i=allsuspects.length; i>=0; i-- ) { //search backwards within nodelist for matching elements to remove
+    
+        if (
+        allsuspects[i] 
+        && allsuspects[i].getAttribute(targetattr) != null 
+        && allsuspects[i].getAttribute(targetattr).indexOf(filename) != -1
+        ) {
+        allsuspects[i].parentNode.removeChild(allsuspects[i]) //remove element by calling parentNode.removeChild()
+        }
+        
+    }
+    
 }
 
 
@@ -165,6 +199,41 @@ function copy_text(elm) {
 }
 
 
+/////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+function load_js(file) {
+
+script= document.createElement('script');
+script.src= file;
+
+head = document.getElementsByTagName('head')[0];
+head.appendChild(script);
+
+   script.onload = function(){
+       
+       if ( debug_mode == 'on' ) {
+       console.log('Loaded JS file: ' + file);
+       }
+       
+   };
+    
+   
+   // List all loaded js scripts in debug mode
+   // (to double-check we are not double-loading when we reload a script)
+   if ( debug_mode == 'on' ) {
+   
+   scripts = document.getElementsByTagName('script');
+
+        for(var i=0;i<scripts.length;i++){
+        console.log(scripts[i].src);
+        }    
+    
+   }
+
+}
+
+
 /////////////////////////////////////////////////////////////
 
 
@@ -172,9 +241,9 @@ function init_interface() {
 
 console.log('init_interface'); // DEBUGGING
 
-// Load cache.js dynamically, avoiding loading from the browser cache (lol, cachefest), via a timestamp url param
+// Load kucoin.js dynamically, avoiding loading from the browser cache (lol, cachefest), via a timestamp url param
 script= document.createElement('script');
-script.src= 'cache/cache.js?cachebuster='+ new Date().getTime();
+script.src= 'cache/kucoin.js?cachebuster='+ new Date().getTime();
 
 head = document.getElementsByTagName('head')[0];
 head.appendChild(script);

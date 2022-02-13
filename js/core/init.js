@@ -30,10 +30,13 @@ var is_online;
 var runtime_start = new Date().getTime(); 
 
 // Minimum-allowed error refresh time (if significant error requires refresh, to try auto-fixing it)
-var min_error_refresh_time = Number(auto_error_fix_min * 60000); // (in milliseconds)
+var min_error_refresh_time = Number(auto_error_fix_min * 60000); // (minutes to milliseconds)
 
 // REST API REFRESH TIME
-var rest_api_refresh_milliseconds = Number(rest_api_refresh * 60000); // (in milliseconds)
+var rest_api_refresh_milliseconds = Number(rest_api_refresh * 60000); // (minutes to milliseconds)
+
+// UPGRADE CHECK REFRESH TIME
+var upgrade_api_refresh_milliseconds = Number(upgrade_api_refresh * 3600000); // (hours to milliseconds)
 
 //////////////////////////////////////////////////////////////////////////////////////
 
@@ -46,8 +49,14 @@ var google_font_css = load_google_font();
 // Initiate once page is fully loaded...
 $(document).ready(function() {
 
-is_online = navigator.onLine; 
+is_online = navigator.onLine; // Internet status
+    
+upgrade_check(); // Start checking for upgrades
 
+raspi_js(); // Raspi temps
+
+
+    // Event listeners for internet status updates
 
     window.addEventListener("offline", function() {
     console.log('Internet is offline.');
@@ -75,43 +84,6 @@ is_online = navigator.onLine;
         }
         
     });
-
-    
-    // Upgrade checks
-    if ( upgrade_notice == 'on' ) {
-        
-        
-    	$.get( "https://api.github.com/repos/taoteh1221/Slideshow_Crypto_Ticker/releases/latest", function(data) {
-    	    
-    	var latest_version = data.tag_name;
-    	
-    	var latest_version_description = data.body;
-    	
-    	var latest_version_download = data.zipball_url;
-    	
-    	var latest_version_installer = "wget --no-cache -O TICKER-INSTALL.bash https://git.io/Jqzjk;chmod +x TICKER-INSTALL.bash;sudo ./TICKER-INSTALL.bash";
-    	
-    	// Remove anything AFTER formatting in brackets in the description (including the brackets)
-    	// (removes the auto-added sourceforge download link)
-    	latest_version_description = latest_version_description.split('[')[0]; 
-    	
-    	latest_version_description = "Upgrade Description:\n\n" + latest_version_description.trim();
-    	
-    	latest_version_description = latest_version_description + "\n\nAutomatic install terminal command:\n\n" + latest_version_installer + "\n\n";
-    	
-    	window.latest_version_description = latest_version_description + "Manual Install File:\n\n" + latest_version_download + "\n\n(select all the text of either install method to auto-copy to clipboard)";
-    	
-    	
-    	    if ( app_version != latest_version ) {
-            $("#upgrade_alert").css({ "display": "block" });
-            $("#upgrade_alert").html("<img id='upgrade_icon' src='images/upload-cloud-fill.svg' alt='' title='' /><span class='more_info' title=''>Upgrade available: v" + latest_version + "<br />(running v" + app_version + ")</span>").css("color", "#FFFF00"); 
-    	    }
-    	    
-    	   
-    	});
-    	
-	
-	}
 	
 	
 	// Touch / click to see 'tooltip' formatted upgrade description
@@ -181,6 +153,9 @@ $("body, html").css({ "background": background_color });
 
 // Text color
 $("body, html").css({ "color": text_color });
+
+// Raspi data text size
+$("#raspi_data").css({ "font-size": raspi_data_size + 'vw' });
 
 
 // Connect to exchange APIs for market data, run checks, and load the interface
