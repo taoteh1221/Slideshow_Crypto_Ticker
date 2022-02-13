@@ -102,7 +102,7 @@ var orient_screen = 0; // Normal (upright) = 0, Flipped (upside down) = 180, Sid
 
 // Vertical position (adjusts the ticker's vertical position up/down)
 // CAN BE NEGATIVE, TO GO THE OPPOSITE WAY
-var vertical_position = 75; // Default = 37 (SMALL SCREEN), 75 (LARGE SCREEN)
+var vertical_position = 82; // Default = 41 (SMALL SCREEN), 82 (LARGE SCREEN)
 
 
 // Horizontal position (adjusts the ticker's horizontal position left/right)
@@ -120,11 +120,11 @@ var show_empty_volume = 'on'; // 'off' / 'on', Default = 'on'
 
 // SECONDS between "slideshowing" multiple tickers (if multiple assets configured)
 // SET TO 0 FOR AUTO MODE (trys to show all tickers in 1 minute, BUT has a 5 second per-ticker MINIMUM)
-var slideshow_speed = 4; // Default = 4
+var slideshow_speed = 6; // Default = 6
 
 
 // Slideshow transition speed (fade out / fade in) IN SECONDS (can be decimals)
-var transition_speed = 0.75; // Default = 0.75
+var transition_speed = 1.65; // Default = 1.65
 
 
 // ALL font weights (for ALL ticker text)

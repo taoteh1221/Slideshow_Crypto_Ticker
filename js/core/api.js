@@ -122,26 +122,40 @@ function upgrade_check() {
     	    
     	var latest_version = data.tag_name;
     	
-    	var latest_version_description = data.body;
-    	
-    	var latest_version_download = data.zipball_url;
-    	
-    	var latest_version_installer = "wget --no-cache -O TICKER-INSTALL.bash https://git.io/Jqzjk;chmod +x TICKER-INSTALL.bash;sudo ./TICKER-INSTALL.bash";
-    	
-    	// Remove anything AFTER formatting in brackets in the description (including the brackets)
-    	// (removes the auto-added sourceforge download link)
-    	latest_version_description = latest_version_description.split('[')[0]; 
-    	
-    	latest_version_description = "Upgrade Description:\n\n" + latest_version_description.trim();
-    	
-    	latest_version_description = latest_version_description + "\n\nAutomatic install terminal command:\n\n" + latest_version_installer + "\n\n";
-    	
-    	window.latest_version_description = latest_version_description + "Manual Install File:\n\n" + latest_version_download + "\n\n(select all the text of either install method to auto-copy to clipboard)";
-    	
     	
     	    if ( app_version != latest_version ) {
+    	
+        	var latest_version_description = data.body;
+        	
+        	var latest_version_download = data.zipball_url;
+        	
+        	var latest_version_installer = "wget --no-cache -O TICKER-INSTALL.bash https://git.io/Jqzjk;chmod +x TICKER-INSTALL.bash;sudo ./TICKER-INSTALL.bash";
+        	
+        	// Remove anything AFTER formatting in brackets in the description (including the brackets)
+        	// (removes the auto-added sourceforge download link)
+        	latest_version_description = latest_version_description.split('[')[0]; 
+        	
+        	latest_version_description = "Upgrade Description:\n\n" + latest_version_description.trim();
+        	
+        	latest_version_description = latest_version_description
+        	+ "\n\nAutomatic install terminal command:\n\n" + latest_version_installer + "\n\n";
+        	
+        	window.latest_version_description = latest_version_description
+        	+ "Manual Install File:\n\n" + latest_version_download
+        	+ "\n\n(select all the text of either install method to auto-copy to clipboard)";
+    	        
             $("#upgrade_alert").css({ "display": "block" });
+            
             $("#upgrade_alert").html("<img id='upgrade_icon' src='images/upload-cloud-fill.svg' alt='' title='' /><span class='more_info' title=''>Upgrade available: v" + latest_version + "<br />(running v" + app_version + ")</span>").css("color", "#FFFF00"); 
+            
+    	    }
+    	    else {
+    	    var latest_version_description;
+    	    var latest_version_download;
+    	    var latest_version_installer;
+    	    window.latest_version_description = '';
+            $("#upgrade_alert").css({ "display": "none" });
+            $("#upgrade_alert").html("").css("color", "#FFFF00"); 
     	    }
     	    
     	   
