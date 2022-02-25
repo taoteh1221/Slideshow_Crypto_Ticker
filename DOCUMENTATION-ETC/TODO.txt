@@ -30,8 +30,10 @@ REDO feature sets in README / on SF project page, to include upgrade check featu
 
 
 ///////////////////////////////////////////////////////
+QA / OTHER
 ///////////////////////////////////////////////////////
 
+Replace any instances of setInterval with setTimeout INSTEAD (as the setInterval implementation in the javascript engine / interperator [at least in chrome] is buggy as hell [wtf]), UNLESS IT'S A GUI COUNTDOWN TIMER.
 
 ///////////////////////////////////////////////////////
 API INTEGRATION SECTION
