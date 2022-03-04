@@ -517,7 +517,6 @@ select opt in $OPTIONS; do
                             SET_BROWSER=$opt
                             echo " "
                             echo "${green}Using $opt browser...${reset}"
-                            exit
                             break
                            fi
                     done
