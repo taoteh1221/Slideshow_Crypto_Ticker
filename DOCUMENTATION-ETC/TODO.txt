@@ -25,8 +25,6 @@ ALWAYS do everything in the optimizations / bugs / tests / ux / qa / other secti
 OPTIMIZATIONS / BUGS / TESTS / UX / QA / OTHER SECTION
 ///////////////////////////////////////////////////////
 
-Shitmart (bitmart) changed their websocket API...see WTF is going on
-
 
 REDO feature sets in README / on SF project page, to include upgrade check features and raspi temperature display features.
 

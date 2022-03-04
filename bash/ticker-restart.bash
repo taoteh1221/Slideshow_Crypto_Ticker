@@ -16,6 +16,8 @@ xdotool windowactivate ${WID}
 xdotool key ctrl+F5
 
 # firefox
+rm -rf ~/.cache/mozilla/firefox/*
+sleep 1
 WID=$(xdotool search --onlyvisible --class firefox|head -1)
 xdotool windowactivate ${WID}
 xdotool key ctrl+F5

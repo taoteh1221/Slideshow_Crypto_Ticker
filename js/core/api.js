@@ -142,6 +142,7 @@ function upgrade_check() {
         	
         	window.latest_version_description = latest_version_description
         	+ "Manual Install File:\n\n" + latest_version_download
+        	+ "\n\nChangelog:\n\nhttps://raw.githubusercontent.com/taoteh1221/Slideshow_Crypto_Ticker/main/DOCUMENTATION-ETC/changelog.txt"
         	+ "\n\n(select all the text of either install method to auto-copy to clipboard)";
     	        
             $("#upgrade_alert").css({ "display": "block" });
@@ -310,8 +311,6 @@ api['bitstamp'] = 'wss://ws.bitstamp.net/';
 api['bitfinex'] = 'wss://api.bitfinex.com/ws/1';
 
 api['okex'] = 'wss://ws.okex.com:8443/ws/v5/public';
-
-api['bitmart'] = 'wss://ws-manager-compress.bitmart.com?protocol=1.1';
 
 api['gateio'] = 'wss://ws.gate.io/v3/';
 
@@ -623,25 +622,6 @@ alph_symb_regex = /^[a-z0-9\/\-_|:]+$/i;
 			});
 		
 		}
-		// Bitmart
-		else if ( exchange == 'bitmart' ) {
-			
-    		// API call config
-    		subscribe_msg[exchange] = {
-    			"op": "subscribe",
-    			"args": [
-    			]
-    		};
-		 
-		 
-			// Add markets to API call
-			var loop = 0;
-			markets[exchange].forEach(element => {
-			subscribe_msg[exchange].args[loop] = "spot/ticker:" + element; 
-			loop = loop + 1;
-			});
-		
-		}
 		
 		
 		if ( debug_mode == 'on' ) {
@@ -671,8 +651,8 @@ function websocket_connect(exchange) {
 	sockets[exchange] = new WebSocket(api[exchange]);
     
     
-        // Fopr bitmart, hange binary type from "blob" to "arraybuffer"
-        if ( exchange == 'bitmart' ) {
+        // Fopr EXCHANGE_NAME_HERE, hange binary type from "blob" to "arraybuffer"
+        if ( exchange == 'EXCHANGE_NAME_HERE' ) {
         sockets[exchange].binaryType = "arraybuffer";
         }
    
@@ -687,15 +667,14 @@ function websocket_connect(exchange) {
 	sockets[exchange].onmessage = function(e) {
 	    
 	   
-	   // Check if response is JSON format or bitmart's compressed websocket data, otherwise presume just a regular string
+	   // Check if response is JSON format or compressed websocket data, otherwise presume just a regular string
 	   if ( is_json(e.data) == true ) {
 	   msg = JSON.parse(e.data);
 	   }
-	   else if ( exchange == 'bitmart' ) {
+	   else if ( exchange == 'EXCHANGE_NAME_HERE' ) {
        
        // NOTES ON DECOMPRESSING (ALSO NEEDED sockets[exchange].binaryType = "arraybuffer"; before opening websocket)
        
-       // https://developer-pro.bitmart.com/en/ws/spot_ws/compress.html
 	   // https://nodeca.github.io/pako/
 	   // https://stackoverflow.com/questions/4507316/zlib-decompression-client-side
 	   // https://stackoverflow.com/questions/57264517/pako-js-error-invalid-stored-block-lengths-when-trying-to-inflate-websocket-m
@@ -847,18 +826,6 @@ function websocket_connect(exchange) {
 		
 		volume_raw = msg['params'][1]['baseVolume'];
 		
-		base_volume = pair_volume('pairing', price_raw, volume_raw);
-				 
-		}
-		// Bitmart
-		else if ( exchange == 'bitmart' && msg['table'] == 'spot/ticker' ) {
-				 
-		market_id = msg["data"][0]["symbol"];
-				 
-		price_raw = msg["data"][0]["last_price"];
-				 
-		volume_raw = msg["data"][0]["base_volume_24h"];
-		   
 		base_volume = pair_volume('pairing', price_raw, volume_raw);
 				 
 		}

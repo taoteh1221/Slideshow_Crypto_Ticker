@@ -35,8 +35,6 @@ var exchange_markets = []; // LEAVE ALONE, AND DON'T DELETE (REQUIRED!!)
 // Hitbtc formatting example    (MULTIPLE TICKERS NOT SUPPORTED): 'ETHBTC'
 
 // Gate.io formatting example:  'MANA_USDT|SAMO_USDT'
-
-// Bitmart formatting example:  'SG_USDT|SG_BTC'
 ////
 //// 
 // Bitstamp markets (set to '' to disable)
@@ -84,10 +82,6 @@ exchange_markets['hitbtc'] = '';
 ////
 // Gateio markets (set to '' to disable) 
 exchange_markets['gateio'] = 'SLC_USDT|RNDR_USDT|SLRS_USDT|BIT_USDT|SAMO_USDT';
-////
-////
-// Bitmart markets (set to '' to disable) 
-exchange_markets['bitmart'] = ''; // SHITMART NOT WORKING FOR NOW, THEY DECIDED TO CHANGE THEIR API!
 
 
 // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!

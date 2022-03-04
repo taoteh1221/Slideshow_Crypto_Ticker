@@ -614,6 +614,10 @@ v3.08.3
 
 -BUG FIX: Auto-installer script works again (sorry!)
 
+-Removed bitmart's shitty API (lol)
+
+-Added changelog link to upgrade alert
+
 ---------------------------------------------------------
 
 
