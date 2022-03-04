@@ -497,6 +497,7 @@ select opt in $OPTIONS; do
 
         if [ "$opt" = "auto_config_ticker_system" ]; then
   				
+                echo " "
                 echo "${yellow}Select 1 or 2 to choose whether to use firefox or chromium, as the browser showing the ticker.${reset}"
                 echo " "
                 
@@ -574,6 +575,7 @@ DEFAULT_BROWSER=$SET_BROWSER
 export DEFAULT_BROWSER=$SET_BROWSER
 \r
 EOF
+					mkdir /home/$APP_USER/slideshow-crypto-ticker/cache > /dev/null 2>&1
 					
 					echo -e "$TICKER_BROWSER" > /home/$APP_USER/slideshow-crypto-ticker/cache/browser.bash
 					
