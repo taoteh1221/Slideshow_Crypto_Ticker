@@ -823,9 +823,9 @@ echo " "
 echo "(your device will restart automatically afterwards)"
 echo "${reset} "
 
-else
+elif [ "$AUTOSTART_ALERT" = "1" ] || [ "$AUTOSTART_ALERT" = "2" ]; then
 
-echo "${red}You must restart your device to activate the ticker, by running this command:"
+echo "${red}You must restart your device to auto-start the ticker, by running this command:"
 echo " "
 echo "sudo reboot"
 echo "${reset} "
