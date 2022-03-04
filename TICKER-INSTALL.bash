@@ -459,6 +459,10 @@ select opt in $OPTIONS; do
         
         rm /home/$APP_USER/ticker-restart
         
+        rm /home/$APP_USER/start
+        
+        rm /home/$APP_USER/stop
+        
         rm -rf /home/$APP_USER/slideshow-crypto-ticker
 
 		  sleep 3
@@ -576,6 +580,10 @@ export DEFAULT_BROWSER="$SET_BROWSER"
 \r
 EOF
 					mkdir /home/$APP_USER/slideshow-crypto-ticker/cache > /dev/null 2>&1
+					
+					chmod 777 /home/$APP_USER/slideshow-crypto-ticker/cache > /dev/null 2>&1
+					
+					chown $APP_USER:$APP_USER /home/$APP_USER/slideshow-crypto-ticker/cache > /dev/null 2>&1
 					
 					echo -e "$TICKER_BROWSER" > /home/$APP_USER/slideshow-crypto-ticker/cache/browser.bash
 					
