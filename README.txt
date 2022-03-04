@@ -9,7 +9,13 @@ Supports running in "slideshow mode", to show all the markets you want.
 
 Example on a 3.5" LCD: https://www.youtube.com/watch?v=dXAhs8HXCn4
 
-Developed on a Raspi v3 B+, with this screen / case: https://smile.amazon.com/gp/product/B07N38B86S
+Example on a 7" LCD: https://www.youtube.com/watch?v=fZ98Fm6ZkW8
+
+Developed on a Raspi v3 B+, with these screens / cases: 
+
+https://smile.amazon.com/gp/product/B07N38B86S
+
+https://smile.amazon.com/gp/product/B08Q34RS7M
 
 Project Website: https://sourceforge.net/projects/dfd-crypto-ticker
 
