@@ -25,8 +25,6 @@ FIREFOX_PATH=$(which firefox)
 fi
 
 
-# Incognito mode doesn't prompt to restore previous session, yay
-# We also set it to not check for upgrades for 7 days (SETTING TO ZERO DOES NOT WORK), 
-# to avoid the upgrade prompt popup on non-touch screens (for UX)
+# kiosk mode (for UX)
 $FIREFOX_PATH --kiosk -new-tab ~/slideshow-crypto-ticker/index.html &>/dev/null &
 
