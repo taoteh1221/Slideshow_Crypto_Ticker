@@ -453,17 +453,17 @@ select opt in $OPTIONS; do
 				
 		  sleep 3
         
-        rm /etc/cron.d/ticker
+        rm /etc/cron.d/ticker > /dev/null 2>&1
         
-        rm /lib/systemd/system/ticker.service
+        rm /lib/systemd/system/ticker.service > /dev/null 2>&1
         
-        rm /home/$APP_USER/ticker-restart
+        rm /home/$APP_USER/ticker-restart > /dev/null 2>&1
         
-        rm /home/$APP_USER/start
+        rm /home/$APP_USER/ticker-start > /dev/null 2>&1
         
-        rm /home/$APP_USER/stop
+        rm /home/$APP_USER/ticker-stop > /dev/null 2>&1
         
-        rm -rf /home/$APP_USER/slideshow-crypto-ticker
+        rm -rf /home/$APP_USER/slideshow-crypto-ticker > /dev/null 2>&1
 
 		  sleep 3
         
