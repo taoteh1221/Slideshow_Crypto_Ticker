@@ -571,8 +571,8 @@ EOF
 # Don't nest / indent, or it could malform the settings            
 read -r -d '' TICKER_BROWSER <<- EOF
 \r
-DEFAULT_BROWSER=$SET_BROWSER
-export DEFAULT_BROWSER=$SET_BROWSER
+DEFAULT_BROWSER="$SET_BROWSER"
+export DEFAULT_BROWSER="$SET_BROWSER"
 \r
 EOF
 					mkdir /home/$APP_USER/slideshow-crypto-ticker/cache > /dev/null 2>&1
