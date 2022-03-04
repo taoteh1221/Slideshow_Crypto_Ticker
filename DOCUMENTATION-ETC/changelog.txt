@@ -595,6 +595,19 @@ v3.08.1
 ---------------------------------------------------------
 
 
+---------------------------------------------------------
+v3.08.2
+
+-Added ability to use firefox or chromium as the browser used by the ticker
+
+-Switched to using firefox as ticker browser (raspbian chromium is acting kinda fruity in latest releases...see README on how to still use chromium)
+
+-Shitmart (bitmart) changed their websocket API, bone head move so don't expect continued support for that exchange in the future
+
+---------------------------------------------------------
+
+
+
 
 
 

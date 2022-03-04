@@ -33,28 +33,28 @@ unclutter -idle 0.5 -root &
 ~/slideshow-crypto-ticker/bash/cron/cache.bash
 
 
-# Remove crash notices (for UX)
-sed -i 's/"exited_cleanly":false/"exited_cleanly":true/' ~/.config/chromium/Default/Preferences
-sed -i 's/"exit_type":"Crashed"/"exit_type":"Normal"/' ~/.config/chromium/Default/Preferences
-
-
 sleep 2
 
-
-# Chromium's FULL PATH
-CHROMIUM_PATH=$(which chromium)
-
-# If 'chromium' wasn't found, look for 'chromium-browser'
-if [ -z "$CHROMIUM_PATH" ]
-then
-CHROMIUM_PATH=$(which chromium-browser)
+				
+if [ -f /home/$APP_USER/slideshow-crypto-ticker/cache/browser.bash ]; then
+~/slideshow-crypto-ticker/cache/browser.bash
 fi
 
 
-# Incognito mode doesn't prompt to restore previous session, yay
-# We also set it to not check for upgrades for 7 days (SETTING TO ZERO DOES NOT WORK), 
-# to avoid the upgrade prompt popup on non-touch screens (for UX)
-$CHROMIUM_PATH --check-for-update-interval=604800 --noerrdialogs --disable-infobars --incognito --kiosk ~/slideshow-crypto-ticker/index.html
+# If default browser wasn't set, set as firefox
+if [ -z "$DEFAULT_BROWSER" ]; then
+DEFAULT_BROWSER="firefox"
+fi
 
 
+# If explicit browser parameter wasn't included, use default browser
+if [ -z "$1" ]; then
+SET_BROWSER=$DEFAULT_BROWSER
+else
+SET_BROWSER=$1
+fi
+
+
+# Browser running logic
+~/slideshow-crypto-ticker/bash/$SET_BROWSER.bash
 

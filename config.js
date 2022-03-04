@@ -61,7 +61,7 @@ exchange_markets['coingecko'] = 'solana:sol/btc|grape-2:grape/usd';
 ////
 ////
 // Binance markets (set to '' to disable)
-exchange_markets['binance'] = 'hntusdt|enjusdt'; 
+exchange_markets['binance'] = 'hntusdt|hntbtc'; 
 ////
 ////
 // Kucoin markets (set to '' to disable)
@@ -87,7 +87,7 @@ exchange_markets['gateio'] = 'SLC_USDT|RNDR_USDT|SLRS_USDT|BIT_USDT|SAMO_USDT';
 ////
 ////
 // Bitmart markets (set to '' to disable) 
-exchange_markets['bitmart'] = 'SG_USDT';
+exchange_markets['bitmart'] = ''; // SHITMART NOT WORKING FOR NOW, THEY DECIDED TO CHANGE THEIR API!
 
 
 // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!

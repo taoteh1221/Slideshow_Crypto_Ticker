@@ -317,6 +317,16 @@ select opt in $OPTIONS; do
 				
 				sleep 3
 				
+				# Firefox on raspbian
+				apt-get install firefox-esr -y
+				
+				sleep 3
+				
+				# Firefox on ubuntu
+				apt-get install firefox -y
+				
+				sleep 3
+				
 				# Safely install other packages seperately, so they aren't cancelled by 'package missing' errors
 				apt-get install xdotool unclutter sed curl jq openssl wget -y
 				
@@ -484,8 +494,30 @@ echo " "
 OPTIONS="auto_config_ticker_system skip"
 
 select opt in $OPTIONS; do
+
         if [ "$opt" = "auto_config_ticker_system" ]; then
-        
+  				
+                echo "${yellow}Select 1 or 2 to choose whether to use firefox or chromium, as the browser showing the ticker.${reset}"
+                echo " "
+                
+                USER_BROWSER="firefox chromium"
+                
+                    select opt in $USER_BROWSER; do
+                            if [ "$opt" = "firefox" ]; then
+                            SET_BROWSER=$opt
+                            echo " "
+                            echo "${green}Using $opt browser...${reset}"
+                            break
+                           elif [ "$opt" = "chromium" ]; then
+                            SET_BROWSER=$opt
+                            echo " "
+                            echo "${green}Using $opt browser...${reset}"
+                            exit
+                            break
+                           fi
+                    done
+                
+                echo " "
 
 				echo " "
 				
@@ -509,7 +541,7 @@ After=graphical.target
 Environment=DISPLAY=:0  
 Environment=XAUTHORITY=/home/$APP_USER/.Xauthority
 Type=simple
-ExecStart=$BASH_PATH /home/$APP_USER/slideshow-crypto-ticker/bash/ticker-auto-start.bash
+ExecStart=$BASH_PATH /home/$APP_USER/slideshow-crypto-ticker/bash/ticker-auto-start.bash $SET_BROWSER
 Restart=on-abort
 User=$APP_USER
 Group=$APP_USER
@@ -532,6 +564,20 @@ EOF
 					AUTOSTART_ALERT=2
 					
 					fi
+					
+
+
+# Don't nest / indent, or it could malform the settings            
+read -r -d '' TICKER_BROWSER <<- EOF
+\r
+DEFAULT_BROWSER=$SET_BROWSER
+export DEFAULT_BROWSER=$SET_BROWSER
+\r
+EOF
+					
+					echo -e "$TICKER_BROWSER" > /home/$APP_USER/slideshow-crypto-ticker/cache/browser.bash
+					
+					chmod 755 /home/$APP_USER/slideshow-crypto-ticker/cache/browser.bash
 					
 					
 				# Setup cron (to check logs after install: tail -f /var/log/syslog | grep cron -i)
@@ -671,7 +717,7 @@ echo "${green}Ticker autostart at login has been configured at:"
 echo " "
 echo "/lib/systemd/system/ticker.service${reset}"
 echo " "
-echo "${yellow}(the ticker will now start at boot/login)${reset}"
+echo "${yellow}(the ticker will now start at boot/login with the $SET_BROWSER browser)${reset}"
 echo " "
 
 elif [ "$AUTOSTART_ALERT" = "2" ]; then
@@ -699,6 +745,12 @@ echo "${yellow}If autostart does not work / is not setup, you can run this comma
 echo "#AFTER BOOTING INTO THE DESKTOP INTERFACE#, to start Slideshow Crypto Ticker:"
 echo " "
 echo "~/ticker-start"
+echo " "
+echo "If you prefer firefox or chromium (you set $SET_BROWSER as the default):"
+echo " "
+echo "~/ticker-start firefox"
+echo " "
+echo "~/ticker-start chromium"
 echo " "
 echo "To stop Slideshow Crypto Ticker:"
 echo " "

@@ -86,6 +86,13 @@ If autostart does not work / is not setup, you can run this command MANUALLY, #A
 ~/ticker-start
 
 
+If you prefer firefox or chromium (firefox is the default):
+
+~/ticker-start firefox
+
+~/ticker-start chromium
+
+
 To stop Slideshow Crypto Ticker:
 
 ~/ticker-stop

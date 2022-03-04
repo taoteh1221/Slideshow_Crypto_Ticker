@@ -10,6 +10,12 @@
 export DISPLAY=:0
 
 
+# chromium
 WID=$(xdotool search --onlyvisible --class chromium|head -1)
+xdotool windowactivate ${WID}
+xdotool key ctrl+F5
+
+# firefox
+WID=$(xdotool search --onlyvisible --class firefox|head -1)
 xdotool windowactivate ${WID}
 xdotool key ctrl+F5

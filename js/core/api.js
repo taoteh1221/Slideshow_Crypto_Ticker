@@ -699,6 +699,8 @@ function websocket_connect(exchange) {
 	   // https://nodeca.github.io/pako/
 	   // https://stackoverflow.com/questions/4507316/zlib-decompression-client-side
 	   // https://stackoverflow.com/questions/57264517/pako-js-error-invalid-stored-block-lengths-when-trying-to-inflate-websocket-m
+	   
+	   // THESE IDIOTS CHANGED SOMETHING AT THE END OF 2/2022 IN THEIR API...FIGURE OUT WTF IT IS SOMEDAY, OR JUST REMOVE SUPPORT FOR THIS EXCHAGE!
        
           try {
               
