@@ -769,7 +769,23 @@ echo "To stop Slideshow Crypto Ticker:"
 echo " "
 echo "~/ticker-stop"
 echo "${reset} "
-					
+
+else
+
+echo "${yellow}#AFTER BOOTING INTO THE DESKTOP INTERFACE#, to start Slideshow Crypto Ticker:"
+echo " "
+echo "~/ticker-start"
+echo " "
+echo "If you prefer firefox or chromium (firefox is the default):"
+echo " "
+echo "~/ticker-start firefox"
+echo " "
+echo "~/ticker-start chromium"
+echo " "
+echo "To stop Slideshow Crypto Ticker:"
+echo " "
+echo "~/ticker-stop"
+echo "${reset} "
 
 fi
 
