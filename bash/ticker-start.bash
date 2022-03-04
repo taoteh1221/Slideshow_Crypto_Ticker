@@ -56,6 +56,6 @@ fi
 
 
 # Browser running logic
-~/slideshow-crypto-ticker/bash/$SET_BROWSER.bash
+~/slideshow-crypto-ticker/bash/$SET_BROWSER.bash &>/dev/null &
 
 

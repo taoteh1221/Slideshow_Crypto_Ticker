@@ -26,5 +26,5 @@ fi
 
 
 # kiosk mode (for UX)
-$FIREFOX_PATH --kiosk -new-tab ~/slideshow-crypto-ticker/index.html &>/dev/null &
+$FIREFOX_PATH --kiosk -new-tab ~/slideshow-crypto-ticker/index.html
 

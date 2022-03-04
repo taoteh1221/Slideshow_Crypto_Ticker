@@ -610,6 +610,8 @@ v3.08.2
 ---------------------------------------------------------
 v3.08.3
 
+-BUG FIX: Auto-start on system boot / desktop login works again (sorry!)
+
 -BUG FIX: Auto-installer script works again (sorry!)
 
 ---------------------------------------------------------
