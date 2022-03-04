@@ -191,10 +191,10 @@ echo " "
 echo "${yellow}This script may work on other Debian-based systems as well, but it has not been tested for that purpose.${reset}"
 echo " "
 
-echo "${red}USE RASPBIAN #FULL# DESKTOP, #NOT# LITE, OR YOU LIKELY WILL HAVE SOME CHROMIUM BROWSER ISSUES EVEN"
+echo "${red}USE RASPBIAN #FULL# DESKTOP, #NOT# LITE, OR YOU LIKELY WILL HAVE SOME ISSUES WITH CHROMIUM BROWSER EVEN"
 echo "AFTER UPGRADING TO GUI / CHROME (trust me)."
 echo " "
-echo "(GUI desktop and Chromium browser are required for this ticker app)${reset}"
+echo "(Chromium OR Firefox are required [firefox is default, and will be installed if not already])${reset}"
 echo " "
 
 if [ -f "/etc/debian_version" ]; then
