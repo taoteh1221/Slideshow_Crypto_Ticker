@@ -833,8 +833,20 @@ echo "${reset} "
 fi
 
 
+if [ "$AUTOSTART_ALERT" = "1" ] || [ "$AUTOSTART_ALERT" = "2" ]; then
+
+echo " "
 echo "${red}TICKER AUTO-START #REQUIRES# RUNNING THE RASPBERRY PI GRAPHICAL DESKTOP INTERFACE (LXDE) AT STARTUP, AS THE USER: '${APP_USER}'${reset}"
 echo " "
+
+else
+
+echo " "
+echo "${red}TICKER #REQUIRES# RUNNING A GRAPHICAL DESKTOP INTERFACE AT STARTUP, AS THE USER: '${APP_USER}'${reset}"
+echo " "
+
+fi
+
 
 echo "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
 
