@@ -574,6 +574,7 @@ EOF
 
 # Don't nest / indent, or it could malform the settings            
 read -r -d '' TICKER_BROWSER <<- EOF
+#!/bin/bash
 \r
 DEFAULT_BROWSER="$SET_BROWSER"
 export DEFAULT_BROWSER="$SET_BROWSER"
@@ -587,7 +588,9 @@ EOF
 					
 					echo -e "$TICKER_BROWSER" > /home/$APP_USER/slideshow-crypto-ticker/cache/browser.bash
 					
-					chmod 755 /home/$APP_USER/slideshow-crypto-ticker/cache/browser.bash
+					chmod 755 /home/$APP_USER/slideshow-crypto-ticker/cache/browser.bash > /dev/null 2>&1
+					
+					chown $APP_USER:$APP_USER /home/$APP_USER/slideshow-crypto-ticker/cache/browser.bash > /dev/null 2>&1
 					
 					
 				# Setup cron (to check logs after install: tail -f /var/log/syslog | grep cron -i)
