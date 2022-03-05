@@ -927,6 +927,9 @@ OPTIONS="install_portfolio_tracker skip"
 		echo " "
 		echo "${cyan}Installation / setup has finished, exiting to terminal...${reset}"
 		echo " "
+        echo "${red}!!!!!BE SURE TO SCROLL UP, TO SAVE #ALL THE TICKER APP USAGE DOCUMENTATION#"
+        echo "PRINTED OUT ABOVE, BEFORE YOU SIGN OFF FROM THIS TERMINAL SESSION!!!!!${reset}"
+        echo " "
 		exit
 		  
         break
