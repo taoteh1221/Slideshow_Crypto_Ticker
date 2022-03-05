@@ -621,6 +621,16 @@ v3.08.3
 ---------------------------------------------------------
 
 
+---------------------------------------------------------
+v3.08.4
+
+-BUG FIX: Auto-installer script works now for chromium (sorry!)
+
+-Improved user experience with auto-install script
+
+---------------------------------------------------------
+
+
 
 
 
