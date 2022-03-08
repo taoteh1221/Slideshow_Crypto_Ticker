@@ -43,15 +43,15 @@ function is_json(str) {
 /////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-function raspi_js() {
+function system_info_js() {
     
-    if ( raspi_data == 'on' ) {
+    if ( system_data == 'on' ) {
         
-    reload_js('cache/raspi_data.js'); // CPU temp
+    reload_js('cache/system-info.js'); // System info
     
-        // Rerun raspi_js() again after 65000 milliseconds (65 seconds)
+        // Rerun system_info_js() again after 65000 milliseconds (65 seconds)
         setTimeout(function() {
-        raspi_js();
+        system_info_js();
         }, 65000); 
         
     }

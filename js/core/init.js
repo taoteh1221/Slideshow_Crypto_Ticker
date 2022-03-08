@@ -4,7 +4,7 @@
 
 
 // Application version
-var app_version = '3.08.4';  // 2022/MARCH/4TH
+var app_version = '3.09.0';  // 2022/MARCH/8TH
 
 
 // BLANK var inits
@@ -53,7 +53,7 @@ is_online = navigator.onLine; // Internet status
     
 upgrade_check(); // Start checking for upgrades
 
-raspi_js(); // Raspi temps
+system_info_js(); // System info (temp , memory used, etc)
 
 
     // Event listeners for internet status updates
@@ -155,7 +155,7 @@ $("body, html").css({ "background": background_color });
 $("body, html").css({ "color": text_color });
 
 // Raspi data text size
-$("#raspi_data").css({ "font-size": raspi_data_size + 'vw' });
+$("#system_data").css({ "font-size": system_data_size + 'vw' });
 
 
 // Connect to exchange APIs for market data, run checks, and load the interface

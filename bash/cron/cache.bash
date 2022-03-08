@@ -30,6 +30,6 @@ fi
 
 
 # Raspi temps updating
-~/slideshow-crypto-ticker/bash/cron/raspi-temps.bash
+~/slideshow-crypto-ticker/bash/cron/system-info.bash
 
 

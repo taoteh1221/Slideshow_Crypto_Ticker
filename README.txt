@@ -13,9 +13,12 @@ Example on a 7" LCD: https://www.youtube.com/watch?v=fZ98Fm6ZkW8
 
 Developed on a Raspi v3 B+, with these screens / cases: 
 
-https://smile.amazon.com/gp/product/B07N38B86S
+https://smile.amazon.com/gp/product/B07N38B86S (stock, no mods)
 
 https://smile.amazon.com/gp/product/B08Q34RS7M
+(Noctua fan mounted with crazy glue, and Noctua fan speed controller outside case)
+https://smile.amazon.com/gp/product/B07DXRNYNX
+https://smile.amazon.com/gp/product/B072M2HKSN
 
 Project Website: https://sourceforge.net/projects/dfd-crypto-ticker
 

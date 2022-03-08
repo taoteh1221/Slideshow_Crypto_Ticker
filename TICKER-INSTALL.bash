@@ -390,10 +390,12 @@ select opt in $OPTIONS; do
 				rm /home/$APP_USER/slideshow-crypto-ticker/bash/ticker-init.bash > /dev/null 2>&1
 				rm /home/$APP_USER/slideshow-crypto-ticker/bash/cron.bash > /dev/null 2>&1
 				rm /home/$APP_USER/slideshow-crypto-ticker/bash/cron/kucoin-auth.bash > /dev/null 2>&1
+				rm /home/$APP_USER/slideshow-crypto-ticker/bash/cron/raspi-temps.bash > /dev/null 2>&1
 				rm /home/$APP_USER/slideshow-crypto-ticker/js/jquery.min.js > /dev/null 2>&1
 				rm /home/$APP_USER/slideshow-crypto-ticker/js/functions.js > /dev/null 2>&1
 				rm /home/$APP_USER/slideshow-crypto-ticker/js/init.js > /dev/null 2>&1
 				rm /home/$APP_USER/slideshow-crypto-ticker/cache/cache.js > /dev/null 2>&1
+				rm /home/$APP_USER/slideshow-crypto-ticker/cache/raspi_data.js > /dev/null 2>&1
 				rm /home/$APP_USER/reload > /dev/null 2>&1
 				
 				\cp -r ./ /home/$APP_USER/slideshow-crypto-ticker

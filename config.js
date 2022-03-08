@@ -201,11 +201,11 @@ var upgrade_api_refresh = 1; // Default = 1
 var upgrade_notice = 'on'; // 'on' / 'off', Default = 'on'
 
 
-// Enable / disable showing raspberry pi temperature (TOP LEFT corner of app screen, if device temps are available)
-var raspi_data = 'on'; // 'on' / 'off', Default = 'on'
+// Enable / disable showing system temperature / memory stats (TOP LEFT corner of app screen, if device temps are available)
+var system_data = 'on'; // 'on' / 'off', Default = 'on'
 ////
-// Raspi data font size
-var raspi_data_size = 3.75; // Default = 3.75 (#CAN# BE DECIMALS HERE, AS WERE USING THE CSS vw STANDARD)
+// System data font size
+var system_data_size = 3.75; // Default = 3.75 (#CAN# BE DECIMALS HERE, AS WERE USING THE CSS vw STANDARD)
 
 
 
