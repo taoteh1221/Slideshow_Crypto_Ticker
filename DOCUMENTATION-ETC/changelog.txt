@@ -639,6 +639,17 @@ v3.09.0
 ---------------------------------------------------------
 
 
+---------------------------------------------------------
+v3.09.1
+
+-BUG FIX: Auto-installer script detects logged-in user properly now in ALL debian-based operating systems
+
+-Auto-installer support for DietPI OS
+
+---------------------------------------------------------
+
+
+
 
 
 

@@ -942,10 +942,6 @@ echo "${cyan}Helium: ${green}13xs559435FGkh39qD9kXasaAnB8JRF8KowqPeUmKHWU46VYG1h
 echo " "
 echo "${cyan}Solana: ${green}GvX4AU4V9atTBof9dT9oBnLPmPiz3mhoXBdqcxyRuQnU"
 echo " "
-echo "${red}!!!!!BE SURE TO SCROLL UP, TO SAVE #ALL THE TICKER APP USAGE DOCUMENTATION#"
-echo "PRINTED OUT ABOVE, BEFORE YOU SIGN OFF FROM THIS TERMINAL SESSION!!!!!${reset}"
-echo " "
-
 
 
 ######################################
@@ -958,6 +954,9 @@ export TICKER_INSTALL_RAN=1
                     
 if [ -z "$FOLIO_INSTALL_RAN" ]; then
 
+echo " "
+echo "${red}!!!!!BE SURE TO SCROLL UP, TO SAVE #ALL THE TICKER APP USAGE DOCUMENTATION#"
+echo "PRINTED OUT ABOVE, BEFORE YOU SIGN OFF FROM THIS TERMINAL SESSION!!!!!${reset}"
 
 echo "Would you like to ${red}ADDITIONALLY / OPTIONALLY${reset} install Open Crypto Portfolio Tracker (server edition), private portfolio tracker on this machine?"
 echo " "
@@ -993,9 +992,6 @@ OPTIONS="install_portfolio_tracker skip"
         echo "${green}Skipping the OPTIONAL portfolio tracker install...${reset}"
 		echo " "
 		echo "${cyan}Installation / setup has finished, exiting to terminal...${reset}"
-		echo " "
-        echo "${red}!!!!!BE SURE TO SCROLL UP, TO SAVE #ALL THE TICKER APP USAGE DOCUMENTATION#"
-        echo "PRINTED OUT ABOVE, BEFORE YOU SIGN OFF FROM THIS TERMINAL SESSION!!!!!${reset}"
         echo " "
 		exit
 		  
