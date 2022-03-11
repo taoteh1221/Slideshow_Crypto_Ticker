@@ -1,5 +1,17 @@
 #!/bin/bash
 
+# Copyright 2014-2022 GPLv3, Slideshow Crypto Ticker by Mike Kilday: Mike@DragonFrugal.com
+
+
+echo " "
+echo "PLEASE REPORT ANY ISSUES HERE: https://github.com/taoteh1221/Slideshow_Crypto_Ticker/issues"
+echo " "
+
+
+# EXPLICITLY set any dietpi paths 
+if [ -f /boot/dietpi/.version ]; then
+PATH=/boot/dietpi:$PATH
+fi
 
 
 ######################################
@@ -34,21 +46,17 @@ fi
 ######################################
 
 
-# EXPLICITLY set paths 
-#PATH=/bin:/usr/bin:/usr/local/bin:/sbin:/usr/sbin:/usr/local/sbin:$PATH
-
-
 # Bash's FULL PATH
 BASH_PATH=$(which bash)
 				
 
 # Get logged-in username (if sudo, this works best with logname)
 TERMINAL_USERNAME=$(logname)
-        
 
-# If logname doesn't work, use the $USER global var
+
+# If logname doesn't work, use the $SUDO_USER global var
 if [ -z "$TERMINAL_USERNAME" ]; then
-TERMINAL_USERNAME=${1:-$USER}
+TERMINAL_USERNAME=${1:-$SUDO_USER}
 fi
 
 
@@ -96,7 +104,7 @@ fi
 
 echo " "
 
-if [ "$EUID" -ne 0 ] || [ "$USER" == "root" ] || [ -z "$TERMINAL_USERNAME" ]; then 
+if [ "$EUID" -ne 0 ] || [ "$TERMINAL_USERNAME" == "root" ]; then 
  echo "${red}Please run as a NORMAL USER WITH 'sudo' PERMISSIONS (NOT LOGGED IN AS 'root').${reset}"
  echo " "
  echo "${cyan}Exiting...${reset}"
@@ -185,8 +193,8 @@ echo " "
 
 
 echo "${yellow}TECHNICAL NOTE:"
-echo "This script was designed to install / setup on the Raspbian operating system, and was "
-echo "developed on Raspbian Linux v10, for Raspberry Pi computers WITH SMALL IN-CASE LCD SCREENS."
+echo "This script was designed to install on the Raspbian / DietPI operating systems, and was developed on"
+echo "Raspbian Linux v10 / DietPI v8.2, for small single-board computers WITH SMALL IN-CASE LCD SCREENS."
 echo " "
 echo "It is ONLY recommended to install this ticker app IF your device has an LCD screen installed.${reset}"
 echo " "
@@ -199,7 +207,7 @@ echo " "
 echo "${yellow}This script may work on other Debian-based systems as well, but it has not been tested for that purpose.${reset}"
 echo " "
 
-echo "${red}USE RASPBIAN #FULL# DESKTOP, #NOT# LITE, OR YOU LIKELY WILL HAVE SOME ISSUES WITH CHROMIUM BROWSER EVEN"
+echo "${red}USE A #FULL# DESKTOP SETUP, #NOT# LITE, OR YOU LIKELY WILL HAVE SOME ISSUES WITH CHROMIUM BROWSER EVEN"
 echo "AFTER UPGRADING TO GUI / CHROME (trust me)."
 echo " "
 echo "(Chromium OR Firefox are required [firefox is default, and will be installed if not already])${reset}"
@@ -277,31 +285,34 @@ sleep 3
 				
 echo " "
 
-# See if we are running on dietpi OS, as it requires us to install the LXDE desktop
-DIETPI_AUTOSTART_PATH=$(which dietpi-autostart)
-
 # If we are running dietpi OS or not
-if [ -z "$DIETPI_AUTOSTART_PATH" ]
-then
-
-echo "${red}THIS TICKER #REQUIRES# RUNNING THE DESKTOP INTERFACE LXDE AT STARTUP (#already setup# in Raspberry Pi OS Desktop),"
-echo "AS THE USER '${APP_USER}', IF YOU WANT THE TICKER TO #AUTOMATICALLY RUN ON SYSTEM STARTUP# / REBOOT.${reset}"
-
-else
+if [ -f /boot/dietpi/.version ]; then
 
 echo "${red}WE NEED TO MAKE SURE THE DESKTOP INTERFACE LXDE RUNS AT STARTUP IN DIETPI OS, AS THE USER '${APP_USER}',"
 echo "IF YOU WANT THE TICKER TO #AUTOMATICALLY RUN ON SYSTEM STARTUP# / REBOOT.${reset}"
 echo " "
-echo "${yellow}Select 1 or 2 to choose whether to setup LXDE Desktop autostart, or skip.${reset}"
+echo "${yellow}Select 1 or 2 to choose whether to setup LXDE Desktop and autostart, or skip.${reset}"
 echo " "
     
     OPTIONS="setup_lxde_autostart skip"
     
     select opt in $OPTIONS; do
             if [ "$opt" = "setup_lxde_autostart" ]; then
+            
+            echo " "
+            echo "${cyan}Installing required components, please wait...${reset}"
+            echo " "
+            
+            apt install xserver-xorg lightdm lxde -y
+            
             echo " "
             echo "${green}Opening dietpi-autostart...${reset}"
-            $DIETPI_AUTOSTART_PATH
+            echo " "
+            
+            sleep 3
+            
+            dietpi-autostart
+            
             break
            elif [ "$opt" = "skip" ]; then
             echo " "
@@ -310,6 +321,11 @@ echo " "
            fi
     done
     
+else
+
+echo "${red}THIS TICKER #REQUIRES# RUNNING THE DESKTOP INTERFACE LXDE AT STARTUP (#already setup# in Raspberry Pi OS Desktop),"
+echo "AS THE USER '${APP_USER}', IF YOU WANT THE TICKER TO #AUTOMATICALLY RUN ON SYSTEM STARTUP# / REBOOT.${reset}"
+
 fi
 
 echo " "
@@ -363,6 +379,16 @@ select opt in $OPTIONS; do
 				
 				# Firefox on ubuntu
 				apt-get install firefox -y
+				
+				sleep 3
+				
+				# Chromium on raspbian
+				apt-get install chromium-browser -y
+				
+				sleep 3
+				
+				# Chromium on ubuntu
+				apt-get install chromium -y
 				
 				sleep 3
 				
@@ -876,13 +902,13 @@ fi
 if [ "$AUTOSTART_ALERT" = "1" ] || [ "$AUTOSTART_ALERT" = "2" ]; then
 
 echo " "
-echo "${red}TICKER AUTO-START #REQUIRES# RUNNING THE RASPBERRY PI GRAPHICAL DESKTOP INTERFACE (LXDE) AT STARTUP, AS THE USER: '${APP_USER}'${reset}"
+echo "${red}TICKER AUTO-START #REQUIRES# RUNNING THE LXDE DESKTOP AT STARTUP, AS THE USER: '${APP_USER}'${reset}"
 echo " "
 
 else
 
 echo " "
-echo "${red}TICKER #REQUIRES# RUNNING A GRAPHICAL DESKTOP INTERFACE AT STARTUP, AS THE USER: '${APP_USER}'${reset}"
+echo "${red}TICKER #REQUIRES# RUNNING A DESKTOP INTERFACE AT STARTUP, AS THE USER: '${APP_USER}'${reset}"
 echo " "
 
 fi
