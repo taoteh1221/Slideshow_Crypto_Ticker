@@ -129,10 +129,13 @@ var font_weight = 'normal'; // Default = 'normal', can be any proper CSS font we
 var title_size = 230; // Default = 57 (SMALL SCREEN), 115 (MEDIUM SCREEN), 230 (LARGE SCREEN)
 
 
-// Ticker arrow size ratio (to ticker size), DECIMAL NUMBER FORMAT X.XX OF 1.00 OR LESS
+// Ticker arrow size RATIO (to ticker size), DECIMAL NUMBER FORMAT X.XX OF 1.00 OR LESS
 // THIS #ALREADY AUTO-RESIZES# BASED ON THE TICKER SIZE, SO YOU USUALLY CAN LEAVE THIS
 // #AS-IS#, UNLESS YOU WANT THE RATIO TO TICKER SIZE DIFFERENT!
-var arrow_size = 0.65; // Default = 0.65
+var arrow_size = 0.65; // Default = 0.65 (same height as ticker price text)
+////
+// Spacing between ticker arrow, and ticker price text
+var arrow_spacing = 40; // Default = 10 (SMALL SCREEN), 20 (MEDIUM SCREEN), 40 (LARGE SCREEN)
 
 
 // Ticker font size

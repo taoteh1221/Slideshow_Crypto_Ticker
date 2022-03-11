@@ -123,6 +123,9 @@ $("div.arrow_wrapper").css({ "width": arrow_width + "px" });
 $("span.arrow").css({ "border-left": arrow_border_width + "px solid transparent" });
 $("span.arrow").css({ "border-right": arrow_border_width + "px solid transparent" });
 
+// Arrow right-side spacing
+$("div.arrow_wrapper").css({ "margin-right": arrow_spacing + 'px' });
+
 }
 
 

@@ -644,6 +644,8 @@ v3.09.1
 
 -BUG FIX: Auto-installer script detects logged-in user properly now in ALL debian-based operating systems
 
+-Adjustable arrow spacing (config setting)
+
 -Auto-installer support for DietPI OS
 
 -Bash file code cleanup
