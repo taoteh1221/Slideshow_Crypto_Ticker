@@ -44,6 +44,12 @@ BASH_PATH=$(which bash)
 
 # Get logged-in username (if sudo, this works best with logname)
 TERMINAL_USERNAME=$(logname)
+        
+
+# If logname doesn't work, use the $USER global var
+if [ -z "$TERMINAL_USERNAME" ]; then
+TERMINAL_USERNAME=${1:-$USER}
+fi
 
 
 # Get date
