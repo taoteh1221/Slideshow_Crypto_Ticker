@@ -6,13 +6,15 @@
 # EXPLICITLY set paths 
 #PATH=/bin:/usr/bin:/usr/local/bin:/sbin:/usr/sbin:/usr/local/sbin:$PATH
 				
+				
+FIND_DISPLAY=$(w -h $USER | awk '$3 ~ /:[0-9.]*/{print $3}')
 
-# Get logged-in username (if sudo, this works best with logname)
-TERMINAL_USERNAME=$(logname)
+DISPLAY=$FIND_DISPLAY
 
+export DISPLAY=$FIND_DISPLAY
 
 # Start in user home directory
-cd /home/$TERMINAL_USERNAME
+cd /home/$USER
 
 
 # Chromium's FULL PATH

@@ -5,20 +5,21 @@
 
 # EXPLICITLY set paths 
 #PATH=/bin:/usr/bin:/usr/local/bin:/sbin:/usr/sbin:/usr/local/sbin:$PATH
+
+sleep 15
 				
+FIND_DISPLAY=$(w -h $USER | awk '$3 ~ /:[0-9.]*/{print $3}')
 
-# Get logged-in username (if sudo, this works best with logname)
-TERMINAL_USERNAME=$(logname)
+DISPLAY=$FIND_DISPLAY
 
-
-export DISPLAY=:0 
+export DISPLAY=$FIND_DISPLAY
 
 
 ###################################
 
 
 # Start in user home directory
-cd /home/$TERMINAL_USERNAME
+cd /home/$USER
 
 xset s off
 
@@ -36,7 +37,7 @@ unclutter -idle 0.5 -root &
 sleep 2
 
 				
-if [ -f /home/$APP_USER/slideshow-crypto-ticker/cache/browser.bash ]; then
+if [ -f /home/$USER/slideshow-crypto-ticker/cache/browser.bash ]; then
 ~/slideshow-crypto-ticker/cache/browser.bash
 fi
 

@@ -365,32 +365,48 @@ select opt in $OPTIONS; do
 				# Ubuntu 16.x, and other debian-based systems
 				apt-get install bsdtar -y
 				
-				sleep 3
+				sleep 1
 				
 				# Ubuntu 18.x and higher
 				apt-get install libarchive-tools -y
 				
-				sleep 3
+				sleep 1
 				
 				# Firefox on raspbian
 				apt-get install firefox-esr -y
 				
-				sleep 3
+				sleep 1
 				
 				# Firefox on ubuntu
 				apt-get install firefox -y
 				
-				sleep 3
+				sleep 1
 				
 				# Chromium on raspbian
 				apt-get install chromium-browser -y
 				
-				sleep 3
+				sleep 1
 				
 				# Chromium on ubuntu
 				apt-get install chromium -y
 				
-				sleep 3
+				sleep 1
+				
+				# Grapics card support (for browser GPU acceleration)
+				apt install libpci-dev
+				
+				sleep 1
+				
+				apt install freeglut3-dev
+				
+				sleep 1
+				
+				apt install libglu1-mesa-dev
+				
+				sleep 1
+				
+				apt install mesa-utils mesa-common-dev
+
 				
 				# Safely install other packages seperately, so they aren't cancelled by 'package missing' errors
 				apt-get install xdotool unclutter sed curl jq openssl wget -y
@@ -641,10 +657,8 @@ EOF
 # Don't nest / indent, or it could malform the settings            
 read -r -d '' TICKER_BROWSER <<- EOF
 #!/bin/bash
-\r
 DEFAULT_BROWSER="$SET_BROWSER"
 export DEFAULT_BROWSER="$SET_BROWSER"
-\r
 EOF
 					mkdir /home/$APP_USER/slideshow-crypto-ticker/cache > /dev/null 2>&1
 					

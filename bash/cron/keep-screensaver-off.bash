@@ -7,8 +7,10 @@
 #PATH=/bin:/usr/bin:/usr/local/bin:/sbin:/usr/sbin:/usr/local/sbin:$PATH
 
 
-export DISPLAY=localhost:0.0   
+FIND_DISPLAY=$(w -h $USER | awk '$3 ~ /:[0-9.]*/{print $3}')
 
-DISPLAY=:0 
+DISPLAY=$FIND_DISPLAY
+
+export DISPLAY=$FIND_DISPLAY
 
 xdotool key ctrl
