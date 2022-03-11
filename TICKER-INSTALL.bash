@@ -90,7 +90,7 @@ fi
 
 echo " "
 
-if [ "$EUID" -ne 0 ] || [ "$TERMINAL_USERNAME" == "root" ]; then 
+if [ "$EUID" -ne 0 ] || [ "$TERMINAL_USERNAME" == "root" || [ "$TERMINAL_USERNAME" == "" ]; then 
  echo "${red}Please run with 'sudo' permissions (NOT LOGGED IN AS 'root').${reset}"
  echo "${cyan}Exiting...${reset}"
  exit
