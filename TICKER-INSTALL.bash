@@ -90,8 +90,8 @@ fi
 
 echo " "
 
-if [ "$EUID" -ne 0 ] || [ "$TERMINAL_USERNAME" == "root" ] || [ -z "$TERMINAL_USERNAME" ]; then 
- echo "${red}Please run with 'sudo' permissions (NOT LOGGED IN AS 'root').${reset}"
+if [ "$EUID" -ne 0 ] || [ "$USER" == "root" ] || [ -z "$TERMINAL_USERNAME" ]; then 
+ echo "${red}Please run as a NORMAL USER WITH 'sudo' PERMISSIONS (NOT LOGGED IN AS 'root').${reset}"
  echo "${cyan}Exiting...${reset}"
  exit
 fi
