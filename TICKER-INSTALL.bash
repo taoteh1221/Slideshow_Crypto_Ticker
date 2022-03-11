@@ -227,10 +227,6 @@ fi
 echo "PLEASE REPORT ANY ISSUES HERE: https://github.com/taoteh1221/Slideshow_Crypto_Ticker/issues"
 echo " "
 
-
-echo "${red}THIS TICKER INSTALL #REQUIRES# RUNNING THE RASPBERRY PI GRAPHICAL DESKTOP INTERFACE (LXDE) AT STARTUP, AS THE USER: '${APP_USER}'${reset}"
-echo " "
-
   				
 echo "${yellow}Select 1 or 2 to choose whether to continue, or quit.${reset}"
 echo " "
@@ -256,8 +252,6 @@ echo " "
 ######################################
 
 
-echo " "
-
 echo "${cyan}Making sure your system is updated before installation, please wait...${reset}"
 
 echo " "
@@ -273,6 +267,43 @@ echo "${cyan}System update completed.${reset}"
 				
 sleep 3
 				
+echo " "
+
+# See if we are running on dietpi OS, as it requires us to install the LXDE desktop
+DIETPI_AUTOSTART_PATH=$(which dietpi-autostart)
+
+# If we are running dietpi OS or not
+if [ -z "$DIETPI_AUTOSTART_PATH" ]
+then
+
+echo "${red}THIS TICKER #REQUIRES# RUNNING THE DESKTOP INTERFACE LXDE AT STARTUP (#already setup# in Raspberry Pi OS Desktop),"
+echo "AS THE USER '${APP_USER}', IF YOU WANT THE TICKER TO #AUTOMATICALLY RUN ON SYSTEM STARTUP# / REBOOT.${reset}"
+
+else
+
+echo "${red}WE NEED TO MAKE SURE THE DESKTOP INTERFACE LXDE RUNS AT STARTUP IN DIETPI OS, AS THE USER '${APP_USER}',"
+echo "IF YOU WANT THE TICKER TO #AUTOMATICALLY RUN ON SYSTEM STARTUP# / REBOOT.${reset}"
+echo " "
+echo "${yellow}Select 1 or 2 to choose whether to setup LXDE Desktop autostart, or skip.${reset}"
+echo " "
+    
+    OPTIONS="setup_lxde_autostart skip"
+    
+    select opt in $OPTIONS; do
+            if [ "$opt" = "setup_lxde_autostart" ]; then
+            echo " "
+            echo "${green}Opening dietpi-autostart...${reset}"
+            $DIETPI_AUTOSTART_PATH
+            break
+           elif [ "$opt" = "skip" ]; then
+            echo " "
+            echo "${green}Skipping dietpi-autostart...${reset}"
+            break
+           fi
+    done
+    
+fi
+
 echo " "
 
 
