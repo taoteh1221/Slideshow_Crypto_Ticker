@@ -96,7 +96,7 @@ var orient_screen = 0; // Normal (upright) = 0, Flipped (upside down) = 180, Sid
 
 // Vertical position (adjusts the ticker's vertical position up/down)
 // CAN BE NEGATIVE, TO GO THE OPPOSITE WAY
-var vertical_position = 82; // Default = 41 (SMALL SCREEN), 82 (LARGE SCREEN)
+var vertical_position = 128; // Default = 32 (SMALL SCREEN), 64 (MEDIUM SCREEN), 128 (LARGE SCREEN)
 
 
 // Horizontal position (adjusts the ticker's horizontal position left/right)
@@ -114,11 +114,11 @@ var show_empty_volume = 'on'; // 'off' / 'on', Default = 'on'
 
 // SECONDS between "slideshowing" multiple tickers (if multiple assets configured)
 // SET TO 0 FOR AUTO MODE (trys to show all tickers in 1 minute, BUT has a 5 second per-ticker MINIMUM)
-var slideshow_speed = 6; // Default = 6
+var slideshow_speed = 9; // Default = 9
 
 
 // Slideshow transition speed (fade out / fade in) IN SECONDS (can be decimals)
-var transition_speed = 1.65; // Default = 1.65
+var transition_speed = 0.70; // Default = 0.70
 
 
 // ALL font weights (for ALL ticker text)
@@ -126,7 +126,7 @@ var font_weight = 'normal'; // Default = 'normal', can be any proper CSS font we
 
 
 // Title font size
-var title_size = 115; // Default = 57 (SMALL SCREEN), 115 (LARGE SCREEN)
+var title_size = 230; // Default = 57 (SMALL SCREEN), 115 (MEDIUM SCREEN), 230 (LARGE SCREEN)
 
 
 // Ticker arrow size ratio (to ticker size), DECIMAL NUMBER FORMAT X.XX OF 1.00 OR LESS
@@ -136,11 +136,11 @@ var arrow_size = 0.65; // Default = 0.65
 
 
 // Ticker font size
-var ticker_size = 150; // Default = 75 (SMALL SCREEN), 150 (LARGE SCREEN)
+var ticker_size = 300; // Default = 75 (SMALL SCREEN), 150 (MEDIUM SCREEN), 300 (LARGE SCREEN)
 
 
 // 24 hour volume font size
-var volume_size = 84; // Default = 42 (SMALL SCREEN), 84 (LARGE SCREEN)
+var volume_size = 168; // Default = 42 (SMALL SCREEN), 84 (MEDIUM SCREEN), 168 (LARGE SCREEN)
 
 
 // Maximum decimal places for ticker values worth under 1.00 in unit value, for prettier / less-cluttered interface
@@ -205,7 +205,7 @@ var upgrade_notice = 'on'; // 'on' / 'off', Default = 'on'
 var system_data = 'on'; // 'on' / 'off', Default = 'on'
 ////
 // System data font size
-var system_data_size = 3.75; // Default = 3.75 (#CAN# BE DECIMALS HERE, AS WERE USING THE CSS vw STANDARD)
+var system_data_size = 3.00; // Default = 3.00 (#CAN# BE DECIMALS HERE, AS WERE USING THE CSS vw STANDARD)
 
 
 
