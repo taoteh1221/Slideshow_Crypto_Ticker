@@ -646,6 +646,8 @@ v3.09.1
 
 -Auto-installer support for DietPI OS
 
+-Bash file code cleanup
+
 ---------------------------------------------------------
 
 
