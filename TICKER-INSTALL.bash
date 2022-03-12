@@ -392,11 +392,13 @@ select opt in $OPTIONS; do
 				
 				sleep 1
 				
-				# Grapics card support (for browser GPU acceleration)
+				# Grapics card detection support for firefox (for browser GPU acceleration)
 				apt install libpci-dev
 				
 				sleep 1
 				
+				# Not sure we need this Mesa 3D Graphics Library / OpenGL stuff, but leave for
+				# now until we determine why firefox is having issues enabling GPU acceleration
 				apt install freeglut3-dev
 				
 				sleep 1
