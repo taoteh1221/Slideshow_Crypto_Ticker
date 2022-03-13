@@ -408,10 +408,14 @@ select opt in $OPTIONS; do
 				sleep 1
 				
 				apt install mesa-utils mesa-common-dev
+				
+				sleep 1
+				
+				apt install mesa-vulkan-drivers vulkan-icd
 
 				
 				# Safely install other packages seperately, so they aren't cancelled by 'package missing' errors
-				apt-get install xdotool unclutter sed curl jq openssl wget -y
+				apt-get install xdotool unclutter sed curl jq openssl wget avahi-daemon -y
 				
 				echo " "
 				

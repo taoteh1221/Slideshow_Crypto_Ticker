@@ -57,10 +57,10 @@ PayPal:    https://www.paypal.me/dragonfrugal
 
 AUTOMATIC INSTALLATION
 
-IMPORTANT NOTES: This install script has been designed to run generically on Debian-based systems, but has only been tested on Raspberry Pis running Raspian. For Ticker autostart at system boot, the LXDE Desktop is #REQUIRED# (this is the default desktop on Raspberry Pis). The ticker can also be manually started (see CONFIGURING AFTER INSTALLATION).
+IMPORTANT NOTES: This install script has been designed to run generically on Debian-based systems, but has only been tested on RaspberryPi / DietPi operating systems. For Ticker autostart at system boot, the LXDE Desktop is #REQUIRED# (this is the default desktop on RaspberryPi OS). The ticker can also be manually started (see CONFIGURING AFTER INSTALLATION).
 
 
-To install / upgrade everything automatically on a Raspberry Pi (an affordable low power single board computer), copy / paste / run the command below in a terminal program (using the 'Terminal' app in the system menu, or over remote SSH), while logged in AS THE USER THAT WILL RUN THE APP (user must have sudo privileges):
+To install / upgrade everything automatically on a RaspberryPi / DietPi device, copy => paste => run the command below in a terminal program (using the 'Terminal' app in the system menu, or over remote SSH), while logged in AS THE USER THAT WILL RUN THE APP (user must have sudo privileges):
 
 
 wget --no-cache -O TICKER-INSTALL.bash https://git.io/Jqzjk;chmod +x TICKER-INSTALL.bash;sudo ./TICKER-INSTALL.bash
@@ -119,13 +119,13 @@ If you have a "goodtft LCD-show" LCD screen and you installed it's drivers, you 
 MANUAL INSTALLATION (IF AUTO-INSTALL SCRIPT FAILS, ETC)...
 
 
-IMPORTANT NOTES: USE RASPBIAN #FULL# DESKTOP, #NOT# LITE, OR YOU LIKELY WILL HAVE SOME ISSUES EVEN AFTER UPGRADING TO GUI (trust me). If your system is NOT a Raspberry Pi, or you are logged in / running as a user other than 'pi', just substitute that username in place of the 'YOUR_USER_NAME' user in references below.
+IMPORTANT NOTES: USE A #FULL# DESKTOP, #NOT# LITE, OR YOU LIKELY WILL HAVE SOME ISSUES EVEN AFTER UPGRADING TO GUI (trust me). If your system is NOT RaspberryPi OS, or you are logged in / running as a user other than 'pi', just substitute that username in place of the 'YOUR_USER_NAME' user in references below.
 
 
 UPGRADE NOTES: For v2.13.0 and higher, delete any OLDER install's /scripts/ and /apps/ sub-directories WITHIN the main 'slideshow-crypto-ticker' directory (THESE ARE NO LONGER USED).
 
 
-Create a new directory / folder named 'slideshow-crypto-ticker' in /home/YOUR_USER_NAME/ on your Raspberry Pi,
+Create a new directory / folder named 'slideshow-crypto-ticker' in /home/YOUR_USER_NAME/ on your RaspberryPi / DietPi device,
 and put all the app's files and folders into this directory.
 
 
@@ -150,7 +150,7 @@ ln -s ~/slideshow-crypto-ticker/bash/ticker-stop.bash ~/ticker-stop
 ---------------------
 
 
-Create / edit the following file (you'll need sudo/root permissions): /lib/systemd/system/ticker.service and add the following:
+Create / edit the following file (you'll need sudo/root permissions): /lib/systemd/system/ticker.service and add the following (firefox can be changed to chromium if desired):
 
 [Unit]
 Description=Chromium Ticker
@@ -161,7 +161,7 @@ After=graphical.target
 Environment=DISPLAY=:0  
 Environment=XAUTHORITY=/home/YOUR_USER_NAME/.Xauthority
 Type=simple
-ExecStart=/bin/bash /home/YOUR_USER_NAME/slideshow-crypto-ticker/bash/ticker-auto-start.bash
+ExecStart=/bin/bash /home/YOUR_USER_NAME/slideshow-crypto-ticker/bash/ticker-auto-start.bash firefox
 Restart=on-abort
 User=YOUR_USER_NAME
 Group=YOUR_USER_NAME

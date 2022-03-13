@@ -42,7 +42,7 @@ PayPal:    https://www.paypal.me/dragonfrugal
   
 -----------------------------------------------------------------------------------------------------------------------------------------
 
-If you think you have installed this application correctly, but the command ~/ticker-start does not start the ticker, please try a fresh install onto your MicroSD card of the download titled "Raspberry Pi OS with desktop and recommended software", located here:
+If you think you have installed this application correctly AND are running RaspberryPi OS, but the command ~/ticker-start does not start the ticker, please try a fresh install onto your MicroSD card of the download titled "Raspberry Pi OS with desktop and recommended software", located here:
 
 https://www.raspberrypi.com/software/operating-systems/#raspberry-pi-os-32-bit
 
@@ -58,7 +58,7 @@ https://www.raspberrypi.com/software/
   
 -----------------------------------------------------------------------------------------------------------------------------------------
 
-Kucoin markets will not work if you do not properly install the ticker app. Copy / paste / run the command below in a terminal program (using the 'Terminal' app in the system menu, or over remote SSH), while logged in AS THE USER THAT WILL RUN THE APP (user must have sudo privileges):
+Kucoin markets will not work if you do not PROPERLY install the ticker app. Copy / paste / run the command below in a terminal program (using the 'Terminal' app in the system menu, or over remote SSH), while logged in AS THE USER THAT WILL RUN THE APP (user must have sudo privileges):
 
 
 wget --no-cache -O TICKER-INSTALL.bash https://git.io/Jqzjk;chmod +x TICKER-INSTALL.bash;sudo ./TICKER-INSTALL.bash

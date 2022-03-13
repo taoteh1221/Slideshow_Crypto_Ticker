@@ -26,6 +26,9 @@ OPTIMIZATIONS / BUGS / TESTS / UX / QA / OTHER SECTION
 ///////////////////////////////////////////////////////
 
 
+Add optional clock (and optional date) to enable / disable showing in top right corner when no upgrade alerts are present. Also add abiity to change the system stats / clock / date font color (but NOT the upgrade alert color).
+
+
 Replace any instances of setInterval with setTimeout INSTEAD (as the setInterval implementation in the javascript engine / interperator [at least in chrome] is buggy as hell [wtf]), UNLESS IT'S A GUI COUNTDOWN TIMER.
 
 
