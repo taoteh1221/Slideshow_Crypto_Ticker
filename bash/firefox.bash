@@ -21,8 +21,7 @@ cd /home/$USER
 FIREFOX_PATH=$(which firefox-esr)
 
 # If 'firefox-esr' wasn't found, look for 'firefox'
-if [ -z "$FIREFOX_PATH" ]
-then
+if [ -z "$FIREFOX_PATH" ]; then
 FIREFOX_PATH=$(which firefox)
 fi
 

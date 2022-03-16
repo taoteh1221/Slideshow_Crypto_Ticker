@@ -21,8 +21,7 @@ cd /home/$USER
 CHROMIUM_PATH=$(which chromium)
 
 # If 'chromium' wasn't found, look for 'chromium-browser'
-if [ -z "$CHROMIUM_PATH" ]
-then
+if [ -z "$CHROMIUM_PATH" ]; then
 CHROMIUM_PATH=$(which chromium-browser)
 fi
 
