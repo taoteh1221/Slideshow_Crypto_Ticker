@@ -9,8 +9,10 @@ echo " "
 
 
 # EXPLICITLY set any dietpi paths 
+# Export too, in case we are calling another bash instance in this script
 if [ -f /boot/dietpi/.version ]; then
 PATH=/boot/dietpi:$PATH
+export PATH=$PATH
 fi
 
 
@@ -48,6 +50,22 @@ fi
 
 # Bash's FULL PATH
 BASH_PATH=$(which bash)
+
+
+# curl's FULL PATH
+CURL_PATH=$(which curl)
+
+
+# jq's FULL PATH
+JQ_PATH=$(which jq)
+
+
+# wget's FULL PATH
+WGET_PATH=$(which wget)
+
+
+# sed's FULL PATH
+SED_PATH=$(which sed)
 				
 
 # Get logged-in username (if sudo, this works best with logname)
@@ -120,6 +138,60 @@ fi
 
 ######################################
 
+# Install curl if needed
+if [ -z "$CURL_PATH" ]; then
+
+sudo apt update
+
+echo " "
+echo "${cyan}Installing required component curl, please wait...${reset}"
+echo " "
+
+sudo apt install curl jq -y
+
+fi
+
+# Install jq if needed
+if [ -z "$JQ_PATH" ]; then
+
+sudo apt update
+
+echo " "
+echo "${cyan}Installing required component jq, please wait...${reset}"
+echo " "
+
+sudo apt install jq -y
+
+fi
+
+# Install wget if needed
+if [ -z "$WGET_PATH" ]; then
+
+sudo apt update
+
+echo " "
+echo "${cyan}Installing required component wget, please wait...${reset}"
+echo " "
+
+sudo apt install wget -y
+
+fi
+
+# Install sed if needed
+if [ -z "$SED_PATH" ]; then
+
+sudo apt update
+
+echo " "
+echo "${cyan}Installing required component sed, please wait...${reset}"
+echo " "
+
+sudo apt install sed -y
+
+fi
+
+######################################
+
 
 # Start in user home directory
 # WE DON'T USE ~/ FOR PATHS IN THIS SCRIPT BECAUSE:
@@ -137,6 +209,7 @@ echo "(leave blank / hit enter for default of username '${TERMINAL_USERNAME}')${
 echo " "
 
 read APP_USER
+echo " "
         
 if [ -z "$APP_USER" ]; then
 APP_USER=${1:-$TERMINAL_USERNAME}
@@ -948,16 +1021,6 @@ echo " "
 ######################################
 
 
-echo " "
-echo "Also check out my 100% FREE open source PRIVATE cryptocurrency investment portfolio tracker,"
-echo "with email / text / Alexa / Ghome / Telegram alerts, charts, mining calculators,"
-echo "leverage / gain / loss / balance stats, news feeds and more:"
-echo " "
-echo "https://taoteh1221.github.io"
-echo " "
-echo "https://github.com/taoteh1221/Open_Crypto_Portfolio_Tracker"
-echo " "
-
 echo "${yellow}ANY DONATIONS (LARGE OR SMALL) HELP SUPPORT DEVELOPMENT OF MY APPS..."
 echo " "
 echo "${cyan}Bitcoin: ${green}3Nw6cvSgnLEFmQ1V4e8RSBG23G7pDjF3hW"
@@ -984,6 +1047,16 @@ echo " "
 echo "${red}!!!!!BE SURE TO SCROLL UP, TO SAVE #ALL THE TICKER APP USAGE DOCUMENTATION#"
 echo "PRINTED OUT ABOVE, BEFORE YOU SIGN OFF FROM THIS TERMINAL SESSION!!!!!${reset}"
 
+echo " "
+echo "Also check out my 100% FREE open source PRIVATE cryptocurrency investment portfolio tracker,"
+echo "with email / text / Alexa / Ghome / Telegram alerts, charts, mining calculators,"
+echo "leverage / gain / loss / balance stats, news feeds and more:"
+echo " "
+echo "https://taoteh1221.github.io"
+echo " "
+echo "https://github.com/taoteh1221/Open_Crypto_Tracker"
+echo " "
+
 echo "Would you like to ${red}ADDITIONALLY / OPTIONALLY${reset} install Open Crypto Portfolio Tracker (server edition), private portfolio tracker on this machine?"
 echo " "
 
@@ -1002,7 +1075,7 @@ OPTIONS="install_portfolio_tracker skip"
 			
 			echo " "
 			
-			wget --no-cache -O FOLIO-INSTALL.bash https://raw.githubusercontent.com/taoteh1221/Open_Crypto_Portfolio_Tracker/main/FOLIO-INSTALL.bash
+			wget --no-cache -O FOLIO-INSTALL.bash https://raw.githubusercontent.com/taoteh1221/Open_Crypto_Tracker/main/FOLIO-INSTALL.bash
 			
 			chmod +x FOLIO-INSTALL.bash
 			
