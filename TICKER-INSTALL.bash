@@ -240,26 +240,23 @@ echo " "
 echo "User home directory: /home/$APP_USER/${reset}"
 echo " "
 
-echo "${yellow}If this information is NOT correct, please quit installation and start again.${reset}"
+echo "${yellow}If this information is NOT correct, please exit installation and start again.${reset}"
 echo " "
 
-echo "${yellow}Select 1 or 2 to choose whether to continue, or quit.${reset}"
-echo " "
+echo "${yellow} "
+read -n1 -s -r -p $"Press y to continue (or press n to exit)..." key
+echo "${reset} "
 
-OPTIONS="continue quit"
-
-select opt in $OPTIONS; do
-        if [ "$opt" = "continue" ]; then
-        echo " "
-        echo "${green}Continuing with setup...${reset}"
-        break
-       elif [ "$opt" = "quit" ]; then
-        echo " "
-        echo "${green}Exiting setup...${reset}"
-        exit
-        break
-       fi
-done
+    if [ "$key" = 'y' ] || [ "$key" = 'Y' ]; then
+    echo " "
+    echo "${green}Continuing...${reset}"
+    echo " "
+    else
+    echo " "
+    echo "${green}Exiting...${reset}"
+    echo " "
+    exit
+    fi
 
 echo " "
 
@@ -322,24 +319,20 @@ fi
 echo "PLEASE REPORT ANY ISSUES HERE: https://github.com/taoteh1221/Slideshow_Crypto_Ticker/issues"
 echo " "
 
-  				
-echo "${yellow}Select 1 or 2 to choose whether to continue, or quit.${reset}"
-echo " "
+echo "${yellow} "
+read -n1 -s -r -p $"Press y to continue (or press n to exit)..." key
+echo "${reset} "
 
-OPTIONS="continue quit"
-
-select opt in $OPTIONS; do
-        if [ "$opt" = "continue" ]; then
-        echo " "
-        echo "${green}Continuing with setup...${reset}"
-        break
-       elif [ "$opt" = "quit" ]; then
-        echo " "
-        echo "${green}Exiting setup...${reset}"
-        exit
-        break
-       fi
-done
+    if [ "$key" = 'y' ] || [ "$key" = 'Y' ]; then
+    echo " "
+    echo "${green}Continuing...${reset}"
+    echo " "
+    else
+    echo " "
+    echo "${green}Exiting...${reset}"
+    echo " "
+    exit
+    fi
 
 echo " "
 
