@@ -6,6 +6,8 @@
 echo " "
 echo "PLEASE REPORT ANY ISSUES HERE: https://github.com/taoteh1221/Slideshow_Crypto_Ticker/issues"
 echo " "
+echo "Initializing, please wait..."
+echo " "
 
 
 # EXPLICITLY set any dietpi paths 
@@ -48,26 +50,6 @@ fi
 ######################################
 
 
-# Bash's FULL PATH
-BASH_PATH=$(which bash)
-
-
-# curl's FULL PATH
-CURL_PATH=$(which curl)
-
-
-# jq's FULL PATH
-JQ_PATH=$(which jq)
-
-
-# wget's FULL PATH
-WGET_PATH=$(which wget)
-
-
-# sed's FULL PATH
-SED_PATH=$(which sed)
-				
-
 # Get logged-in username (if sudo, this works best with logname)
 TERMINAL_USERNAME=$(logname)
 
@@ -90,6 +72,19 @@ DATE=$(date '+%Y-%m-%d')
 
 # Get the host ip address
 IP=`hostname -I` 
+
+
+# If a symlink, get link target for script location
+ # WE ALWAYS WANT THE FULL PATH!
+if [[ -L "$0" ]]; then
+SCRIPT_LOCATION=$(readlink "$0")
+else
+SCRIPT_LOCATION="$( cd -- "$(dirname "$0")" >/dev/null 2>&1 ; pwd -P )/"$(basename "$0")""
+fi
+
+# Now set path / file vars, after setting SCRIPT_LOCATION
+SCRIPT_PATH="$( cd -- "$(dirname "$SCRIPT_LOCATION")" >/dev/null 2>&1 ; pwd -P )"
+SCRIPT_NAME=$(basename "$SCRIPT_LOCATION")
 
 
 # Get the operating system and version
@@ -138,57 +133,139 @@ fi
 
 ######################################
 
-# Install curl if needed
-if [ -z "$CURL_PATH" ]; then
 
-sudo apt update
+# Get primary dependency apps, if we haven't already
+if [ ! -f ~/.crypto-ticker-dependency-check.dat ]; then
+    
+    
+    # Install git if needed
+    GIT_PATH=$(which git)
+    
+    if [ -z "$GIT_PATH" ]; then
+    
+    echo " "
+    echo "${cyan}Installing required component git, please wait...${reset}"
+    echo " "
+    
+    sudo apt update
+    
+    sudo apt install git -y
+    
+    fi
+    
+    
+    # Install curl if needed
+    CURL_PATH=$(which curl)
+    
+    if [ -z "$CURL_PATH" ]; then
+    
+    echo " "
+    echo "${cyan}Installing required component curl, please wait...${reset}"
+    echo " "
+    
+    sudo apt update
+    
+    sudo apt install curl -y
+    
+    fi
+    
+    # Install jq if needed
+    JQ_PATH=$(which jq)
+    
+    if [ -z "$JQ_PATH" ]; then
+    
+    echo " "
+    echo "${cyan}Installing required component jq, please wait...${reset}"
+    echo " "
+    
+    sudo apt update
+    
+    sudo apt install jq -y
+    
+    fi
+    
+    # Install wget if needed
+    WGET_PATH=$(which wget)
+    
+    if [ -z "$WGET_PATH" ]; then
+    
+    echo " "
+    echo "${cyan}Installing required component wget, please wait...${reset}"
+    echo " "
+    
+    sudo apt update
+    
+    sudo apt install wget -y
+    
+    fi
+    
+    # Install sed if needed
+    SED_PATH=$(which sed)
+    
+    if [ -z "$SED_PATH" ]; then
+    
+    echo " "
+    echo "${cyan}Installing required component sed, please wait...${reset}"
+    echo " "
+    
+    sudo apt update
+    
+    sudo apt install sed -y
+    
+    fi
+    
+    # Install less if needed
+    LESS_PATH=$(which less)
+    				
+    if [ -z "$LESS_PATH" ]; then
+    
+    echo " "
+    echo "${cyan}Installing required component less, please wait...${reset}"
+    echo " "
+    
+    sudo apt update
+    
+    sudo apt install less -y
+    
+    fi
+    
+    # Install expect if needed
+    EXPECT_PATH=$(which expect)
+    				
+    if [ -z "$EXPECT_PATH" ]; then
+    
+    echo " "
+    echo "${cyan}Installing required component expect, please wait...${reset}"
+    echo " "
+    
+    sudo apt update
+    
+    sudo apt install expect -y
+    
+    fi
+    
+    # Install avahi-daemon if needed (for .local names on internal / home network)
+    AVAHID_PATH=$(which avahi-daemon)
+    
+    if [ -z "$AVAHID_PATH" ]; then
+    
+    echo " "
+    echo "${cyan}Installing required component avahi-daemon, please wait...${reset}"
+    echo " "
+    
+    sudo apt update
+    
+    sudo apt install avahi-daemon -y
+    
+    fi
 
-echo " "
-echo "${cyan}Installing required component curl, please wait...${reset}"
-echo " "
-
-sudo apt install curl jq -y
+export DATE=$DATE
+export SCRIPT_LOCATION=$SCRIPT_LOCATION
+bash -c 'echo "checked primary dependencies of ${SCRIPT_LOCATION}: ${DATE}" >> ~/.crypto-ticker-dependency-check.dat'
 
 fi
+# dependency check END
 
-# Install jq if needed
-if [ -z "$JQ_PATH" ]; then
-
-sudo apt update
-
-echo " "
-echo "${cyan}Installing required component jq, please wait...${reset}"
-echo " "
-
-sudo apt install jq -y
-
-fi
-
-# Install wget if needed
-if [ -z "$WGET_PATH" ]; then
-
-sudo apt update
-
-echo " "
-echo "${cyan}Installing required component wget, please wait...${reset}"
-echo " "
-
-sudo apt install wget -y
-
-fi
-
-# Install sed if needed
-if [ -z "$SED_PATH" ]; then
-
-sudo apt update
-
-echo " "
-echo "${cyan}Installing required component sed, please wait...${reset}"
-echo " "
-
-sudo apt install sed -y
-
-fi
 
 ######################################
 
@@ -487,7 +564,7 @@ select opt in $OPTIONS; do
 
 				
 				# Safely install other packages seperately, so they aren't cancelled by 'package missing' errors
-				apt-get install xdotool unclutter sed curl jq openssl wget avahi-daemon -y
+				apt-get install xdotool unclutter openssl -y
 				
 				echo " "
 				
@@ -706,7 +783,7 @@ After=graphical.target
 Environment=DISPLAY=:0  
 Environment=XAUTHORITY=/home/$APP_USER/.Xauthority
 Type=simple
-ExecStart=$BASH_PATH /home/$APP_USER/slideshow-crypto-ticker/bash/ticker-auto-start.bash $SET_BROWSER
+ExecStart=bash /home/$APP_USER/slideshow-crypto-ticker/bash/ticker-auto-start.bash $SET_BROWSER
 Restart=on-abort
 User=$APP_USER
 Group=$APP_USER
@@ -753,7 +830,7 @@ EOF
 					
 				# Setup cron (to check logs after install: tail -f /var/log/syslog | grep cron -i)
 
-				CRONJOB="* * * * * $APP_USER $BASH_PATH /home/$APP_USER/slideshow-crypto-ticker/bash/cron/cron.bash > /dev/null 2>&1"
+				CRONJOB="* * * * * $APP_USER bash /home/$APP_USER/slideshow-crypto-ticker/bash/cron/cron.bash > /dev/null 2>&1"
 
 				# Play it safe and be sure their is a newline after this job entry
 				echo -e "$CRONJOB\n" > /etc/cron.d/ticker
@@ -801,21 +878,6 @@ OPTIONS="install_goodtft skip"
 
 select opt in $OPTIONS; do
         if [ "$opt" = "install_goodtft" ]; then
-         
-			
-			echo " "
-			
-			echo "${cyan}Proceeding with required component installation, please wait...${reset}"
-			
-			echo " "
-			
-			apt-get install git -y
-			
-			echo " "
-			
-			echo "${cyan}Required component installation completed.${reset}"
-			
-			sleep 3
 			
 			echo " "
 			echo "${cyan}Setting up for 'goodtft LCD-show' LCD drivers, please wait...${reset}"
