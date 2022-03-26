@@ -1,10 +1,7 @@
 
 // Copyright 2019-2022 GPLv3, Slideshow Crypto Ticker by Mike Kilday: http://DragonFrugal.com
 
-var count_decimals = function (value) {
-    if(Math.floor(value) === value) return 0;
-    return value.toString().split(".")[1].length || 0; 
-}
+
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -28,6 +25,15 @@ return input[0].toUpperCase() + input.slice(1);
 function reload_js(src_file) {
 remove_jscss_file(src_file, 'js');
 load_js(src_file + '?cachebuster='+ new Date().getTime() );
+}
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+var count_decimals = function (value) {
+    if(Math.floor(value) === value) return 0;
+    return value.toString().split(".")[1].length || 0; 
 }
 
 
@@ -607,7 +613,7 @@ var scientificToDecimal = function (num) {
 /////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-function dyn_min_decimals(price_raw) {
+function dyn_decimals(price_raw) {
     
     
     if ( ticker_round_percent == 'one' ) {
@@ -831,7 +837,7 @@ market_info = asset_symbols(pairing);
 market_symbol = market_info['asset_symbol'];
         			
 // Price decimals (if needed, set to max decimals)
-max_decimals = ( ticker_max_decimals < dyn_min_decimals(price_raw, market_info) ? ticker_max_decimals : dyn_min_decimals(price_raw, market_info) );
+max_decimals = ( ticker_max_decimals < dyn_decimals(price_raw, market_info) ? ticker_max_decimals : dyn_decimals(price_raw, market_info) );
 
 // If MINIMUM decimals IS set, and 'max_decimals' is smaller, force max decimals to 'ticker_min_decimals'
 set_max_decimals = ( ticker_min_decimals > max_decimals ? ticker_min_decimals : max_decimals );
@@ -846,7 +852,7 @@ set_max_decimals = ( ticker_min_decimals > max_decimals ? ticker_min_decimals : 
     }
     // ticker_round_fixed_decimals AND ticker_min_decimals config var logic
     else if ( ticker_round_fixed_decimals == 'on' ) {
-    set_min_decimals = ( ticker_min_decimals > dyn_min_decimals(price_raw, market_info) ? ticker_min_decimals : dyn_min_decimals(price_raw, market_info) ); // For number_commas() logic
+    set_min_decimals = ( ticker_min_decimals > dyn_decimals(price_raw, market_info) ? ticker_min_decimals : dyn_decimals(price_raw, market_info) ); // For number_commas() logic
     }
     // ONLY ticker_min_decimals config var logic
     else {
