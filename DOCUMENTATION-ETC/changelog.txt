@@ -500,7 +500,7 @@ v3.05.1
 
 -Better Bitfinex API support (for tickers greater than 4 characters)
 
--'show_exchange_name', 'min_ticker_decimals' and 'debug_mode' settings in config.js
+-'show_exchange_name', 'ticker_min_decimals' and 'debug_mode' settings in config.js
 
 ---------------------------------------------------------
 
@@ -654,22 +654,17 @@ v3.09.1
 
 
 ---------------------------------------------------------
-v3.10.0
+v3.09.2
+
+-BUG FIX: Fixed kucoin authorization logic in bash files
+
+-'ticker_round_percent' config setting, rounds decimals to user-set percent of price value (fine-grained control of price rounding)
 
 -Revised auto-installer
 
 -Easter Egg in documentation files :)
 
 ---------------------------------------------------------
-
-
-
-
-
-
-
-
-
 
 
 

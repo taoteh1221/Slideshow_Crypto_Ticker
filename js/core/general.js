@@ -1,6 +1,10 @@
 
 // Copyright 2019-2022 GPLv3, Slideshow Crypto Ticker by Mike Kilday: http://DragonFrugal.com
 
+var count_decimals = function (value) {
+    if(Math.floor(value) === value) return 0;
+    return value.toString().split(".")[1].length || 0; 
+}
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -45,7 +49,7 @@ function is_json(str) {
 
 function system_info_js() {
     
-    if ( system_data == 'on' ) {
+    if ( show_system_data == 'on' ) {
         
     reload_js('cache/system-info.js'); // System info
     
@@ -307,7 +311,7 @@ var result = (check - Math.floor(check)) !== 0;
 /////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-function number_commas(num, decimals) {
+function number_commas(num, min_decimals, max_decimals) {
 	
 //console.log(typeof num);
 	
@@ -316,16 +320,16 @@ function number_commas(num, decimals) {
 		if ( typeof num == 'string' ) {
 		
 			num = parseFloat(num).toLocaleString(undefined, {
-   		    minimumFractionDigits: decimals,
-   		    maximumFractionDigits: decimals
+   		    minimumFractionDigits: min_decimals,
+   		    maximumFractionDigits: max_decimals
 			});
 		
 		}
 		else {
 		
 			num = num.toLocaleString(undefined, {
-   		    minimumFractionDigits: decimals,
-   		    maximumFractionDigits: decimals
+   		    minimumFractionDigits: min_decimals,
+   		    maximumFractionDigits: max_decimals
 			});
 		
 		}
@@ -543,8 +547,8 @@ t_speed = Math.round(window.transition_speed * 1000);
 			
 		ticker_prev = this_ticker.prev().length ? this_ticker.prev() : ticker_divs.last();
 			
-   		ticker_prev.fadeOut(t_speed, function() {
-   		this_ticker.fadeIn(t_speed);
+   		    ticker_prev.fadeOut(t_speed, function() {
+   		    this_ticker.fadeIn(t_speed);
 			});
 		
 		}
@@ -598,6 +602,72 @@ var scientificToDecimal = function (num) {
 
     return nsign < 0 ? '-'+num : num;
 };
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+function dyn_min_decimals(price_raw) {
+    
+    
+    if ( ticker_round_percent == 'one' ) {
+    x = 1;
+    }
+    else if ( ticker_round_percent == 'tenth' ) {
+    x = 0.1;
+    }
+    else if ( ticker_round_percent == 'hundredth' ) {
+    x = 0.01;
+    }
+    else if ( ticker_round_percent == 'thousandth' ) {
+    x = 0.001;
+    }
+    
+    
+unit_percent = (price_raw / 100) * x;
+
+    
+    // 8 decimals rounding
+    if ( unit_percent <= 0.00000004994 ) {
+    decimals = 8;
+    }
+    // 7 decimals rounding
+    else if ( unit_percent <= 0.0000004994 ) {
+    decimals = 7;
+    }
+    // 6 decimals rounding
+    else if ( unit_percent <= 0.000004994 ) {
+    decimals = 6;
+    }
+    // 5 decimals rounding
+    else if ( unit_percent <= 0.00004994 ) {
+    decimals = 5;
+    }
+    // 4 decimals rounding
+    else if ( unit_percent <= 0.0004994 ) {
+    decimals = 4;
+    }
+    // 3 decimals rounding
+    else if ( unit_percent <= 0.004994 ) {
+    decimals = 3;
+    }
+    // 2 decimals rounding
+    else if ( unit_percent <= 0.04994 ) {
+    decimals = 2;
+    }
+    // 1 decimals rounding
+    else if ( unit_percent <= 0.4994 ) {
+    decimals = 1;
+    }
+    // 0 decimals rounding
+    else {
+    decimals = 0;
+    }
+    
+
+return decimals;
+
+}
 
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -731,7 +801,7 @@ console.log('render_interface'); // DEBUGGING
 
 function update_ticker(update_key, market_id, asset, pairing, price_raw, base_volume, exchange=false) {
 				 
-price_raw = scientificToDecimal(price_raw); // Convert scientific format to string (decimal), if needed
+price_raw = scientificToDecimal(price_raw); // Convert scientific format to string (decimals), if needed
 
    
    // Show or hide exchange / api status
@@ -750,7 +820,6 @@ price_raw = scientificToDecimal(price_raw); // Convert scientific format to stri
        $(".parenth_" + update_key).css({ "display": "inline" });
        $(".status_" + update_key).text( render_names(exchange) ).css("color", "#2bbf7b");
        }
-       
    
    }
                        
@@ -761,31 +830,49 @@ market_info = asset_symbols(pairing);
         		 
 market_symbol = market_info['asset_symbol'];
         			
-// Price decimals (none if >= 100, 2 if >= 1, 'max_ticker_decimals' if < 1 )
-price_decimals = ( price_raw >= 1 ? 2 : max_ticker_decimals );
-price_decimals = ( price_raw >= 100 ? 0 : price_decimals );
+// Price decimals (if needed, set to max decimals)
+max_decimals = ( ticker_max_decimals < dyn_min_decimals(price_raw, market_info) ? ticker_max_decimals : dyn_min_decimals(price_raw, market_info) );
+
+// If MINIMUM decimals IS set, and 'max_decimals' is smaller, force max decimals to 'ticker_min_decimals'
+set_max_decimals = ( ticker_min_decimals > max_decimals ? ticker_min_decimals : max_decimals );
+        	
         			
-// If MINIMUM decimals IS set, and 'price_decimals' is smaller, force decimals to 'min_ticker_decimals'
-price_decimals = ( min_ticker_decimals > price_decimals ? min_ticker_decimals : price_decimals );
-        			
-price_max_dec = parseFloat(price_raw).toFixed(price_decimals); // Set max decimals
-        			
-        			
-     // If MINIMUM decimals NOT set, remove any trailing zeros in decimals
-     if ( min_ticker_decimals == 0 ) {
-     price = parseFloat(price_max_dec);
-     }
-     else {
-     price = price_max_dec;
-     }
-        			   
+    // If MINIMUM decimals IS flagged, force decimals to minimum decimals
+    // If FIAT value under 100, AND IF ticker_min_decimals / set_max_decimals are
+    // less than or equal to 2, force 2 decimals ALWAYS for #FIAT VALUES# UX
+    if ( price_raw < 100 && market_info['asset_type'] == 'fiat' && ticker_min_decimals <= 2 && set_max_decimals <= 2 ) {
+    set_min_decimals = 2; // For number_commas() logic
+    set_max_decimals = 2; // For number_commas() logic
+    }
+    // ticker_round_fixed_decimals AND ticker_min_decimals config var logic
+    else if ( ticker_round_fixed_decimals == 'on' ) {
+    set_min_decimals = ( ticker_min_decimals > dyn_min_decimals(price_raw, market_info) ? ticker_min_decimals : dyn_min_decimals(price_raw, market_info) ); // For number_commas() logic
+    }
+    // ONLY ticker_min_decimals config var logic
+    else {
+    set_min_decimals = ( ticker_min_decimals > 0 ? ticker_min_decimals : 0 ); // For number_commas() logic
+    }
+
+
+// Price with max decimals
+price_rounded = parseFloat(price_raw).toFixed(set_max_decimals);
+
+// ADDITIONALLY remove any TRAILING zeros in any decimals (for UX)
+price = parseFloat(price_rounded);
+
+    
+    // IF we DID set using MINIMUM decimals, AND there are too few decimals in result
+    if ( set_min_decimals > 0 && count_decimals(price) < set_min_decimals ) {
+    price = price.toFixed(set_min_decimals);
+    }
+        			       			   
         				
 // HTML for rendering
 ticker_item =
       "<div class='spacing'><div class='arrow_wrapper' style=''><span class='arrow " +
       trade_side +
       "'></span></div><span class='tick_text'>" + market_symbol +
-      number_commas(price, price_decimals) +
+      number_commas(price, set_min_decimals, set_max_decimals) +
       "</span></div>";
         				 
         			
@@ -798,7 +885,7 @@ ticker_item =
         				
      volume_item = 
        "<div class='spacing'>Vol: " + market_symbol +
-       number_commas(base_volume, volume_decimals) +
+       number_commas(base_volume, 0, volume_decimals) +
        "</div>";
         				
      }

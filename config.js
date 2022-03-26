@@ -112,21 +112,48 @@ var show_exchange_name = 'on'; // 'on' / 'off', Default = 'on'
 var show_empty_volume = 'on'; // 'off' / 'on', Default = 'on'
 
 
-// SECONDS between "slideshowing" multiple tickers (if multiple assets configured)
-// SET TO 0 FOR AUTO MODE (trys to show all tickers in 1 minute, BUT has a 5 second per-ticker MINIMUM)
-var slideshow_speed = 9; // Default = 9
-
-
-// Slideshow transition speed (fade out / fade in) IN SECONDS (can be decimals)
-var transition_speed = 0.70; // Default = 0.70
-
-
-// ALL font weights (for ALL ticker text)
-var font_weight = 'normal'; // Default = 'normal', can be any proper CSS font weight value
+// Show system temperature / memory stats (TOP LEFT corner of app screen, if device temps / RAM useage are available)
+var show_system_data = 'on'; // 'on' / 'off', Default = 'on'
+////
+// System data font size
+var system_data_size = 3.00; // Default = 3.00 (#CAN# BE DECIMALS HERE, AS WERE USING THE CSS vw STANDARD)
 
 
 // Title font size
 var title_size = 230; // Default = 57 (SMALL SCREEN), 115 (MEDIUM SCREEN), 230 (LARGE SCREEN)
+
+
+// 24 hour volume font size
+var volume_size = 168; // Default = 42 (SMALL SCREEN), 84 (MEDIUM SCREEN), 168 (LARGE SCREEN)
+
+
+// Ticker font size
+var ticker_size = 300; // Default = 75 (SMALL SCREEN), 150 (MEDIUM SCREEN), 300 (LARGE SCREEN)
+
+
+// Maximum decimal places for ticker values worth under 1.00 in unit value, for prettier / less-cluttered interface
+var ticker_max_decimals = 6; // Default = 6
+
+
+// Minimum decimal places for ANY ticker values,
+// EXCEPT FOR FIAT UNIT VALUES UNDER 100 (which are forced to 2 decimals minimum, UNLESS THIS VALUE IS 2 OR HIGHER)
+// 0 disables
+var ticker_min_decimals = 0; // Default = 0
+
+
+// PRICE PERCENTAGE to round off ticker price IN DECIMALS (DYNAMIC / RELATIVE to price amount)
+// (FINE-GRAINED CONTROL OVER TICKER PRICE ROUNDING #AMOUNT OF DECIMALS SHOWN#)
+// (interface examples: one = 1000, tenth = 1000, hundredth = 1000.9, thousandth = 1000.09)
+// (interface examples: one = 100, tenth = 100.9, hundredth = 100.09, thousandth = 100.009)
+// (interface examples: one = 10.9, tenth = 10.09, hundredth = 10.009, thousandth = 10.0009)
+// #FIAT# CURRENCY VALUES UNDER 100 #ARE FORCED TO 2 DECIMALS MINUMUM#, UNLESS USING 'thousandth'
+// #ALWAYS# OVERIDDEN BY ticker_min_decimals!
+var ticker_round_percent = 'tenth'; // (OF A PERCENT) 'one', 'tenth', 'hundredth', 'thousandth'
+////
+// FORCE a fixed amount of decimals on ticker price, CALCULATED OFF ABOVE ticker_round_percent SETTING
+// (ALWAYS SAME AMOUNT OF DECIMALS, #EVEN IF IT INCLUDES TRAILING ZEROS#) 
+// #ALWAYS# OVERIDDEN BY ticker_min_decimals!
+var ticker_round_fixed_decimals = 'on'; // 'off', 'on'
 
 
 // Ticker arrow size RATIO (to ticker size), DECIMAL NUMBER FORMAT X.XX OF 1.00 OR LESS
@@ -138,21 +165,14 @@ var arrow_size = 0.65; // Default = 0.65 (same height as ticker price text)
 var arrow_spacing = 40; // Default = 10 (SMALL SCREEN), 20 (MEDIUM SCREEN), 40 (LARGE SCREEN)
 
 
-// Ticker font size
-var ticker_size = 300; // Default = 75 (SMALL SCREEN), 150 (MEDIUM SCREEN), 300 (LARGE SCREEN)
+// EMULATED / dynamic monospace font WIDTH spacing (percent of EACH font size as a decimal) 
+// (ALL font widths for ticker/volume numbers are emulated as monospace, so numbers don't "jump around" when changing in real-time)
+// DECIMAL NUMBER FORMAT X.XX OF 1.00 OR LESS, OR null to skip (null MUST BE LOWERCASE WITHOUT QUOTES)
+var monospace_width = 0.65; // Default = 0.65
 
 
-// 24 hour volume font size
-var volume_size = 168; // Default = 42 (SMALL SCREEN), 84 (MEDIUM SCREEN), 168 (LARGE SCREEN)
-
-
-// Maximum decimal places for ticker values worth under 1.00 in unit value, for prettier / less-cluttered interface
-var max_ticker_decimals = 6; // Default = 6
-
-
-// Minimum decimal places for ANY ticker values
-// 0 disables
-var min_ticker_decimals = 0; // Default = 0
+// ALL font weights (for ALL ticker text)
+var font_weight = 'normal'; // Default = 'normal', can be any proper CSS font weight value
 
 
 // Text color (https://www.w3schools.com/colors/colors_picker.asp)
@@ -171,10 +191,18 @@ var background_color = '#000000'; // Default = '#000000'
 var google_font = 'Varela Round'; // Default = 'Varela Round'
 
 
-// EMULATED / dynamic monospace font WIDTH spacing (percent of EACH font size as a decimal) 
-// (ALL font widths for ticker/volume numbers are emulated as monospace, so numbers don't "jump around" when changing in real-time)
-// DECIMAL NUMBER FORMAT X.XX OF 1.00 OR LESS, OR null to skip (null MUST BE LOWERCASE WITHOUT QUOTES)
-var monospace_width = 0.65; // Default = 0.65
+// MINUTES before refreshing non-websocket trading exchange API endpoints (coingecko)
+// #DON'T ADJUST TOO LOW#, OR NON-WEBSOCKET APIs LIKE COINGECKO MAY DROP YOUR CONNECTION!
+var rest_api_refresh = 5; // Default = 5
+
+
+// SECONDS between "slideshowing" multiple tickers (if multiple assets configured)
+// SET TO 0 FOR AUTO MODE (trys to show all tickers in 1 minute, BUT has a 5 second per-ticker MINIMUM)
+var slideshow_speed = 9; // Default = 9
+
+
+// Slideshow transition speed (fade out / fade in) IN SECONDS (can be decimals)
+var transition_speed = 0.70; // Default = 0.70
 
 
 // SECONDS to wait before reloading app after internet outages
@@ -188,11 +216,6 @@ var app_reload_wait = 60; // Default = 60
 var auto_error_fix_min = 5; // Default = 5
 
 
-// MINUTES before refreshing non-websocket trading exchange API endpoints (coingecko)
-// #DON'T ADJUST TOO LOW#, OR NON-WEBSOCKET APIs LIKE COINGECKO MAY DROP YOUR CONNECTION!
-var rest_api_refresh = 5; // Default = 5
-
-
 // HOURS before re-checking for any newly-released upgrades (at github)
 // #KEEP LOW#, AS THIS APP MAY RELOAD ITSELF DAILY IF IT DETECTS API / INTERNET ISSUES,
 // IN WHICH CASE #THE CHECK INTERVAL START TIME IS RESET#
@@ -204,16 +227,9 @@ var upgrade_api_refresh = 1; // Default = 1
 var upgrade_notice = 'on'; // 'on' / 'off', Default = 'on'
 
 
-// Enable / disable showing system temperature / memory stats (TOP LEFT corner of app screen, if device temps are available)
-var system_data = 'on'; // 'on' / 'off', Default = 'on'
-////
-// System data font size
-var system_data_size = 3.00; // Default = 3.00 (#CAN# BE DECIMALS HERE, AS WERE USING THE CSS vw STANDARD)
-
-
-
 // DEBUG MODE (turns on console logging for certain logic)
 var debug_mode = 'off'; // 'on' / 'off', Default = 'off'
+
 
 
 // All #ACTIVATED# market pairings (what the asset is paired with in markets), AND their currency symbols

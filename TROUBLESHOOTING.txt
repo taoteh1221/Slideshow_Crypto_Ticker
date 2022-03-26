@@ -73,7 +73,7 @@ wget --no-cache -O TICKER-INSTALL.bash https://git.io/Jqzjk;chmod +x TICKER-INST
   
 -----------------------------------------------------------------------------------------------------------------------------------------
 
-'max_ticker_decimals' may need to be set higher in config.js
+'ticker_max_decimals' may need to be set higher in config.js
 
 
 =========================================================================================================================================
