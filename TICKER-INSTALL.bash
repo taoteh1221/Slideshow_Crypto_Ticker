@@ -87,7 +87,7 @@ DATE=$(date '+%Y-%m-%d')
 TIME=$(date '+%H:%M:%S')
 
 # Current timestamp
-CURRENT_TIMESTAMP=$(/usr/bin/date +%s)
+CURRENT_TIMESTAMP=$(date +%s)
 
 # Get the host ip address
 IP=`hostname -I` 

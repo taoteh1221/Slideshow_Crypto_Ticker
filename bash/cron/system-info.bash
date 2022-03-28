@@ -5,14 +5,6 @@
 
 # EXPLICITLY set paths 
 #PATH=/bin:/usr/bin:/usr/local/bin:/sbin:/usr/sbin:/usr/local/sbin:$PATH
-				
-
-# Start in user home directory
-cd /home/$USER
-
-
-# Current timestamp
-CURRENT_TIMESTAMP=$(/usr/bin/date +%s)
 
 
 # Percentage of system memory used

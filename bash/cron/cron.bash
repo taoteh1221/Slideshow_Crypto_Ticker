@@ -3,12 +3,20 @@
 # Copyright 2019-2022 GPLv3, Slideshow Crypto Ticker by Mike Kilday: http://DragonFrugal.com
 
 
-# EXPLICITLY set paths 
-#PATH=/bin:/usr/bin:/usr/local/bin:/sbin:/usr/sbin:/usr/local/sbin:$PATH
+# EXPLICITLY set any ~/.local/bin paths
+# Export too, in case we are calling another bash instance in this script
+if [ -d ~/.local/bin ]; then
+PATH=~/.local/bin:$PATH
+export PATH=$PATH
+fi
 				
 
-# Start in user home directory
-cd /home/$USER
+# EXPLICITLY set any /usr/sbin path
+# Export too, in case we are calling another bash instance in this script
+if [ -d /usr/sbin ]; then
+PATH=/usr/sbin:$PATH
+export PATH=$PATH
+fi
 
 
 # Keep screensaver off
