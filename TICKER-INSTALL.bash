@@ -382,8 +382,8 @@ echo " "
 
 
 echo "${yellow}TECHNICAL NOTE:"
-echo "This script was designed to install on the Raspbian / DietPI operating systems, and was developed on"
-echo "Raspberry Pi OS, for small single-board computers WITH SMALL IN-CASE LCD SCREENS."
+echo "This script was designed to install on the Raspberry Pi OS operating system,"
+echo "for small single-board computers WITH SMALL IN-CASE LCD SCREENS."
 echo " "
 echo "It is ONLY recommended to install this ticker app IF your device has an LCD screen installed.${reset}"
 echo " "
