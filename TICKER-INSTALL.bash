@@ -469,38 +469,45 @@ sleep 3
 				
 echo " "
 
-# If we are running dietpi OS or not
-if [ -f /boot/dietpi/.version ]; then
+# If we are NOT running raspi os, we need the lxde desktop
+if [ ! -f /usr/bin/raspi-config ]; then
 
-echo "${red}WE NEED TO MAKE SURE THE DESKTOP INTERFACE LXDE RUNS AT STARTUP IN DIETPI OS, AS THE USER '${APP_USER}',"
+echo "${red}WE NEED TO MAKE SURE THE DESKTOP INTERFACE LXDE RUNS AT STARTUP, AS THE USER '${APP_USER}',"
 echo "IF YOU WANT THE TICKER TO #AUTOMATICALLY RUN ON SYSTEM STARTUP# / REBOOT.${reset}"
 echo " "
-echo "${yellow}Select 1 or 2 to choose whether to setup LXDE Desktop and autostart, or skip.${reset}"
+echo "${yellow}Select 1 or 2 to choose whether to setup LXDE Desktop, or skip.${reset}"
 echo " "
     
-    OPTIONS="setup_lxde_autostart skip"
+    OPTIONS="setup_lxde skip"
     
     select opt in $OPTIONS; do
-            if [ "$opt" = "setup_lxde_autostart" ]; then
+            if [ "$opt" = "setup_lxde" ]; then
             
             echo " "
-            echo "${cyan}Installing required components, please wait...${reset}"
+            echo "${cyan}Installing LXDE desktop and required components, please wait...${reset}"
             echo " "
             
             apt install xserver-xorg lightdm lxde -y
             
-            echo " "
-            echo "${green}Opening dietpi-autostart...${reset}"
-            echo " "
+            sleep 5
             
-            sleep 3
+            # Auto-login LXDE
+            sed -i "s/#autologin-user-timeout=.*/autologin-user-timeout=0/g" /etc/lightdm/lightdm.conf
+            sleep 2
+            sed -i "s/#autologin-user=.*/autologin-user=${APP_USER}/g" /etc/lightdm/lightdm.conf
+            sleep 2
+            sed -i "s/autologin-user=.*/autologin-user=${APP_USER}/g" /etc/lightdm/lightdm.conf
+            sleep 2
+            sed -i "s/user-session=.*/user-session=lxde/g" /etc/lightdm/lightdm.conf
             
-            dietpi-autostart
+            echo " "
+            echo "${cyan}LXDE desktop and required components, have been installed.${reset}"
+            echo " "
             
             break
            elif [ "$opt" = "skip" ]; then
             echo " "
-            echo "${green}Skipping dietpi-autostart...${reset}"
+            echo "${green}Skipping LXDE desktop setup...${reset}"
             break
            fi
     done
