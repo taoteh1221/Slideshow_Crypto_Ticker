@@ -13,10 +13,10 @@ fi
 
 
 # Kucoin updating
-~/slideshow-crypto-ticker/bash/cron/kucoin.bash
+bash ~/slideshow-crypto-ticker/bash/cron/kucoin.bash
 
 
 # Raspi temps updating
-~/slideshow-crypto-ticker/bash/cron/system-info.bash
+bash ~/slideshow-crypto-ticker/bash/cron/system-info.bash
 
 

@@ -19,10 +19,10 @@ export PATH=$PATH
 fi
 
 
-# Keep screensaver off
-~/slideshow-crypto-ticker/bash/cron/keep-screensaver-off.bash
-
 
 # Cache updating
-~/slideshow-crypto-ticker/bash/cron/cache.bash
+bash ~/slideshow-crypto-ticker/bash/cron/cache.bash
 
+
+# Keep screensaver off
+bash ~/slideshow-crypto-ticker/bash/cron/keep-screensaver-off.bash
