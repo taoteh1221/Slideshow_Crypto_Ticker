@@ -316,6 +316,7 @@ cd /home/$TERMINAL_USERNAME
 ######################################
 
 
+echo " "
 echo "${yellow}Enter the system username to configure installation for:"
 echo "(leave blank / hit enter for default of username '${TERMINAL_USERNAME}')${reset}"
 echo " "
@@ -382,7 +383,7 @@ echo " "
 
 echo "${yellow}TECHNICAL NOTE:"
 echo "This script was designed to install on the Raspbian / DietPI operating systems, and was developed on"
-echo "Raspbian Linux v10 / DietPI v8.2, for small single-board computers WITH SMALL IN-CASE LCD SCREENS."
+echo "Raspberry Pi OS, for small single-board computers WITH SMALL IN-CASE LCD SCREENS."
 echo " "
 echo "It is ONLY recommended to install this ticker app IF your device has an LCD screen installed.${reset}"
 echo " "
@@ -392,7 +393,7 @@ echo " "
 echo "$OS v$VER${reset}"
 echo " "
 
-echo "${yellow}This script may work on other Debian-based systems as well, but it has not been tested for that purpose.${reset}"
+echo "${yellow}This script may OR MAY NOT work on other Debian-based systems as well, but it has NOT been FULLY DEVELOPED for that purpose.${reset}"
 echo " "
 
 echo "${red}USE A #FULL# DESKTOP SETUP, #NOT# LITE, OR YOU LIKELY WILL HAVE SOME ISSUES WITH CHROMIUM BROWSER EVEN"
@@ -472,8 +473,10 @@ echo " "
 # If we are NOT running raspi os, we need the lxde desktop
 if [ ! -f /usr/bin/raspi-config ]; then
 
-echo "${red}WE NEED TO MAKE SURE THE DESKTOP INTERFACE LXDE RUNS AT STARTUP, AS THE USER '${APP_USER}',"
-echo "IF YOU WANT THE TICKER TO #AUTOMATICALLY RUN ON SYSTEM STARTUP# / REBOOT.${reset}"
+echo "${red}WE NEED TO MAKE SURE LXDE #AND# LIGHTDM RUN AT STARTUP, AS THE USER '${APP_USER}',"
+echo "IF YOU WANT THE TICKER TO #AUTOMATICALLY RUN ON SYSTEM STARTUP# / REBOOT."
+echo " "
+echo "CHOOSE \"LIGHTDM\" WHEN ASKED, FOR \"AUTO-LOGIN AT BOOT\" CAPABILITIES.${reset}"
 echo " "
 echo "${yellow}Select 1 or 2 to choose whether to setup LXDE Desktop, or skip.${reset}"
 echo " "
@@ -491,17 +494,49 @@ echo " "
             
             sleep 5
             
-            # Auto-login LXDE
-            sed -i "s/#autologin-user-timeout=.*/autologin-user-timeout=0/g" /etc/lightdm/lightdm.conf
+            echo " "
+            echo "${cyan}Configuring lightdm auto-login at boot for user '${APP_USER}', please wait...${reset}"
+            echo " "
+            
+                # Auto-login LXDE
+                if [ ! -f /etc/lightdm/lightdm.conf ]; then
+                
+                
+# Don't nest / indent, or it could malform the settings            
+read -r -d '' LXDE_AUTO_LOGIN <<- EOF
+\r
+autologin-user=$APP_USER
+autologin-user-timeout=delay
+user-session=LXDE
+\r
+EOF
+
+				# Setup LXDE to run at boot
+				
+				touch /etc/lightdm/lightdm.conf
+					
+				echo -e "$LXDE_AUTO_LOGIN" > /etc/lightdm/lightdm.conf
+					
+                
+                else
+                
+                sed -i "s/#autologin-user-timeout=.*/autologin-user-timeout=delay/g" /etc/lightdm/lightdm.conf
+                sleep 2
+                sed -i "s/#autologin-user=.*/autologin-user=${APP_USER}/g" /etc/lightdm/lightdm.conf
+                sleep 2
+                sed -i "s/autologin-user=.*/autologin-user=${APP_USER}/g" /etc/lightdm/lightdm.conf
+                sleep 2
+                sed -i "s/user-session=.*/user-session=LXDE/g" /etc/lightdm/lightdm.conf
+                
+                fi
+            
             sleep 2
-            sed -i "s/#autologin-user=.*/autologin-user=${APP_USER}/g" /etc/lightdm/lightdm.conf
-            sleep 2
-            sed -i "s/autologin-user=.*/autologin-user=${APP_USER}/g" /etc/lightdm/lightdm.conf
-            sleep 2
-            sed -i "s/user-session=.*/user-session=lxde/g" /etc/lightdm/lightdm.conf
+            
+            # Enable GUI on boot
+            systemctl set-default graphical
             
             echo " "
-            echo "${cyan}LXDE desktop and required components, have been installed.${reset}"
+            echo "${cyan}LXDE desktop and required components have been installed and configured.${reset}"
             echo " "
             
             break
@@ -584,25 +619,25 @@ select opt in $OPTIONS; do
 				sleep 1
 				
 				# Grapics card detection support for firefox (for browser GPU acceleration)
-				apt install libpci-dev
+				apt install libpci-dev -y
 				
 				sleep 1
 				
 				# Not sure we need this Mesa 3D Graphics Library / OpenGL stuff, but leave for
 				# now until we determine why firefox is having issues enabling GPU acceleration
-				apt install freeglut3-dev
+				apt install freeglut3-dev -y
 				
 				sleep 1
 				
-				apt install libglu1-mesa-dev
+				apt install libglu1-mesa-dev -y
 				
 				sleep 1
 				
-				apt install mesa-utils mesa-common-dev
+				apt install mesa-utils mesa-common-dev -y
 				
 				sleep 1
 				
-				apt install mesa-vulkan-drivers vulkan-icd
+				apt install mesa-vulkan-drivers vulkan-icd -y
 
 				
 				# Safely install other packages seperately, so they aren't cancelled by 'package missing' errors
