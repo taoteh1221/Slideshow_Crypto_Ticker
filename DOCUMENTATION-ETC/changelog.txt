@@ -672,6 +672,10 @@ v3.09.3
 
 -BUG FIX: Cleanup / fixes in bash scripting
 
+-BUG FIX: Fixed maximum decimals override intergration in the recent fine-grained decimal control logic
+
+-Optimizations
+
 ---------------------------------------------------------
 
 

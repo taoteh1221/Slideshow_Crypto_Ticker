@@ -671,7 +671,17 @@ unit_percent = (price_raw / 100) * x;
     }
     
 
-return decimals;
+    // Use min/max decimals if applicable  (from user config)
+    if ( decimals > ticker_max_decimals ) {
+    return ticker_max_decimals;
+    }
+    else if ( decimals < ticker_min_decimals ) {
+    return ticker_min_decimals;
+    }
+    else {
+    return decimals;
+    }
+    
 
 }
 
@@ -836,27 +846,25 @@ market_info = asset_symbols(pairing);
         		 
 market_symbol = market_info['asset_symbol'];
         			
-// Price decimals (if needed, set to max decimals)
-max_decimals = ( ticker_max_decimals < dyn_decimals(price_raw, market_info) ? ticker_max_decimals : dyn_decimals(price_raw, market_info) );
-
-// If MINIMUM decimals IS set, and 'max_decimals' is smaller, force max decimals to 'ticker_min_decimals'
-set_max_decimals = ( ticker_min_decimals > max_decimals ? ticker_min_decimals : max_decimals );
+// Determine decimals [IF NEEDED, this is set to ticker_min_decimals OR ticker_max_decimals ALREADY in dyn_decimals()]
+set_max_decimals = dyn_decimals(price_raw, market_info);
         	
         			
-    // If MINIMUM decimals IS flagged, force decimals to minimum decimals
-    // If FIAT value under 100, AND IF ticker_min_decimals / set_max_decimals are
-    // less than or equal to 2, force 2 decimals ALWAYS for #FIAT VALUES# UX
-    if ( price_raw < 100 && market_info['asset_type'] == 'fiat' && ticker_min_decimals <= 2 && set_max_decimals <= 2 ) {
+    // Set minimum decimals
+    // If FIAT value under 100, AND IF set_max_decimals is less than or equal to 2,
+    // then force 2 FIXED decimals ALWAYS for #FIAT VALUES# UX
+    if ( price_raw < 100 && market_info['asset_type'] == 'fiat' && set_max_decimals <= 2 ) {
+    set_max_decimals = 2; // For number_commas() logic (#MUST# BE RESET HERE TOO, #CANNOT# BE LESS THAN THE MINIMUM!!)
     set_min_decimals = 2; // For number_commas() logic
-    set_max_decimals = 2; // For number_commas() logic
     }
-    // ticker_round_fixed_decimals AND ticker_min_decimals config var logic
+    // If DYNAMIC fixed minimum decimals configured in user config
+    // (ticker_min_decimals ALREADY CHECKED IN set_max_decimals [with dyn_decimals()])
     else if ( ticker_round_fixed_decimals == 'on' ) {
-    set_min_decimals = ( ticker_min_decimals > dyn_decimals(price_raw, market_info) ? ticker_min_decimals : dyn_decimals(price_raw, market_info) ); // For number_commas() logic
+    set_min_decimals = set_max_decimals; // For number_commas() logic
     }
-    // ONLY ticker_min_decimals config var logic
+    // User config for min decimals used EVER (overrides ALL other fixed min decimal settings)
     else {
-    set_min_decimals = ( ticker_min_decimals > 0 ? ticker_min_decimals : 0 ); // For number_commas() logic
+    set_min_decimals = ticker_min_decimals; // For number_commas() logic
     }
 
 

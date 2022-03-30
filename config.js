@@ -96,7 +96,7 @@ var orient_screen = 0; // Normal (upright) = 0, Flipped (upside down) = 180, Sid
 
 // Vertical position (adjusts the ticker's vertical position up/down)
 // CAN BE NEGATIVE, TO GO THE OPPOSITE WAY
-var vertical_position = 75; // Default = 38 (SMALL SCREEN), 75 (MEDIUM SCREEN), 150 (LARGE SCREEN)
+var vertical_position = 75; // Default = 37 (SMALL SCREEN), 75 (MEDIUM SCREEN), 150 (LARGE SCREEN)
 
 
 // Horizontal position (adjusts the ticker's horizontal position left/right)
@@ -128,7 +128,7 @@ var volume_size = 84; // Default = 42 (SMALL SCREEN), 84 (MEDIUM SCREEN), 168 (L
 
 
 // Ticker font size
-var ticker_size = 145; // Default = 73 (SMALL SCREEN), 145 (MEDIUM SCREEN), 290 (LARGE SCREEN)
+var ticker_size = 160; // Default = 80 (SMALL SCREEN), 160 (MEDIUM SCREEN), 320 (LARGE SCREEN)
 
 
 // Ticker arrow size RATIO (to ticker size), DECIMAL NUMBER FORMAT X.XX OF 1.00 OR LESS
