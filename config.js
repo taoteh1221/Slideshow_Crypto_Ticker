@@ -96,12 +96,12 @@ var orient_screen = 0; // Normal (upright) = 0, Flipped (upside down) = 180, Sid
 
 // Vertical position (adjusts the ticker's vertical position up/down)
 // CAN BE NEGATIVE, TO GO THE OPPOSITE WAY
-var vertical_position = 128; // Default = 32 (SMALL SCREEN), 64 (MEDIUM SCREEN), 128 (LARGE SCREEN)
+var vertical_position = 75; // Default = 38 (SMALL SCREEN), 75 (MEDIUM SCREEN), 150 (LARGE SCREEN)
 
 
 // Horizontal position (adjusts the ticker's horizontal position left/right)
 // CAN BE NEGATIVE, TO GO THE OPPOSITE WAY
-var horizontal_position = 0; // Default = 10 (SMALL SCREEN), 0 (LARGE SCREEN)
+var horizontal_position = 0; // Default = 10 (SMALL SCREEN), 0 (MEDIUM/LARGE SCREEN)
 
 
 // Show exchange name in title (next to asset ticker symbol)
@@ -120,15 +120,24 @@ var system_data_size = 3.00; // Default = 3.00 (#CAN# BE DECIMALS HERE, AS WERE 
 
 
 // Title font size
-var title_size = 230; // Default = 57 (SMALL SCREEN), 115 (MEDIUM SCREEN), 230 (LARGE SCREEN)
+var title_size = 115; // Default = 57 (SMALL SCREEN), 115 (MEDIUM SCREEN), 230 (LARGE SCREEN)
 
 
 // 24 hour volume font size
-var volume_size = 168; // Default = 42 (SMALL SCREEN), 84 (MEDIUM SCREEN), 168 (LARGE SCREEN)
+var volume_size = 84; // Default = 42 (SMALL SCREEN), 84 (MEDIUM SCREEN), 168 (LARGE SCREEN)
 
 
 // Ticker font size
-var ticker_size = 300; // Default = 75 (SMALL SCREEN), 150 (MEDIUM SCREEN), 300 (LARGE SCREEN)
+var ticker_size = 145; // Default = 73 (SMALL SCREEN), 145 (MEDIUM SCREEN), 290 (LARGE SCREEN)
+
+
+// Ticker arrow size RATIO (to ticker size), DECIMAL NUMBER FORMAT X.XX OF 1.00 OR LESS
+// THIS #ALREADY AUTO-RESIZES# BASED ON THE TICKER SIZE, SO YOU USUALLY CAN LEAVE THIS
+// #AS-IS#, UNLESS YOU WANT THE RATIO TO TICKER SIZE DIFFERENT!
+var arrow_size = 0.65; // Default = 0.65 (same height as ticker price text)
+////
+// Spacing between ticker arrow, and ticker price text
+var arrow_spacing = 20; // Default = 10 (SMALL SCREEN), 20 (MEDIUM SCREEN), 40 (LARGE SCREEN)
 
 
 // Maximum decimal places for ticker values worth under 1.00 in unit value, for prettier / less-cluttered interface
@@ -154,15 +163,6 @@ var ticker_round_percent = 'tenth'; // (OF A PERCENT) 'one', 'tenth', 'hundredth
 // (ALWAYS SAME AMOUNT OF DECIMALS, #EVEN IF IT INCLUDES TRAILING ZEROS#) 
 // #ALWAYS# OVERIDDEN BY ticker_min_decimals!
 var ticker_round_fixed_decimals = 'on'; // 'off', 'on'
-
-
-// Ticker arrow size RATIO (to ticker size), DECIMAL NUMBER FORMAT X.XX OF 1.00 OR LESS
-// THIS #ALREADY AUTO-RESIZES# BASED ON THE TICKER SIZE, SO YOU USUALLY CAN LEAVE THIS
-// #AS-IS#, UNLESS YOU WANT THE RATIO TO TICKER SIZE DIFFERENT!
-var arrow_size = 0.65; // Default = 0.65 (same height as ticker price text)
-////
-// Spacing between ticker arrow, and ticker price text
-var arrow_spacing = 40; // Default = 10 (SMALL SCREEN), 20 (MEDIUM SCREEN), 40 (LARGE SCREEN)
 
 
 // EMULATED / dynamic monospace font WIDTH spacing (percent of EACH font size as a decimal) 

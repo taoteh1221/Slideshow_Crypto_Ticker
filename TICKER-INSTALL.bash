@@ -603,7 +603,7 @@ select opt in $OPTIONS; do
 				
 				sleep 1
 				
-				# Firefox on ubuntu
+				# Firefox on ubuntu, etc
 				apt-get install firefox -y
 				
 				sleep 1
@@ -611,12 +611,21 @@ select opt in $OPTIONS; do
 				# Chromium on raspbian
 				apt-get install chromium-browser -y
 				
-				sleep 1
-				
-				# Chromium on ubuntu
-				apt-get install chromium -y
-				
-				sleep 1
+				sleep 10
+
+                # Look for 'chromium-browser'
+                CHROMIUM_PATH=$(which chromium-browser)
+
+                    # If 'chromium-browser' NOT found, install chromium UNLESS THIS IS RASPI OS
+                    # ('chromium-browser' IS DEFAULT ON RASPI OS, AND THIS WOULD TRIGGER REPLACING IT)
+                    if [ -z "$CHROMIUM_PATH" ] && [ ! -f /usr/bin/raspi-config ]; then
+    
+    				# Chromium on ubuntu, etc
+    				apt-get install chromium -y
+    				
+    				sleep 1
+    				
+                    fi
 				
 				# Grapics card detection support for firefox (for browser GPU acceleration)
 				apt install libpci-dev -y
