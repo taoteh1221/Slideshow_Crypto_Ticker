@@ -220,6 +220,12 @@ function load_js(file) {
 script= document.createElement('script');
 script.src= file;
 
+// Defer seems better for letting everything load without it:
+// https://flaviocopes.com/javascript-async-defer/
+// https://medium.com/swlh/async-defer-and-dynamic-scripts-9a2c43a92be1
+script.defer = true;
+script.async = false;
+
 head = document.getElementsByTagName('head')[0];
 head.appendChild(script);
 
