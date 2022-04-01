@@ -91,6 +91,20 @@ Restart the device running this app. If this fixes the problem, you may have cro
 =========================================================================================================================================
 
 
+=========================================================================================================================================
+
+  Running on an OLDER Raspberry Pi Device, and Crashes Device or Blank Ticker Screen
+  
+-----------------------------------------------------------------------------------------------------------------------------------------
+
+Try a different browser, when preforming a re-installation. If that does NOT work, you MAY need to try the LEGACY version of Raspberry Pi OS:
+
+https://www.raspberrypi.com/news/new-old-functionality-with-raspberry-pi-os-legacy/
+
+
+=========================================================================================================================================
+
+
 
 
 

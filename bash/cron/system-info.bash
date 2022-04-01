@@ -3,10 +3,6 @@
 # Copyright 2019-2022 GPLv3, Slideshow Crypto Ticker by Mike Kilday: http://DragonFrugal.com
 #Attribution: https://peterries.net/blog/displaying-pi-temp/
 
-# EXPLICITLY set paths 
-#PATH=/bin:/usr/bin:/usr/local/bin:/sbin:/usr/sbin:/usr/local/sbin:$PATH
-
-
 # Percentage of system memory used
 memory_used_percent=$(echo - | free | grep Mem | awk '{print $3/$2 * 100.0}')
 

@@ -95,7 +95,9 @@ If autostart does not work / is not setup, you can run this command MANUALLY, #A
 ~/ticker-start
 
 
-If you prefer firefox or chromium (firefox is the default):
+If you prefer epiphany, firefox, or chromium (epiphany is the default):
+
+~/ticker-start epiphany
 
 ~/ticker-start firefox
 
@@ -117,6 +119,9 @@ If you have a "goodtft LCD-show" LCD screen and you installed it's drivers, you 
 
 
 MANUAL INSTALLATION (IF AUTO-INSTALL SCRIPT FAILS, ETC)...
+
+
+SUBSTITUTE "YOUR_USER_NAME" FOR THE USERNAME YOU LOGIN AS ON YOUR SYSTEM.
 
 
 IMPORTANT NOTES: USE A #FULL# DESKTOP, #NOT# LITE, OR YOU LIKELY WILL HAVE SOME ISSUES EVEN AFTER UPGRADING TO GUI (trust me). If your system is NOT RaspberryPi OS, or you are logged in / running as a user other than 'pi', just substitute that username in place of the 'YOUR_USER_NAME' user in references below.
@@ -150,29 +155,15 @@ ln -s ~/slideshow-crypto-ticker/bash/ticker-stop.bash ~/ticker-stop
 ---------------------
 
 
-Create / edit the following file (you'll need sudo/root permissions): /lib/systemd/system/ticker.service and add the following (firefox can be changed to chromium if desired):
-
-[Unit]
-Description=Chromium Ticker
-Wants=graphical.target
-After=graphical.target
-
-[Service]
-Environment=DISPLAY=:0  
-Environment=XAUTHORITY=/home/YOUR_USER_NAME/.Xauthority
-Type=simple
-ExecStart=/bin/bash /home/YOUR_USER_NAME/slideshow-crypto-ticker/bash/ticker-auto-start.bash firefox
-Restart=on-abort
-User=YOUR_USER_NAME
-Group=YOUR_USER_NAME
-
-[Install]
-WantedBy=graphical.target
+SUBSTITUTE "LXDE_PROFILE_NAME" FOR THE LXDE PROFILE NAME USED FOR YOUR LXDE SESSION (whatever the sub-folder name is INSIDE: /home/YOUR_USER_NAME/.config/lxpanel).
 
 
-After creating the service file above, we enable it with this command (so it runs on system startup):
+Create / edit the following autostart file (create any directories that don't exist yet): /home/YOUR_USER_NAME/.config/lxsession/LXDE_PROFILE_NAME/autostart and add the following (epiphany can be changed to firefox or chromium if desired):
 
-sudo systemctl enable ticker.service
+@/home/YOUR_USER_NAME/slideshow-crypto-ticker/bash/ticker-auto-start.bash epiphany
+
+
+After creating the LXDE Desktop autostart file above, the ticker will run on system startup.
 
 
 ---------------------

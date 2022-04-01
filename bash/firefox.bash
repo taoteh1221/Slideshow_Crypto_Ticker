@@ -20,6 +20,6 @@ fi
 # Enable graphics acceleration
 export MOZ_ACCELERATED=1
 
-# kiosk mode (for UX)
+# kiosk / private mode (for UX on crashes / restarts / etc)
 $FIREFOX_PATH --kiosk -private -new-tab ~/slideshow-crypto-ticker/index.html
 

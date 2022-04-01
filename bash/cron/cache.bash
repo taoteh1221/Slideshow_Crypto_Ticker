@@ -8,7 +8,7 @@ export PATH=$PATH
 
 # Create cache directory if it doesn't exist yet
 if [ ! -d ~/slideshow-crypto-ticker/cache ]; then
-/usr/bin/mkdir -p ~/slideshow-crypto-ticker/cache
+mkdir -p ~/slideshow-crypto-ticker/cache
 fi
 
 

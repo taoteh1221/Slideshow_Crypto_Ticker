@@ -4,7 +4,7 @@
 
 
 # Give system time to boot
-sleep 15
+sleep 20
 				
 FIND_DISPLAY=$(w -h $USER | awk '$3 ~ /:[0-9.]*/{print $3}')
 
@@ -35,7 +35,7 @@ fi
 
 # If default browser wasn't set, set as firefox
 if [ -z "$DEFAULT_BROWSER" ]; then
-DEFAULT_BROWSER="firefox"
+DEFAULT_BROWSER="epiphany"
 fi
 
 
@@ -47,6 +47,6 @@ SET_BROWSER=$1
 fi
 
 
-# Browser running logic
 bash ~/slideshow-crypto-ticker/bash/$SET_BROWSER.bash
+
 

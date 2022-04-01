@@ -399,7 +399,7 @@ echo " "
 echo "${red}USE A #FULL# DESKTOP SETUP, #NOT# LITE, OR YOU LIKELY WILL HAVE SOME ISSUES WITH CHROMIUM BROWSER EVEN"
 echo "AFTER UPGRADING TO GUI / CHROME (trust me)."
 echo " "
-echo "(Chromium OR Firefox are required [firefox is default, and will be installed if not already])${reset}"
+echo "(Epiphany, Chromium OR Firefox are required [epiphany is default, and will be installed if not already])${reset}"
 echo " "
 
 if [ -f "/etc/debian_version" ]; then
@@ -608,10 +608,28 @@ select opt in $OPTIONS; do
 				
 				sleep 1
 				
+				# epiphany on raspbian
+				apt-get install epiphany-browser -y
+				
+				sleep 1
+				
 				# Chromium on raspbian
 				apt-get install chromium-browser -y
 				
 				sleep 10
+
+                # Look for 'epiphany-browser'
+                EPIPHANY_PATH=$(which epiphany-browser)
+
+                    # If 'epiphany-browser' NOT found, install epiphany UNLESS THIS IS RASPI OS
+                    if [ -z "$EPIPHANY_PATH" ] && [ ! -f /usr/bin/raspi-config ]; then
+    
+    				# epiphany on ubuntu, etc
+    				apt-get install epiphany -y
+    				
+    				sleep 1
+    				
+                    fi
 
                 # Look for 'chromium-browser'
                 CHROMIUM_PATH=$(which chromium-browser)
@@ -650,7 +668,7 @@ select opt in $OPTIONS; do
 
 				
 				# Safely install other packages seperately, so they aren't cancelled by 'package missing' errors
-				apt-get install xdotool unclutter openssl -y
+				apt-get install xdotool unclutter openssl x11-xserver-utils xautomation -y
 				
 				echo " "
 				
@@ -718,6 +736,7 @@ select opt in $OPTIONS; do
 				rm /home/$APP_USER/slideshow-crypto-ticker/js/init.js > /dev/null 2>&1
 				rm /home/$APP_USER/slideshow-crypto-ticker/cache/cache.js > /dev/null 2>&1
 				rm /home/$APP_USER/slideshow-crypto-ticker/cache/raspi_data.js > /dev/null 2>&1
+				rm /home/$APP_USER/slideshow-crypto-ticker/ATTRIBUTION-CREDIT-INFO.txt > /dev/null 2>&1
 				rm /home/$APP_USER/reload > /dev/null 2>&1
 				
 				\cp -r ./ /home/$APP_USER/slideshow-crypto-ticker
@@ -826,10 +845,10 @@ select opt in $OPTIONS; do
         if [ "$opt" = "auto_config_ticker_system" ]; then
   				
                 echo " "
-                echo "${yellow}Select 1 or 2 to choose whether to use firefox or chromium, as the browser showing the ticker.${reset}"
+                echo "${yellow}Select 1 or 2 to choose whether to use epiphany, firefox, or chromium, as the browser showing the ticker.${reset}"
                 echo " "
                 
-                USER_BROWSER="firefox chromium"
+                USER_BROWSER="epiphany chromium firefox"
                 
                     select opt in $USER_BROWSER; do
                             if [ "$opt" = "firefox" ]; then
@@ -842,58 +861,69 @@ select opt in $OPTIONS; do
                             echo " "
                             echo "${green}Using $opt browser...${reset}"
                             break
+                           elif [ "$opt" = "epiphany" ]; then
+                            SET_BROWSER=$opt
+                            echo " "
+                            echo "${green}Using $opt browser...${reset}"
+                            break
                            fi
                     done
                 
                 echo " "
 
 				echo " "
-				
 				echo "${cyan}Configuring Slideshow Crypto Ticker on your system, please wait...${reset}"
-
 				echo " "
 				
 				
-					if [ -d "/lib/systemd/system" ]; then
-
 
 # Don't nest / indent, or it could malform the settings            
 read -r -d '' TICKER_STARTUP <<- EOF
-\r
-[Unit]
-Description=Chromium Ticker
-Wants=graphical.target
-After=graphical.target
-\r
-[Service]
-Environment=DISPLAY=:0  
-Environment=XAUTHORITY=/home/$APP_USER/.Xauthority
-Type=simple
-ExecStart=bash /home/$APP_USER/slideshow-crypto-ticker/bash/ticker-auto-start.bash $SET_BROWSER
-Restart=on-abort
-User=$APP_USER
-Group=$APP_USER
-\r
-[Install]
-WantedBy=graphical.target
+@/home/$APP_USER/slideshow-crypto-ticker/bash/ticker-auto-start.bash
 \r
 EOF
 
-					# Setup service to run at boot
-					
-					echo -e "$TICKER_STARTUP" > /lib/systemd/system/ticker.service
-					
-					systemctl enable ticker.service
+				# Setup to run at LXDE login
+                    
+                # REMOVE #OLD WAY# THIS SCRIPT USED TO DO IT
+                rm /lib/systemd/system/ticker.service > /dev/null 2>&1
+                    
+                      
+                    if [ -f /usr/bin/raspi-config ]; then
+                    # KNOWN raspi LXDE profile
+                    LXDE_PROFILE="LXDE-pi"
+                    else
+                          
+                    # Auto-detect or set to KNOWN LXDE default
+                    # Unfortunately not much documentation on listing LXDE profile names,
+                    # BUT looks fairly reliable to just check in /home/$APP_USER/.config/lxpanel
+                    # (PRESUMING IT EXISTS ALREADY AT THIS POINT / ONLY ONE PROFILE PER LXDE USER IN USER FILES)
+                    LXDE_PROFILE=$(ls /home/$APP_USER/.config/lxpanel)
+                    LXDE_PROFILE=$(echo "${LXDE_PROFILE}" | xargs) # trim whitespace
+                      
+                        # If LXDE profile var was NOT auto-setup properly
+                        # (contains whitespace MID-VARIABLE or is empty),
+                        # go with KNOWN default from LXDE documentation
+                        if [[ $LXDE_PROFILE =~ " " ]] || [ -z "$LXDE_PROFILE" ]; then
+                        LXDE_PROFILE="LXDE"
+                        LXDE_ALERT=1
+                        fi
+                      
+                    fi
+                      
 				
-					AUTOSTART_ALERT=1
-					
-					else
-					
-					AUTOSTART_ALERT=2
-					
-					fi
-					
-
+				mkdir -p /home/$APP_USER/.config/lxsession/$LXDE_PROFILE > /dev/null 2>&1
+				
+				sleep 1
+				
+				echo -e "$TICKER_STARTUP" > /home/$APP_USER/.config/lxsession/$LXDE_PROFILE/autostart
+				
+				sleep 1
+				
+				chown -R $APP_USER:$APP_USER /home/$APP_USER/.config > /dev/null 2>&1
+				
+				AUTOSTART_ALERT=1
+			
 
 # Don't nest / indent, or it could malform the settings            
 read -r -d '' TICKER_BROWSER <<- EOF
@@ -901,17 +931,19 @@ read -r -d '' TICKER_BROWSER <<- EOF
 DEFAULT_BROWSER="$SET_BROWSER"
 export DEFAULT_BROWSER="$SET_BROWSER"
 EOF
-					mkdir /home/$APP_USER/slideshow-crypto-ticker/cache > /dev/null 2>&1
+
+				
+				mkdir /home/$APP_USER/slideshow-crypto-ticker/cache > /dev/null 2>&1
 					
-					chmod 777 /home/$APP_USER/slideshow-crypto-ticker/cache > /dev/null 2>&1
+				chmod 777 /home/$APP_USER/slideshow-crypto-ticker/cache > /dev/null 2>&1
 					
-					chown $APP_USER:$APP_USER /home/$APP_USER/slideshow-crypto-ticker/cache > /dev/null 2>&1
+				chown $APP_USER:$APP_USER /home/$APP_USER/slideshow-crypto-ticker/cache > /dev/null 2>&1
 					
-					echo -e "$TICKER_BROWSER" > /home/$APP_USER/slideshow-crypto-ticker/cache/browser.bash
+				echo -e "$TICKER_BROWSER" > /home/$APP_USER/slideshow-crypto-ticker/cache/browser.bash
 					
-					chmod 755 /home/$APP_USER/slideshow-crypto-ticker/cache/browser.bash > /dev/null 2>&1
+				chmod 755 /home/$APP_USER/slideshow-crypto-ticker/cache/browser.bash > /dev/null 2>&1
 					
-					chown $APP_USER:$APP_USER /home/$APP_USER/slideshow-crypto-ticker/cache/browser.bash > /dev/null 2>&1
+				chown $APP_USER:$APP_USER /home/$APP_USER/slideshow-crypto-ticker/cache/browser.bash > /dev/null 2>&1
 					
 					
 				# Setup cron (to check logs after install: tail -f /var/log/syslog | grep cron -i)
@@ -931,8 +963,13 @@ EOF
 				
 				echo " "
 				echo "${green}Slideshow Crypto Ticker system configuration complete.${reset}"
-
 				echo " "
+				
+				    if [ "$LXDE_ALERT" = "1" ]; then
+    				echo " "
+                    echo "${red}WARNING: LXDE Desktop's profile could NOT be determined (default 'LXDE' was used), TICKER AUTO-START MAY FAIL!${reset}"
+    				echo " "
+				    fi
 				
 	        	CONFIG_SETUP=1
    	     	
@@ -1034,16 +1071,16 @@ if [ "$AUTOSTART_ALERT" = "1" ]; then
 
 echo "${green}Ticker autostart at login has been configured at:"
 echo " "
-echo "/lib/systemd/system/ticker.service${reset}"
+echo "/home/$APP_USER/.config/lxsession/$LXDE_PROFILE/autostart${reset}"
 echo " "
-echo "${yellow}(the ticker will now start at boot/login with the $SET_BROWSER browser)${reset}"
+echo "${yellow}(the ticker should now start at boot/login with the $SET_BROWSER browser)${reset}"
 echo " "
-
-elif [ "$AUTOSTART_ALERT" = "2" ]; then
-
-echo "${red}'systemd' settings could NOT be detected on your system,"
-echo "ticker autostart at system boot COULD NOT BE ENABLED.${reset}"
-echo " "	
+				
+	if [ "$LXDE_ALERT" = "1" ]; then
+    echo " "
+    echo "${red}WARNING: LXDE Desktop's profile could NOT be determined (default 'LXDE' was used), TICKER AUTO-START MAY FAIL!${reset}"
+    echo " "
+	fi
 
 fi
 
@@ -1058,14 +1095,16 @@ echo "${reset} "
 fi
 
 
-if [ "$AUTOSTART_ALERT" = "1" ] || [ "$AUTOSTART_ALERT" = "2" ]; then
+if [ "$AUTOSTART_ALERT" = "1" ]; then
 
-echo "${yellow}If autostart does not work / is not setup, you can run this command MANUALLY,"
+echo "${yellow}If autostart does not work, you can run this command MANUALLY,"
 echo "#AFTER BOOTING INTO THE DESKTOP INTERFACE#, to start Slideshow Crypto Ticker:"
 echo " "
 echo "~/ticker-start"
 echo " "
-echo "If you prefer firefox or chromium (you set $SET_BROWSER as the default):"
+echo "If you prefer epiphany, firefox, or chromium (you set $SET_BROWSER as the default):"
+echo " "
+echo "~/ticker-start epiphany"
 echo " "
 echo "~/ticker-start firefox"
 echo " "
@@ -1082,7 +1121,9 @@ echo "${yellow}#AFTER BOOTING INTO THE DESKTOP INTERFACE#, to start Slideshow Cr
 echo " "
 echo "~/ticker-start"
 echo " "
-echo "If you prefer firefox or chromium (firefox is the default):"
+echo "If you prefer epiphany, firefox, or chromium (epiphany is the default):"
+echo " "
+echo "~/ticker-start epiphany"
 echo " "
 echo "~/ticker-start firefox"
 echo " "
@@ -1129,7 +1170,7 @@ echo " "
 echo "(your device will restart automatically afterwards)"
 echo "${reset} "
 
-elif [ "$AUTOSTART_ALERT" = "1" ] || [ "$AUTOSTART_ALERT" = "2" ]; then
+elif [ "$AUTOSTART_ALERT" = "1" ]; then
 
 echo "${red}You must restart your device to auto-start the ticker, by running this command:"
 echo " "
@@ -1139,7 +1180,7 @@ echo "${reset} "
 fi
 
 
-if [ "$AUTOSTART_ALERT" = "1" ] || [ "$AUTOSTART_ALERT" = "2" ]; then
+if [ "$AUTOSTART_ALERT" = "1" ]; then
 
 echo " "
 echo "${red}TICKER AUTO-START #REQUIRES# RUNNING THE LXDE DESKTOP AT STARTUP, AS THE USER: '${APP_USER}'${reset}"

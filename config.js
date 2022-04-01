@@ -13,26 +13,29 @@ var exchange_markets = []; // LEAVE ALONE, AND DON'T DELETE (REQUIRED!!)
 
 // ############## PER-EXCHANGE FORMATTING EXAMPLES ##########################
 ////
-// Which crypto asset(s) to display on the ticker
-// Separate with pipe | symbol to "slideshow" between multiple tickers on the same exchange
+// YOU CAN RE-ORDER THE EXCHANGES IN THE CONFIG, TO RE-ORDER WHICH EXCHANGE'S MARKET'S SHOW FIRST
 ////
-// Bitstamp formatting example  (MULTIPLE TICKERS NOT SUPPORTED): 'btcgbp'
+// Which crypto asset(s) to display on the ticker
+// SEPERATE MULTIPLE EXCHANGE'S MARKETS with the pipe | symbol to "slideshow" between multiple tickers on the same exchange
+////
+// Bitfinex formatting example  (MULTIPLE TICKERS NOT SUPPORTED): 'BTCEUR', OR 'PLANETS:UST' #FOR OVER 4 CHARACTER SYMBOLS#
 
-// Bitfinex formatting example  (MULTIPLE TICKERS NOT SUPPORTED): 'BTCEUR', OR 'PLANETS:UST' FOR OVER 4 CHARACTER SYMBOLS
+// COINGECKO NOTES: 'API_ID_HERE:ASSET/PAIR' ('API id' is on the asset's coingecko page, in the 'Info' section)
+// CoinGecko formatting example: 'bitcoin:btc/usd|bitcoin:btc/eur|bitcoin:btc/chf|grape-2:grape/usd|raydium:ray/btc'
 
 // Coinbase formatting example: 'BTC-USD|BTC-GBP|ETH-USD|ETH-BTC|ETH-EUR|MKR-USD|MKR-BTC|MANA-USDC'
 
-// Binance formatting example:  'btcusdt|ethusdt|ethbtc|mkrusdt'
+// Kraken formatting example:   'XBT/USD|XBT/CAD|XBT/EUR|ETH/USD|ETH/EUR|ETH/CAD'
 
-// CoinGecko formatting example: 'bitcoin:btc/usd|bitcoin:btc/eur|bitcoin:btc/chf|grape-2:grape/usd|raydium:ray/btc'
+// Hitbtc formatting example    (MULTIPLE TICKERS NOT SUPPORTED): 'ETHBTC'
+
+// Bitstamp formatting example  (MULTIPLE TICKERS NOT SUPPORTED): 'btcgbp'
+
+// Binance formatting example:  'btcusdt|ethusdt|ethbtc|mkrusdt'
 
 // Kucoin formatting example:   'MANA-USDT|ENJ-BTC'
 
-// Kraken formatting example:   'XBT/USD|XBT/CAD|XBT/EUR|ETH/USD|ETH/EUR|ETH/CAD'
-
 // Okex formatting example:     'ENJ-USDT|ENJ-BTC'
-
-// Hitbtc formatting example    (MULTIPLE TICKERS NOT SUPPORTED): 'ETHBTC'
 
 // Gate.io formatting example:  'MANA_USDT|SAMO_USDT'
 ////
@@ -44,35 +47,35 @@ exchange_markets['bitstamp'] = '';
 ////
 // Bitfinex markets (set to '' to disable) 
 // !!BITFINEX WEBSOCKET API ONLY SUPPORTS ONE ASSET!!
-exchange_markets['bitfinex'] = '';  
+exchange_markets['bitfinex'] = 'BTCUSD';  
 ////
 ////
 // Coinbase markets (set to '' to disable)
-exchange_markets['coinbase'] = 'BTC-USD|ETH-USD|ETH-BTC|SOL-USD'; 
+exchange_markets['coinbase'] = 'ETH-USD|ETH-BTC|SOL-USD'; 
 ////
 //// 
 // Coingecko markets (set to '' to disable)
 // USE COINGECKO'S API ID FOR EACH ASSET! (SEE COINGECKO ASSET PAGE'S INFO SECTION) 
 // PAIRING ASSET MUST BE SUPPORTED BY COINGECKO'S 'vs_currencies' API PARAMETER!
 // FORMAT IS 'api-id-here:symbol/pairing'
-exchange_markets['coingecko'] = 'solana:sol/btc|grape-2:grape/usd';
-////
-////
-// Binance markets (set to '' to disable)
-exchange_markets['binance'] = 'hntusdt|hntbtc'; 
-////
-////
-// Kucoin markets (set to '' to disable)
-// !!KUCOIN REQUIRES USING THE INSTALL SCRIPT!!
-exchange_markets['kucoin'] = 'MANA-USDT'; 
-////
-////
-// Kraken markets (set to '' to disable)
-exchange_markets['kraken'] = ''; 
+exchange_markets['coingecko'] = 'solana:sol/btc|solana:sol/eth';
 ////
 ////
 // OKex markets (set to '' to disable) 
 exchange_markets['okex'] = '';
+////
+////
+// Kraken markets (set to '' to disable)
+exchange_markets['kraken'] = 'RAY/USD|SRM/USD'; 
+////
+////
+// Kucoin markets (set to '' to disable)
+// !!KUCOIN REQUIRES USING THE INSTALL SCRIPT!!
+exchange_markets['kucoin'] = 'SRM-BTC|MANA-USDT'; 
+////
+////
+// Binance markets (set to '' to disable)
+exchange_markets['binance'] = 'manabtc|hntusdt'; 
 ////
 ////
 // HitBTC markets (set to '' to disable) 
@@ -81,7 +84,7 @@ exchange_markets['hitbtc'] = '';
 ////
 ////
 // Gateio markets (set to '' to disable) 
-exchange_markets['gateio'] = 'SLC_USDT|RNDR_USDT|SLRS_USDT|BIT_USDT|SAMO_USDT';
+exchange_markets['gateio'] = 'SLC_USDT|SAMO_USDT';
 
 
 // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
