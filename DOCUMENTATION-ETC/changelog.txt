@@ -672,9 +672,9 @@ v3.09.3
 
 -BUG FIX: Cleanup / fixes in bash scripting
 
--BUG FIX: Fixed maximum decimals override intergration in the recent fine-grained decimal control logic
+-BUG FIX: Fixed maximum decimals override integration in the recent fine-grained decimal control logic
 
--Better autostart (on boot / reboot) compatiblity
+-Better autostart (on boot / reboot) compatibility
 
 -Added ability to use epiphany as the browser used by the ticker
 
