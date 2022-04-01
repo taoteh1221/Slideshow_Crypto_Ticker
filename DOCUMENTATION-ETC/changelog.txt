@@ -674,6 +674,8 @@ v3.09.3
 
 -BUG FIX: Fixed maximum decimals override intergration in the recent fine-grained decimal control logic
 
+-Better autostart (on boot / reboot) compatiblity
+
 -Added ability to use epiphany as the browser used by the ticker
 
 -Switched to using epiphany as default ticker browser (ARM-based chromium is acting kinda fruity in latest releases, AND firefox can CRASH THE ENTIRE SYSTEM...see README on how to still use chromium / firefox)
