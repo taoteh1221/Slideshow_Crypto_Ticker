@@ -163,7 +163,7 @@ Create / edit the following autostart file (create any directories that don't ex
 @/home/YOUR_USER_NAME/slideshow-crypto-ticker/bash/ticker-auto-start.bash epiphany
 
 
-After creating the LXDE Desktop autostart file above, the ticker will run on system startup.
+After creating the LXDE Desktop autostart file above, the ticker will run on system startup when you login / auto-login to the LXDE Desktop.
 
 
 ---------------------

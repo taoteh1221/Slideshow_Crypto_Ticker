@@ -539,6 +539,14 @@ EOF
             echo "${cyan}LXDE desktop and required components have been installed and configured.${reset}"
             echo " "
             
+            
+                # If we are running dietpi OS, WARN USER AN ADDITIONAL STEP #MAY# BE NEEDED
+                if [ -f /boot/dietpi/.version ]; then
+                echo "${red}DietPi #MAY STILL REQUIRE# USING THE dietpi-autostart UTILITY TO SET LXDE TO AUTO-LOGIN"
+                echo "AS THE USER '${APP_USER}', EVEN THOUGH WE JUST SETUP LXDE AUTO-LOGIN ALREADY.${reset}"
+                fi
+            
+            
             break
            elif [ "$opt" = "skip" ]; then
             echo " "
@@ -549,7 +557,7 @@ EOF
     
 else
 
-echo "${red}THIS TICKER #REQUIRES# RUNNING THE DESKTOP INTERFACE LXDE AT STARTUP (#already setup# in Raspberry Pi OS Desktop),"
+echo "${red}THIS TICKER #REQUIRES# RUNNING THE DESKTOP INTERFACE LXDE AT STARTUP (#already the default# in Raspberry Pi OS Desktop),"
 echo "AS THE USER '${APP_USER}', IF YOU WANT THE TICKER TO #AUTOMATICALLY RUN ON SYSTEM STARTUP# / REBOOT.${reset}"
 
 fi

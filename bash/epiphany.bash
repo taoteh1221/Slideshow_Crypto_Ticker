@@ -29,6 +29,8 @@ export WEBKIT_DISABLE_TBS=1
 
 # kiosk / private mode (for UX on crashes / restarts / etc)
 # --profile needed if FIRST RUN, OTHERWISE IT WON'T START!
+# No fullscreen flag, AND -a for kiosk mode doesn't go fullscreen, 
+# so we use xte AFTER epiphany starts to toggle fullscreen with F11
 $EPIPHANY_PATH -a -i --profile ~/.config/epiphany ~/slideshow-crypto-ticker/index.html --display=$FIND_DISPLAY &
 sleep 15
 xte "key F11" -x$FIND_DISPLAY

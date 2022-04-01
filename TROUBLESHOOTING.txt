@@ -81,11 +81,11 @@ wget --no-cache -O TICKER-INSTALL.bash https://git.io/Jqzjk;chmod +x TICKER-INST
 
 =========================================================================================================================================
 
-  Data Errors, Data Not Updating
+  Data Errors, Data Not Updating, System Crashing, Blank Screen After Awhile
   
 -----------------------------------------------------------------------------------------------------------------------------------------
 
-Restart the device running this app. If this fixes the problem, you may have crond / systemd crashes ocurring on your system. Make sure you are using a WELL-MAINTAINED version of a debian-based operating system for maximum compatibility with this app (Ubuntu or Raspberry Pi OS are VERY stable an reliable).
+Restart the device running this app. If this fixes the problem, AND YOU ARE USING FIREFOX AS THE TICKER BROWSER, set the ticker browser to epiphany or chromium INSTEAD (FIREFOX IS #KNOWN TO CRASH# LOW POWER DEVICES WITH THIS TICKER). ALSO, make sure you are using a WELL-MAINTAINED version of a debian-based operating system for maximum compatibility with this app (Ubuntu or Raspberry Pi OS are VERY stable and reliable).
 
 
 =========================================================================================================================================
@@ -93,11 +93,11 @@ Restart the device running this app. If this fixes the problem, you may have cro
 
 =========================================================================================================================================
 
-  Running on an OLDER Raspberry Pi Device, and Crashes Device or Blank Ticker Screen
+  Running on an OLDER Raspberry Pi Device, and Having Issues
   
 -----------------------------------------------------------------------------------------------------------------------------------------
 
-Try a different browser, when preforming a re-installation. If that does NOT work, you MAY need to try the LEGACY version of Raspberry Pi OS:
+You MAY need to try the LEGACY version of Raspberry Pi OS:
 
 https://www.raspberrypi.com/news/new-old-functionality-with-raspberry-pi-os-legacy/
 

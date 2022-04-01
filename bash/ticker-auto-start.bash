@@ -47,6 +47,7 @@ SET_BROWSER=$1
 fi
 
 
+# Browser running logic
 bash ~/slideshow-crypto-ticker/bash/$SET_BROWSER.bash
 
 
