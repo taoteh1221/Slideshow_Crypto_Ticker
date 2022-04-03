@@ -32,7 +32,7 @@ fi
 
 # If default browser wasn't set, set as firefox
 if [ -z "$DEFAULT_BROWSER" ]; then
-DEFAULT_BROWSER="epiphany"
+DEFAULT_BROWSER="midori"
 fi
 
 

@@ -147,7 +147,8 @@ function upgrade_check() {
     	        
             $("#upgrade_alert").css({ "display": "block" });
             
-            $("#upgrade_alert").html("<img id='upgrade_icon' src='images/upload-cloud-fill.svg' alt='' title='' /><span class='more_info' title=''>Upgrade available: v" + latest_version + "<br />(running v" + app_version + ")</span>").css("color", "#FFFF00"); 
+            $("#upgrade_alert").html("<span class='more_info' title=''>Upgrade available: v" + latest_version + "<br />(running v" + app_version + ")</span>"); 
+            
             
     	    }
     	    else {
@@ -156,7 +157,7 @@ function upgrade_check() {
     	    var latest_version_installer;
     	    window.latest_version_description = '';
             $("#upgrade_alert").css({ "display": "none" });
-            $("#upgrade_alert").html("").css("color", "#FFFF00"); 
+            $("#upgrade_alert").html(""); 
     	    }
     	    
     	   
@@ -883,7 +884,7 @@ function websocket_connect(exchange) {
 		    
 	   $(".status_wrapper_" + exchange).css({ "display": "inline" });
 	    
-	   $(".status_" + exchange).text("Reloading").css("color", "#FFFF00", "important");
+	   $(".status_" + exchange).text("Reloading").css("color", "#ffff00", "important");
 	   
 	   websocket_connect(exchange);
 	       

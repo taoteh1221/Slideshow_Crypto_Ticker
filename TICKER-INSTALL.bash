@@ -399,7 +399,7 @@ echo " "
 echo "${red}USE A #FULL# DESKTOP SETUP, #NOT# LITE, OR YOU LIKELY WILL HAVE SOME ISSUES WITH CHROMIUM BROWSER EVEN"
 echo "AFTER UPGRADING TO GUI / CHROME (trust me)."
 echo " "
-echo "(Epiphany, Chromium OR Firefox are required [epiphany is default, and will be installed if not already])${reset}"
+echo "(Midori, Epiphany, Chromium, OR Firefox are supported [midori recommended, all these browsers will be installed if available])${reset}"
 echo " "
 
 if [ -f "/etc/debian_version" ]; then
@@ -606,6 +606,11 @@ select opt in $OPTIONS; do
 				
 				sleep 1
 				
+				# midori on raspbian
+				apt-get install midori -y
+				
+				sleep 1
+				
 				# Firefox on raspbian
 				apt-get install firefox-esr -y
 				
@@ -643,7 +648,7 @@ select opt in $OPTIONS; do
                 CHROMIUM_PATH=$(which chromium-browser)
 
                     # If 'chromium-browser' NOT found, install chromium UNLESS THIS IS RASPI OS
-                    # ('chromium-browser' IS DEFAULT ON RASPI OS, AND THIS WOULD TRIGGER REPLACING IT)
+                    # ('chromium-browser' IS DEFAULT ON RASPI OS, AND THIS WOULD TRIGGER REPLACING IT WITH A #DOWNGRADED# VERSION)
                     if [ -z "$CHROMIUM_PATH" ] && [ ! -f /usr/bin/raspi-config ]; then
     
     				# Chromium on ubuntu, etc
@@ -745,6 +750,7 @@ select opt in $OPTIONS; do
 				rm /home/$APP_USER/slideshow-crypto-ticker/cache/cache.js > /dev/null 2>&1
 				rm /home/$APP_USER/slideshow-crypto-ticker/cache/raspi_data.js > /dev/null 2>&1
 				rm /home/$APP_USER/slideshow-crypto-ticker/ATTRIBUTION-CREDIT-INFO.txt > /dev/null 2>&1
+				rm /home/$APP_USER/slideshow-crypto-ticker/images/upload-cloud-fill.svg > /dev/null 2>&1
 				rm /home/$APP_USER/reload > /dev/null 2>&1
 				
 				\cp -r ./ /home/$APP_USER/slideshow-crypto-ticker
@@ -853,13 +859,18 @@ select opt in $OPTIONS; do
         if [ "$opt" = "auto_config_ticker_system" ]; then
   				
                 echo " "
-                echo "${yellow}Select 1 or 2 to choose whether to use epiphany, firefox, or chromium, as the browser showing the ticker.${reset}"
+                echo "${yellow}Select the NUMBER next to the browser you want to use to render the ticker (midori recommended).${reset}"
                 echo " "
                 
-                USER_BROWSER="epiphany chromium firefox"
+                USER_BROWSER="midori epiphany chromium firefox"
                 
                     select opt in $USER_BROWSER; do
                             if [ "$opt" = "firefox" ]; then
+                            SET_BROWSER=$opt
+                            echo " "
+                            echo "${green}Using $opt browser...${reset}"
+                            break
+                           elif [ "$opt" = "midori" ]; then
                             SET_BROWSER=$opt
                             echo " "
                             echo "${green}Using $opt browser...${reset}"
@@ -887,7 +898,7 @@ select opt in $OPTIONS; do
 
 # Don't nest / indent, or it could malform the settings            
 read -r -d '' TICKER_STARTUP <<- EOF
-@/home/$APP_USER/slideshow-crypto-ticker/bash/ticker-auto-start.bash
+@/home/$APP_USER/slideshow-crypto-ticker/bash/ticker-auto-start.bash $SET_BROWSER
 \r
 EOF
 
@@ -1110,7 +1121,9 @@ echo "#AFTER BOOTING INTO THE DESKTOP INTERFACE#, to start Slideshow Crypto Tick
 echo " "
 echo "~/ticker-start"
 echo " "
-echo "If you prefer epiphany, firefox, or chromium (you set $SET_BROWSER as the default):"
+echo "If you prefer midori, epiphany, firefox, or chromium (you set $SET_BROWSER as the default):"
+echo " "
+echo "~/ticker-start midori"
 echo " "
 echo "~/ticker-start epiphany"
 echo " "
@@ -1129,7 +1142,9 @@ echo "${yellow}#AFTER BOOTING INTO THE DESKTOP INTERFACE#, to start Slideshow Cr
 echo " "
 echo "~/ticker-start"
 echo " "
-echo "If you prefer epiphany, firefox, or chromium (epiphany is the default):"
+echo "If you prefer midori, epiphany, firefox, or chromium (midori recommended):"
+echo " "
+echo "~/ticker-start midori"
 echo " "
 echo "~/ticker-start epiphany"
 echo " "

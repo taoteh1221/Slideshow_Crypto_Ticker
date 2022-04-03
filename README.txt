@@ -95,7 +95,9 @@ If autostart does not work / is not setup, you can run this command MANUALLY, #A
 ~/ticker-start
 
 
-If you prefer epiphany, firefox, or chromium (epiphany is the default):
+If you prefer midori, epiphany, firefox, or chromium (midori is the default):
+
+~/ticker-start midori
 
 ~/ticker-start epiphany
 
@@ -158,9 +160,9 @@ ln -s ~/slideshow-crypto-ticker/bash/ticker-stop.bash ~/ticker-stop
 SUBSTITUTE "LXDE_PROFILE_NAME" FOR THE LXDE PROFILE NAME USED FOR YOUR LXDE SESSION (whatever the sub-folder name is INSIDE: /home/YOUR_USER_NAME/.config/lxpanel).
 
 
-Create / edit the following autostart file (create any directories that don't exist yet): /home/YOUR_USER_NAME/.config/lxsession/LXDE_PROFILE_NAME/autostart and add the following (epiphany can be changed to firefox or chromium if desired):
+Create / edit the following autostart file (create any directories that don't exist yet): /home/YOUR_USER_NAME/.config/lxsession/LXDE_PROFILE_NAME/autostart and add the following (midori can be changed to epiphany, firefox, or chromium if desired):
 
-@/home/YOUR_USER_NAME/slideshow-crypto-ticker/bash/ticker-auto-start.bash epiphany
+@/home/YOUR_USER_NAME/slideshow-crypto-ticker/bash/ticker-auto-start.bash midori
 
 
 After creating the LXDE Desktop autostart file above, the ticker will run on system startup when you login / auto-login to the LXDE Desktop.

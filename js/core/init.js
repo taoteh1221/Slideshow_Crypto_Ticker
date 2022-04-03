@@ -4,7 +4,7 @@
 
 
 // Application version
-var app_version = '3.09.3';  // 2022/MARCH/29TH
+var app_version = '3.09.4';  // 2022/APRIL/2ND
 
 
 // BLANK var inits
@@ -55,6 +55,11 @@ upgrade_check(); // Start checking for upgrades
 
 system_info_js(); // System info (temp , memory used, etc)
 
+// Change color on top area to help prevent screen burn
+// (besides the slow back-and-forth we also do for that area)
+change_color('system_data');
+change_color('upgrade_alert');
+
 
     // Event listeners for internet status updates
 
@@ -77,7 +82,7 @@ system_info_js(); // System info (temp , memory used, etc)
         console.log('Internet is back online.');
         
         $("#internet_alert").css({ "display": "block" });
-        $("#internet_alert").html("Internet back online, reloading...<br />(in " + app_reload_wait + " seconds)").css("color", "#FFFF00");        
+        $("#internet_alert").html("Internet back online, reloading...<br />(in " + app_reload_wait + " seconds)").css("color", "#ffff00");        
         
         reload_check();
             

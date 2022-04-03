@@ -10,19 +10,11 @@ DISPLAY=$FIND_DISPLAY
 export DISPLAY=$FIND_DISPLAY
 
 
-# chromium
-WID=$(xdotool search --onlyvisible --class chromium|head -1)
-xdotool windowactivate ${WID}
-xdotool key ctrl+F5
-
 # firefox
 rm -rf ~/.cache/mozilla/firefox/*
+# midori
+rm -rf ~/.cache/midori/*
 sleep 1
-WID=$(xdotool search --onlyvisible --class firefox|head -1)
-xdotool windowactivate ${WID}
-xdotool key ctrl+F5
 
-# epiphany
-WID=$(xdotool search --desktop 0 --class epiphany)
-xdotool windowactivate ${WID}
+# midori / epiphany / chromium / firefox
 xdotool key F5

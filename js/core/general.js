@@ -3,6 +3,13 @@
 
 
 
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+const rgb2hex = (rgb) => `#${rgb.match(/^rgb\((\d+),\s*(\d+),\s*(\d+)\)$/).slice(1).map(n => parseInt(n, 10).toString(16).padStart(2, '0')).join('')}`
+
+
 /////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
@@ -65,6 +72,24 @@ function system_info_js() {
         }, 65000); 
         
     }
+
+}
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+function valid_endpoint(exchange) {
+
+	// Skip, if no endpoint or markets are set for this exchange
+	if ( typeof api[exchange] == 'undefined' || api[exchange].trim() == '' ) {
+	console.log(exchange + ' endpoint not defined, removing it\'s market config...');
+	markets[exchange] = '';
+	return false;
+	}
+	else {
+	return true;
+	}
 
 }
 
@@ -142,24 +167,6 @@ $("div.arrow_wrapper").css({ "margin-right": arrow_spacing + 'px' });
 /////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-function valid_endpoint(exchange) {
-
-	// Skip, if no endpoint or markets are set for this exchange
-	if ( typeof api[exchange] == 'undefined' || api[exchange].trim() == '' ) {
-	console.log(exchange + ' endpoint not defined, removing it\'s market config...');
-	markets[exchange] = '';
-	return false;
-	}
-	else {
-	return true;
-	}
-
-}
-
-
-/////////////////////////////////////////////////////////////////////////////////////////////////////
-
-
 function console_alert() {
     
     if  ( window.api_alert == 1 ) {
@@ -209,6 +216,35 @@ function copy_text(elm) {
 	 alert('Copied to clipboard.');
   }
   
+}
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+function change_color(id) {
+
+hex_color = rgb2hex( $("#" + id).css('color') );
+    
+    if ( typeof hex_color != 'undefined' ) {
+    
+        // Switch back and forth between yellow / cyan
+        if ( hex_color == '#ffff00' ) {
+        new_color = "#00ffff";
+        }
+        else {
+        new_color = "#ffff00";
+        }
+    
+    $("#" + id).css("transition", "color 240.0s").css('color', new_color);
+    
+        // Rerun change_color() again after 240 seconds
+        setTimeout(function() {
+        change_color(id);
+        }, 240000);  
+    
+    }
+
 }
 
 
@@ -719,7 +755,7 @@ function reload_check() {
                 	        
             				
             				if ( reload_countdown > 0 ) {
-                            $("#internet_alert").html("Internet back online, reloading...<br />(in " + reload_countdown + " seconds)").css("color", "#FFFF00");
+                            $("#internet_alert").html("Internet back online, reloading...<br />(in " + reload_countdown + " seconds)").css("color", "#ffff00");
             				}
             				else if ( reload_countdown === 0 ) {
                             reload_queued = false; // Just for clean / readable code's sake
@@ -832,7 +868,7 @@ price_raw = scientificToDecimal(price_raw); // Convert scientific format to stri
 	   // Using ".status_" + update_key INSTEAD, TO SHOW PER-ASSET 
        if ( price_raw == 0 ) {
        $(".parenth_" + update_key).css({ "display": "inline" });
-       $(".status_" + update_key).text("Loading").css("color", "#FFFF00");
+       $(".status_" + update_key).text("Loading").css("color", "#ffff00");
        return;
        }
        else if ( show_exchange_name == 'off' ) {

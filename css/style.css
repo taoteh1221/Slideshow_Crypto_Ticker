@@ -38,7 +38,7 @@ div .monospace {
 
 
 .status {
-color: #FFFF00;
+color: #ffff00;
 }
 
 
@@ -190,25 +190,16 @@ border-radius: 1vw;
 
 
 #upgrade_alert {
+    color: #ffff00;
     cursor: pointer;
 position: absolute;
-  top: 1.0vw;
-  right: 1.0vw;
+  top: 0.5vw;
+  right: 0.5vw;
 z-index: 9999999;
 background: none;
 padding: 0.15vw;
 width: auto;
 display: none;
-}
-
-
-#upgrade_icon {
-  opacity: 0.33;
-position: absolute;
-  top: 0.4vw;
-  right: 17.7vw;
-height: 100%;
-    z-index: 9999999;
 }
 
 
@@ -240,6 +231,7 @@ border-radius: 1vw;
 
 
 #system_data {
+    color: #ffff00;
   opacity: 0.33;
 position: absolute;
   top: 1.5vw;
@@ -252,5 +244,44 @@ width: auto;
 display: none;
 }
 
+
+/* AVOID SCREEN BURN ON TOP AREA, WITH #VERY SLOW# BACK-AND-FORTH MOVEMENT */
+
+.moving_left_side {
+    animation-duration: 240s;
+    animation-name: moving_from_left;
+    animation-iteration-count: infinite;
+    animation-direction: alternate;
+    position: absolute;
+}
+
+
+@keyframes moving_from_left {
+    from {
+        left: 1.5vw;
+    }
+    to {
+        left: 4.5vw;
+    }
+}
+
+
+.moving_right_side {
+    animation-duration: 240s;
+    animation-name: moving_from_right;
+    animation-iteration-count: infinite;
+    animation-direction: alternate;
+    position: absolute;
+}
+
+
+@keyframes moving_from_right {
+    from {
+        right: 0.5vw;
+    }
+    to {
+        right: 3.5vw;
+    }
+}
 
 
