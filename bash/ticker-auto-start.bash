@@ -27,27 +27,22 @@ bash ~/slideshow-crypto-ticker/bash/cron/cache.bash
 
 sleep 2
 
-				
-if [ -f /home/$USER/slideshow-crypto-ticker/cache/browser.bash ]; then
-bash /home/$USER/slideshow-crypto-ticker/cache/browser.bash
-fi
-
-
-# If default browser wasn't set, set as firefox
-if [ -z "$DEFAULT_BROWSER" ]; then
-DEFAULT_BROWSER="midori"
-fi
-
 
 # If explicit browser parameter wasn't included, use default browser
 if [ -z "$1" ]; then
-SET_BROWSER=$DEFAULT_BROWSER
+SET_BROWSER="chromium"
 else
-SET_BROWSER=$1
+
+    if [ -f ~/slideshow-crypto-ticker/bash/browser-support/$1.bash ]; then
+    SET_BROWSER=$1
+    else
+    SET_BROWSER="chromium"
+    fi
+    
 fi
 
 
 # Browser running logic
-bash ~/slideshow-crypto-ticker/bash/$SET_BROWSER.bash
+bash ~/slideshow-crypto-ticker/bash/browser-support/$SET_BROWSER.bash
 
 

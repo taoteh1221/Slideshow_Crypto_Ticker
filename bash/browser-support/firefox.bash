@@ -21,5 +21,6 @@ fi
 export MOZ_ACCELERATED=1
 
 # kiosk / private mode (for UX on crashes / restarts / etc)
-$FIREFOX_PATH --kiosk -private -new-tab ~/slideshow-crypto-ticker/index.html
+# USE #FULL# PATH TO AVOID POSSIBLE BUGS IN BROWSER!
+$FIREFOX_PATH --kiosk -private -new-tab $HOME/slideshow-crypto-ticker/index.html
 

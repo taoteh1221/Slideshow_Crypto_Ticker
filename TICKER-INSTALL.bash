@@ -399,7 +399,7 @@ echo " "
 echo "${red}USE A #FULL# DESKTOP SETUP, #NOT# LITE, OR YOU LIKELY WILL HAVE SOME ISSUES WITH CHROMIUM BROWSER EVEN"
 echo "AFTER UPGRADING TO GUI / CHROME (trust me)."
 echo " "
-echo "(Midori, Epiphany, Chromium, OR Firefox are supported [midori recommended, all these browsers will be installed if available])${reset}"
+echo "(Chromium, Midori, Epiphany, OR Firefox are supported [chromium recommended ON LOW POWER DEVICES, all these browsers will be installed if available])${reset}"
 echo " "
 
 if [ -f "/etc/debian_version" ]; then
@@ -740,6 +740,9 @@ select opt in $OPTIONS; do
 				rm CODEOWNERS > /dev/null 2>&1
 				rm /home/$APP_USER/slideshow-crypto-ticker/bash/switch-display.bash > /dev/null 2>&1
 				rm /home/$APP_USER/slideshow-crypto-ticker/bash/chromium-refresh.bash > /dev/null 2>&1
+				rm /home/$APP_USER/slideshow-crypto-ticker/bash/chromium.bash > /dev/null 2>&1
+				rm /home/$APP_USER/slideshow-crypto-ticker/bash/epiphany.bash > /dev/null 2>&1
+				rm /home/$APP_USER/slideshow-crypto-ticker/bash/firefox.bash > /dev/null 2>&1
 				rm /home/$APP_USER/slideshow-crypto-ticker/bash/ticker-init.bash > /dev/null 2>&1
 				rm /home/$APP_USER/slideshow-crypto-ticker/bash/cron.bash > /dev/null 2>&1
 				rm /home/$APP_USER/slideshow-crypto-ticker/bash/cron/kucoin-auth.bash > /dev/null 2>&1
@@ -749,6 +752,7 @@ select opt in $OPTIONS; do
 				rm /home/$APP_USER/slideshow-crypto-ticker/js/init.js > /dev/null 2>&1
 				rm /home/$APP_USER/slideshow-crypto-ticker/cache/cache.js > /dev/null 2>&1
 				rm /home/$APP_USER/slideshow-crypto-ticker/cache/raspi_data.js > /dev/null 2>&1
+				rm /home/$APP_USER/slideshow-crypto-ticker/cache/browser.bash > /dev/null 2>&1
 				rm /home/$APP_USER/slideshow-crypto-ticker/ATTRIBUTION-CREDIT-INFO.txt > /dev/null 2>&1
 				rm /home/$APP_USER/slideshow-crypto-ticker/images/upload-cloud-fill.svg > /dev/null 2>&1
 				rm /home/$APP_USER/reload > /dev/null 2>&1
@@ -859,10 +863,15 @@ select opt in $OPTIONS; do
         if [ "$opt" = "auto_config_ticker_system" ]; then
   				
                 echo " "
-                echo "${yellow}Select the NUMBER next to the browser you want to use to render the ticker (midori recommended).${reset}"
+                echo "${yellow}Select the NUMBER next to the browser you want to use to render the ticker (chromium recommended ON LOW POWER DEVICES).${reset}"
                 echo " "
                 
-                USER_BROWSER="midori epiphany chromium firefox"
+                    if [ -f /usr/bin/raspi-config ]; then
+                    echo "${red}IT'S #HIGHLY RECOMMENDED# TO CHOOSE CHROMIUM, OR ELSE #THE TICKER MAY CRASH# A LOW POWER RASPBERRY PI DEVICE!${reset}"
+                    echo " "
+                    fi
+                
+                USER_BROWSER="chromium firefox epiphany midori"
                 
                     select opt in $USER_BROWSER; do
                             if [ "$opt" = "firefox" ]; then
@@ -942,28 +951,6 @@ EOF
 				chown -R $APP_USER:$APP_USER /home/$APP_USER/.config > /dev/null 2>&1
 				
 				AUTOSTART_ALERT=1
-			
-
-# Don't nest / indent, or it could malform the settings            
-read -r -d '' TICKER_BROWSER <<- EOF
-#!/bin/bash
-DEFAULT_BROWSER="$SET_BROWSER"
-export DEFAULT_BROWSER="$SET_BROWSER"
-EOF
-
-				
-				mkdir /home/$APP_USER/slideshow-crypto-ticker/cache > /dev/null 2>&1
-					
-				chmod 777 /home/$APP_USER/slideshow-crypto-ticker/cache > /dev/null 2>&1
-					
-				chown $APP_USER:$APP_USER /home/$APP_USER/slideshow-crypto-ticker/cache > /dev/null 2>&1
-					
-				echo -e "$TICKER_BROWSER" > /home/$APP_USER/slideshow-crypto-ticker/cache/browser.bash
-					
-				chmod 755 /home/$APP_USER/slideshow-crypto-ticker/cache/browser.bash > /dev/null 2>&1
-					
-				chown $APP_USER:$APP_USER /home/$APP_USER/slideshow-crypto-ticker/cache/browser.bash > /dev/null 2>&1
-					
 					
 				# Setup cron (to check logs after install: tail -f /var/log/syslog | grep cron -i)
 
@@ -1123,13 +1110,13 @@ echo "~/ticker-start"
 echo " "
 echo "If you prefer midori, epiphany, firefox, or chromium (you set $SET_BROWSER as the default):"
 echo " "
-echo "~/ticker-start midori"
-echo " "
-echo "~/ticker-start epiphany"
+echo "~/ticker-start chromium"
 echo " "
 echo "~/ticker-start firefox"
 echo " "
-echo "~/ticker-start chromium"
+echo "~/ticker-start midori"
+echo " "
+echo "~/ticker-start epiphany"
 echo " "
 echo "To stop Slideshow Crypto Ticker:"
 echo " "
@@ -1142,15 +1129,15 @@ echo "${yellow}#AFTER BOOTING INTO THE DESKTOP INTERFACE#, to start Slideshow Cr
 echo " "
 echo "~/ticker-start"
 echo " "
-echo "If you prefer midori, epiphany, firefox, or chromium (midori recommended):"
+echo "If you prefer midori, epiphany, firefox, or chromium (chromium recommended ON LOW POWER DEVICES):"
+echo " "
+echo "~/ticker-start chromium"
+echo " "
+echo "~/ticker-start firefox"
 echo " "
 echo "~/ticker-start midori"
 echo " "
 echo "~/ticker-start epiphany"
-echo " "
-echo "~/ticker-start firefox"
-echo " "
-echo "~/ticker-start chromium"
 echo " "
 echo "To stop Slideshow Crypto Ticker:"
 echo " "

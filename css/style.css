@@ -248,7 +248,7 @@ display: none;
 /* AVOID SCREEN BURN ON TOP AREA, WITH #VERY SLOW# BACK-AND-FORTH MOVEMENT */
 
 .moving_left_side {
-    animation-duration: 240s;
+    animation-duration: 30s;
     animation-name: moving_from_left;
     animation-iteration-count: infinite;
     animation-direction: alternate;
@@ -261,13 +261,13 @@ display: none;
         left: 1.5vw;
     }
     to {
-        left: 4.5vw;
+        left: 5.5vw;
     }
 }
 
 
 .moving_right_side {
-    animation-duration: 240s;
+    animation-duration: 30s;
     animation-name: moving_from_right;
     animation-iteration-count: infinite;
     animation-direction: alternate;
@@ -280,7 +280,7 @@ display: none;
         right: 0.5vw;
     }
     to {
-        right: 3.5vw;
+        right: 4.5vw;
     }
 }
 

@@ -688,6 +688,8 @@ v3.09.3
 ---------------------------------------------------------
 v3.09.4
 
+-BUG FIX: Workaround for FAULTY chromium packaging on raspberry pi os (shows blank screen starting via CLI...Jan/Feb 2022)
+
 -BUG FIX: Auto-installer fixed to set preferred browser in new autostart logic
 
 -BUG FIX: Screen burn protection feature added, for system stats / upgrade alert (now changes color, and moves back-and-forth slightly / very slowly)
@@ -696,7 +698,7 @@ v3.09.4
 
 -Added ability to use midori as the browser used by the ticker
 
--Switched to using midori as default ticker browser (ARM-based chromium is acting up in latest releases when opening ANYTHING by command-line, AND firefox / epiphany can CRASH THE ENTIRE SYSTEM ON LOW POWER DEVICES...see README on how to still use epiphany / chromium / firefox)
+-Switched back to using chromium as default ticker browser (any other browsers can CRASH THE ENTIRE SYSTEM ON LOW POWER DEVICES...see README on how to still use epiphany / midori / firefox)
 
 ---------------------------------------------------------
 

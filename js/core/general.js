@@ -236,12 +236,12 @@ hex_color = rgb2hex( $("#" + id).css('color') );
         new_color = "#ffff00";
         }
     
-    $("#" + id).css("transition", "color 240.0s").css('color', new_color);
+    $("#" + id).css("transition", "color 30.0s").css('color', new_color);
     
-        // Rerun change_color() again after 240 seconds
+        // Rerun change_color() again after 30 seconds
         setTimeout(function() {
         change_color(id);
-        }, 240000);  
+        }, 30000);  
     
     }
 
