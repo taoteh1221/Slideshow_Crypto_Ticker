@@ -20,5 +20,5 @@ fi
 # Incognito mode doesn't prompt to restore previous session, yay
 # We also set it to not check for upgrades for 7 days (SETTING TO ZERO DOES NOT WORK), 
 # to avoid the upgrade prompt popup (for UX on raspberry pi devices)
-$CHROMIUM_PATH --check-for-update-interval=604800 --noerrors --noerrdialogs --disable-restore-session-state --disable-session-crashed-bubble --disable-infobars --incognito --kiosk $HOME/slideshow-crypto-ticker/index.html &
+$CHROMIUM_PATH --check-for-update-interval=604800 --noerrors --noerrdialogs --disable-restore-session-state --disable-session-crashed-bubble --disable-infobars --incognito --kiosk $HOME/slideshow-crypto-ticker/index.html
 
