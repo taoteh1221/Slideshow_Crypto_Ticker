@@ -160,7 +160,7 @@ ln -s ~/slideshow-crypto-ticker/bash/ticker-stop.bash ~/ticker-stop
 SUBSTITUTE "LXDE_PROFILE_NAME" FOR THE LXDE PROFILE NAME USED FOR YOUR LXDE SESSION (whatever the sub-folder name is INSIDE: /home/YOUR_USER_NAME/.config/lxpanel).
 
 
-Create / edit the following autostart file (create any directories that don't exist yet): /home/YOUR_USER_NAME/.config/lxsession/LXDE_PROFILE_NAME/autostart and add the following (chromium can be changed to epiphany, firefox, or chromium if desired):
+Create / edit the following autostart file (create any directories that don't exist yet): /home/YOUR_USER_NAME/.config/lxsession/LXDE_PROFILE_NAME/autostart and add the following (chromium can be changed to epiphany, firefox, or midori if desired):
 
 @/home/YOUR_USER_NAME/slideshow-crypto-ticker/bash/ticker-auto-start.bash chromium
 
