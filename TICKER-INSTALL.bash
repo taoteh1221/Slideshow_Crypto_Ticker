@@ -382,7 +382,8 @@ echo " "
 
 
 echo "${yellow}TECHNICAL NOTE:"
-echo "This script was designed to install on the Raspberry Pi OS operating system,"
+echo " "
+echo "This script was designed to install on Debian-based operating systems (Raspberry Pi OS, Ubuntu, etc),"
 echo "for small single-board computers WITH SMALL IN-CASE LCD SCREENS."
 echo " "
 echo "It is ONLY recommended to install this ticker app IF your device has an LCD screen installed.${reset}"
@@ -393,7 +394,7 @@ echo " "
 echo "$OS v$VER${reset}"
 echo " "
 
-echo "${yellow}This script may OR MAY NOT work on other Debian-based systems as well, but it has NOT been FULLY DEVELOPED for that purpose.${reset}"
+echo "${yellow}This script may OR MAY NOT work on all Debian-based system setups.${reset}"
 echo " "
 
 echo "${red}USE A #FULL# DESKTOP SETUP, #NOT# LITE, OR YOU LIKELY WILL HAVE SOME ISSUES WITH CHROMIUM BROWSER EVEN"
@@ -542,8 +543,8 @@ EOF
             
                 # If we are running dietpi OS, WARN USER AN ADDITIONAL STEP #MAY# BE NEEDED
                 if [ -f /boot/dietpi/.version ]; then
-                echo "${red}DietPi #MAY STILL REQUIRE# USING THE dietpi-autostart UTILITY TO SET LXDE TO AUTO-LOGIN"
-                echo "AS THE USER '${APP_USER}', EVEN THOUGH WE JUST SETUP LXDE AUTO-LOGIN ALREADY.${reset}"
+                echo "${red}DietPi #SHOULD NOT REQUIRE# USING THE dietpi-autostart UTILITY TO SET LXDE TO AUTO-LOGIN"
+                echo "AS THE USER '${APP_USER}', SINCE #WE JUST SETUP LXDE AUTO-LOGIN ALREADY#.${reset}"
                 fi
             
             
@@ -682,6 +683,24 @@ select opt in $OPTIONS; do
 				
 				# Safely install other packages seperately, so they aren't cancelled by 'package missing' errors
 				apt-get install xdotool unclutter openssl x11-xserver-utils xautomation -y
+				
+				sleep 5
+				
+				
+    				# FIX FOR 2022-1-28 RASPI OS CHROMIUM BUG
+    				# https://github.com/RPi-Distro/chromium-browser/issues/28
+    				CHROMIUM_GL=$(sed -n '/ --use-gl=egl/p' /etc/chromium.d/egl)
+				
+                    if [ "$CHROMIUM_GL" == "" ]; then 
+                    
+                    echo "${red}GL not enabled for chromium, enabling it now, please wait...${reset}"
+                    echo " "
+                    
+                    # Add GL config to /etc/chromium.d/egl
+				    echo 'export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --use-gl=egl"' | tee /etc/chromium.d/egl
+				    
+                    fi        
+                    
 				
 				echo " "
 				

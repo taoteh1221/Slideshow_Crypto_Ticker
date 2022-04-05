@@ -17,11 +17,6 @@ if [ -z "$CHROMIUM_PATH" ]; then
 CHROMIUM_PATH=$(which chromium-browser)
 fi
 
-# BUG IN CHROMIUM ON RASPI DEVICES AS OF 2022/4/2,
-# SO WE START AN about:blank PAGE FIRST AS A FAIRLY CLEAN WORKAROUND (AND WAIT 15 SECONDS TO OPEN TICKER)
-# https://forums.raspberrypi.com/viewtopic.php?p=1989947#p1989947
-$CHROMIUM_PATH --check-for-update-interval=604800 --noerrors --noerrdialogs --disable-restore-session-state --disable-session-crashed-bubble --disable-infobars --incognito --kiosk about:blank & 
-sleep 15
 # Incognito mode doesn't prompt to restore previous session, yay
 # We also set it to not check for upgrades for 7 days (SETTING TO ZERO DOES NOT WORK), 
 # to avoid the upgrade prompt popup (for UX on raspberry pi devices)
