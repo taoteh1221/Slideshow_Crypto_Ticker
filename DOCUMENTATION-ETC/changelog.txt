@@ -703,6 +703,18 @@ v3.09.4
 ---------------------------------------------------------
 
 
+---------------------------------------------------------
+v3.09.5
+
+-BUG FIX: CLEANER fix for FAULTY chromium packaging on raspberry pi os (shows blank screen starting via CLI...Jan/Feb 2022)
+
+-BUG FIX: Fixed LXDE autostart logic (desktop starts normally instead of blank screen now)
+
+-Improved default browser logic (falls back to auto-install's user-chosen browser, when browser parameter not included in ~/ticker-start command)
+
+---------------------------------------------------------
+
+
 
 
 

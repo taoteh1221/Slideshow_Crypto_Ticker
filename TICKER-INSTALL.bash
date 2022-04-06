@@ -693,10 +693,11 @@ select opt in $OPTIONS; do
 				
                     if [ "$CHROMIUM_GL" == "" ]; then 
                     
-                    echo "${red}GL not enabled for chromium, enabling it now, please wait...${reset}"
+                    echo " "
+                    echo "${red}EGL not enabled for chromium, enabling it now, please wait...${reset}"
                     echo " "
                     
-                    # Add GL config to /etc/chromium.d/egl
+                    # Add EGL config to /etc/chromium.d/egl
 				    echo 'export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --use-gl=egl"' | tee /etc/chromium.d/egl
 				    
                     fi        
@@ -758,6 +759,7 @@ select opt in $OPTIONS; do
 				rm .whitesource > /dev/null 2>&1
 				rm CODEOWNERS > /dev/null 2>&1
 				rm /home/$APP_USER/slideshow-crypto-ticker/bash/switch-display.bash > /dev/null 2>&1
+				rm /home/$APP_USER/slideshow-crypto-ticker/bash/ticker-auto-start.bash > /dev/null 2>&1
 				rm /home/$APP_USER/slideshow-crypto-ticker/bash/chromium-refresh.bash > /dev/null 2>&1
 				rm /home/$APP_USER/slideshow-crypto-ticker/bash/chromium.bash > /dev/null 2>&1
 				rm /home/$APP_USER/slideshow-crypto-ticker/bash/epiphany.bash > /dev/null 2>&1
@@ -886,7 +888,7 @@ select opt in $OPTIONS; do
                 echo " "
                 
                     if [ -f /usr/bin/raspi-config ]; then
-                    echo "${red}IT'S #HIGHLY RECOMMENDED# TO CHOOSE CHROMIUM, OR ELSE #THE TICKER MAY CRASH# A LOW POWER RASPBERRY PI DEVICE!${reset}"
+                    echo "${red}IT'S #HIGHLY RECOMMENDED# TO CHOOSE CHROMIUM ON A LOW POWER RASPBERRY PI DEVICE (FOR GRAPHICS ACCELERATION BENEFITS).${reset}"
                     echo " "
                     fi
                 
@@ -895,38 +897,43 @@ select opt in $OPTIONS; do
                     select opt in $USER_BROWSER; do
                             if [ "$opt" = "firefox" ]; then
                             SET_BROWSER=$opt
-                            echo " "
-                            echo "${green}Using $opt browser...${reset}"
                             break
                            elif [ "$opt" = "midori" ]; then
                             SET_BROWSER=$opt
-                            echo " "
-                            echo "${green}Using $opt browser...${reset}"
                             break
                            elif [ "$opt" = "chromium" ]; then
                             SET_BROWSER=$opt
-                            echo " "
-                            echo "${green}Using $opt browser...${reset}"
                             break
                            elif [ "$opt" = "epiphany" ]; then
                             SET_BROWSER=$opt
-                            echo " "
-                            echo "${green}Using $opt browser...${reset}"
                             break
                            fi
                     done
                 
+                
+                echo " "
+                echo "${green}Using $SET_BROWSER as the default ticker browser...${reset}"
                 echo " "
 
 				echo " "
 				echo "${cyan}Configuring Slideshow Crypto Ticker on your system, please wait...${reset}"
 				echo " "
 				
+
+                    # Create cache directory if it doesn't exist yet
+                    if [ ! -d /home/$APP_USER/slideshow-crypto-ticker/cache ]; then
+                    mkdir -p /home/$APP_USER/slideshow-crypto-ticker/cache
+                    fi
+
+				
+				echo -e "$SET_BROWSER" > /home/$APP_USER/slideshow-crypto-ticker/cache/default_browser.dat
+				
+				chown -R $APP_USER:$APP_USER /home/$APP_USER/slideshow-crypto-ticker/cache > /dev/null 2>&1
 				
 
 # Don't nest / indent, or it could malform the settings            
 read -r -d '' TICKER_STARTUP <<- EOF
-@/home/$APP_USER/slideshow-crypto-ticker/bash/ticker-auto-start.bash $SET_BROWSER
+@/home/$APP_USER/slideshow-crypto-ticker/bash/lxde-auto-start.bash $SET_BROWSER
 \r
 EOF
 
@@ -961,12 +968,55 @@ EOF
 				
 				mkdir -p /home/$APP_USER/.config/lxsession/$LXDE_PROFILE > /dev/null 2>&1
 				
-				sleep 1
+				sleep 2
 				
-				echo -e "$TICKER_STARTUP" > /home/$APP_USER/.config/lxsession/$LXDE_PROFILE/autostart
 				
-				sleep 1
+    				LXDE_AUTOSTART_OLD=$(sed -n '/ticker-auto-start.bash/p' /home/$APP_USER/.config/lxsession/$LXDE_PROFILE/autostart)
+    				LXDE_AUTOSTART_NEW=$(sed -n '/lxde-auto-start.bash/p' /home/$APP_USER/.config/lxsession/$LXDE_PROFILE/autostart)
+    				LXDE_AUTOSTART_BROWSER=$(sed -n "/lxde-auto-start.bash ${SET_BROWSER}/p" /home/$APP_USER/.config/lxsession/$LXDE_PROFILE/autostart)
+    				
+				    # https://forums.raspberrypi.com/viewtopic.php?t=294014
 				
+				    # If it's our (borked) OLDER version, or USER autostart file doesn't exist yet
+                    if [ "$LXDE_AUTOSTART_OLD" != "" ] || [ ! -f /home/$APP_USER/.config/lxsession/$LXDE_PROFILE/autostart ]; then 
+                    
+                    echo " "
+                    echo "${cyan}Enabling USER-defined LXDE autostart (/home/$APP_USER/.config/lxsession/$LXDE_PROFILE/autostart), please wait...${reset}"
+                    echo " "
+                    
+                    \cp /etc/xdg/lxsession/$LXDE_PROFILE/autostart /home/$APP_USER/.config/lxsession/$LXDE_PROFILE/
+				    
+                    fi        
+                    
+                    
+                    sleep 2
+
+                    
+                    # If we have not appended our (NEWSEST LOGIC) ticker autostart yet
+                    if [ "$LXDE_AUTOSTART_NEW" == "" ]; then 
+                    
+                    echo " "
+                    echo "${cyan}Adding ticker autostart to USER-defined LXDE autostart (/home/$APP_USER/.config/lxsession/$LXDE_PROFILE/autostart), please wait...${reset}"
+                    echo " "
+                    
+                    # APPEND to autostart
+                    echo -e "$TICKER_STARTUP" >> /home/$APP_USER/.config/lxsession/$LXDE_PROFILE/autostart
+                    
+                    # OR changed to a different browser
+                    elif [ "$LXDE_AUTOSTART_BROWSER" == "" ]; then
+                    
+                    echo " "
+                    echo "${cyan}Updating ticker autostart browser to ${SET_BROWSER}, in USER-defined LXDE autostart (/home/$APP_USER/.config/lxsession/$LXDE_PROFILE/autostart), please wait...${reset}"
+                    echo " "
+                    
+                    sed -i "s/lxde-auto-start.bash .*/lxde-auto-start.bash ${SET_BROWSER}/g" /home/$APP_USER/.config/lxsession/$LXDE_PROFILE/autostart
+				    
+                    fi        
+				
+				
+				sleep 2
+				
+				# Make sure any new files / folders have user permissions
 				chown -R $APP_USER:$APP_USER /home/$APP_USER/.config > /dev/null 2>&1
 				
 				AUTOSTART_ALERT=1

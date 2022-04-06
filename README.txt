@@ -157,12 +157,19 @@ ln -s ~/slideshow-crypto-ticker/bash/ticker-stop.bash ~/ticker-stop
 ---------------------
 
 
-SUBSTITUTE "LXDE_PROFILE_NAME" FOR THE LXDE PROFILE NAME USED FOR YOUR LXDE SESSION (whatever the sub-folder name is INSIDE: /home/YOUR_USER_NAME/.config/lxpanel).
+Create / edit the following autostart file (create any directories that don't exist yet): /home/YOUR_USER_NAME/.config/lxsession/LXDE_PROFILE_NAME/autostart and add the following (chromium can be changed to epiphany, firefox, or midori if desired)...
+
+IMPORTANT: SUBSTITUTE "LXDE_PROFILE_NAME" FOR THE LXDE PROFILE NAME USED FOR YOUR LXDE SESSION (whatever the sub-folder name is INSIDE: /home/YOUR_USER_NAME/.config/lxpanel, on raspberry pi os it is: LXDE-pi, default if unknown should be: LXDE).
 
 
-Create / edit the following autostart file (create any directories that don't exist yet): /home/YOUR_USER_NAME/.config/lxsession/LXDE_PROFILE_NAME/autostart and add the following (chromium can be changed to epiphany, firefox, or midori if desired):
+FIRST, IF THE FILE DOES #NOT# EXIST YET, we need to copy the SYSTEM defaults over with this command:
 
-@/home/YOUR_USER_NAME/slideshow-crypto-ticker/bash/ticker-auto-start.bash chromium
+cp /etc/xdg/lxsession/LXDE_PROFILE_NAME/autostart /home/pi/.config/lxsession/LXDE_PROFILE_NAME/
+
+
+NEXT, we add the ticker autostart command at the end of the autostart file:
+
+@/home/YOUR_USER_NAME/slideshow-crypto-ticker/bash/lxde-auto-start.bash chromium
 
 
 After creating the LXDE Desktop autostart file above, the ticker will run on system startup when you login / auto-login to the LXDE Desktop.

@@ -25,20 +25,28 @@ bash ~/slideshow-crypto-ticker/bash/cron/cache.bash
 sleep 2
 
 
-# If explicit browser parameter wasn't included, use chromium
+DEFAULT_BROWSER=$(cat ~/slideshow-crypto-ticker/cache/default_browser.dat)
+DEFAULT_BROWSER=$(echo "${DEFAULT_BROWSER}" | xargs) # Trim any whitespace
+# If DEFAULT browser parameter wasn't set, use chromium
+if [ -z "$DEFAULT_BROWSER" ]; then
+DEFAULT_BROWSER="chromium"
+fi
+
+
+# If CLI browser parameter wasn't included, use default browser
 if [ -z "$1" ]; then
-SET_BROWSER="chromium"
+SET_BROWSER=$DEFAULT_BROWSER
 echo " "
-echo "Browser not specified, using chromium..."
+echo "Browser not specified, using default browser ${DEFAULT_BROWSER}..."
 echo " "
 else
 
     if [ -f ~/slideshow-crypto-ticker/bash/browser-support/$1.bash ]; then
     SET_BROWSER=$1
     else
-    SET_BROWSER="chromium"
+    SET_BROWSER=$DEFAULT_BROWSER
     echo " "
-    echo "Browser '$1' not supported, falling back to chromium..."
+    echo "Browser '$1' not supported, falling back to default browser ${DEFAULT_BROWSER}..."
     echo " "
     fi
     
