@@ -84,7 +84,7 @@ exchange_markets['hitbtc'] = '';
 ////
 ////
 // Gateio markets (set to '' to disable) 
-exchange_markets['gateio'] = 'SLC_USDT|SAMO_USDT';
+exchange_markets['gateio'] = 'ZBC_USDT|SLC_USDT|SAMO_USDT';
 
 
 // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
