@@ -85,7 +85,7 @@ wget --no-cache -O TICKER-INSTALL.bash https://git.io/Jqzjk;chmod +x TICKER-INST
   
 -----------------------------------------------------------------------------------------------------------------------------------------
 
-Restart the device running this app. If this fixes the problem, AND YOU ARE USING FIREFOX / EPIPHANY / MIDORI AS THE TICKER BROWSER, set the ticker browser to chromium INSTEAD (ANY OTHER BROWSERS ARE #KNOWN TO CRASH# LOW POWER DEVICES WITH THIS TICKER). ALSO, make sure you are using a WELL-MAINTAINED version of a debian-based operating system for maximum compatibility with this app (Ubuntu or Raspberry Pi OS are VERY stable and reliable).
+Restart the device running this app. If this fixes the problem, AND YOU ARE USING FIREFOX / EPIPHANY / MIDORI AS THE TICKER BROWSER, set the ticker browser to chromium INSTEAD (ANY OTHER BROWSERS MAY LACK HARDWARE ACCELERATION #ON LOW POWER DEVICES#). ALSO, make sure you are using a WELL-MAINTAINED version of a debian-based operating system for maximum compatibility with this app (Ubuntu or Raspberry Pi OS are VERY stable and reliable).
 
 
 =========================================================================================================================================

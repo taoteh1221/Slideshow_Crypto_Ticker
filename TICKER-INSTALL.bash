@@ -400,7 +400,7 @@ echo " "
 echo "${red}USE A #FULL# DESKTOP SETUP, #NOT# LITE, OR YOU LIKELY WILL HAVE SOME ISSUES WITH CHROMIUM BROWSER EVEN"
 echo "AFTER UPGRADING TO GUI / CHROME (trust me)."
 echo " "
-echo "(Chromium, Midori, Epiphany, OR Firefox are supported [chromium recommended ON LOW POWER DEVICES, all these browsers will be installed if available])${reset}"
+echo "(Chromium, Epiphany, Firefox, OR Midori are supported [chromium recommended ON LOW POWER DEVICES, all these browsers will be installed if available])${reset}"
 echo " "
 
 if [ -f "/etc/debian_version" ]; then
@@ -689,7 +689,8 @@ select opt in $OPTIONS; do
 				
     				# FIX FOR 2022-1-28 RASPI OS CHROMIUM BUG
     				# https://github.com/RPi-Distro/chromium-browser/issues/28
-    				CHROMIUM_GL=$(sed -n '/ --use-gl=egl/p' /etc/chromium.d/egl)
+    				# /etc/chromium.d/ticker-fix-egl CAN BE NAMED ANYTHING, AS LONG AS IT'S IN /etc/chromium.d/
+    				CHROMIUM_GL=$(sed -n '/ --use-gl=egl/p' /etc/chromium.d/ticker-fix-egl)
 				
                     if [ "$CHROMIUM_GL" == "" ]; then 
                     
@@ -697,8 +698,8 @@ select opt in $OPTIONS; do
                     echo "${red}EGL not enabled for chromium, enabling it now, please wait...${reset}"
                     echo " "
                     
-                    # Add EGL config to /etc/chromium.d/egl
-				    echo 'export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --use-gl=egl"' | tee /etc/chromium.d/egl
+                    # Add EGL config to /etc/chromium.d/ticker-fix-egl
+				    echo 'export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --use-gl=egl"' | tee /etc/chromium.d/ticker-fix-egl
 				    
                     fi        
                     
@@ -892,19 +893,19 @@ select opt in $OPTIONS; do
                     echo " "
                     fi
                 
-                USER_BROWSER="chromium firefox epiphany midori"
+                USER_BROWSER="chromium epiphany firefox midori"
                 
                     select opt in $USER_BROWSER; do
-                            if [ "$opt" = "firefox" ]; then
-                            SET_BROWSER=$opt
-                            break
-                           elif [ "$opt" = "midori" ]; then
-                            SET_BROWSER=$opt
-                            break
-                           elif [ "$opt" = "chromium" ]; then
+                           if [ "$opt" = "chromium" ]; then
                             SET_BROWSER=$opt
                             break
                            elif [ "$opt" = "epiphany" ]; then
+                            SET_BROWSER=$opt
+                            break
+                           elif [ "$opt" = "firefox" ]; then
+                            SET_BROWSER=$opt
+                            break
+                           elif [ "$opt" = "midori" ]; then
                             SET_BROWSER=$opt
                             break
                            fi
@@ -1177,15 +1178,15 @@ echo "#AFTER BOOTING INTO THE DESKTOP INTERFACE#, to start Slideshow Crypto Tick
 echo " "
 echo "~/ticker-start"
 echo " "
-echo "If you prefer midori, epiphany, firefox, or chromium (you set $SET_BROWSER as the default):"
+echo "If you prefer chromium, epiphany, firefox, or midori (you set $SET_BROWSER as the default):"
 echo " "
 echo "~/ticker-start chromium"
+echo " "
+echo "~/ticker-start epiphany"
 echo " "
 echo "~/ticker-start firefox"
 echo " "
 echo "~/ticker-start midori"
-echo " "
-echo "~/ticker-start epiphany"
 echo " "
 echo "To stop Slideshow Crypto Ticker:"
 echo " "
@@ -1198,15 +1199,15 @@ echo "${yellow}#AFTER BOOTING INTO THE DESKTOP INTERFACE#, to start Slideshow Cr
 echo " "
 echo "~/ticker-start"
 echo " "
-echo "If you prefer midori, epiphany, firefox, or chromium (chromium recommended ON LOW POWER DEVICES):"
+echo "If you prefer chromium, epiphany, firefox, or midori (chromium recommended ON LOW POWER DEVICES):"
 echo " "
 echo "~/ticker-start chromium"
+echo " "
+echo "~/ticker-start epiphany"
 echo " "
 echo "~/ticker-start firefox"
 echo " "
 echo "~/ticker-start midori"
-echo " "
-echo "~/ticker-start epiphany"
 echo " "
 echo "To stop Slideshow Crypto Ticker:"
 echo " "

@@ -4,6 +4,6 @@
 
 
 pkill -o chromium > /dev/null 2>&1
-pkill -o firefox > /dev/null 2>&1
 pkill -o epiphany > /dev/null 2>&1
+pkill -o firefox > /dev/null 2>&1
 pkill -o midori > /dev/null 2>&1

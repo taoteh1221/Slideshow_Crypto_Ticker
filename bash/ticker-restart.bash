@@ -10,11 +10,9 @@ DISPLAY=$FIND_DISPLAY
 export DISPLAY=$FIND_DISPLAY
 
 
-# firefox
+# firefox is stubborn at refreshing JS
 rm -rf ~/.cache/mozilla/firefox/*
-# midori
-rm -rf ~/.cache/midori/*
 sleep 1
 
-# midori / epiphany / chromium / firefox
+# chromium / epiphany / firefox / midori refresh
 xdotool key F5

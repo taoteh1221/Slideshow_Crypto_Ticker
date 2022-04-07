@@ -95,15 +95,15 @@ If autostart does not work / is not setup, you can run this command MANUALLY, #A
 ~/ticker-start
 
 
-If you prefer midori, epiphany, firefox, or chromium (chromium is the default):
+If you prefer chromium, epiphany, firefox, or midori (chromium is the default):
 
 ~/ticker-start chromium
+
+~/ticker-start epiphany
 
 ~/ticker-start firefox
 
 ~/ticker-start midori
-
-~/ticker-start epiphany
 
 
 To stop Slideshow Crypto Ticker:
