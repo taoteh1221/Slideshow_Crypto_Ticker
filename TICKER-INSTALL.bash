@@ -1311,7 +1311,7 @@ echo "PRINTED OUT ABOVE, BEFORE YOU SIGN OFF FROM THIS TERMINAL SESSION!!!!!${re
 
 echo " "
 echo "Also check out my 100% FREE open source PRIVATE cryptocurrency investment portfolio tracker,"
-echo "with email / text / Alexa / Ghome / Telegram alerts, charts, mining calculators,"
+echo "with email / text / Alexa / Telegram alerts, charts, mining calculators,"
 echo "leverage / gain / loss / balance stats, news feeds and more:"
 echo " "
 echo "https://taoteh1221.github.io"
