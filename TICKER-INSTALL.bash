@@ -500,9 +500,10 @@ echo " "
             echo " "
             
                 # Auto-login LXDE
-                CHECK_LIGHTDM=$(ls /etc/lightdm/lightdm.conf.d)
-                CHECK_LIGHTDM=$(echo "${CHECK_LIGHTDM}" | xargs) # trim whitespace
-                if [ ! -f /etc/lightdm/lightdm.conf ] && [ -z "$CHECK_LIGHTDM" ]; then
+                CHECK_LIGHTDM_D=$(ls /etc/lightdm/lightdm.conf.d)
+                CHECK_LIGHTDM_D=$(echo "${CHECK_LIGHTDM_D}" | xargs) # trim whitespace
+                
+                if [ ! -f /etc/lightdm/lightdm.conf ] && [ -z "$CHECK_LIGHTDM_D" ]; then
                 
                 
 # Don't nest / indent, or it could malform the settings            
@@ -521,24 +522,42 @@ EOF
 				echo -e "$LXDE_AUTO_LOGIN" > /etc/lightdm/lightdm.conf
 			    
 			    elif [ -f /etc/lightdm/lightdm.conf ]; then
+			    
+			    DETECT_AUTOLOGIN=$(sudo sed -n '/autologin-user=/p' /etc/lightdm/lightdm.conf)
+			    
+			    
+			        if [ "$DETECT_AUTOLOGIN" != "" ]; then 
+                    sed -i "s/#autologin-user=.*/autologin-user=${APP_USER}/g" /etc/lightdm/lightdm.conf
+                    sleep 2
+                    sed -i "s/autologin-user=.*/autologin-user=${APP_USER}/g" /etc/lightdm/lightdm.conf
+                    elif [ "$DETECT_AUTOLOGIN" == "" ]; then 
+                    sudo bash -c "echo 'autologin-user=${APP_USER}' >> /etc/lightdm/lightdm.conf"
+			        fi
+			        
                 
-                sed -i "s/#autologin-user-timeout=.*/autologin-user-timeout=delay/g" /etc/lightdm/lightdm.conf
-                sleep 2
-                sed -i "s/#autologin-user=.*/autologin-user=${APP_USER}/g" /etc/lightdm/lightdm.conf
-                sleep 2
-                sed -i "s/autologin-user=.*/autologin-user=${APP_USER}/g" /etc/lightdm/lightdm.conf
                 sleep 2
                 sed -i "s/user-session=.*/user-session=LXDE/g" /etc/lightdm/lightdm.conf
                 
-                elif [ -n "$CHECK_LIGHTDM" ]; then
+                elif [ -n "$CHECK_LIGHTDM_D" ]; then
                 
-                find /etc/lightdm/lightdm.conf.d/ -type f -exec sed -i "s/#autologin-user-timeout=.*/autologin-user-timeout=delay/g" {} \;
+                # Find the config file in the /lightdm.conf.d/ directory
+			    LIGHTDM_CONFIG=$(grep -r 'user-session' /etc/lightdm/lightdm.conf.d | awk -F: '{print $1}')
+                LIGHTDM_CONFIG=$(echo "${LIGHTDM_CONFIG}" | xargs) # trim whitespace
+			    
+			    DETECT_AUTOLOGIN=$(sudo sed -n '/autologin-user=/p' $LIGHTDM_CONFIG)
+			    
+			    
+			        if [ "$DETECT_AUTOLOGIN" != "" ]; then 
+                    sed -i "s/#autologin-user=.*/autologin-user=${APP_USER}/g" $LIGHTDM_CONFIG
+                    sleep 2
+                    sed -i "s/autologin-user=.*/autologin-user=${APP_USER}/g" $LIGHTDM_CONFIG
+                    elif [ "$DETECT_AUTOLOGIN" == "" ]; then 
+                    sudo bash -c "echo 'autologin-user=${APP_USER}' >> ${LIGHTDM_CONFIG}"
+			        fi
+			        
+                
                 sleep 2
-                find /etc/lightdm/lightdm.conf.d/ -type f -exec sed -i "s/#autologin-user=.*/autologin-user=${APP_USER}/g" {} \;
-                sleep 2
-                find /etc/lightdm/lightdm.conf.d/ -type f -exec sed -i "s/autologin-user=.*/autologin-user=${APP_USER}/g" {} \;
-                sleep 2
-                find /etc/lightdm/lightdm.conf.d/ -type f -exec sed -i "s/user-session=.*/user-session=LXDE/g" {} \;
+                sed -i "s/user-session=.*/user-session=LXDE/g" $LIGHTDM_CONFIG
                 
                 else
                 echo "${cyan}AUTO-LOGIN CONFIGURATION ERROR, AUTO-LOGIN #NOT# SETUP!${reset}"
