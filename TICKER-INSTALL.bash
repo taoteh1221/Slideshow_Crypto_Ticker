@@ -454,6 +454,33 @@ echo " "
 
 ######################################
 
+              
+# SET EARLY (BUT #AFTER# SETTING $APP_USER VAR), WE USE THIS IN A FEW PLACES
+if [ -f /usr/bin/raspi-config ]; then
+# KNOWN raspi LXDE profile
+LXDE_PROFILE="LXDE-pi"
+else
+      
+# Auto-detect or set to KNOWN LXDE default
+# Unfortunately not much documentation on listing LXDE profile names,
+# BUT looks fairly reliable to just check in /home/$APP_USER/.config/lxpanel
+# (PRESUMING IT EXISTS ALREADY AT THIS POINT / ONLY ONE PROFILE PER LXDE USER IN USER FILES)
+LXDE_PROFILE=$(ls /home/$APP_USER/.config/lxpanel)
+LXDE_PROFILE=$(echo "${LXDE_PROFILE}" | xargs) # trim whitespace
+  
+    # If LXDE profile var was NOT auto-setup properly
+    # (contains whitespace MID-VARIABLE or is empty),
+    # go with KNOWN default from LXDE documentation
+    if [[ $LXDE_PROFILE =~ " " ]] || [ -z "$LXDE_PROFILE" ]; then
+    LXDE_PROFILE="LXDE"
+    LXDE_ALERT=1
+    fi
+  
+fi
+                    
+
+######################################
+
 
 echo "${cyan}Making sure your system is updated before installation, please wait...${reset}"
 
@@ -500,9 +527,16 @@ echo " "
             echo "${cyan}Configuring lightdm auto-login at boot for user '${APP_USER}', please wait...${reset}"
             echo " "
             
-                # Auto-login LXDE
+            
+                # Auto-login LXDE logic...
+                
+                if [ -d /etc/lightdm/lightdm.conf.d ]; then
                 CHECK_LIGHTDM_D=$(ls /etc/lightdm/lightdm.conf.d)
                 CHECK_LIGHTDM_D=$(echo "${CHECK_LIGHTDM_D}" | xargs) # trim whitespace
+                else
+                CHECK_LIGHTDM_D=""
+                fi
+                
                 
                 if [ ! -f /etc/lightdm/lightdm.conf ] && [ -z "$CHECK_LIGHTDM_D" ]; then
                 
@@ -511,7 +545,6 @@ echo " "
 read -r -d '' LXDE_AUTO_LOGIN <<- EOF
 \r
 autologin-user=$APP_USER
-autologin-user-timeout=delay
 user-session=LXDE
 \r
 EOF
@@ -537,32 +570,34 @@ EOF
 			        
                 
                 sleep 2
+                
                 sed -i "s/user-session=.*/user-session=LXDE/g" /etc/lightdm/lightdm.conf
                 
                 elif [ -n "$CHECK_LIGHTDM_D" ]; then
                 
-                # Find the config file in the /lightdm.conf.d/ directory
-			    LIGHTDM_CONFIG=$(grep -r 'user-session' /etc/lightdm/lightdm.conf.d | awk -F: '{print $1}')
-                LIGHTDM_CONFIG=$(echo "${LIGHTDM_CONFIG}" | xargs) # trim whitespace
+                # Find the PROPER config file in the /lightdm.conf.d/ directory
+			    LIGHTDM_CONFIG_FILE=$(grep -r 'user-session' /etc/lightdm/lightdm.conf.d | awk -F: '{print $1}')
+                LIGHTDM_CONFIG_FILE=$(echo "${LIGHTDM_CONFIG_FILE}" | xargs) # trim whitespace
 			    
-			    DETECT_AUTOLOGIN=$(sudo sed -n '/autologin-user=/p' $LIGHTDM_CONFIG)
+			    DETECT_AUTOLOGIN=$(sudo sed -n '/autologin-user=/p' $LIGHTDM_CONFIG_FILE)
 			    
 			    
 			        if [ "$DETECT_AUTOLOGIN" != "" ]; then 
-                    sed -i "s/#autologin-user=.*/autologin-user=${APP_USER}/g" $LIGHTDM_CONFIG
+                    sed -i "s/#autologin-user=.*/autologin-user=${APP_USER}/g" $LIGHTDM_CONFIG_FILE
                     sleep 2
-                    sed -i "s/autologin-user=.*/autologin-user=${APP_USER}/g" $LIGHTDM_CONFIG
+                    sed -i "s/autologin-user=.*/autologin-user=${APP_USER}/g" $LIGHTDM_CONFIG_FILE
                     elif [ "$DETECT_AUTOLOGIN" == "" ]; then 
-                    sudo bash -c "echo 'autologin-user=${APP_USER}' >> ${LIGHTDM_CONFIG}"
+                    sudo bash -c "echo 'autologin-user=${APP_USER}' >> ${LIGHTDM_CONFIG_FILE}"
 			        fi
 			        
                 
                 sleep 2
-                sed -i "s/user-session=.*/user-session=LXDE/g" $LIGHTDM_CONFIG
+                sed -i "s/user-session=.*/user-session=LXDE/g" $LIGHTDM_CONFIG_FILE
                 
                 else
                 echo "${cyan}AUTO-LOGIN CONFIGURATION ERROR, AUTO-LOGIN #NOT# SETUP!${reset}"
                 fi
+            
             
             sleep 2
             
@@ -591,7 +626,7 @@ EOF
     
 else
 
-echo "${red}THIS TICKER #REQUIRES# RUNNING THE DESKTOP INTERFACE LXDE AT STARTUP (#already the default# in Raspberry Pi OS Desktop),"
+echo "${red}THIS TICKER #REQUIRES# RUNNING #LIGHTDM# AND THE DESKTOP INTERFACE #LXDE# AT STARTUP (#already the defaults# in Raspberry Pi OS Desktop),"
 echo "AS THE USER '${APP_USER}', IF YOU WANT THE TICKER TO #AUTOMATICALLY RUN ON SYSTEM STARTUP# / REBOOT.${reset}"
 
 fi
@@ -719,14 +754,15 @@ select opt in $OPTIONS; do
 				
 				sleep 5
 				
+    			# FIX FOR 2022-1-28 RASPI OS CHROMIUM BUG (DOES #NOT# FIX SAME ISSUE ON ARMBIAN)
+    			# https://github.com/RPi-Distro/chromium-browser/issues/28
+    			# /etc/chromium.d/ticker-fix-egl CAN BE NAMED ANYTHING, AS LONG AS IT'S IN /etc/chromium.d/
+    			
 				mkdir -p /etc/chromium.d/ > /dev/null 2>&1
 				
 				sleep 2
 				
 				
-    				# FIX FOR 2022-1-28 RASPI OS CHROMIUM BUG
-    				# https://github.com/RPi-Distro/chromium-browser/issues/28
-    				# /etc/chromium.d/ticker-fix-egl CAN BE NAMED ANYTHING, AS LONG AS IT'S IN /etc/chromium.d/
     				CHROMIUM_GL=$(sed -n '/ --use-gl=egl/p' /etc/chromium.d/ticker-fix-egl)
 				
                     if [ "$CHROMIUM_GL" == "" ]; then 
@@ -862,20 +898,23 @@ select opt in $OPTIONS; do
 		  echo " "
 				
         # ONLY removing unclutter, AS WE DON'T WANT TO F!CK UP THE WHOLE SYSTEM, REMOVING ANY OTHER ALREADY-USED / DEPENDANT PACKAGES TOO!!
-		  apt-get remove unclutter -y
+		apt-get remove unclutter -y
 				
-		  echo " "
-		  echo "${cyan}Removal of 'unclutter' app package completed, please wait...${reset}"
-		  echo " "
-		  echo "${yellow}(IF YOU USED unclutter FOR ANOTHER APP, RE-INSTALL WITH: sudo apt-get install unclutter)${reset}"
-		  echo " "
+		echo " "
+		echo "${cyan}Removal of 'unclutter' app package completed, please wait...${reset}"
+		echo " "
+		echo "${yellow}(IF YOU USED unclutter FOR ANOTHER APP, RE-INSTALL WITH: sudo apt-get install unclutter)${reset}"
+		echo " "		
 				
-				
-		  sleep 3
+		sleep 3
+		
+		# Remove ticker autostart line in LXDE autotart file
+        sed -i "/slideshow-crypto-ticker/d" /home/$APP_USER/.config/lxsession/$LXDE_PROFILE/autostart
+        
+        # Remove any #OLD# ticker autostart systemd service (which we no longer use)
+        rm /lib/systemd/system/ticker.service > /dev/null 2>&1
         
         rm /etc/cron.d/ticker > /dev/null 2>&1
-        
-        rm /lib/systemd/system/ticker.service > /dev/null 2>&1
         
         rm /home/$APP_USER/ticker-restart > /dev/null 2>&1
         
@@ -979,30 +1018,6 @@ EOF
                     
                 # REMOVE #OLD WAY# THIS SCRIPT USED TO DO IT
                 rm /lib/systemd/system/ticker.service > /dev/null 2>&1
-                    
-                      
-                    if [ -f /usr/bin/raspi-config ]; then
-                    # KNOWN raspi LXDE profile
-                    LXDE_PROFILE="LXDE-pi"
-                    else
-                          
-                    # Auto-detect or set to KNOWN LXDE default
-                    # Unfortunately not much documentation on listing LXDE profile names,
-                    # BUT looks fairly reliable to just check in /home/$APP_USER/.config/lxpanel
-                    # (PRESUMING IT EXISTS ALREADY AT THIS POINT / ONLY ONE PROFILE PER LXDE USER IN USER FILES)
-                    LXDE_PROFILE=$(ls /home/$APP_USER/.config/lxpanel)
-                    LXDE_PROFILE=$(echo "${LXDE_PROFILE}" | xargs) # trim whitespace
-                      
-                        # If LXDE profile var was NOT auto-setup properly
-                        # (contains whitespace MID-VARIABLE or is empty),
-                        # go with KNOWN default from LXDE documentation
-                        if [[ $LXDE_PROFILE =~ " " ]] || [ -z "$LXDE_PROFILE" ]; then
-                        LXDE_PROFILE="LXDE"
-                        LXDE_ALERT=1
-                        fi
-                      
-                    fi
-                      
 				
 				mkdir -p /home/$APP_USER/.config/lxsession/$LXDE_PROFILE > /dev/null 2>&1
 				

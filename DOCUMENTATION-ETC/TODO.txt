@@ -26,7 +26,8 @@ OPTIMIZATIONS / BUGS / TESTS / UX / QA / OTHER SECTION
 ///////////////////////////////////////////////////////
 
 
-Try the latest raspberry pi os release, as it removes user 'pi'. Not sure if this affects our LXDE session name "LXDE-pi" or not? Everything else should be fine (already fully dynamic).
+Try the latest raspberry pi os release, as it removes user 'pi'. Not sure if this affects our LXDE session name "LXDE-pi" or not? Everything else should be fine (already fully dynamic):
+https://www.raspberrypi.com/news/raspberry-pi-bullseye-update-april-2022/
 
 
 Add optional clock (and optional date) to enable / disable showing in top right corner when no upgrade alerts are present. Also add abiity to change the system stats / clock / date font color (but NOT the upgrade alert color).
