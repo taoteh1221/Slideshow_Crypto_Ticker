@@ -383,10 +383,14 @@ echo " "
 
 echo "${yellow}TECHNICAL NOTE:"
 echo " "
-echo "This script was designed to install on Debian-based operating systems (Raspberry Pi OS, Ubuntu, etc),"
-echo "for small single-board computers WITH SMALL IN-CASE LCD SCREENS."
+echo "This script was designed to install on popular Debian-based operating systems (Ubuntu, Raspberry Pi OS [Raspbian], Armbian, DietPi, etc),"
+echo "for small single-board computers WITH SMALL LCD SCREENS TO RUN THE TICKER 24/7 (ALL THE TIME)."
 echo " "
+
 echo "It is ONLY recommended to install this ticker app IF your device has an LCD screen installed.${reset}"
+echo " "
+
+echo "${yellow}This script MAY NOT work on ALL Debian-based system setups.${reset}"
 echo " "
 
 echo "${cyan}Your operating system has been detected as:"
@@ -394,10 +398,7 @@ echo " "
 echo "$OS v$VER${reset}"
 echo " "
 
-echo "${yellow}This script may OR MAY NOT work on all Debian-based system setups.${reset}"
-echo " "
-
-echo "${red}USE A #FULL# DESKTOP SETUP, #NOT# LITE, OR YOU LIKELY WILL HAVE SOME ISSUES WITH CHROMIUM BROWSER EVEN"
+echo "${red}USE A #FULL# DESKTOP SETUP, #NOT# LITE, OR YOU LIKELY WILL HAVE SOME #UNICODE SYMBOL ISSUES# WITH CHROMIUM BROWSER EVEN"
 echo "AFTER UPGRADING TO GUI / CHROME (trust me)."
 echo " "
 echo "(Chromium, Epiphany, Firefox, OR Midori are supported [chromium recommended ON LOW POWER DEVICES, all these browsers will be installed if available])${reset}"
@@ -717,6 +718,10 @@ select opt in $OPTIONS; do
 				apt-get install xdotool unclutter openssl x11-xserver-utils xautomation -y
 				
 				sleep 5
+				
+				mkdir -p /etc/chromium.d/ > /dev/null 2>&1
+				
+				sleep 2
 				
 				
     				# FIX FOR 2022-1-28 RASPI OS CHROMIUM BUG
