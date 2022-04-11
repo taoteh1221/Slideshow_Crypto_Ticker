@@ -500,7 +500,9 @@ echo " "
             echo " "
             
                 # Auto-login LXDE
-                if [ ! -f /etc/lightdm/lightdm.conf ]; then
+                CHECK_LIGHTDM=$(ls /etc/lightdm/lightdm.conf.d)
+                CHECK_LIGHTDM=$(echo "${CHECK_LIGHTDM}" | xargs) # trim whitespace
+                if [ ! -f /etc/lightdm/lightdm.conf ] && [ -z "$CHECK_LIGHTDM" ]; then
                 
                 
 # Don't nest / indent, or it could malform the settings            
@@ -517,9 +519,8 @@ EOF
 				touch /etc/lightdm/lightdm.conf
 					
 				echo -e "$LXDE_AUTO_LOGIN" > /etc/lightdm/lightdm.conf
-					
-                
-                else
+			    
+			    elif [ -f /etc/lightdm/lightdm.conf ]; then
                 
                 sed -i "s/#autologin-user-timeout=.*/autologin-user-timeout=delay/g" /etc/lightdm/lightdm.conf
                 sleep 2
@@ -529,6 +530,18 @@ EOF
                 sleep 2
                 sed -i "s/user-session=.*/user-session=LXDE/g" /etc/lightdm/lightdm.conf
                 
+                elif [ -n "$CHECK_LIGHTDM" ]; then
+                
+                find /etc/lightdm/lightdm.conf.d/ -type f -exec sed -i "s/#autologin-user-timeout=.*/autologin-user-timeout=delay/g" {} \;
+                sleep 2
+                find /etc/lightdm/lightdm.conf.d/ -type f -exec sed -i "s/#autologin-user=.*/autologin-user=${APP_USER}/g" {} \;
+                sleep 2
+                find /etc/lightdm/lightdm.conf.d/ -type f -exec sed -i "s/autologin-user=.*/autologin-user=${APP_USER}/g" {} \;
+                sleep 2
+                find /etc/lightdm/lightdm.conf.d/ -type f -exec sed -i "s/user-session=.*/user-session=LXDE/g" {} \;
+                
+                else
+                echo "${cyan}AUTO-LOGIN CONFIGURATION ERROR, AUTO-LOGIN #NOT# SETUP!${reset}"
                 fi
             
             sleep 2
