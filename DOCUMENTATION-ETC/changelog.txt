@@ -715,6 +715,20 @@ v3.09.5
 ---------------------------------------------------------
 
 
+---------------------------------------------------------
+v3.09.6
+
+-BUG FIX: Fixed LXDE auto-login logic (using lightdm on armbian operating systems)
+
+-BUG FIX: Easter Egg now runs on non-raspberry pi systems
+
+-BUG FIX: Cleaner un-installation routine
+
+-Pine64 device documentation
+
+---------------------------------------------------------
+
+
 
 
 

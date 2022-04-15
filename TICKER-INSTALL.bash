@@ -505,7 +505,7 @@ if [ ! -f /usr/bin/raspi-config ]; then
 echo "${red}WE NEED TO MAKE SURE LXDE #AND# LIGHTDM RUN AT STARTUP, AS THE USER '${APP_USER}',"
 echo "IF YOU WANT THE TICKER TO #AUTOMATICALLY RUN ON SYSTEM STARTUP# / REBOOT."
 echo " "
-echo "CHOOSE \"LIGHTDM\" WHEN ASKED, FOR \"AUTO-LOGIN AT BOOT\" CAPABILITIES.${reset}"
+echo "CHOOSE \"LIGHTDM\" IF ASKED, FOR \"AUTO-LOGIN AT BOOT\" CAPABILITIES.${reset}"
 echo " "
 echo "${yellow}Select 1 or 2 to choose whether to setup LXDE Desktop, or skip.${reset}"
 echo " "
