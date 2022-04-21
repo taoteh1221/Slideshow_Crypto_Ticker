@@ -305,17 +305,6 @@ fi
 ######################################
 
 
-# Start in user home directory
-# WE DON'T USE ~/ FOR PATHS IN THIS SCRIPT BECAUSE:
-# 1) WE'RE #RUNNING AS SUDO# ANYWAYS (WE CAN INSTALL ANYWHERE WE WANT)
-# 2) WE SET THE USER WE WANT TO INSTALL UNDER DYNAMICALLY
-# 3) IN CASE THE USER INITIATES INSTALL AS ANOTHER ADMIN USER
-cd /home/$TERMINAL_USERNAME
-
-
-######################################
-
-
 echo " "
 echo "${yellow}Enter the system username to configure installation for:"
 echo "(leave blank / hit enter for default of username '${TERMINAL_USERNAME}')${reset}"
