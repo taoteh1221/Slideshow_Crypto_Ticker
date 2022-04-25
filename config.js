@@ -58,24 +58,11 @@ exchange_markets['coinbase'] = 'ETH-USD|ETH-BTC|SOL-USD';
 // USE COINGECKO'S API ID FOR EACH ASSET! (SEE COINGECKO ASSET PAGE'S INFO SECTION) 
 // PAIRING ASSET MUST BE SUPPORTED BY COINGECKO'S 'vs_currencies' API PARAMETER!
 // FORMAT IS 'api-id-here:symbol/pairing'
-exchange_markets['coingecko'] = 'solana:sol/btc|solana:sol/eth';
+exchange_markets['coingecko'] = 'solana:sol/btc|solana:sol/eth|genesysgo-shadow:shdw/usd';
 ////
 ////
 // OKex markets (set to '' to disable) 
 exchange_markets['okex'] = '';
-////
-////
-// Kraken markets (set to '' to disable)
-exchange_markets['kraken'] = 'RAY/USD|SRM/USD'; 
-////
-////
-// Kucoin markets (set to '' to disable)
-// !!KUCOIN REQUIRES USING THE INSTALL SCRIPT!!
-exchange_markets['kucoin'] = 'SRM-BTC|MANA-USDT'; 
-////
-////
-// Binance markets (set to '' to disable)
-exchange_markets['binance'] = 'manabtc|hntusdt'; 
 ////
 ////
 // HitBTC markets (set to '' to disable) 
@@ -83,8 +70,21 @@ exchange_markets['binance'] = 'manabtc|hntusdt';
 exchange_markets['hitbtc'] = ''; 
 ////
 ////
+// Kucoin markets (set to '' to disable)
+// !!KUCOIN REQUIRES USING THE INSTALL SCRIPT!!
+exchange_markets['kucoin'] = 'RNDR-USDT|SRM-USDT'; 
+////
+////
+// Kraken markets (set to '' to disable)
+exchange_markets['kraken'] = 'SRM/XBT|MANA/USD'; 
+////
+////
+// Binance markets (set to '' to disable)
+exchange_markets['binance'] = 'manabtc|rayusdt'; 
+////
+////
 // Gateio markets (set to '' to disable) 
-exchange_markets['gateio'] = 'ZBC_USDT|SLC_USDT|SAMO_USDT';
+exchange_markets['gateio'] = 'ATLAS_USDT|SLC_USDT|SAMO_USDT';
 
 
 // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
