@@ -51,14 +51,14 @@ exchange_markets['bitfinex'] = 'BTCUSD';
 ////
 ////
 // Coinbase markets (set to '' to disable)
-exchange_markets['coinbase'] = 'ETH-USD|ETH-BTC|SOL-USD'; 
+exchange_markets['coinbase'] = 'ETH-USD|ETH-BTC|SOL-USD|UST-USD'; 
 ////
 //// 
 // Coingecko markets (set to '' to disable)
 // USE COINGECKO'S API ID FOR EACH ASSET! (SEE COINGECKO ASSET PAGE'S INFO SECTION) 
 // PAIRING ASSET MUST BE SUPPORTED BY COINGECKO'S 'vs_currencies' API PARAMETER!
 // FORMAT IS 'api-id-here:symbol/pairing'
-exchange_markets['coingecko'] = 'solana:sol/btc|solana:sol/eth|genesysgo-shadow:shdw/usd';
+exchange_markets['coingecko'] = 'terra-luna:luna/usd|solana:sol/btc|solana:sol/eth|genesysgo-shadow:shdw/usd';
 ////
 ////
 // OKex markets (set to '' to disable) 
