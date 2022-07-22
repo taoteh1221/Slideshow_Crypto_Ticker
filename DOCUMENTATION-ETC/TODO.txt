@@ -26,14 +26,7 @@ OPTIMIZATIONS / BUGS / TESTS / UX / QA / OTHER SECTION
 ///////////////////////////////////////////////////////
 
 
-Try the latest raspberry pi os release, as it removes user 'pi'. Not sure if this affects our LXDE session name "LXDE-pi" or not? Everything else should be fine (already fully dynamic):
-https://www.raspberrypi.com/news/raspberry-pi-bullseye-update-april-2022/
-
-
 Add optional clock (and optional date) to enable / disable showing in top right corner when no upgrade alerts are present. Also add abiity to change the system stats / clock / date font color (but NOT the upgrade alert color).
-
-
-Replace any instances of setInterval with setTimeout INSTEAD (as the setInterval implementation in the javascript engine / interperator [at least in chrome] is buggy as hell [wtf]), UNLESS IT'S A GUI COUNTDOWN TIMER.
 
 
 See if we can test number_commas() in a european locale web browser, or emulate in a US locale browser? It SHOULD automatically use commas / periods different in the number formatting, etc.

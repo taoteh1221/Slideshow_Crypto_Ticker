@@ -4,7 +4,7 @@
 
 
 // Application version
-var app_version = '3.09.6';  // 2022/APRIL/15TH
+var app_version = '3.10.0';  // 2022/JULY/21ST
 
 
 // BLANK var inits

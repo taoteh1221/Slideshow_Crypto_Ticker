@@ -58,7 +58,7 @@ exchange_markets['coinbase'] = 'ETH-USD|ETH-BTC|SOL-USD';
 // USE COINGECKO'S API ID FOR EACH ASSET! (SEE COINGECKO ASSET PAGE'S INFO SECTION) 
 // PAIRING ASSET MUST BE SUPPORTED BY COINGECKO'S 'vs_currencies' API PARAMETER!
 // FORMAT IS 'api-id-here:symbol/pairing'
-exchange_markets['coingecko'] = 'solana:sol/btc|solana:sol/eth|genesysgo-shadow:shdw/usd';
+exchange_markets['coingecko'] = 'solana:sol/btc|solana:sol/eth|genesysgo-shadow:shdw/usd|wrapped-cusd-allbridge-from-celo:acusd/usd';
 ////
 ////
 // OKex markets (set to '' to disable) 
@@ -162,7 +162,7 @@ var ticker_min_decimals = 0; // Default = 0
 // #ALWAYS# OVERIDDEN BY ticker_min_decimals!
 var ticker_round_percent = 'tenth'; // (OF A PERCENT) 'one', 'tenth', 'hundredth', 'thousandth'
 ////
-// FORCE a fixed amount of decimals on ticker price, CALCULATED OFF ABOVE ticker_round_percent SETTING
+// FORCE a FIXED MINIMUM amount of decimals on ticker price, CALCULATED OFF ABOVE ticker_round_percent SETTING
 // (ALWAYS SAME AMOUNT OF DECIMALS, #EVEN IF IT INCLUDES TRAILING ZEROS#) 
 // #ALWAYS# OVERIDDEN BY ticker_min_decimals!
 var ticker_round_fixed_decimals = 'on'; // 'off', 'on'

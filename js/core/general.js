@@ -427,6 +427,7 @@ render = render.replace(/mart/gi, "Mart");
 render = render.replace(/ftx/gi, "FTX");
 render = render.replace(/gateio/gi, "Gate.io");
 render = render.replace(/coingecko/gi, "CGecko");
+render = render.replace(/dex/gi, "DEX");
 
 return render;
 
@@ -655,7 +656,7 @@ var scientificToDecimal = function (num) {
 /////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-function dyn_decimals(price_raw) {
+function dyn_max_decimals(price_raw) {
     
     
     if ( ticker_round_percent == 'one' ) {
@@ -676,35 +677,35 @@ unit_percent = (price_raw / 100) * x;
 
     
     // 8 decimals rounding
-    if ( unit_percent <= 0.00000004994 ) {
+    if ( unit_percent <= 0.00000005 ) {
     decimals = 8;
     }
     // 7 decimals rounding
-    else if ( unit_percent <= 0.0000004994 ) {
+    else if ( unit_percent <= 0.0000005 ) {
     decimals = 7;
     }
     // 6 decimals rounding
-    else if ( unit_percent <= 0.000004994 ) {
+    else if ( unit_percent <= 0.000005 ) {
     decimals = 6;
     }
     // 5 decimals rounding
-    else if ( unit_percent <= 0.00004994 ) {
+    else if ( unit_percent <= 0.00005 ) {
     decimals = 5;
     }
     // 4 decimals rounding
-    else if ( unit_percent <= 0.0004994 ) {
+    else if ( unit_percent <= 0.0005 ) {
     decimals = 4;
     }
     // 3 decimals rounding
-    else if ( unit_percent <= 0.004994 ) {
+    else if ( unit_percent <= 0.005 ) {
     decimals = 3;
     }
     // 2 decimals rounding
-    else if ( unit_percent <= 0.04994 ) {
+    else if ( unit_percent <= 0.05 ) {
     decimals = 2;
     }
     // 1 decimals rounding
-    else if ( unit_percent <= 0.4994 ) {
+    else if ( unit_percent <= 0.5 ) {
     decimals = 1;
     }
     // 0 decimals rounding
@@ -888,8 +889,8 @@ market_info = asset_symbols(pairing);
         		 
 market_symbol = market_info['asset_symbol'];
         			
-// Determine decimals [IF NEEDED, this is set to ticker_min_decimals OR ticker_max_decimals ALREADY in dyn_decimals()]
-set_max_decimals = dyn_decimals(price_raw, market_info);
+// Determine decimals [IF NEEDED, this is set to ticker_min_decimals OR ticker_max_decimals ALREADY in dyn_max_decimals()]
+set_max_decimals = dyn_max_decimals(price_raw, market_info);
         	
         			
     // Set minimum decimals
@@ -900,7 +901,7 @@ set_max_decimals = dyn_decimals(price_raw, market_info);
     set_min_decimals = 2; // For number_commas() logic
     }
     // If DYNAMIC fixed minimum decimals configured in user config
-    // (ticker_min_decimals ALREADY CHECKED IN set_max_decimals [with dyn_decimals()])
+    // (ticker_min_decimals ALREADY CHECKED IN set_max_decimals [with dyn_max_decimals()])
     else if ( ticker_round_fixed_decimals == 'on' ) {
     set_min_decimals = set_max_decimals; // For number_commas() logic
     }
