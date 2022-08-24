@@ -129,7 +129,7 @@ function upgrade_check() {
         	
         	var latest_version_download = data.zipball_url;
         	
-        	var latest_version_installer = "wget --no-cache -O TICKER-INSTALL.bash https://git.io/Jqzjk;chmod +x TICKER-INSTALL.bash;sudo ./TICKER-INSTALL.bash";
+        	var latest_version_installer = "wget --no-cache -O TICKER-INSTALL.bash https://tinyurl.com/install-crypto-ticker;chmod +x TICKER-INSTALL.bash;sudo ./TICKER-INSTALL.bash";
         	
         	// Remove anything AFTER formatting in brackets in the description (including the brackets)
         	// (removes the auto-added sourceforge download link)
