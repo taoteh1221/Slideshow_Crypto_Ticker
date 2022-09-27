@@ -311,7 +311,7 @@ api['bitstamp'] = 'wss://ws.bitstamp.net/';
 
 api['bitfinex'] = 'wss://api.bitfinex.com/ws/1';
 
-api['okex'] = 'wss://ws.okex.com:8443/ws/v5/public';
+api['okex'] = 'wss://ws.okx.com:8443/ws/v5/public';
 
 api['gateio'] = 'wss://ws.gate.io/v3/';
 

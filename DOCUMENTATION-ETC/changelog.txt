@@ -732,6 +732,8 @@ v3.09.6
 ---------------------------------------------------------
 v3.10.0
 
+-OKex API upgrade
+
 -Code cleanup
 
 -Revised default config

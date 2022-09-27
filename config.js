@@ -27,8 +27,6 @@ var exchange_markets = []; // LEAVE ALONE, AND DON'T DELETE (REQUIRED!!)
 
 // Kraken formatting example:   'XBT/USD|XBT/CAD|XBT/EUR|ETH/USD|ETH/EUR|ETH/CAD'
 
-// Hitbtc formatting example    (MULTIPLE TICKERS NOT SUPPORTED): 'ETHBTC'
-
 // Bitstamp formatting example  (MULTIPLE TICKERS NOT SUPPORTED): 'btcgbp'
 
 // Binance formatting example:  'btcusdt|ethusdt|ethbtc|mkrusdt'
@@ -36,6 +34,8 @@ var exchange_markets = []; // LEAVE ALONE, AND DON'T DELETE (REQUIRED!!)
 // Kucoin formatting example:   'MANA-USDT|ENJ-BTC'
 
 // Okex formatting example:     'ENJ-USDT|ENJ-BTC'
+
+// Hitbtc formatting example    (MULTIPLE TICKERS NOT SUPPORTED): 'ETHBTC'
 
 // Gate.io formatting example:  'MANA_USDT|SAMO_USDT'
 ////
@@ -51,23 +51,23 @@ exchange_markets['bitfinex'] = 'BTCUSD';
 ////
 ////
 // Coinbase markets (set to '' to disable)
-exchange_markets['coinbase'] = 'ETH-USD|ETH-BTC|SOL-USD'; 
+exchange_markets['coinbase'] = 'ETH-USD|SOL-USD'; 
+////
+////
+// OKex markets (set to '' to disable) 
+exchange_markets['okex'] = 'ETH-BTC|SOL-BTC';
+////
+////
+// HitBTC markets (set to '' to disable) 
+// !!HITBTC WEBSOCKET API ONLY SUPPORTS ONE ASSET!!
+exchange_markets['hitbtc'] = 'SOLETH'; 
 ////
 //// 
 // Coingecko markets (set to '' to disable)
 // USE COINGECKO'S API ID FOR EACH ASSET! (SEE COINGECKO ASSET PAGE'S INFO SECTION) 
 // PAIRING ASSET MUST BE SUPPORTED BY COINGECKO'S 'vs_currencies' API PARAMETER!
 // FORMAT IS 'api-id-here:symbol/pairing'
-exchange_markets['coingecko'] = 'solana:sol/btc|solana:sol/eth|genesysgo-shadow:shdw/usd|wrapped-cusd-allbridge-from-celo:acusd/usd';
-////
-////
-// OKex markets (set to '' to disable) 
-exchange_markets['okex'] = '';
-////
-////
-// HitBTC markets (set to '' to disable) 
-// !!HITBTC WEBSOCKET API ONLY SUPPORTS ONE ASSET!!
-exchange_markets['hitbtc'] = ''; 
+exchange_markets['coingecko'] = 'genesysgo-shadow:shdw/usd|wrapped-cusd-allbridge-from-celo:acusd/usd';
 ////
 ////
 // Kucoin markets (set to '' to disable)
@@ -84,7 +84,7 @@ exchange_markets['binance'] = 'manabtc|rayusdt';
 ////
 ////
 // Gateio markets (set to '' to disable) 
-exchange_markets['gateio'] = 'ATLAS_USDT|SLC_USDT|SAMO_USDT';
+exchange_markets['gateio'] = 'ATLAS_USDT|SLC_USDT|SLRS_USDT|SAMO_USDT';
 
 
 // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
