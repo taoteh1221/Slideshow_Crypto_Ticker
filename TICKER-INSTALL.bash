@@ -140,7 +140,9 @@ fi
 
 ######################################
 
+
 echo " "
+
 
 if [ "$EUID" -ne 0 ] || [ "$TERMINAL_USERNAME" == "root" ]; then 
  echo "${red}Please run as a NORMAL USER WITH 'sudo' PERMISSIONS (NOT LOGGED IN AS 'root').${reset}"
@@ -149,6 +151,20 @@ if [ "$EUID" -ne 0 ] || [ "$TERMINAL_USERNAME" == "root" ]; then
  echo " "
  exit
 fi
+
+
+if [ -f "/etc/debian_version" ]; then
+echo "${cyan}Your system has been detected as Debian-based, which is compatible with this automated installation script."
+echo " "
+echo "Continuing...${reset}"
+echo " "
+else
+echo "${red}Your system has been detected as NOT BEING Debian-based. Your system is NOT compatible with this automated installation script."
+echo " "
+echo "Exiting...${reset}"
+exit
+fi
+
 
 ######################################
 
@@ -305,6 +321,10 @@ fi
 ######################################
 
 
+# For setting user agent header in curl, since some API servers !REQUIRE! a set user agent OR THEY BLOCK YOU
+CUSTOM_CURL_USER_AGENT_HEADER="User-Agent: Curl (${OS}/$VER; compatible;)"
+
+
 echo " "
 echo "${yellow}Enter the system username to configure installation for:"
 echo "(leave blank / hit enter for default of username '${TERMINAL_USERNAME}')${reset}"
@@ -392,18 +412,6 @@ echo "AFTER UPGRADING TO GUI / CHROME (trust me)."
 echo " "
 echo "(Chromium, Epiphany, Firefox, OR Midori are supported [chromium recommended ON LOW POWER DEVICES, all these browsers will be installed if available])${reset}"
 echo " "
-
-if [ -f "/etc/debian_version" ]; then
-echo "${cyan}Your system has been detected as Debian-based, which is compatible with this automated installation script."
-echo " "
-echo "Continuing...${reset}"
-echo " "
-else
-echo "${red}Your system has been detected as NOT BEING Debian-based. Your system is NOT compatible with this automated installation script."
-echo " "
-echo "Exiting...${reset}"
-exit
-fi
   				
 				
 if [ -f /home/$APP_USER/slideshow-crypto-ticker/config.js ]; then
@@ -1293,7 +1301,7 @@ echo "${reset} "
 
 elif [ "$AUTOSTART_ALERT" = "1" ]; then
 
-echo "${red}You must restart your device to auto-start the ticker, by running this command:"
+echo "${red}You MUST RESTART YOUR DEVICE to auto-start the ticker, by running this command:"
 echo " "
 echo "sudo reboot"
 echo "${reset} "
