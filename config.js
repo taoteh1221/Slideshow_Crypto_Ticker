@@ -51,7 +51,11 @@ exchange_markets['bitfinex'] = 'BTCUSD';
 ////
 ////
 // Coinbase markets (set to '' to disable)
-exchange_markets['coinbase'] = 'ETH-USD|SOL-USD'; 
+exchange_markets['coinbase'] = 'ETH-USD|SOL-USD|APT-USD'; 
+////
+////
+// Binance markets (set to '' to disable)
+exchange_markets['binance'] = 'rayusdt|aptbtc'; 
 ////
 ////
 // OKex markets (set to '' to disable) 
@@ -62,29 +66,25 @@ exchange_markets['okex'] = 'ETH-BTC|SOL-BTC';
 // !!HITBTC WEBSOCKET API ONLY SUPPORTS ONE ASSET!!
 exchange_markets['hitbtc'] = 'SOLETH'; 
 ////
+////
+// Kucoin markets (set to '' to disable)
+// !!KUCOIN REQUIRES USING THE INSTALL SCRIPT!!
+exchange_markets['kucoin'] = 'RNDR-USDT|MKR-USDT'; 
+////
+////
+// Kraken markets (set to '' to disable)
+exchange_markets['kraken'] = 'ATLAS/USD|MANA/USD'; 
+////
+////
+// Gateio markets (set to '' to disable) 
+exchange_markets['gateio'] = 'SLC_USDT|SLRS_USDT|SAMO_USDT';
+////
 //// 
 // Coingecko markets (set to '' to disable)
 // USE COINGECKO'S API ID FOR EACH ASSET! (SEE COINGECKO ASSET PAGE'S INFO SECTION) 
 // PAIRING ASSET MUST BE SUPPORTED BY COINGECKO'S 'vs_currencies' API PARAMETER!
 // FORMAT IS 'api-id-here:symbol/pairing'
 exchange_markets['coingecko'] = 'genesysgo-shadow:shdw/usd|wrapped-cusd-allbridge-from-celo:acusd/usd';
-////
-////
-// Kucoin markets (set to '' to disable)
-// !!KUCOIN REQUIRES USING THE INSTALL SCRIPT!!
-exchange_markets['kucoin'] = 'RNDR-USDT|SRM-USDT'; 
-////
-////
-// Kraken markets (set to '' to disable)
-exchange_markets['kraken'] = 'SRM/XBT|MANA/USD'; 
-////
-////
-// Binance markets (set to '' to disable)
-exchange_markets['binance'] = 'manabtc|rayusdt'; 
-////
-////
-// Gateio markets (set to '' to disable) 
-exchange_markets['gateio'] = 'ATLAS_USDT|SLC_USDT|SLRS_USDT|SAMO_USDT';
 
 
 // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
