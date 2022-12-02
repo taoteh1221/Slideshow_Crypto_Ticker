@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Copyright 2019-2022 GPLv3, Slideshow Crypto Ticker by Mike Kilday: http://DragonFrugal.com
+# Copyright 2019-2023 GPLv3, Slideshow Crypto Ticker by Mike Kilday: http://DragonFrugal.com
 
 
 # EXPLICITLY set any ~/.local/bin paths

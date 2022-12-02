@@ -1,10 +1,10 @@
 
-// Copyright 2019-2022 GPLv3, Slideshow Crypto Ticker by Mike Kilday: http://DragonFrugal.com
+// Copyright 2019-2023 GPLv3, Slideshow Crypto Ticker by Mike Kilday: http://DragonFrugal.com
 
 
 
 // Application version
-var app_version = '3.10.0';  // 2022/JULY/21ST
+var app_version = '3.11.0';  // 2022/December/1ST
 
 
 // BLANK var inits
