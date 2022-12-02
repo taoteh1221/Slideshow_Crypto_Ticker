@@ -74,7 +74,7 @@ exchange_markets['kucoin'] = 'HNT-USDT|MKR-USDT';
 ////
 ////
 // Kraken markets (set to '' to disable)
-exchange_markets['kraken'] = 'RAY/USD|ATLAS/USD|MANA/USD'; 
+exchange_markets['kraken'] = 'RAY/USD|ATLAS/USD|POLIS/USD|MANA/USD'; 
 ////
 ////
 // Gateio markets (set to '' to disable) 
