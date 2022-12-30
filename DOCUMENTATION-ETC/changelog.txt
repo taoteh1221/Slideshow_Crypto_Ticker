@@ -741,6 +741,16 @@ v3.10.0
 ---------------------------------------------------------
 
 
+---------------------------------------------------------
+v3.11.0
+
+BUG FIX: Fixed CPU / RAM / upgrade alert top row, so when screen is rotated, this row also rotates with the new screen orientation
+
+-Revised default config
+
+---------------------------------------------------------
+
+
 
 
 

@@ -35,6 +35,8 @@ Patreon:   https://www.patreon.com/dragonfrugal
 
 PayPal:    https://www.paypal.me/dragonfrugal
 
+Venmo:     https://account.venmo.com/u/taoteh1221
+
 
 =========================================================================================================================================
 
@@ -62,6 +64,18 @@ Kucoin markets will not work if you do not PROPERLY install the ticker app. Copy
 
 
 wget --no-cache -O TICKER-INSTALL.bash https://tinyurl.com/install-crypto-ticker;chmod +x TICKER-INSTALL.bash;sudo ./TICKER-INSTALL.bash
+
+
+=========================================================================================================================================
+
+
+=========================================================================================================================================
+
+  Binance Markets Do Not Work
+  
+-----------------------------------------------------------------------------------------------------------------------------------------
+
+Binance started blocking access to some of their price APIs in certain jurasdictions in November of 2022. Check with them in their support channels, if you are unsure if your jurasdiction has been blocked or not.
 
 
 =========================================================================================================================================

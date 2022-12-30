@@ -1,5 +1,5 @@
 
-// Copyright 2019-2022 GPLv3, Slideshow Crypto Ticker by Mike Kilday: http://DragonFrugal.com
+// Copyright 2019-2023 GPLv3, Slideshow Crypto Ticker by Mike Kilday: http://DragonFrugal.com
 
 var exchange_markets = []; // LEAVE ALONE, AND DON'T DELETE (REQUIRED!!)
 
@@ -55,36 +55,37 @@ exchange_markets['coinbase'] = 'ETH-USD|SOL-USD|APT-USD';
 ////
 ////
 // Binance markets (set to '' to disable)
-exchange_markets['binance'] = 'rayusdt|aptbtc'; 
+// !!MAY BE #BLOCKED# IN YOUR JURISDICTION!!
+exchange_markets['binance'] = ''; 
 ////
 ////
 // OKex markets (set to '' to disable) 
-exchange_markets['okex'] = 'ETH-BTC|SOL-BTC';
+exchange_markets['okex'] = '';
 ////
 ////
 // HitBTC markets (set to '' to disable) 
 // !!HITBTC WEBSOCKET API ONLY SUPPORTS ONE ASSET!!
-exchange_markets['hitbtc'] = 'SOLETH'; 
+exchange_markets['hitbtc'] = ''; 
 ////
 ////
 // Kucoin markets (set to '' to disable)
 // !!KUCOIN REQUIRES USING THE INSTALL SCRIPT!!
-exchange_markets['kucoin'] = 'RNDR-USDT|MKR-USDT'; 
+exchange_markets['kucoin'] = 'HNT-USDT|MKR-USDT'; 
 ////
 ////
 // Kraken markets (set to '' to disable)
-exchange_markets['kraken'] = 'ATLAS/USD|MANA/USD'; 
+exchange_markets['kraken'] = 'RAY/USD|ATLAS/USD|POLIS/USD|MANA/USD'; 
 ////
 ////
 // Gateio markets (set to '' to disable) 
-exchange_markets['gateio'] = 'SLC_USDT|SLRS_USDT|SAMO_USDT';
+exchange_markets['gateio'] = 'SLC_USDT|SLRS_USDT';
 ////
 //// 
 // Coingecko markets (set to '' to disable)
 // USE COINGECKO'S API ID FOR EACH ASSET! (SEE COINGECKO ASSET PAGE'S INFO SECTION) 
 // PAIRING ASSET MUST BE SUPPORTED BY COINGECKO'S 'vs_currencies' API PARAMETER!
 // FORMAT IS 'api-id-here:symbol/pairing'
-exchange_markets['coingecko'] = 'genesysgo-shadow:shdw/usd|wrapped-cusd-allbridge-from-celo:acusd/usd';
+exchange_markets['coingecko'] = 'grape-2:grape/usd|hive:hive/usd';
 
 
 // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!

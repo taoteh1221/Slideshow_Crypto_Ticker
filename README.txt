@@ -1,7 +1,7 @@
 
 Slideshow Crypto Ticker - Developed by Michael Kilday <mike@dragonfrugal.com>, released free / open source (under GPL v3)
 
-Copyright 2019-2022 GPLv3
+Copyright 2019-2023 GPLv3
 
 Open source / 100% FREE real time slideshow crypto price ticker for Raspberry Pi LCD screens, including 24 hour volume and CoinGecko / Binance / Coinbase Pro / Kraken / Kucoin / Bitstamp / Bitfinex / HitBTC / OKex / Gate.io support (more market support coming in the future).
 
@@ -50,6 +50,8 @@ Github Sponsors:  https://github.com/sponsors/taoteh1221
 Patreon:   https://www.patreon.com/dragonfrugal
 
 PayPal:    https://www.paypal.me/dragonfrugal
+
+Venmo:     https://account.venmo.com/u/taoteh1221
 
 
 #############################################################################################

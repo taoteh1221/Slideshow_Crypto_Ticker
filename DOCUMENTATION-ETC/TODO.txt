@@ -26,7 +26,7 @@ OPTIMIZATIONS / BUGS / TESTS / UX / QA / OTHER SECTION
 ///////////////////////////////////////////////////////
 
 
-Add optional clock (and optional date) to enable / disable showing in top right corner when no upgrade alerts are present. Also add abiity to change the system stats / clock / date font color (but NOT the upgrade alert color).
+Use javascript LOCAL STORAGE to store latest price (per-ticker) TWICE PER DAY (AT NOON / MIDNIGHT), and if the price is the EXACT SAME AS THE CHECK BEFORE, FORCE-RECONNECT THAT TICKER'S EXCHANGE API.
 
 
 See if we can test number_commas() in a european locale web browser, or emulate in a US locale browser? It SHOULD automatically use commas / periods different in the number formatting, etc.
@@ -66,6 +66,12 @@ https://docs.binance.org/api-reference/dex-api/ws-streams.html
 ///////////////////////////////////////////////////////
 FEATURES / STRUCTURING SECTION
 ///////////////////////////////////////////////////////
+
+
+
+
+
+Add optional clock (and optional date) to enable / disable showing in top right corner when no upgrade alerts are present. Also add abiity to change the system stats / clock / date font color (but NOT the upgrade alert color).
 
 
 Add other stock jquery transition effects (besides fade in / out), as config options.
