@@ -148,7 +148,7 @@ change_color('upgrade_alert');
 
 	// Screen orientation
 	if ( orient_screen > 0 ) {
-	$("#ticker_window").addClass("orient_" + orient_screen);
+	$("#main_wrapper").addClass("orient_" + orient_screen);
 	}
 
 

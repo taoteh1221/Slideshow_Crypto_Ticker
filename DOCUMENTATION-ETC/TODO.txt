@@ -26,9 +26,6 @@ OPTIMIZATIONS / BUGS / TESTS / UX / QA / OTHER SECTION
 ///////////////////////////////////////////////////////
 
 
-CPU / RAM / UPGRADE ALERT sections don't rotate when orientation setting is changed.
-
-
 Use javascript LOCAL STORAGE to store latest price (per-ticker) TWICE PER DAY (AT NOON / MIDNIGHT), and if the price is the EXACT SAME AS THE CHECK BEFORE, FORCE-RECONNECT THAT TICKER'S EXCHANGE API.
 
 

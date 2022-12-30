@@ -46,7 +46,7 @@ var memory_used_percent2$memory_used_percent2
 var cel2$cel2
 \r
 \$("#system_data").css({ "display": "block" });
-\$("#system_data").html('CPU: ' + cel2 + '°C, Memory: ' + memory_used_percent2 + '%');
+\$("#system_data").html('CPU: ' + cel2 + '°C &nbsp;|&nbsp; Memory: ' + memory_used_percent2 + '%');
 \r
 \r
 EOF
