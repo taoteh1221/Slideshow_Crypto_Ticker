@@ -170,6 +170,15 @@ fi
 
 
 # Get primary dependency apps, if we haven't yet
+
+# In case package list was ever corrupted (since we are about to rebuild it anyway...avoids possible errors)
+sudo rm -rf /var/lib/apt/lists/* -vf
+
+sleep 2
+
+sudo apt update
+
+sleep 2
     
 # Install git if needed
 GIT_PATH=$(which git)
