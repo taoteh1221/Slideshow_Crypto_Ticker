@@ -68,10 +68,7 @@ FEATURES / STRUCTURING SECTION
 ///////////////////////////////////////////////////////
 
 
-
-
-
-Add optional clock (and optional date) to enable / disable showing in top right corner when no upgrade alerts are present. Also add abiity to change the system stats / clock / date font color (but NOT the upgrade alert color).
+Add optional clock (with day / date) to enable / disable showing as an item in the slideshow. Also look into adding a weather slideshow item too.
 
 
 Add other stock jquery transition effects (besides fade in / out), as config options.
