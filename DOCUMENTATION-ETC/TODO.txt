@@ -26,6 +26,9 @@ OPTIMIZATIONS / BUGS / TESTS / UX / QA / OTHER SECTION
 ///////////////////////////////////////////////////////
 
 
+Make CPU / RAM / Upgrade notice brighter in ticker app. Maybe even create a brightness setting for that entire header area (so it "pops" more / less than ticker info when viewing). 
+
+
 Use javascript LOCAL STORAGE to store latest price (per-ticker) TWICE PER DAY (AT NOON / MIDNIGHT), and if the price is the EXACT SAME AS THE CHECK BEFORE, FORCE-RECONNECT THAT TICKER'S EXCHANGE API.
 
 
