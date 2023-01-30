@@ -205,7 +205,6 @@ display: none;
 
 
 #upgrade_alert .more_info {
-  opacity: 0.33;
 text-align: center;
 font-weight: bold;
 font-size: 1.3vw;
@@ -222,7 +221,6 @@ line-height: 1.8vw;
     text-align: left;
     padding: 1vw;
     white-space: pre-wrap;
-    opacity: 0.95;
     min-width: 92vw;
     max-width: 92vw;
     color: black !important;
@@ -233,7 +231,6 @@ border-radius: 1vw;
 
 #system_data {
     color: #ffff00;
-  opacity: 0.33;
 position: absolute;
   top: 1.5vw;
   left: 1.5vw;

@@ -13,12 +13,12 @@ Example on a 7" LCD: https://www.youtube.com/watch?v=fZ98Fm6ZkW8
 
 Developed on a Raspi v3 B+, with these screens / cases: 
 
-https://smile.amazon.com/gp/product/B07N38B86S (stock, no mods)
+https://amazon.com/gp/product/B07N38B86S (stock, no mods)
 
-https://smile.amazon.com/gp/product/B08Q34RS7M
+https://amazon.com/gp/product/B08Q34RS7M
 (Noctua fan mounted with crazy glue, and Noctua fan speed controller outside case)
-https://smile.amazon.com/gp/product/B07DXRNYNX
-https://smile.amazon.com/gp/product/B072M2HKSN
+https://amazon.com/gp/product/B07DXRNYNX
+https://amazon.com/gp/product/B072M2HKSN
 
 Project Website: https://sourceforge.net/projects/dfd-crypto-ticker
 
@@ -52,6 +52,19 @@ Patreon:   https://www.patreon.com/dragonfrugal
 PayPal:    https://www.paypal.me/dragonfrugal
 
 Venmo:     https://account.venmo.com/u/taoteh1221
+
+
+#############################################################################################
+
+
+SINGLE TICKER *MINIMUM* system specs:
+
+1 Gigahertz CPU / 512 Megabytes RAM / HIGH QUALITY 16 Gigabyte MicroSD card
+
+
+MUTIPLE TICKERS (slideshow mode) *MINIMUM* system specs:
+
+4 cores (1 Gigahertz each) CPU / 1 Gigabyte RAM / HIGH QUALITY 16 Gigabyte MicroSD card
 
 
 #############################################################################################

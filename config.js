@@ -121,6 +121,10 @@ var show_system_data = 'on'; // 'on' / 'off', Default = 'on'
 ////
 // System data font size
 var system_data_size = 3.00; // Default = 3.00 (#CAN# BE DECIMALS HERE, AS WERE USING THE CSS vw STANDARD)
+////
+// Brightness of system data text (allows toning down vibrancy, so it 'pops out' less than ticker price data)
+// (also ajusts upgrade alert data section on TOP RIGHT to match [if an upgrade is available])
+var system_data_opacity = 0.70;  // Default = 0.70 (#CAN# BE DECIMALS HERE, WITH HIGHEST VALUE OF 1.00 [is 100% opacity])
 
 
 // Title font size

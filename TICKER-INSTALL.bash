@@ -169,6 +169,31 @@ fi
 ######################################
 
 
+# apt_clear_update function START
+apt_clear_update () {
+
+     if [ "$APT_CACHE_CLEARED" != "1" ]; then
+     
+     # In case package list was ever corrupted (since we are about to rebuild it anyway...avoids possible errors)
+     sudo rm -rf /var/lib/apt/lists/* -vf
+     
+     APT_CACHE_CLEARED=1
+     
+     sleep 2
+     
+     sudo apt update
+     
+     sleep 2
+     
+     fi
+
+}
+# apt_clear_update function END
+
+
+######################################
+
+
 # Get primary dependency apps, if we haven't yet
     
 # Install git if needed
@@ -176,11 +201,12 @@ GIT_PATH=$(which git)
 
 if [ -z "$GIT_PATH" ]; then
 
+# Clears AND updates apt cache (IF it wasn't already this runtime session)
+apt_clear_update
+
 echo " "
 echo "${cyan}Installing required component git, please wait...${reset}"
 echo " "
-
-sudo apt update
 
 sudo apt install git -y
 
@@ -192,11 +218,12 @@ CURL_PATH=$(which curl)
 
 if [ -z "$CURL_PATH" ]; then
 
+# Clears AND updates apt cache (IF it wasn't already this runtime session)
+apt_clear_update
+
 echo " "
 echo "${cyan}Installing required component curl, please wait...${reset}"
 echo " "
-
-sudo apt update
 
 sudo apt install curl -y
 
@@ -208,11 +235,12 @@ JQ_PATH=$(which jq)
 
 if [ -z "$JQ_PATH" ]; then
 
+# Clears AND updates apt cache (IF it wasn't already this runtime session)
+apt_clear_update
+
 echo " "
 echo "${cyan}Installing required component jq, please wait...${reset}"
 echo " "
-
-sudo apt update
 
 sudo apt install jq -y
 
@@ -224,11 +252,12 @@ WGET_PATH=$(which wget)
 
 if [ -z "$WGET_PATH" ]; then
 
+# Clears AND updates apt cache (IF it wasn't already this runtime session)
+apt_clear_update
+
 echo " "
 echo "${cyan}Installing required component wget, please wait...${reset}"
 echo " "
-
-sudo apt update
 
 sudo apt install wget -y
 
@@ -240,11 +269,12 @@ SED_PATH=$(which sed)
 
 if [ -z "$SED_PATH" ]; then
 
+# Clears AND updates apt cache (IF it wasn't already this runtime session)
+apt_clear_update
+
 echo " "
 echo "${cyan}Installing required component sed, please wait...${reset}"
 echo " "
-
-sudo apt update
 
 sudo apt install sed -y
 
@@ -256,11 +286,12 @@ LESS_PATH=$(which less)
 				
 if [ -z "$LESS_PATH" ]; then
 
+# Clears AND updates apt cache (IF it wasn't already this runtime session)
+apt_clear_update
+
 echo " "
 echo "${cyan}Installing required component less, please wait...${reset}"
 echo " "
-
-sudo apt update
 
 sudo apt install less -y
 
@@ -272,11 +303,12 @@ EXPECT_PATH=$(which expect)
 				
 if [ -z "$EXPECT_PATH" ]; then
 
+# Clears AND updates apt cache (IF it wasn't already this runtime session)
+apt_clear_update
+
 echo " "
 echo "${cyan}Installing required component expect, please wait...${reset}"
 echo " "
-
-sudo apt update
 
 sudo apt install expect -y
 
@@ -288,11 +320,12 @@ AVAHID_PATH=$(which avahi-daemon)
 
 if [ -z "$AVAHID_PATH" ]; then
 
+# Clears AND updates apt cache (IF it wasn't already this runtime session)
+apt_clear_update
+
 echo " "
 echo "${cyan}Installing required component avahi-daemon, please wait...${reset}"
 echo " "
-
-sudo apt update
 
 sudo apt install avahi-daemon -y
 
@@ -304,11 +337,12 @@ BC_PATH=$(which bc)
 
 if [ -z "$BC_PATH" ]; then
 
+# Clears AND updates apt cache (IF it wasn't already this runtime session)
+apt_clear_update
+
 echo " "
 echo "${cyan}Installing required component bc, please wait...${reset}"
 echo " "
-
-sudo apt update
 
 sudo apt install bc -y
 
@@ -482,11 +516,12 @@ fi
 echo "${cyan}Making sure your system is updated before installation, please wait...${reset}"
 
 echo " "
-			
-apt-get update
+
+# Clears AND updates apt cache (IF it wasn't already this runtime session)
+apt_clear_update
 
 #DO NOT RUN dist-upgrade, bad things can happen, lol
-apt-get upgrade -y
+apt upgrade -y
 
 echo " "
 				
@@ -511,6 +546,9 @@ echo " "
     
     select opt in $OPTIONS; do
             if [ "$opt" = "setup_lxde" ]; then
+
+            # Clears AND updates apt cache (IF it wasn't already this runtime session)
+            apt_clear_update
             
             echo " "
             echo "${cyan}Installing LXDE desktop and required components, please wait...${reset}"
@@ -558,11 +596,11 @@ EOF
 			    
 			    
 			        if [ "$DETECT_AUTOLOGIN" != "" ]; then 
-                    sed -i "s/#autologin-user=.*/autologin-user=${APP_USER}/g" /etc/lightdm/lightdm.conf
-                    sleep 2
-                    sed -i "s/autologin-user=.*/autologin-user=${APP_USER}/g" /etc/lightdm/lightdm.conf
-                    elif [ "$DETECT_AUTOLOGIN" == "" ]; then 
-                    sudo bash -c "echo 'autologin-user=${APP_USER}' >> /etc/lightdm/lightdm.conf"
+                       sed -i "s/#autologin-user=.*/autologin-user=${APP_USER}/g" /etc/lightdm/lightdm.conf
+                       sleep 2
+                       sed -i "s/autologin-user=.*/autologin-user=${APP_USER}/g" /etc/lightdm/lightdm.conf
+                       elif [ "$DETECT_AUTOLOGIN" == "" ]; then 
+                       sudo bash -c "echo 'autologin-user=${APP_USER}' >> /etc/lightdm/lightdm.conf"
 			        fi
 			        
                 
@@ -573,18 +611,18 @@ EOF
                 elif [ -n "$CHECK_LIGHTDM_D" ]; then
                 
                 # Find the PROPER config file in the /lightdm.conf.d/ directory
-			    LIGHTDM_CONFIG_FILE=$(grep -r 'user-session' /etc/lightdm/lightdm.conf.d | awk -F: '{print $1}')
+			 LIGHTDM_CONFIG_FILE=$(grep -r 'user-session' /etc/lightdm/lightdm.conf.d | awk -F: '{print $1}')
                 LIGHTDM_CONFIG_FILE=$(echo "${LIGHTDM_CONFIG_FILE}" | xargs) # trim whitespace
 			    
-			    DETECT_AUTOLOGIN=$(sudo sed -n '/autologin-user=/p' $LIGHTDM_CONFIG_FILE)
+			 DETECT_AUTOLOGIN=$(sudo sed -n '/autologin-user=/p' $LIGHTDM_CONFIG_FILE)
 			    
 			    
 			        if [ "$DETECT_AUTOLOGIN" != "" ]; then 
-                    sed -i "s/#autologin-user=.*/autologin-user=${APP_USER}/g" $LIGHTDM_CONFIG_FILE
-                    sleep 2
-                    sed -i "s/autologin-user=.*/autologin-user=${APP_USER}/g" $LIGHTDM_CONFIG_FILE
-                    elif [ "$DETECT_AUTOLOGIN" == "" ]; then 
-                    sudo bash -c "echo 'autologin-user=${APP_USER}' >> ${LIGHTDM_CONFIG_FILE}"
+                       sed -i "s/#autologin-user=.*/autologin-user=${APP_USER}/g" $LIGHTDM_CONFIG_FILE
+                       sleep 2
+                       sed -i "s/autologin-user=.*/autologin-user=${APP_USER}/g" $LIGHTDM_CONFIG_FILE
+                       elif [ "$DETECT_AUTOLOGIN" == "" ]; then 
+                       sudo bash -c "echo 'autologin-user=${APP_USER}' >> ${LIGHTDM_CONFIG_FILE}"
 			        fi
 			        
                 
@@ -647,7 +685,9 @@ OPTIONS="install_ticker_app remove_ticker_app skip"
 
 select opt in $OPTIONS; do
         if [ "$opt" = "install_ticker_app" ]; then
-        
+
+                    # Clears AND updates apt cache (IF it wasn't already this runtime session)
+                    apt_clear_update
         	
 				echo " "
 				
@@ -663,37 +703,37 @@ select opt in $OPTIONS; do
 				echo " "
 				
 				# Ubuntu 16.x, and other debian-based systems
-				apt-get install bsdtar -y
+				apt install bsdtar -y
 				
 				sleep 1
 				
 				# Ubuntu 18.x and higher
-				apt-get install libarchive-tools -y
+				apt install libarchive-tools -y
 				
 				sleep 1
 				
 				# midori on raspbian
-				apt-get install midori -y
+				apt install midori -y
 				
 				sleep 1
 				
 				# Firefox on raspbian
-				apt-get install firefox-esr -y
+				apt install firefox-esr -y
 				
 				sleep 1
 				
 				# Firefox on ubuntu, etc
-				apt-get install firefox -y
+				apt install firefox -y
 				
 				sleep 1
 				
 				# epiphany on raspbian
-				apt-get install epiphany-browser -y
+				apt install epiphany-browser -y
 				
 				sleep 1
 				
 				# Chromium on raspbian
-				apt-get install chromium-browser -y
+				apt install chromium-browser -y
 				
 				sleep 10
 
@@ -704,7 +744,7 @@ select opt in $OPTIONS; do
                     if [ -z "$EPIPHANY_PATH" ] && [ ! -f /usr/bin/raspi-config ]; then
     
     				# epiphany on ubuntu, etc
-    				apt-get install epiphany -y
+    				apt install epiphany -y
     				
     				sleep 1
     				
@@ -718,7 +758,7 @@ select opt in $OPTIONS; do
                     if [ -z "$CHROMIUM_PATH" ] && [ ! -f /usr/bin/raspi-config ]; then
     
     				# Chromium on ubuntu, etc
-    				apt-get install chromium -y
+    				apt install chromium -y
     				
     				sleep 1
     				
@@ -747,7 +787,7 @@ select opt in $OPTIONS; do
 
 				
 				# Safely install other packages seperately, so they aren't cancelled by 'package missing' errors
-				apt-get install xdotool unclutter openssl x11-xserver-utils xautomation -y
+				apt install xdotool unclutter openssl x11-xserver-utils xautomation -y
 				
 				sleep 5
 				
@@ -895,12 +935,12 @@ select opt in $OPTIONS; do
 		  echo " "
 				
         # ONLY removing unclutter, AS WE DON'T WANT TO F!CK UP THE WHOLE SYSTEM, REMOVING ANY OTHER ALREADY-USED / DEPENDANT PACKAGES TOO!!
-		apt-get remove unclutter -y
+		apt remove unclutter -y
 				
 		echo " "
 		echo "${cyan}Removal of 'unclutter' app package completed, please wait...${reset}"
 		echo " "
-		echo "${yellow}(IF YOU USED unclutter FOR ANOTHER APP, RE-INSTALL WITH: sudo apt-get install unclutter)${reset}"
+		echo "${yellow}(IF YOU USED unclutter FOR ANOTHER APP, RE-INSTALL WITH: sudo apt install unclutter)${reset}"
 		echo " "		
 				
 		sleep 3

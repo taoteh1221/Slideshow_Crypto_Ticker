@@ -147,8 +147,7 @@ function upgrade_check() {
     	        
             $("#upgrade_alert").css({ "display": "block" });
             
-            $("#upgrade_alert").html("<span class='more_info' title=''>Upgrade available: v" + latest_version + "<br />(running v" + app_version + ")</span>"); 
-            
+            $("#upgrade_alert").html("<span class='more_info' style='opacity: " + system_data_opacity + "' title=''>Upgrade available: v" + latest_version + "<br />(running v" + app_version + ")</span>"); 
             
     	    }
     	    else {

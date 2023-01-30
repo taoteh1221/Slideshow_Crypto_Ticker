@@ -26,7 +26,7 @@ OPTIMIZATIONS / BUGS / TESTS / UX / QA / OTHER SECTION
 ///////////////////////////////////////////////////////
 
 
-Use javascript LOCAL STORAGE to store latest price (per-ticker) TWICE PER DAY (AT NOON / MIDNIGHT), and if the price is the EXACT SAME AS THE CHECK BEFORE, FORCE-RECONNECT THAT TICKER'S EXCHANGE API.
+Use javascript LOCAL STORAGE to store latest price (per-ticker) TWICE PER DAY (AT NOON / MIDNIGHT), and if the price / volume is the EXACT SAME AS THE CHECK BEFORE, FORCE-RECONNECT THAT TICKER'S EXCHANGE API.
 
 
 See if we can test number_commas() in a european locale web browser, or emulate in a US locale browser? It SHOULD automatically use commas / periods different in the number formatting, etc.
@@ -37,13 +37,7 @@ API INTEGRATION SECTION
 ///////////////////////////////////////////////////////
 
 
-https://docs.bitfinex.com/reference#ws-public-ticker
-
-
 https://docs.bonfida.com/#websocket
-
-
-https://docs.ftx.com/#websocket-api
 
 
 https://exchange-docs.crypto.com/spot/index.html#websocket-subscriptions
@@ -68,16 +62,10 @@ FEATURES / STRUCTURING SECTION
 ///////////////////////////////////////////////////////
 
 
+Add optional clock (with day / date) to enable / disable showing as an item in the slideshow. Also look into adding a weather slideshow item too.
 
 
-
-Add optional clock (and optional date) to enable / disable showing in top right corner when no upgrade alerts are present. Also add abiity to change the system stats / clock / date font color (but NOT the upgrade alert color).
-
-
-Add other stock jquery transition effects (besides fade in / out), as config options.
-
-
-For a 24hr / 1hr / 1week trend stat, THE ONLY #FEASIBLE OPTION# IS TO USE DATA FROM COINGECKO (coingecko allows in-browser js-compatible API queries as simple GET requests), AS IT WOULD TAKE FOREVER TO BUILD UP A 1HR / 24HR / 1WEEK CYCLE OF DATA IN JAVASCRIPT'S 'sessionStorage' STORAGE. As far as the front end goes, look into an optional 4th row (config defaulting to 'off') AND OPTION TO REPLACE 3RD ROW (choose if 3rd row is 24hr vol or price change percent time periods).
+For a 24hr / 1hr / 1week trend stat, THE ONLY #FEASIBLE OPTION# IS TO USE DATA FROM COINGECKO (coingecko allows in-browser js-compatible API queries as simple GET requests). As far as the front end goes, look into an optional 4th row (config defaulting to 'off') AND OPTION TO REPLACE 3RD ROW (choose if 3rd row is 24hr vol or price change percent time periods).
 
 
 Add SFTP setup as optional in auto-install, AND mention SSH login too (since the screen on the device will be occupied by the ticker running).
@@ -91,8 +79,6 @@ Add SFTP setup as optional in auto-install, AND mention SSH login too (since the
 MAYBE SECTION
 ///////////////////////////////////////////////////////
 
-
-Maybe add jquery easing functions plugin, to give the ticker transitions different hide / show effects (THAT AREN'T OFFERED BY A STOCK JQUERY LIB) we can add as a config.js setting (besides jut fade in / out like we do now): https://gsgd.co.uk/sandbox/jquery/easing/
 
 
 ############################################################################################################################
