@@ -4,7 +4,7 @@
 
 
 // Application version
-var app_version = '3.11.0';  // 2022/December/1ST
+var app_version = '3.12.0';  // 2023/January/30TH
 
 
 // BLANK var inits
@@ -59,6 +59,9 @@ system_info_js(); // System info (temp , memory used, etc)
 // (besides the slow back-and-forth we also do for that area)
 change_color('system_data');
 change_color('upgrade_alert');
+////
+// Set header left side opacity (ride side opacity set in upgrade_check())
+$(".moving_left_side").css({ "opacity": system_data_opacity });
 
 
     // Event listeners for internet status updates

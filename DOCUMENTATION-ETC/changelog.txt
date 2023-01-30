@@ -751,6 +751,17 @@ BUG FIX: Fixed CPU / RAM / upgrade alert top row, so when screen is rotated, thi
 ---------------------------------------------------------
 
 
+---------------------------------------------------------
+v3.12.0
+
+-New config setting to adjust brightness of CPU / RAM data, and any existing upgrade alert data (above ticker)
+
+-Better user experience using the auto-installer / upgrader
+
+---------------------------------------------------------
+
+
+
 
 
 
