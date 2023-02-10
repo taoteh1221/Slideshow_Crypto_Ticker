@@ -26,6 +26,11 @@ OPTIMIZATIONS / BUGS / TESTS / UX / QA / OTHER SECTION
 ///////////////////////////////////////////////////////
 
 
+All NON-GLOBAL variables inside JAVASCRIPT functions should be started as 'var my_var_name': 
+
+https://stackoverflow.com/questions/10872006/how-do-i-change-the-value-of-a-global-variable-inside-of-a-function/10874509#10874509
+
+
 Use javascript LOCAL STORAGE to store latest price (per-ticker) TWICE PER DAY (AT NOON / MIDNIGHT), and if the price / volume is the EXACT SAME AS THE CHECK BEFORE, FORCE-RECONNECT THAT TICKER'S EXCHANGE API.
 
 

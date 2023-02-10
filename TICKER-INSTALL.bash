@@ -459,6 +459,10 @@ echo "This will save any custom settings within it."
 echo " "
 echo "You will need to manually move any custom settings in this backup file to the new config.js file with a text editor.${reset}"
 echo " "
+
+echo "${red}IF ANYTHING STOPS WORKING AFTER UPGRADING, CLEAR YOUR BROWSER CACHE (temporary files), AND RELOAD OR RESTART THE APP. This will load the latest Javascript / Style Sheet upgrades properly.${reset}"
+echo " "
+
 fi
 
 
@@ -1227,6 +1231,9 @@ echo " "
 echo "/home/$APP_USER/slideshow-crypto-ticker/config.js.BACKUP.$DATE${reset}"
 echo " "
 echo "${yellow}You will need to manually move any custom settings in this backup file to the new config.js file with a text editor.${reset}"
+echo " "
+
+echo "${red}IF ANYTHING STOPS WORKING AFTER UPGRADING, CLEAR YOUR BROWSER CACHE (temporary files), AND RELOAD OR RESTART THE APP. This will load the latest Javascript / Style Sheet upgrades properly.${reset}"
 echo " "
 
 fi
