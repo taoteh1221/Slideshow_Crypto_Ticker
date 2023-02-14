@@ -444,7 +444,7 @@ echo " "
 echo "${red}USE A #FULL# DESKTOP SETUP, #NOT# LITE, OR YOU LIKELY WILL HAVE SOME #UNICODE SYMBOL ISSUES# WITH CHROMIUM BROWSER EVEN"
 echo "AFTER UPGRADING TO GUI / CHROME (trust me)."
 echo " "
-echo "(Chromium, Epiphany, Firefox, OR Midori are supported [chromium recommended ON LOW POWER DEVICES, all these browsers will be installed if available])${reset}"
+echo "(Chromium, Epiphany, and Firefox are supported [chromium recommended ON LOW POWER DEVICES, all these browsers will be installed if available])${reset}"
 echo " "
   				
 				
@@ -713,11 +713,6 @@ select opt in $OPTIONS; do
 				
 				# Ubuntu 18.x and higher
 				apt install libarchive-tools -y
-				
-				sleep 1
-				
-				# midori on raspbian
-				apt install midori -y
 				
 				sleep 1
 				
@@ -1010,7 +1005,7 @@ select opt in $OPTIONS; do
                     echo " "
                     fi
                 
-                USER_BROWSER="chromium epiphany firefox midori"
+                USER_BROWSER="chromium epiphany firefox"
                 
                     select opt in $USER_BROWSER; do
                            if [ "$opt" = "chromium" ]; then
@@ -1020,9 +1015,6 @@ select opt in $OPTIONS; do
                             SET_BROWSER=$opt
                             break
                            elif [ "$opt" = "firefox" ]; then
-                            SET_BROWSER=$opt
-                            break
-                           elif [ "$opt" = "midori" ]; then
                             SET_BROWSER=$opt
                             break
                            fi
@@ -1274,15 +1266,13 @@ echo "#AFTER BOOTING INTO THE DESKTOP INTERFACE#, to start Slideshow Crypto Tick
 echo " "
 echo "~/ticker-start"
 echo " "
-echo "If you prefer chromium, epiphany, firefox, or midori (you set $SET_BROWSER as the default):"
+echo "If you prefer chromium, epiphany, or firefox (you set $SET_BROWSER as the default):"
 echo " "
 echo "~/ticker-start chromium"
 echo " "
 echo "~/ticker-start epiphany"
 echo " "
 echo "~/ticker-start firefox"
-echo " "
-echo "~/ticker-start midori"
 echo " "
 echo "To stop Slideshow Crypto Ticker:"
 echo " "
@@ -1295,15 +1285,13 @@ echo "${yellow}#AFTER BOOTING INTO THE DESKTOP INTERFACE#, to start Slideshow Cr
 echo " "
 echo "~/ticker-start"
 echo " "
-echo "If you prefer chromium, epiphany, firefox, or midori (chromium recommended ON LOW POWER DEVICES):"
+echo "If you prefer chromium, epiphany, or firefox (chromium recommended ON LOW POWER DEVICES):"
 echo " "
 echo "~/ticker-start chromium"
 echo " "
 echo "~/ticker-start epiphany"
 echo " "
 echo "~/ticker-start firefox"
-echo " "
-echo "~/ticker-start midori"
 echo " "
 echo "To stop Slideshow Crypto Ticker:"
 echo " "

@@ -12,7 +12,7 @@ GENERAL NOTES SECTION
 Try sticking with small infrastructure changes, and breaking up large changes into small milestones, then plenty of time is spent on UX / testing / logging / debugging.
 
 
-Always test in a WebKit-based browser [Epiphany|Safari|Midori], Firefox, and Chromium.
+Always test in a WebKit-based browser [Epiphany|Safari], Firefox, and Chromium.
 
 
 Post on hive, telegram, discord, Twitter, Facebook whenever there is a new release of the app.
