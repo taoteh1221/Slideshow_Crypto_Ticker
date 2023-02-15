@@ -696,9 +696,7 @@ v3.09.4
 
 -COMPATIBILITY FIX: Use 'defer' instead of 'async' for dynamically-added js script files
 
--Added ability to use midori as the browser used by the ticker
-
--Switched back to using chromium as default ticker browser (any other browsers can CRASH THE ENTIRE SYSTEM ON LOW POWER DEVICES...see README on how to still use epiphany / midori / firefox)
+-Switched back to using chromium as default ticker browser (any other browsers can CRASH THE ENTIRE SYSTEM ON LOW POWER DEVICES...see README on how to still use epiphany / firefox)
 
 ---------------------------------------------------------
 

@@ -110,15 +110,13 @@ If autostart does not work / is not setup, you can run this command MANUALLY, #A
 ~/ticker-start
 
 
-If you prefer chromium, epiphany, firefox, or midori (chromium is the default):
+If you prefer chromium, epiphany, or firefox (chromium is the default):
 
 ~/ticker-start chromium
 
 ~/ticker-start epiphany
 
 ~/ticker-start firefox
-
-~/ticker-start midori
 
 
 To stop Slideshow Crypto Ticker:
@@ -172,7 +170,7 @@ ln -s ~/slideshow-crypto-ticker/bash/ticker-stop.bash ~/ticker-stop
 ---------------------
 
 
-Create / edit the following autostart file (create any directories that don't exist yet): /home/YOUR_USER_NAME/.config/lxsession/LXDE_PROFILE_NAME/autostart and add the following (chromium can be changed to epiphany, firefox, or midori if desired)...
+Create / edit the following autostart file (create any directories that don't exist yet): /home/YOUR_USER_NAME/.config/lxsession/LXDE_PROFILE_NAME/autostart and add the following (chromium can be changed to epiphany, or firefox if desired)...
 
 IMPORTANT: SUBSTITUTE "LXDE_PROFILE_NAME" FOR THE LXDE PROFILE NAME USED FOR YOUR LXDE SESSION (whatever the sub-folder name is INSIDE: /home/YOUR_USER_NAME/.config/lxpanel, on raspberry pi os it is: LXDE-pi, default if unknown should be: LXDE).
 

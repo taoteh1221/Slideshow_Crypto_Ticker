@@ -14,5 +14,5 @@ export DISPLAY=$FIND_DISPLAY
 rm -rf ~/.cache/mozilla/firefox/*
 sleep 1
 
-# chromium / epiphany / firefox / midori refresh
+# chromium / epiphany / firefox refresh
 xdotool key F5

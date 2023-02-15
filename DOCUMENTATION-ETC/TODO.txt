@@ -12,7 +12,7 @@ GENERAL NOTES SECTION
 Try sticking with small infrastructure changes, and breaking up large changes into small milestones, then plenty of time is spent on UX / testing / logging / debugging.
 
 
-Always test in a WebKit-based browser [Epiphany|Safari|Midori], Firefox, and Chromium.
+Always test in a WebKit-based browser [Epiphany|Safari], Firefox, and Chromium.
 
 
 Post on hive, telegram, discord, Twitter, Facebook whenever there is a new release of the app.
@@ -24,6 +24,11 @@ ALWAYS do everything in the optimizations / bugs / tests / ux / qa / other secti
 ///////////////////////////////////////////////////////
 OPTIMIZATIONS / BUGS / TESTS / UX / QA / OTHER SECTION
 ///////////////////////////////////////////////////////
+
+
+All NON-GLOBAL variables inside JAVASCRIPT functions should be started as 'var my_var_name': 
+
+https://stackoverflow.com/questions/10872006/how-do-i-change-the-value-of-a-global-variable-inside-of-a-function/10874509#10874509
 
 
 Use javascript LOCAL STORAGE to store latest price (per-ticker) TWICE PER DAY (AT NOON / MIDNIGHT), and if the price / volume is the EXACT SAME AS THE CHECK BEFORE, FORCE-RECONNECT THAT TICKER'S EXCHANGE API.
