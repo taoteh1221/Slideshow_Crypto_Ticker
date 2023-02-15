@@ -651,34 +651,6 @@ echo "${reset} "
     fi
 
 echo " "
-
-
-######################################
-
-              
-# SET EARLY (BUT #AFTER# SETTING $APP_USER VAR), WE USE THIS IN A FEW PLACES
-# KNOWN raspi LXDE profile
-if [ -f /usr/bin/raspi-config ]; then
-LXDE_PROFILE="LXDE-pi"
-# UNKNOWN generic LXDE profile
-elif [ -d /etc/xdg/lxsession ]; then
-      
-# Auto-detect or set to KNOWN LXDE default
-# Unfortunately not much documentation on listing LXDE profile names,
-# BUT looks fairly reliable to just check in /home/$APP_USER/.config/lxpanel
-# (PRESUMING IT EXISTS ALREADY AT THIS POINT / ONLY ONE PROFILE PER LXDE USER IN USER FILES)
-LXDE_PROFILE=$(ls /home/$APP_USER/.config/lxpanel)
-LXDE_PROFILE=$(echo "${LXDE_PROFILE}" | xargs) # trim whitespace
-  
-    # If LXDE profile var was NOT auto-setup properly
-    # (contains whitespace MID-VARIABLE or is empty),
-    # go with KNOWN default from LXDE documentation
-    if [[ $LXDE_PROFILE =~ " " ]] || [ -z "$LXDE_PROFILE" ]; then
-    LXDE_PROFILE="LXDE"
-    LXDE_ALERT=1
-    fi
-  
-fi
                     
 
 ######################################
@@ -732,6 +704,37 @@ echo " "
 fi
 
 
+######################################
+
+              
+# SET EARLY (IMMEADIATELY #AFTER# ANY LXDE INSTALL ABOVE), AS WE USE THIS IN A FEW PLACES
+# KNOWN raspi LXDE profile
+if [ -f /usr/bin/raspi-config ]; then
+LXDE_PROFILE="LXDE-pi"
+# UNKNOWN generic LXDE profile
+elif [ -d /etc/xdg/lxsession ]; then
+      
+# Auto-detect or set to KNOWN LXDE default
+# Unfortunately not much documentation on listing LXDE profile names,
+# BUT looks fairly reliable to just check in /home/$APP_USER/.config/lxpanel
+# (PRESUMING IT EXISTS ALREADY AT THIS POINT / ONLY ONE PROFILE PER LXDE USER IN USER FILES)
+LXDE_PROFILE=$(ls /etc/xdg/lxsession)
+LXDE_PROFILE=$(echo "${LXDE_PROFILE}" | xargs) # trim whitespace
+  
+    # If LXDE profile var was NOT auto-setup properly
+    # (contains whitespace MID-VARIABLE or is empty),
+    # go with KNOWN default from LXDE documentation
+    if [[ $LXDE_PROFILE =~ " " ]] || [ -z "$LXDE_PROFILE" ]; then
+    LXDE_PROFILE="LXDE"
+    LXDE_ALERT=1
+    fi
+  
+fi
+
+
+######################################
+
+       
 # If XFCE is installed
 if [ -f /usr/bin/xfdesktop ]; then
 
