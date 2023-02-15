@@ -199,12 +199,12 @@ OPTIONS="rolling long_term i_dont_know"
 
 select opt in $OPTIONS; do
         if [ "$opt" = "long_term" ]; then
-        ALLOW_APT_UPGRADE="yes"
+        ALLOW_FULL_UPGRADE="yes"
         echo " "
         echo "${green}Allowing system-wide updates before installs.${reset}"
         break
        else
-        ALLOW_APT_UPGRADE="no"
+        ALLOW_FULL_UPGRADE="no"
         echo " "
         echo "${green}Disabling system-wide updates before installs.${reset}"
         break
@@ -216,45 +216,54 @@ echo " "
 
 ######################################
 
+
 # clean_system_update function START
 clean_system_update () {
 
-     if [ "$APT_CACHE_CLEARED" != "1" ] && [ -f "/etc/debian_version" ]; then
-          
-     echo " "
+     if [ "$PACKAGE_CACHE_REFRESHED" != "1" ]; then
+     
+     PACKAGE_CACHE_REFRESHED=1
 
-     echo "${cyan}Making sure your APT sources list is updated before installations, please wait...${reset}"
-     
-     echo " "
-     
-     # In case package list was ever corrupted (since we are about to rebuild it anyway...avoids possible errors)
-     sudo rm -rf /var/lib/apt/lists/* -vf > /dev/null 2>&1
-     
-     APT_CACHE_CLEARED=1
-     
-     sleep 2
-     
-     sudo apt update
-     
-     sleep 2
-     
-     echo " "
 
-     echo "${cyan}APT sources list update complete.${reset}"
-     
-     echo " "
-     
-          if [ "$ALLOW_APT_UPGRADE" == "yes" ]; then
+          if [ -f "/etc/debian_version" ]; then
+
+          echo "${cyan}Making sure your APT sources list is updated before installations, please wait...${reset}"
           
           echo " "
+          
+          # In case package list was ever corrupted (since we are about to rebuild it anyway...avoids possible errors)
+          sudo rm -rf /var/lib/apt/lists/* -vf > /dev/null 2>&1
+          
+          sleep 2
+          
+          sudo apt update
+          
+          sleep 2
+          
+          echo " "
+     
+          echo "${cyan}APT sources list update complete.${reset}"
+          
+          echo " "
+     
+          fi
+          
+     
+          if [ "$ALLOW_FULL_UPGRADE" == "yes" ]; then
 
           echo "${cyan}Making sure your system is updated before installations, please wait...${reset}"
           
           echo " "
           
-          #DO NOT RUN dist-upgrade, bad things can happen, lol
-          apt upgrade -y
-          				
+          
+               if [ -f "/etc/debian_version" ]; then
+               #DO NOT RUN dist-upgrade, bad things can happen, lol
+               apt upgrade -y
+               elif [ -f "/etc/arch-release" ]; then
+               sudo pacman -Syu
+               fi
+          
+          
           sleep 2
           
           echo " "
