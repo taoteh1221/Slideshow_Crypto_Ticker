@@ -169,13 +169,50 @@ fi
 ######################################
 
 
-# apt_clear_update function START
-apt_clear_update () {
+echo "${yellow}Does the Operating System on this device update using the \"Rolling Release\" model (Kali, Manjaro, Ubuntu Rolling Rhino, Debian Unstable, etc), or the \"Long-Term Release\" model (Ubuntu, Raspberry Pi OS, Armbian Stable, Diet Pi, etc)?"
+echo " "
+echo "${red}(You can SEVERLY MESS UP a \"Rolling Release\" Operating System IF YOU DO NOT CHOOSE CORRECTLY HERE! In that case, you can SAFELY choose \"I don't know\".)${reset}"
+echo " "
+
+echo "Enter the NUMBER next to your chosen option.${reset}"
+
+echo " "
+
+OPTIONS="rolling long_term i_dont_know"
+
+select opt in $OPTIONS; do
+        if [ "$opt" = "long_term" ]; then
+        ALLOW_APT_UPGRADE="yes"
+        echo " "
+        echo "${green}Allowing system-wide updates before installs.${reset}"
+        break
+       else
+        ALLOW_APT_UPGRADE="no"
+        echo " "
+        echo "${green}Disabling system-wide updates before installs.${reset}"
+        break
+       fi
+done
+       
+echo " "
+
+
+######################################
+
+
+# clean_system_update function START
+clean_system_update () {
 
      if [ "$APT_CACHE_CLEARED" != "1" ]; then
+          
+     echo " "
+
+     echo "${cyan}Making sure your APT sources list is updated before installations, please wait...${reset}"
+     
+     echo " "
      
      # In case package list was ever corrupted (since we are about to rebuild it anyway...avoids possible errors)
-     sudo rm -rf /var/lib/apt/lists/* -vf
+     sudo rm -rf /var/lib/apt/lists/* -vf > /dev/null 2>&1
      
      APT_CACHE_CLEARED=1
      
@@ -185,10 +222,37 @@ apt_clear_update () {
      
      sleep 2
      
+     echo " "
+
+     echo "${cyan}APT sources list update complete.${reset}"
+     
+     echo " "
+     
+          if [ "$ALLOW_APT_UPGRADE" == "yes" ]; then
+          
+          echo " "
+
+          echo "${cyan}Making sure your system is updated before installations, please wait...${reset}"
+          
+          echo " "
+          
+          #DO NOT RUN dist-upgrade, bad things can happen, lol
+          apt upgrade -y
+          				
+          sleep 2
+          
+          echo " "
+          				
+          echo "${cyan}System updated.${reset}"
+          				
+          echo " "
+          
+          fi
+     
      fi
 
 }
-# apt_clear_update function END
+# clean_system_update function END
 
 
 ######################################
@@ -201,8 +265,8 @@ GIT_PATH=$(which git)
 
 if [ -z "$GIT_PATH" ]; then
 
-# Clears AND updates apt cache (IF it wasn't already this runtime session)
-apt_clear_update
+# Clears / updates apt cache, then upgrades (if NOT a rolling release)
+clean_system_update
 
 echo " "
 echo "${cyan}Installing required component git, please wait...${reset}"
@@ -218,8 +282,8 @@ CURL_PATH=$(which curl)
 
 if [ -z "$CURL_PATH" ]; then
 
-# Clears AND updates apt cache (IF it wasn't already this runtime session)
-apt_clear_update
+# Clears / updates apt cache, then upgrades (if NOT a rolling release)
+clean_system_update
 
 echo " "
 echo "${cyan}Installing required component curl, please wait...${reset}"
@@ -235,8 +299,8 @@ JQ_PATH=$(which jq)
 
 if [ -z "$JQ_PATH" ]; then
 
-# Clears AND updates apt cache (IF it wasn't already this runtime session)
-apt_clear_update
+# Clears / updates apt cache, then upgrades (if NOT a rolling release)
+clean_system_update
 
 echo " "
 echo "${cyan}Installing required component jq, please wait...${reset}"
@@ -252,8 +316,8 @@ WGET_PATH=$(which wget)
 
 if [ -z "$WGET_PATH" ]; then
 
-# Clears AND updates apt cache (IF it wasn't already this runtime session)
-apt_clear_update
+# Clears / updates apt cache, then upgrades (if NOT a rolling release)
+clean_system_update
 
 echo " "
 echo "${cyan}Installing required component wget, please wait...${reset}"
@@ -269,8 +333,8 @@ SED_PATH=$(which sed)
 
 if [ -z "$SED_PATH" ]; then
 
-# Clears AND updates apt cache (IF it wasn't already this runtime session)
-apt_clear_update
+# Clears / updates apt cache, then upgrades (if NOT a rolling release)
+clean_system_update
 
 echo " "
 echo "${cyan}Installing required component sed, please wait...${reset}"
@@ -286,8 +350,8 @@ LESS_PATH=$(which less)
 				
 if [ -z "$LESS_PATH" ]; then
 
-# Clears AND updates apt cache (IF it wasn't already this runtime session)
-apt_clear_update
+# Clears / updates apt cache, then upgrades (if NOT a rolling release)
+clean_system_update
 
 echo " "
 echo "${cyan}Installing required component less, please wait...${reset}"
@@ -303,8 +367,8 @@ EXPECT_PATH=$(which expect)
 				
 if [ -z "$EXPECT_PATH" ]; then
 
-# Clears AND updates apt cache (IF it wasn't already this runtime session)
-apt_clear_update
+# Clears / updates apt cache, then upgrades (if NOT a rolling release)
+clean_system_update
 
 echo " "
 echo "${cyan}Installing required component expect, please wait...${reset}"
@@ -320,8 +384,8 @@ AVAHID_PATH=$(which avahi-daemon)
 
 if [ -z "$AVAHID_PATH" ]; then
 
-# Clears AND updates apt cache (IF it wasn't already this runtime session)
-apt_clear_update
+# Clears / updates apt cache, then upgrades (if NOT a rolling release)
+clean_system_update
 
 echo " "
 echo "${cyan}Installing required component avahi-daemon, please wait...${reset}"
@@ -337,8 +401,8 @@ BC_PATH=$(which bc)
 
 if [ -z "$BC_PATH" ]; then
 
-# Clears AND updates apt cache (IF it wasn't already this runtime session)
-apt_clear_update
+# Clears / updates apt cache, then upgrades (if NOT a rolling release)
+clean_system_update
 
 echo " "
 echo "${cyan}Installing required component bc, please wait...${reset}"
@@ -517,23 +581,9 @@ fi
 ######################################
 
 
-echo "${cyan}Making sure your system is updated before installation, please wait...${reset}"
+# Clears / updates apt cache, then upgrades (if NOT a rolling release)
+clean_system_update
 
-echo " "
-
-# Clears AND updates apt cache (IF it wasn't already this runtime session)
-apt_clear_update
-
-#DO NOT RUN dist-upgrade, bad things can happen, lol
-apt upgrade -y
-
-echo " "
-				
-echo "${cyan}System update completed.${reset}"
-				
-sleep 3
-				
-echo " "
 
 # If we are NOT running raspi os, we need the lxde desktop
 if [ ! -f /usr/bin/raspi-config ]; then
@@ -551,8 +601,8 @@ echo " "
     select opt in $OPTIONS; do
             if [ "$opt" = "setup_lxde" ]; then
 
-            # Clears AND updates apt cache (IF it wasn't already this runtime session)
-            apt_clear_update
+            # Clears / updates apt cache, then upgrades (if NOT a rolling release)
+            clean_system_update
             
             echo " "
             echo "${cyan}Installing LXDE desktop and required components, please wait...${reset}"
@@ -690,8 +740,8 @@ OPTIONS="install_ticker_app remove_ticker_app skip"
 select opt in $OPTIONS; do
         if [ "$opt" = "install_ticker_app" ]; then
 
-                    # Clears AND updates apt cache (IF it wasn't already this runtime session)
-                    apt_clear_update
+                    # Clears / updates apt cache, then upgrades (if NOT a rolling release)
+                    clean_system_update
         	
 				echo " "
 				
