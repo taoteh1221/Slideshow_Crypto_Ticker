@@ -164,7 +164,7 @@ fi
 if [ -f "/etc/debian_version" ]; then
 echo "${cyan}Your system has been detected as Debian-based, which is compatible with this automated installation script."
 PACKAGE_INSTALL="apt install"
-PACKAGE_REMOVE="apt remove"
+PACKAGE_REMOVE="apt --purge remove"
 echo " "
 echo "Continuing...${reset}"
 echo " "
@@ -689,9 +689,6 @@ echo " "
     
     select opt in $OPTIONS; do
             if [ "$opt" = "setup_lxde" ]; then
-
-            # Clears / updates apt cache, then upgrades (if NOT a rolling release)
-            clean_system_update
             
             echo " "
             echo "${cyan}Installing LXDE desktop and required components, please wait...${reset}"
