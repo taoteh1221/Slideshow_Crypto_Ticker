@@ -36,7 +36,7 @@ fi
 ######################################
 
 
-# Path to app
+# Path to app (CROSS-DISTRO-COMPATIBLE)
 get_app_path() {
 app_path_result=$(whereis -b $1)
 app_path_result="${app_path_result#*$1: }"
@@ -656,9 +656,9 @@ echo " "
 ######################################
 
 
-# If we are NOT running raspi os, OR xfce / lxde desktop ARE NOT INSTALLED ON A DIFFEREENT OS,
+# If we are NOT running raspi os, AND lxde desktop IS NOT INSTALLED,
 # then we offer the option to install LXDE
-if [ ! -f /usr/bin/raspi-config ] && [ ! -d /etc/xdg/lxsession ] && [ ! -f /usr/bin/xfdesktop ]; then
+if [ ! -f /usr/bin/raspi-config ] && [ ! -d /etc/xdg/lxsession ]; then
 
 echo "${red}WE NEED TO MAKE SURE LXDE #AND# LIGHTDM ARE INSTALLED,"
 echo "IF YOU WANT THE TICKER TO #AUTOMATICALLY RUN ON SYSTEM STARTUP# / REBOOT."
@@ -717,7 +717,7 @@ elif [ -d /etc/xdg/lxsession ]; then
 # Auto-detect or set to KNOWN LXDE default
 # Unfortunately not much documentation on listing LXDE profile names,
 # BUT looks fairly reliable to just check in /home/$APP_USER/.config/lxpanel
-# (PRESUMING IT EXISTS ALREADY AT THIS POINT / ONLY ONE PROFILE PER LXDE USER IN USER FILES)
+# (IT SHOULD EXIST ALREADY AT THIS POINT)
 LXDE_PROFILE=$(ls /etc/xdg/lxsession)
 LXDE_PROFILE=$(echo "${LXDE_PROFILE}" | xargs) # trim whitespace
   
@@ -735,132 +735,8 @@ fi
 ######################################
 
        
-# If XFCE is installed
-if [ -f /usr/bin/xfdesktop ]; then
-
-echo "${red}WE NEED TO MAKE SURE XFCE #AND# LIGHTDM AUTO-LOGIN AT STARTUP, AS THE USER '${APP_USER}',"
-echo "IF YOU WANT THE TICKER TO #AUTOMATICALLY RUN ON SYSTEM STARTUP# / REBOOT."
-echo " "
-echo "CHOOSE \"LIGHTDM\" IF ASKED, FOR \"AUTO-LOGIN AT BOOT\" CAPABILITIES.${reset}"
-echo " "
-echo "${yellow}Select 1 or 2 to choose whether to setup XFCE Desktop auto-login, or skip.${reset}"
-echo " "
-    
-    OPTIONS="autologin_xfce skip"
-    
-    select opt in $OPTIONS; do
-            if [ "$opt" = "autologin_xfce" ]; then
-
-            
-            echo " "
-            echo "${cyan}Configuring lightdm auto-login at boot for user '${APP_USER}', please wait...${reset}"
-            echo " "
- 
-            
-                # Auto-login XFCE logic...
-                
-                if [ -d /etc/lightdm/lightdm.conf.d ]; then
-                CHECK_LIGHTDM_D=$(ls /etc/lightdm/lightdm.conf.d)
-                CHECK_LIGHTDM_D=$(echo "${CHECK_LIGHTDM_D}" | xargs) # trim whitespace
-                else
-                CHECK_LIGHTDM_D=""
-                fi
-                
-                
-                if [ ! -f /etc/lightdm/lightdm.conf ] && [ -z "$CHECK_LIGHTDM_D" ]; then
-                
-                
-# Don't nest / indent, or it could malform the settings            
-read -r -d '' XFCE_AUTO_LOGIN <<- EOF
-\r
-autologin-user=$APP_USER
-user-session=XFCE
-autologin-session=xfce
-\r
-EOF
-
-				# Setup XFCE to run at boot
-				
-				touch /etc/lightdm/lightdm.conf
-					
-				echo -e "$XFCE_AUTO_LOGIN" > /etc/lightdm/lightdm.conf
-			    
-			    elif [ -f /etc/lightdm/lightdm.conf ]; then
-			    
-			    DETECT_AUTOLOGIN=$(sudo sed -n '/autologin-user=/p' /etc/lightdm/lightdm.conf)
-			    
-			    
-			        if [ "$DETECT_AUTOLOGIN" != "" ]; then 
-                       sed -i "s/#autologin-user=.*/autologin-user=${APP_USER}/g" /etc/lightdm/lightdm.conf
-                       sleep 2
-                       sed -i "s/autologin-user=.*/autologin-user=${APP_USER}/g" /etc/lightdm/lightdm.conf
-                       elif [ "$DETECT_AUTOLOGIN" == "" ]; then 
-                       sudo bash -c "echo 'autologin-user=${APP_USER}' >> /etc/lightdm/lightdm.conf"
-			        fi
-			        
-                
-                sleep 2
-                
-                sed -i "s/user-session=.*/user-session=XFCE/g" /etc/lightdm/lightdm.conf
-                sed -i "s/autologin-session=.*/autologin-session=xfce/g" /etc/lightdm/lightdm.conf
-                
-                elif [ -n "$CHECK_LIGHTDM_D" ]; then
-                
-                # Find the PROPER config file in the /lightdm.conf.d/ directory
-			 LIGHTDM_CONFIG_FILE=$(grep -r 'user-session' /etc/lightdm/lightdm.conf.d | awk -F: '{print $1}')
-                LIGHTDM_CONFIG_FILE=$(echo "${LIGHTDM_CONFIG_FILE}" | xargs) # trim whitespace
-			    
-			 DETECT_AUTOLOGIN=$(sudo sed -n '/autologin-user=/p' $LIGHTDM_CONFIG_FILE)
-			    
-			    
-			        if [ "$DETECT_AUTOLOGIN" != "" ]; then 
-                       sed -i "s/#autologin-user=.*/autologin-user=${APP_USER}/g" $LIGHTDM_CONFIG_FILE
-                       sleep 2
-                       sed -i "s/autologin-user=.*/autologin-user=${APP_USER}/g" $LIGHTDM_CONFIG_FILE
-                       elif [ "$DETECT_AUTOLOGIN" == "" ]; then 
-                       sudo bash -c "echo 'autologin-user=${APP_USER}' >> ${LIGHTDM_CONFIG_FILE}"
-			        fi
-			        
-                
-                sleep 2
-                sed -i "s/user-session=.*/user-session=XFCE/g" $LIGHTDM_CONFIG_FILE
-                sed -i "s/autologin-session=.*/autologin-session=xfce/g" $LIGHTDM_CONFIG_FILE
-                
-                else
-                echo "${cyan}AUTO-LOGIN CONFIGURATION ERROR, AUTO-LOGIN #NOT# SETUP!${reset}"
-                fi
-            
-            
-            sleep 2
-            
-            # Enable GUI on boot
-            systemctl set-default graphical
-            
-            echo " "
-            echo "${cyan}XFCE desktop auto-login has been configured.${reset}"
-            echo " "
-            
-            
-                # If we are running dietpi OS, WARN USER AN ADDITIONAL STEP #MAY# BE NEEDED
-                if [ -f /boot/dietpi/.version ]; then
-                echo "${red}DietPi #SHOULD NOT REQUIRE# USING THE dietpi-autostart UTILITY TO SET XFCE TO AUTO-LOGIN"
-                echo "AS THE USER '${APP_USER}', SINCE #WE JUST SETUP XFCE AUTO-LOGIN ALREADY#.${reset}"
-                fi
-            
-            
-            
-            
-            break
-           elif [ "$opt" = "skip" ]; then
-            echo " "
-            echo "${green}Skipping XFCE desktop setup...${reset}"
-            break
-           fi
-    done
-
-
 # If LXDE is installed
-elif [ -d /etc/xdg/lxsession ]; then
+if [ -d /etc/xdg/lxsession ]; then
 
         
 echo "${red}WE NEED TO MAKE SURE LXDE #AND# LIGHTDM AUTO-LOGIN AT STARTUP, AS THE USER '${APP_USER}',"
@@ -986,7 +862,7 @@ EOF
 
 else
 
-echo "${red}THIS TICKER #REQUIRES# RUNNING #LIGHTDM# AND THE DESKTOP INTERFACE #LXDE# OR #XFCE# IN AUTO-LOGIN MODE AT STARTUP,"
+echo "${red}THIS TICKER #REQUIRES# RUNNING #LIGHTDM# AND THE DESKTOP INTERFACE #LXDE# IN AUTO-LOGIN MODE AT STARTUP,"
 echo "AS THE USER '${APP_USER}', IF YOU WANT THE TICKER TO #AUTOMATICALLY RUN ON SYSTEM STARTUP# / REBOOT.${reset}"
 
 fi
@@ -1263,9 +1139,6 @@ select opt in $OPTIONS; do
 		# Remove ticker autostart line in any LXDE autostart file
         sed -i "/slideshow-crypto-ticker/d" /home/$APP_USER/.config/lxsession/$LXDE_PROFILE/autostart
         
-		# Remove ticker autostart line in any XFCE autostart directory
-        rm /home/$APP_USER/.config/autostart/ticker.desktop > /dev/null 2>&1
-        
         # Remove any #OLD# ticker autostart systemd service (which we no longer use)
         rm /lib/systemd/system/ticker.service > /dev/null 2>&1
         
@@ -1315,18 +1188,21 @@ select opt in $OPTIONS; do
 
         if [ "$opt" = "auto_config_ticker_system" ]; then
   				
+        echo " "
+        echo "${yellow}Select the NUMBER next to the browser you want to use to render the ticker (chromium recommended ON LOW POWER DEVICES).${reset}"
+        echo " "
+                
+                
+                if [ -f /usr/bin/raspi-config ]; then
+                echo "${red}IT'S #HIGHLY RECOMMENDED# TO CHOOSE CHROMIUM ON A LOW POWER RASPBERRY PI DEVICE (FOR GRAPHICS ACCELERATION BENEFITS).${reset}"
                 echo " "
-                echo "${yellow}Select the NUMBER next to the browser you want to use to render the ticker (chromium recommended ON LOW POWER DEVICES).${reset}"
-                echo " "
+                fi
+
                 
-                    if [ -f /usr/bin/raspi-config ]; then
-                    echo "${red}IT'S #HIGHLY RECOMMENDED# TO CHOOSE CHROMIUM ON A LOW POWER RASPBERRY PI DEVICE (FOR GRAPHICS ACCELERATION BENEFITS).${reset}"
-                    echo " "
-                    fi
+        USER_BROWSER="chromium epiphany firefox"
                 
-                USER_BROWSER="chromium epiphany firefox"
-                
-                    select opt in $USER_BROWSER; do
+                select opt in $USER_BROWSER; do
+
                            if [ "$opt" = "chromium" ]; then
                             SET_BROWSER=$opt
                             break
@@ -1337,58 +1213,36 @@ select opt in $OPTIONS; do
                             SET_BROWSER=$opt
                             break
                            fi
-                    done
+                
+                done
                 
                 
-                echo " "
-                echo "${green}Using $SET_BROWSER as the default ticker browser...${reset}"
-                echo " "
+        echo " "
+        echo "${green}Using $SET_BROWSER as the default ticker browser...${reset}"
+        echo " "
 
-				echo " "
-				echo "${cyan}Configuring Slideshow Crypto Ticker on your system, please wait...${reset}"
-				echo " "
+	   echo " "
+	   echo "${cyan}Configuring Slideshow Crypto Ticker on your system, please wait...${reset}"
+	   echo " "
 				
 
-                    # Create cache directory if it doesn't exist yet
-                    if [ ! -d /home/$APP_USER/slideshow-crypto-ticker/cache ]; then
-                    mkdir -p /home/$APP_USER/slideshow-crypto-ticker/cache
-                    fi
+                # Create cache directory if it doesn't exist yet
+                if [ ! -d /home/$APP_USER/slideshow-crypto-ticker/cache ]; then
+                mkdir -p /home/$APP_USER/slideshow-crypto-ticker/cache
+                fi
 
 				
-				echo -e "$SET_BROWSER" > /home/$APP_USER/slideshow-crypto-ticker/cache/default_browser.dat
+	   echo -e "$SET_BROWSER" > /home/$APP_USER/slideshow-crypto-ticker/cache/default_browser.dat
 				
-				chown -R $APP_USER:$APP_USER /home/$APP_USER/slideshow-crypto-ticker/cache > /dev/null 2>&1
+	   chown -R $APP_USER:$APP_USER /home/$APP_USER/slideshow-crypto-ticker/cache > /dev/null 2>&1
 			
 
-                # REMOVE #OLD WAY# THIS SCRIPT USED TO DO IT
-                rm /lib/systemd/system/ticker.service > /dev/null 2>&1
-				
-				# Setup to run at XFCE login
-				if [ -f /usr/bin/xfdesktop ]; then
-					
-
-# Don't nest / indent, or it could malform the settings            
-read -r -d '' TICKER_STARTUP <<- EOF
-[Desktop Entry]
-Terminal=false
-Name=slideshowticker
-Type=Application
-Categories=Internet;
-Exec=/home/$APP_USER/slideshow-crypto-ticker/bash/lxde-auto-start.bash $SET_BROWSER
-Icon=firefox
-Comment=Slideshow Crypto Ticker
-\r
-EOF
-                         
-				
-				mkdir -p /home/$APP_USER/.config/autostart > /dev/null 2>&1
-				
-                         # Create autostart desktop file
-                         echo -e "$TICKER_STARTUP" > /home/$APP_USER/.config/autostart/ticker.desktop
+        # REMOVE #OLD WAY# THIS SCRIPT USED TO DO IT
+        rm /lib/systemd/system/ticker.service > /dev/null 2>&1
 				
 				
-				# Setup to run at LXDE login
-                    elif [ -d /etc/xdg/lxsession ]; then
+			 # Setup to run at LXDE login
+                if [ -d /etc/xdg/lxsession ]; then
                     	
 
 # Don't nest / indent, or it could malform the settings            
@@ -1397,43 +1251,36 @@ read -r -d '' TICKER_STARTUP <<- EOF
 \r
 EOF
 				
-				mkdir -p /home/$APP_USER/.config/lxsession/$LXDE_PROFILE > /dev/null 2>&1
+			 mkdir -p /home/$APP_USER/.config/lxsession/$LXDE_PROFILE > /dev/null 2>&1
 				
-				sleep 2
+			 sleep 2
 				
 				
-    				LXDE_AUTOSTART_OLD=$(sed -n '/ticker-auto-start.bash/p' /home/$APP_USER/.config/lxsession/$LXDE_PROFILE/autostart)
-    				LXDE_AUTOSTART_NEW=$(sed -n '/lxde-auto-start.bash/p' /home/$APP_USER/.config/lxsession/$LXDE_PROFILE/autostart)
-    				LXDE_AUTOSTART_BROWSER=$(sed -n "/lxde-auto-start.bash ${SET_BROWSER}/p" /home/$APP_USER/.config/lxsession/$LXDE_PROFILE/autostart)
+    			 LXDE_AUTOSTART_NEW=$(sed -n '/lxde-auto-start.bash/p' /home/$APP_USER/.config/lxsession/$LXDE_PROFILE/autostart)
+    			 LXDE_AUTOSTART_BROWSER=$(sed -n "/lxde-auto-start.bash ${SET_BROWSER}/p" /home/$APP_USER/.config/lxsession/$LXDE_PROFILE/autostart)
+    			
     				
-				    # https://forums.raspberrypi.com/viewtopic.php?t=294014
+				     # https://forums.raspberrypi.com/viewtopic.php?t=294014
 				
-     				    # If it's our (borked) OLDER version, or USER autostart file doesn't exist yet
-                         if [ "$LXDE_AUTOSTART_OLD" != "" ] || [ ! -f /home/$APP_USER/.config/lxsession/$LXDE_PROFILE/autostart ]; then 
+     				# If autostart file doesn't exist yet
+                         if [ ! -f /home/$APP_USER/.config/lxsession/$LXDE_PROFILE/autostart ]; then 
                          
                          echo " "
                          echo "${cyan}Enabling USER-defined LXDE autostart (/home/$APP_USER/.config/lxsession/$LXDE_PROFILE/autostart), please wait...${reset}"
                          echo " "
                          
                          \cp /etc/xdg/lxsession/$LXDE_PROFILE/autostart /home/$APP_USER/.config/lxsession/$LXDE_PROFILE/
-     				    
-                         fi        
                          
-                         
-                         sleep 2
-     
-                         
-                         # If we have not appended our (NEWSEST LOGIC) ticker autostart yet
-                         if [ "$LXDE_AUTOSTART_NEW" == "" ]; then 
+                         # OR if we have not appended our ticker to an EXISTING autostart yet
+                         elif [ "$LXDE_AUTOSTART_NEW" == "" ]; then 
                          
                          echo " "
                          echo "${cyan}Adding ticker autostart to USER-defined LXDE autostart (/home/$APP_USER/.config/lxsession/$LXDE_PROFILE/autostart), please wait...${reset}"
                          echo " "
                          
-                         # APPEND to autostart
                          echo -e "$TICKER_STARTUP" >> /home/$APP_USER/.config/lxsession/$LXDE_PROFILE/autostart
                          
-                         # OR changed to a different browser
+                         # OR if we just changed to a different browser
                          elif [ "$LXDE_AUTOSTART_BROWSER" == "" ]; then
                          
                          echo " "
@@ -1442,46 +1289,47 @@ EOF
                          
                          sed -i "s/lxde-auto-start.bash .*/lxde-auto-start.bash ${SET_BROWSER}/g" /home/$APP_USER/.config/lxsession/$LXDE_PROFILE/autostart
      				    
-                         fi        
+                         fi    
 				
 				
 				sleep 2
 				
 				fi
 				
+								
+	   # Make sure any new files / folders have user permissions
+	   chown -R $APP_USER:$APP_USER /home/$APP_USER/.config > /dev/null 2>&1
 				
-				
-				# Make sure any new files / folders have user permissions
-				chown -R $APP_USER:$APP_USER /home/$APP_USER/.config > /dev/null 2>&1
-				
-				AUTOSTART_ALERT=1
+	   AUTOSTART_ALERT=1
 					
-				# Setup cron (to check logs after install: tail -f /var/log/syslog | grep cron -i)
+	   # Setup cron (to check logs after install: tail -f /var/log/syslog | grep cron -i)
 
-				CRONJOB="* * * * * $APP_USER bash /home/$APP_USER/slideshow-crypto-ticker/bash/cron/cron.bash > /dev/null 2>&1"
+	   CRONJOB="* * * * * $APP_USER bash /home/$APP_USER/slideshow-crypto-ticker/bash/cron/cron.bash > /dev/null 2>&1"
 
-				# Play it safe and be sure their is a newline after this job entry
-				echo -e "$CRONJOB\n" > /etc/cron.d/ticker
+	   # Play it safe and be sure their is a newline after this job entry
+	   echo -e "$CRONJOB\n" > /etc/cron.d/ticker
 				
-		  		# cron.d entries must be a permission of 644
-		  		chmod 644 /etc/cron.d/ticker
+        # cron.d entries must be a permission of 644
+	   chmod 644 /etc/cron.d/ticker
 		  		
-				# cron.d entries MUST BE OWNED BY ROOT
-				chown root:root /etc/cron.d/ticker
+	   # cron.d entries MUST BE OWNED BY ROOT
+	   chown root:root /etc/cron.d/ticker
 				
-        		CRON_SETUP=1
+        CRON_SETUP=1
 				
-				echo " "
-				echo "${green}Slideshow Crypto Ticker system configuration complete.${reset}"
-				echo " "
+	   echo " "
+	   echo "${green}Slideshow Crypto Ticker system configuration complete.${reset}"
+	   echo " "
+
 				
-				    if [ "$LXDE_ALERT" = "1" ]; then
-    				echo " "
-                    echo "${red}WARNING: LXDE Desktop's profile could NOT be determined (default 'LXDE' was used), TICKER AUTO-START MAY FAIL!${reset}"
-    				echo " "
-				    fi
+		      if [ "$LXDE_ALERT" = "1" ]; then
+    			 echo " "
+                echo "${red}WARNING: LXDE Desktop's profile could NOT be determined (default 'LXDE' was used), TICKER AUTO-START MAY FAIL!${reset}"
+    			 echo " "
+			 fi
 				
-	        	CONFIG_SETUP=1
+	   
+	   CONFIG_SETUP=1
    	     	
 
         break
@@ -1585,11 +1433,8 @@ if [ "$AUTOSTART_ALERT" = "1" ]; then
 echo "${green}Ticker autostart at login has been configured at:"
 echo " "
 
-     # Setup to run at XFCE login
-     if [ -f /usr/bin/xfdesktop ]; then
-     echo "/home/$APP_USER/.config/autostart/ticker.desktop${reset}"
      # Setup to run at LXDE login
-     elif [ -d /etc/xdg/lxsession ]; then
+     if [ -d /etc/xdg/lxsession ]; then
      echo "/home/$APP_USER/.config/lxsession/$LXDE_PROFILE/autostart${reset}"
      fi
 
