@@ -33,6 +33,18 @@ PATH=/usr/sbin:$PATH
 export PATH=$PATH
 fi
 
+######################################
+
+
+# Path to app (CROSS-DISTRO-COMPATIBLE)
+get_app_path() {
+app_path_result=$(whereis -b $1)
+app_path_result="${app_path_result#*$1: }"
+app_path_result=${app_path_result%%[[:space:]]*}
+app_path_result="${app_path_result#*$1:}"
+echo "$app_path_result"
+}
+
 
 ######################################
 
@@ -88,10 +100,6 @@ TIME=$(date '+%H:%M:%S')
 
 # Current timestamp
 CURRENT_TIMESTAMP=$(date +%s)
-
-# Get the host ip address
-IP=`hostname -I` 
-
 
 # If a symlink, get link target for script location
  # WE ALWAYS WANT THE FULL PATH!
@@ -155,6 +163,15 @@ fi
 
 if [ -f "/etc/debian_version" ]; then
 echo "${cyan}Your system has been detected as Debian-based, which is compatible with this automated installation script."
+PACKAGE_INSTALL="sudo apt install"
+PACKAGE_REMOVE="sudo apt --purge remove"
+echo " "
+echo "Continuing...${reset}"
+echo " "
+elif [ -f "/etc/arch-release" ]; then
+echo "${cyan}Your system has been detected as Arch-based, which is compatible with this automated installation script."
+PACKAGE_INSTALL="sudo pacman -S"
+PACKAGE_REMOVE="sudo pacman -R"
 echo " "
 echo "Continuing...${reset}"
 echo " "
@@ -169,76 +186,86 @@ fi
 ######################################
 
 
-echo "${yellow}Does the Operating System on this device update using the \"Rolling Release\" model (Kali, Manjaro, Ubuntu Rolling Rhino, Debian Unstable, etc), or the \"Long-Term Release\" model (Ubuntu, Raspberry Pi OS, Armbian Stable, Diet Pi, etc)?"
-echo " "
-echo "${red}(You can SEVERLY MESS UP a \"Rolling Release\" Operating System IF YOU DO NOT CHOOSE CORRECTLY HERE! In that case, you can SAFELY choose \"I don't know\".)${reset}"
-echo " "
-
-echo "Enter the NUMBER next to your chosen option.${reset}"
-
-echo " "
-
-OPTIONS="rolling long_term i_dont_know"
-
-select opt in $OPTIONS; do
-        if [ "$opt" = "long_term" ]; then
-        ALLOW_APT_UPGRADE="yes"
-        echo " "
-        echo "${green}Allowing system-wide updates before installs.${reset}"
-        break
-       else
-        ALLOW_APT_UPGRADE="no"
-        echo " "
-        echo "${green}Disabling system-wide updates before installs.${reset}"
-        break
-       fi
-done
-       
-echo " "
-
-
-######################################
-
-
 # clean_system_update function START
 clean_system_update () {
 
-     if [ "$APT_CACHE_CLEARED" != "1" ]; then
+
+     if [ -z "$ALLOW_FULL_UPGRADE" ]; then
+     
+     echo "${yellow}Does the Operating System on this device update using the \"Rolling Release\" model (Kali, Manjaro, Ubuntu Rolling Rhino, Debian Unstable, etc), or the \"Long-Term Release\" model (Ubuntu, Raspberry Pi OS, Armbian Stable, Diet Pi, etc)?"
+     echo " "
+     echo "${red}(You can SEVERLY MESS UP a \"Rolling Release\" Operating System IF YOU DO NOT CHOOSE CORRECTLY HERE! In that case, you can SAFELY choose \"I don't know\".)${reset}"
+     echo " "
+     
+     echo "Enter the NUMBER next to your chosen option.${reset}"
+     
+     echo " "
+     
+          OPTIONS="rolling long_term i_dont_know"
           
+          select opt in $OPTIONS; do
+                  if [ "$opt" = "long_term" ]; then
+                  ALLOW_FULL_UPGRADE="yes"
+                  echo " "
+                  echo "${green}Allowing system-wide updates before installs.${reset}"
+                  break
+                 else
+                  ALLOW_FULL_UPGRADE="no"
+                  echo " "
+                  echo "${green}Disabling system-wide updates before installs.${reset}"
+                  break
+                 fi
+          done
+            
      echo " "
+     
+     fi
 
-     echo "${cyan}Making sure your APT sources list is updated before installations, please wait...${reset}"
-     
-     echo " "
-     
-     # In case package list was ever corrupted (since we are about to rebuild it anyway...avoids possible errors)
-     sudo rm -rf /var/lib/apt/lists/* -vf > /dev/null 2>&1
-     
-     APT_CACHE_CLEARED=1
-     
-     sleep 2
-     
-     sudo apt update
-     
-     sleep 2
-     
-     echo " "
 
-     echo "${cyan}APT sources list update complete.${reset}"
+     if [ "$PACKAGE_CACHE_REFRESHED" != "1" ]; then
      
-     echo " "
-     
-          if [ "$ALLOW_APT_UPGRADE" == "yes" ]; then
+     PACKAGE_CACHE_REFRESHED=1
+
+
+          if [ -f "/etc/debian_version" ]; then
+
+          echo "${cyan}Making sure your APT sources list is updated before installations, please wait...${reset}"
           
           echo " "
+          
+          # In case package list was ever corrupted (since we are about to rebuild it anyway...avoids possible errors)
+          sudo rm -rf /var/lib/apt/lists/* -vf > /dev/null 2>&1
+          
+          sleep 2
+          
+          sudo apt update
+          
+          sleep 2
+          
+          echo " "
+     
+          echo "${cyan}APT sources list update complete.${reset}"
+          
+          echo " "
+     
+          fi
+          
+     
+          if [ "$ALLOW_FULL_UPGRADE" == "yes" ]; then
 
           echo "${cyan}Making sure your system is updated before installations, please wait...${reset}"
           
           echo " "
           
-          #DO NOT RUN dist-upgrade, bad things can happen, lol
-          apt upgrade -y
-          				
+          
+               if [ -f "/etc/debian_version" ]; then
+               #DO NOT RUN dist-upgrade, bad things can happen, lol
+               sudo apt upgrade -y
+               elif [ -f "/etc/arch-release" ]; then
+               sudo pacman -Syu
+               fi
+          
+          
           sleep 2
           
           echo " "
@@ -258,10 +285,10 @@ clean_system_update () {
 ######################################
 
 
-# Get primary dependency apps, if we haven't yet
+# Get SIMILAR (CROSS-DISTRO) primary dependency apps, if we haven't yet
     
 # Install git if needed
-GIT_PATH=$(which git)
+GIT_PATH=$(get_app_path "git")
 
 if [ -z "$GIT_PATH" ]; then
 
@@ -272,13 +299,13 @@ echo " "
 echo "${cyan}Installing required component git, please wait...${reset}"
 echo " "
 
-sudo apt install git -y
+sudo $PACKAGE_INSTALL git -y
 
 fi
 
 
 # Install curl if needed
-CURL_PATH=$(which curl)
+CURL_PATH=$(get_app_path "curl")
 
 if [ -z "$CURL_PATH" ]; then
 
@@ -289,13 +316,13 @@ echo " "
 echo "${cyan}Installing required component curl, please wait...${reset}"
 echo " "
 
-sudo apt install curl -y
+sudo $PACKAGE_INSTALL curl -y
 
 fi
 
 
 # Install jq if needed
-JQ_PATH=$(which jq)
+JQ_PATH=$(get_app_path "jq")
 
 if [ -z "$JQ_PATH" ]; then
 
@@ -306,13 +333,13 @@ echo " "
 echo "${cyan}Installing required component jq, please wait...${reset}"
 echo " "
 
-sudo apt install jq -y
+sudo $PACKAGE_INSTALL jq -y
 
 fi
 
 
 # Install wget if needed
-WGET_PATH=$(which wget)
+WGET_PATH=$(get_app_path "wget")
 
 if [ -z "$WGET_PATH" ]; then
 
@@ -323,13 +350,13 @@ echo " "
 echo "${cyan}Installing required component wget, please wait...${reset}"
 echo " "
 
-sudo apt install wget -y
+sudo $PACKAGE_INSTALL wget -y
 
 fi
 
 
 # Install sed if needed
-SED_PATH=$(which sed)
+SED_PATH=$(get_app_path "sed")
 
 if [ -z "$SED_PATH" ]; then
 
@@ -340,13 +367,13 @@ echo " "
 echo "${cyan}Installing required component sed, please wait...${reset}"
 echo " "
 
-sudo apt install sed -y
+sudo $PACKAGE_INSTALL sed -y
 
 fi
 
 
 # Install less if needed
-LESS_PATH=$(which less)
+LESS_PATH=$(get_app_path "less")
 				
 if [ -z "$LESS_PATH" ]; then
 
@@ -357,13 +384,13 @@ echo " "
 echo "${cyan}Installing required component less, please wait...${reset}"
 echo " "
 
-sudo apt install less -y
+sudo $PACKAGE_INSTALL less -y
 
 fi
 
 
 # Install expect if needed
-EXPECT_PATH=$(which expect)
+EXPECT_PATH=$(get_app_path "expect")
 				
 if [ -z "$EXPECT_PATH" ]; then
 
@@ -374,13 +401,13 @@ echo " "
 echo "${cyan}Installing required component expect, please wait...${reset}"
 echo " "
 
-sudo apt install expect -y
+sudo $PACKAGE_INSTALL expect -y
 
 fi
 
 
 # Install avahi-daemon if needed (for .local names on internal / home network)
-AVAHID_PATH=$(which avahi-daemon)
+AVAHID_PATH=$(get_app_path "avahi-daemon")
 
 if [ -z "$AVAHID_PATH" ]; then
 
@@ -391,13 +418,13 @@ echo " "
 echo "${cyan}Installing required component avahi-daemon, please wait...${reset}"
 echo " "
 
-sudo apt install avahi-daemon -y
+sudo $PACKAGE_INSTALL avahi-daemon -y
 
 fi
 
 
 # Install bc if needed (for decimal math in bash)
-BC_PATH=$(which bc)
+BC_PATH=$(get_app_path "bc")
 
 if [ -z "$BC_PATH" ]; then
 
@@ -408,12 +435,87 @@ echo " "
 echo "${cyan}Installing required component bc, please wait...${reset}"
 echo " "
 
-sudo apt install bc -y
+sudo $PACKAGE_INSTALL bc -y
 
 fi
 
 
-# dependency check END
+# SIMILAR (CROSS-DISTRO) dependency check END
+
+
+######################################
+
+
+# Install bsdtar if needed (for opening archives)
+BSDTAR_PATH=$(get_app_path "bsdtar")
+
+
+# Distro-specific logic, to set variables, get dependencies, etc
+if [ -f "/etc/debian_version" ]; then
+
+# Get the host ip address
+IP=`hostname -I` 
+				
+
+     if [ -z "$BSDTAR_PATH" ]; then
+     
+     # Clears / updates apt cache, then upgrades (if NOT a rolling release)
+     clean_system_update
+     
+     echo " "
+     echo "${cyan}Installing required component libarchive-tools, please wait...${reset}"
+     echo " "
+     
+     # Ubuntu 18.x and higher
+     $PACKAGE_INSTALL libarchive-tools -y
+     
+     fi
+     
+
+elif [ -f "/etc/arch-release" ]; then
+
+# Get the host ip address
+IP=$(ip -json route get 8.8.8.8 | jq -r '.[].prefsrc') 
+				
+
+     if [ -z "$BSDTAR_PATH" ]; then
+     
+     # Clears / updates apt cache, then upgrades (if NOT a rolling release)
+     clean_system_update
+     
+     echo " "
+     echo "${cyan}Installing required component libarchive, please wait...${reset}"
+     echo " "
+     
+     # Ubuntu 18.x and higher
+     $PACKAGE_INSTALL libarchive -y
+     
+     fi
+
+
+# Install cronie if needed (for a crond impementation)
+CRONIE_PATH=$(get_app_path "crond")	
+
+
+     if [ -z "$CRONIE_PATH" ]; then
+     
+     # Clears / updates apt cache, then upgrades (if NOT a rolling release)
+     clean_system_update
+     
+     echo " "
+     echo "${cyan}Installing required component cronie, please wait...${reset}"
+     echo " "
+     
+     $PACKAGE_INSTALL cronie -y
+     
+     sleep 3
+     
+     systemctl enable --now cronie.service
+     
+     fi
+
+
+fi
 
 
 ######################################
@@ -490,14 +592,14 @@ echo " "
 
 echo "${yellow}TECHNICAL NOTE:"
 echo " "
-echo "This script was designed to install on popular Debian-based operating systems (Ubuntu, Raspberry Pi OS [Raspbian], Armbian, DietPi, etc),"
+echo "This script was designed to install on popular Debian-based (MATURE / STABLE) / Arch-based (STILL UNSTABLE!!) operating systems (Ubuntu, Raspberry Pi OS [Raspbian], Armbian, DietPi, Arch, Manjaro, etc),"
 echo "for small single-board computers WITH SMALL LCD SCREENS TO RUN THE TICKER 24/7 (ALL THE TIME)."
 echo " "
 
 echo "It is ONLY recommended to install this ticker app IF your device has an LCD screen installed.${reset}"
 echo " "
 
-echo "${yellow}This script MAY NOT work on ALL Debian-based system setups.${reset}"
+echo "${yellow}This script MAY NOT work on ALL Debian-based / Arch-based system setups.${reset}"
 echo " "
 
 echo "${cyan}Your operating system has been detected as:"
@@ -549,22 +651,74 @@ echo "${reset} "
     fi
 
 echo " "
+                    
+
+######################################
+
+
+# If we are NOT running raspi os, AND lxde desktop IS NOT INSTALLED,
+# then we offer the option to install LXDE
+if [ ! -f /usr/bin/raspi-config ] && [ ! -d /etc/xdg/lxsession ]; then
+
+echo "${red}WE NEED TO MAKE SURE LXDE #AND# LIGHTDM ARE INSTALLED,"
+echo "IF YOU WANT THE TICKER TO #AUTOMATICALLY RUN ON SYSTEM STARTUP# / REBOOT."
+echo " "
+echo "CHOOSE \"LIGHTDM\" IF ASKED, FOR \"AUTO-LOGIN AT BOOT\" CAPABILITIES.${reset}"
+echo " "
+echo "${yellow}Select 1 or 2 to choose whether to install LXDE Desktop, or skip.${reset}"
+echo " "
+    
+    OPTIONS="setup_lxde skip"
+    
+    select opt in $OPTIONS; do
+            if [ "$opt" = "setup_lxde" ]; then
+            
+            echo " "
+            echo "${cyan}Installing LXDE desktop and required components, please wait...${reset}"
+            echo " "
+            
+
+            # Clears / updates apt cache, then upgrades (if NOT a rolling release)
+            clean_system_update
+
+            $PACKAGE_INSTALL xserver-xorg lightdm lxde -y
+            
+            sleep 3
+            
+            # Enable GUI on boot
+            systemctl set-default graphical
+            
+            echo " "
+            echo "${cyan}LXDE desktop has been installed.${reset}"
+            echo " "
+            
+            
+            break
+           elif [ "$opt" = "skip" ]; then
+            echo " "
+            echo "${green}Skipping LXDE desktop installation...${reset}"
+            break
+           fi
+    done
+
+fi
 
 
 ######################################
 
               
-# SET EARLY (BUT #AFTER# SETTING $APP_USER VAR), WE USE THIS IN A FEW PLACES
-if [ -f /usr/bin/raspi-config ]; then
+# SET EARLY (IMMEADIATELY #AFTER# ANY LXDE INSTALL ABOVE), AS WE USE THIS IN A FEW PLACES
 # KNOWN raspi LXDE profile
+if [ -f /usr/bin/raspi-config ]; then
 LXDE_PROFILE="LXDE-pi"
-else
+# UNKNOWN generic LXDE profile
+elif [ -d /etc/xdg/lxsession ]; then
       
 # Auto-detect or set to KNOWN LXDE default
 # Unfortunately not much documentation on listing LXDE profile names,
 # BUT looks fairly reliable to just check in /home/$APP_USER/.config/lxpanel
-# (PRESUMING IT EXISTS ALREADY AT THIS POINT / ONLY ONE PROFILE PER LXDE USER IN USER FILES)
-LXDE_PROFILE=$(ls /home/$APP_USER/.config/lxpanel)
+# (IT SHOULD EXIST ALREADY AT THIS POINT)
+LXDE_PROFILE=$(ls /etc/xdg/lxsession)
 LXDE_PROFILE=$(echo "${LXDE_PROFILE}" | xargs) # trim whitespace
   
     # If LXDE profile var was NOT auto-setup properly
@@ -576,41 +730,28 @@ LXDE_PROFILE=$(echo "${LXDE_PROFILE}" | xargs) # trim whitespace
     fi
   
 fi
-                    
+
 
 ######################################
 
+       
+# If LXDE is installed
+if [ -d /etc/xdg/lxsession ]; then
 
-# Clears / updates apt cache, then upgrades (if NOT a rolling release)
-clean_system_update
-
-
-# If we are NOT running raspi os, we need the lxde desktop
-if [ ! -f /usr/bin/raspi-config ]; then
-
-echo "${red}WE NEED TO MAKE SURE LXDE #AND# LIGHTDM RUN AT STARTUP, AS THE USER '${APP_USER}',"
+        
+echo "${red}WE NEED TO MAKE SURE LXDE #AND# LIGHTDM AUTO-LOGIN AT STARTUP, AS THE USER '${APP_USER}',"
 echo "IF YOU WANT THE TICKER TO #AUTOMATICALLY RUN ON SYSTEM STARTUP# / REBOOT."
 echo " "
 echo "CHOOSE \"LIGHTDM\" IF ASKED, FOR \"AUTO-LOGIN AT BOOT\" CAPABILITIES.${reset}"
 echo " "
-echo "${yellow}Select 1 or 2 to choose whether to setup LXDE Desktop, or skip.${reset}"
+echo "${yellow}Select 1 or 2 to choose whether to setup LXDE Desktop auto-login, or skip.${reset}"
 echo " "
     
-    OPTIONS="setup_lxde skip"
+    OPTIONS="autologin_lxde skip"
     
     select opt in $OPTIONS; do
-            if [ "$opt" = "setup_lxde" ]; then
+            if [ "$opt" = "autologin_lxde" ]; then
 
-            # Clears / updates apt cache, then upgrades (if NOT a rolling release)
-            clean_system_update
-            
-            echo " "
-            echo "${cyan}Installing LXDE desktop and required components, please wait...${reset}"
-            echo " "
-            
-            apt install xserver-xorg lightdm lxde -y
-            
-            sleep 5
             
             echo " "
             echo "${cyan}Configuring lightdm auto-login at boot for user '${APP_USER}', please wait...${reset}"
@@ -635,6 +776,7 @@ read -r -d '' LXDE_AUTO_LOGIN <<- EOF
 \r
 autologin-user=$APP_USER
 user-session=LXDE
+autologin-session=lxde
 \r
 EOF
 
@@ -661,6 +803,7 @@ EOF
                 sleep 2
                 
                 sed -i "s/user-session=.*/user-session=LXDE/g" /etc/lightdm/lightdm.conf
+                sed -i "s/autologin-session=.*/autologin-session=lxde/g" /etc/lightdm/lightdm.conf
                 
                 elif [ -n "$CHECK_LIGHTDM_D" ]; then
                 
@@ -682,6 +825,7 @@ EOF
                 
                 sleep 2
                 sed -i "s/user-session=.*/user-session=LXDE/g" $LIGHTDM_CONFIG_FILE
+                sed -i "s/autologin-session=.*/autologin-session=lxde/g" $LIGHTDM_CONFIG_FILE
                 
                 else
                 echo "${cyan}AUTO-LOGIN CONFIGURATION ERROR, AUTO-LOGIN #NOT# SETUP!${reset}"
@@ -694,7 +838,7 @@ EOF
             systemctl set-default graphical
             
             echo " "
-            echo "${cyan}LXDE desktop and required components have been installed and configured.${reset}"
+            echo "${cyan}LXDE desktop auto-login has been configured.${reset}"
             echo " "
             
             
@@ -705,6 +849,8 @@ EOF
                 fi
             
             
+            
+            
             break
            elif [ "$opt" = "skip" ]; then
             echo " "
@@ -713,9 +859,10 @@ EOF
            fi
     done
     
+
 else
 
-echo "${red}THIS TICKER #REQUIRES# RUNNING #LIGHTDM# AND THE DESKTOP INTERFACE #LXDE# AT STARTUP (#already the defaults# in Raspberry Pi OS Desktop),"
+echo "${red}THIS TICKER #REQUIRES# RUNNING #LIGHTDM# AND THE DESKTOP INTERFACE #LXDE# IN AUTO-LOGIN MODE AT STARTUP,"
 echo "AS THE USER '${APP_USER}', IF YOU WANT THE TICKER TO #AUTOMATICALLY RUN ON SYSTEM STARTUP# / REBOOT.${reset}"
 
 fi
@@ -757,86 +904,81 @@ select opt in $OPTIONS; do
 				echo " "
 				
 				# Ubuntu 16.x, and other debian-based systems
-				apt install bsdtar -y
-				
-				sleep 1
-				
-				# Ubuntu 18.x and higher
-				apt install libarchive-tools -y
+				$PACKAGE_INSTALL bsdtar -y
 				
 				sleep 1
 				
 				# Firefox on raspbian
-				apt install firefox-esr -y
+				$PACKAGE_INSTALL firefox-esr -y
 				
 				sleep 1
 				
 				# Firefox on ubuntu, etc
-				apt install firefox -y
+				$PACKAGE_INSTALL firefox -y
 				
 				sleep 1
 				
 				# epiphany on raspbian
-				apt install epiphany-browser -y
+				$PACKAGE_INSTALL epiphany-browser -y
 				
 				sleep 1
 				
 				# Chromium on raspbian
-				apt install chromium-browser -y
+				$PACKAGE_INSTALL chromium-browser -y
 				
-				sleep 10
+				sleep 5
 
                 # Look for 'epiphany-browser'
-                EPIPHANY_PATH=$(which epiphany-browser)
+                EPIPHANY_PATH=$(get_app_path "epiphany-browser")
 
                     # If 'epiphany-browser' NOT found, install epiphany UNLESS THIS IS RASPI OS
                     if [ -z "$EPIPHANY_PATH" ] && [ ! -f /usr/bin/raspi-config ]; then
     
     				# epiphany on ubuntu, etc
-    				apt install epiphany -y
+    				$PACKAGE_INSTALL epiphany -y
     				
     				sleep 1
     				
                     fi
 
                 # Look for 'chromium-browser'
-                CHROMIUM_PATH=$(which chromium-browser)
+                CHROMIUM_PATH=$(get_app_path "chromium-browser")
 
                     # If 'chromium-browser' NOT found, install chromium UNLESS THIS IS RASPI OS
                     # ('chromium-browser' IS DEFAULT ON RASPI OS, AND THIS WOULD TRIGGER REPLACING IT WITH A #DOWNGRADED# VERSION)
                     if [ -z "$CHROMIUM_PATH" ] && [ ! -f /usr/bin/raspi-config ]; then
     
     				# Chromium on ubuntu, etc
-    				apt install chromium -y
+    				$PACKAGE_INSTALL chromium -y
     				
     				sleep 1
     				
                     fi
 				
 				# Grapics card detection support for firefox (for browser GPU acceleration)
-				apt install libpci-dev -y
+				$PACKAGE_INSTALL libpci-dev -y
 				
 				sleep 1
 				
 				# Not sure we need this Mesa 3D Graphics Library / OpenGL stuff, but leave for
 				# now until we determine why firefox is having issues enabling GPU acceleration
-				apt install freeglut3-dev -y
+				$PACKAGE_INSTALL freeglut3-dev -y
 				
 				sleep 1
 				
-				apt install libglu1-mesa-dev -y
+				$PACKAGE_INSTALL libglu1-mesa-dev -y
 				
 				sleep 1
 				
-				apt install mesa-utils mesa-common-dev -y
+				$PACKAGE_INSTALL mesa-utils mesa-common-dev -y
 				
 				sleep 1
 				
-				apt install mesa-vulkan-drivers vulkan-icd -y
+				$PACKAGE_INSTALL mesa-vulkan-drivers vulkan-icd -y
 
 				
 				# Safely install other packages seperately, so they aren't cancelled by 'package missing' errors
-				apt install xdotool unclutter openssl x11-xserver-utils xautomation -y
+				$PACKAGE_INSTALL xdotool unclutter openssl x11-xserver-utils xautomation -y
 				
 				sleep 5
 				
@@ -984,17 +1126,17 @@ select opt in $OPTIONS; do
 		  echo " "
 				
         # ONLY removing unclutter, AS WE DON'T WANT TO F!CK UP THE WHOLE SYSTEM, REMOVING ANY OTHER ALREADY-USED / DEPENDANT PACKAGES TOO!!
-		apt remove unclutter -y
+		$PACKAGE_REMOVE unclutter -y
 				
 		echo " "
 		echo "${cyan}Removal of 'unclutter' app package completed, please wait...${reset}"
 		echo " "
-		echo "${yellow}(IF YOU USED unclutter FOR ANOTHER APP, RE-INSTALL WITH: sudo apt install unclutter)${reset}"
+		echo "${yellow}(IF YOU USED unclutter FOR ANOTHER APP, RE-INSTALL WITH: sudo $PACKAGE_INSTALL unclutter)${reset}"
 		echo " "		
 				
 		sleep 3
 		
-		# Remove ticker autostart line in LXDE autotart file
+		# Remove ticker autostart line in any LXDE autostart file
         sed -i "/slideshow-crypto-ticker/d" /home/$APP_USER/.config/lxsession/$LXDE_PROFILE/autostart
         
         # Remove any #OLD# ticker autostart systemd service (which we no longer use)
@@ -1046,18 +1188,21 @@ select opt in $OPTIONS; do
 
         if [ "$opt" = "auto_config_ticker_system" ]; then
   				
+        echo " "
+        echo "${yellow}Select the NUMBER next to the browser you want to use to render the ticker (chromium recommended ON LOW POWER DEVICES).${reset}"
+        echo " "
+                
+                
+                if [ -f /usr/bin/raspi-config ]; then
+                echo "${red}IT'S #HIGHLY RECOMMENDED# TO CHOOSE CHROMIUM ON A LOW POWER RASPBERRY PI DEVICE (FOR GRAPHICS ACCELERATION BENEFITS).${reset}"
                 echo " "
-                echo "${yellow}Select the NUMBER next to the browser you want to use to render the ticker (chromium recommended ON LOW POWER DEVICES).${reset}"
-                echo " "
+                fi
+
                 
-                    if [ -f /usr/bin/raspi-config ]; then
-                    echo "${red}IT'S #HIGHLY RECOMMENDED# TO CHOOSE CHROMIUM ON A LOW POWER RASPBERRY PI DEVICE (FOR GRAPHICS ACCELERATION BENEFITS).${reset}"
-                    echo " "
-                    fi
+        USER_BROWSER="chromium epiphany firefox"
                 
-                USER_BROWSER="chromium epiphany firefox"
-                
-                    select opt in $USER_BROWSER; do
+                select opt in $USER_BROWSER; do
+
                            if [ "$opt" = "chromium" ]; then
                             SET_BROWSER=$opt
                             break
@@ -1068,121 +1213,123 @@ select opt in $OPTIONS; do
                             SET_BROWSER=$opt
                             break
                            fi
-                    done
+                
+                done
                 
                 
-                echo " "
-                echo "${green}Using $SET_BROWSER as the default ticker browser...${reset}"
-                echo " "
+        echo " "
+        echo "${green}Using $SET_BROWSER as the default ticker browser...${reset}"
+        echo " "
 
-				echo " "
-				echo "${cyan}Configuring Slideshow Crypto Ticker on your system, please wait...${reset}"
-				echo " "
+	   echo " "
+	   echo "${cyan}Configuring Slideshow Crypto Ticker on your system, please wait...${reset}"
+	   echo " "
 				
 
-                    # Create cache directory if it doesn't exist yet
-                    if [ ! -d /home/$APP_USER/slideshow-crypto-ticker/cache ]; then
-                    mkdir -p /home/$APP_USER/slideshow-crypto-ticker/cache
-                    fi
+                # Create cache directory if it doesn't exist yet
+                if [ ! -d /home/$APP_USER/slideshow-crypto-ticker/cache ]; then
+                mkdir -p /home/$APP_USER/slideshow-crypto-ticker/cache
+                fi
 
 				
-				echo -e "$SET_BROWSER" > /home/$APP_USER/slideshow-crypto-ticker/cache/default_browser.dat
+	   echo -e "$SET_BROWSER" > /home/$APP_USER/slideshow-crypto-ticker/cache/default_browser.dat
 				
-				chown -R $APP_USER:$APP_USER /home/$APP_USER/slideshow-crypto-ticker/cache > /dev/null 2>&1
+	   chown -R $APP_USER:$APP_USER /home/$APP_USER/slideshow-crypto-ticker/cache > /dev/null 2>&1
+			
+
+        # REMOVE #OLD WAY# THIS SCRIPT USED TO DO IT
+        rm /lib/systemd/system/ticker.service > /dev/null 2>&1
 				
+				
+			 # Setup to run at LXDE login
+                if [ -d /etc/xdg/lxsession ]; then
+                    	
 
 # Don't nest / indent, or it could malform the settings            
 read -r -d '' TICKER_STARTUP <<- EOF
 @/home/$APP_USER/slideshow-crypto-ticker/bash/lxde-auto-start.bash $SET_BROWSER
 \r
 EOF
-
-				# Setup to run at LXDE login
-                    
-                # REMOVE #OLD WAY# THIS SCRIPT USED TO DO IT
-                rm /lib/systemd/system/ticker.service > /dev/null 2>&1
 				
-				mkdir -p /home/$APP_USER/.config/lxsession/$LXDE_PROFILE > /dev/null 2>&1
+			 mkdir -p /home/$APP_USER/.config/lxsession/$LXDE_PROFILE > /dev/null 2>&1
 				
-				sleep 2
+			 sleep 2
 				
 				
-    				LXDE_AUTOSTART_OLD=$(sed -n '/ticker-auto-start.bash/p' /home/$APP_USER/.config/lxsession/$LXDE_PROFILE/autostart)
-    				LXDE_AUTOSTART_NEW=$(sed -n '/lxde-auto-start.bash/p' /home/$APP_USER/.config/lxsession/$LXDE_PROFILE/autostart)
-    				LXDE_AUTOSTART_BROWSER=$(sed -n "/lxde-auto-start.bash ${SET_BROWSER}/p" /home/$APP_USER/.config/lxsession/$LXDE_PROFILE/autostart)
+    			 LXDE_AUTOSTART_NEW=$(sed -n '/lxde-auto-start.bash/p' /home/$APP_USER/.config/lxsession/$LXDE_PROFILE/autostart)
+    			 LXDE_AUTOSTART_BROWSER=$(sed -n "/lxde-auto-start.bash ${SET_BROWSER}/p" /home/$APP_USER/.config/lxsession/$LXDE_PROFILE/autostart)
+    			
     				
-				    # https://forums.raspberrypi.com/viewtopic.php?t=294014
+				     # https://forums.raspberrypi.com/viewtopic.php?t=294014
 				
-				    # If it's our (borked) OLDER version, or USER autostart file doesn't exist yet
-                    if [ "$LXDE_AUTOSTART_OLD" != "" ] || [ ! -f /home/$APP_USER/.config/lxsession/$LXDE_PROFILE/autostart ]; then 
-                    
-                    echo " "
-                    echo "${cyan}Enabling USER-defined LXDE autostart (/home/$APP_USER/.config/lxsession/$LXDE_PROFILE/autostart), please wait...${reset}"
-                    echo " "
-                    
-                    \cp /etc/xdg/lxsession/$LXDE_PROFILE/autostart /home/$APP_USER/.config/lxsession/$LXDE_PROFILE/
-				    
-                    fi        
-                    
-                    
-                    sleep 2
-
-                    
-                    # If we have not appended our (NEWSEST LOGIC) ticker autostart yet
-                    if [ "$LXDE_AUTOSTART_NEW" == "" ]; then 
-                    
-                    echo " "
-                    echo "${cyan}Adding ticker autostart to USER-defined LXDE autostart (/home/$APP_USER/.config/lxsession/$LXDE_PROFILE/autostart), please wait...${reset}"
-                    echo " "
-                    
-                    # APPEND to autostart
-                    echo -e "$TICKER_STARTUP" >> /home/$APP_USER/.config/lxsession/$LXDE_PROFILE/autostart
-                    
-                    # OR changed to a different browser
-                    elif [ "$LXDE_AUTOSTART_BROWSER" == "" ]; then
-                    
-                    echo " "
-                    echo "${cyan}Updating ticker autostart browser to ${SET_BROWSER}, in USER-defined LXDE autostart (/home/$APP_USER/.config/lxsession/$LXDE_PROFILE/autostart), please wait...${reset}"
-                    echo " "
-                    
-                    sed -i "s/lxde-auto-start.bash .*/lxde-auto-start.bash ${SET_BROWSER}/g" /home/$APP_USER/.config/lxsession/$LXDE_PROFILE/autostart
-				    
-                    fi        
+     				# If autostart file doesn't exist yet
+                         if [ ! -f /home/$APP_USER/.config/lxsession/$LXDE_PROFILE/autostart ]; then 
+                         
+                         echo " "
+                         echo "${cyan}Enabling USER-defined LXDE autostart (/home/$APP_USER/.config/lxsession/$LXDE_PROFILE/autostart), please wait...${reset}"
+                         echo " "
+                         
+                         \cp /etc/xdg/lxsession/$LXDE_PROFILE/autostart /home/$APP_USER/.config/lxsession/$LXDE_PROFILE/
+                         
+                         # OR if we have not appended our ticker to an EXISTING autostart yet
+                         elif [ "$LXDE_AUTOSTART_NEW" == "" ]; then 
+                         
+                         echo " "
+                         echo "${cyan}Adding ticker autostart to USER-defined LXDE autostart (/home/$APP_USER/.config/lxsession/$LXDE_PROFILE/autostart), please wait...${reset}"
+                         echo " "
+                         
+                         echo -e "$TICKER_STARTUP" >> /home/$APP_USER/.config/lxsession/$LXDE_PROFILE/autostart
+                         
+                         # OR if we just changed to a different browser
+                         elif [ "$LXDE_AUTOSTART_BROWSER" == "" ]; then
+                         
+                         echo " "
+                         echo "${cyan}Updating ticker autostart browser to ${SET_BROWSER}, in USER-defined LXDE autostart (/home/$APP_USER/.config/lxsession/$LXDE_PROFILE/autostart), please wait...${reset}"
+                         echo " "
+                         
+                         sed -i "s/lxde-auto-start.bash .*/lxde-auto-start.bash ${SET_BROWSER}/g" /home/$APP_USER/.config/lxsession/$LXDE_PROFILE/autostart
+     				    
+                         fi    
 				
 				
 				sleep 2
 				
-				# Make sure any new files / folders have user permissions
-				chown -R $APP_USER:$APP_USER /home/$APP_USER/.config > /dev/null 2>&1
+				fi
 				
-				AUTOSTART_ALERT=1
+								
+	   # Make sure any new files / folders have user permissions
+	   chown -R $APP_USER:$APP_USER /home/$APP_USER/.config > /dev/null 2>&1
+				
+	   AUTOSTART_ALERT=1
 					
-				# Setup cron (to check logs after install: tail -f /var/log/syslog | grep cron -i)
+	   # Setup cron (to check logs after install: tail -f /var/log/syslog | grep cron -i)
 
-				CRONJOB="* * * * * $APP_USER bash /home/$APP_USER/slideshow-crypto-ticker/bash/cron/cron.bash > /dev/null 2>&1"
+	   CRONJOB="* * * * * $APP_USER bash /home/$APP_USER/slideshow-crypto-ticker/bash/cron/cron.bash > /dev/null 2>&1"
 
-				# Play it safe and be sure their is a newline after this job entry
-				echo -e "$CRONJOB\n" > /etc/cron.d/ticker
+	   # Play it safe and be sure their is a newline after this job entry
+	   echo -e "$CRONJOB\n" > /etc/cron.d/ticker
 				
-		  		# cron.d entries must be a permission of 644
-		  		chmod 644 /etc/cron.d/ticker
+        # cron.d entries must be a permission of 644
+	   chmod 644 /etc/cron.d/ticker
 		  		
-				# cron.d entries MUST BE OWNED BY ROOT
-				chown root:root /etc/cron.d/ticker
+	   # cron.d entries MUST BE OWNED BY ROOT
+	   chown root:root /etc/cron.d/ticker
 				
-        		CRON_SETUP=1
+        CRON_SETUP=1
 				
-				echo " "
-				echo "${green}Slideshow Crypto Ticker system configuration complete.${reset}"
-				echo " "
+	   echo " "
+	   echo "${green}Slideshow Crypto Ticker system configuration complete.${reset}"
+	   echo " "
+
 				
-				    if [ "$LXDE_ALERT" = "1" ]; then
-    				echo " "
-                    echo "${red}WARNING: LXDE Desktop's profile could NOT be determined (default 'LXDE' was used), TICKER AUTO-START MAY FAIL!${reset}"
-    				echo " "
-				    fi
+		      if [ "$LXDE_ALERT" = "1" ]; then
+    			 echo " "
+                echo "${red}WARNING: LXDE Desktop's profile could NOT be determined (default 'LXDE' was used), TICKER AUTO-START MAY FAIL!${reset}"
+    			 echo " "
+			 fi
 				
-	        	CONFIG_SETUP=1
+	   
+	   CONFIG_SETUP=1
    	     	
 
         break
@@ -1285,7 +1432,12 @@ if [ "$AUTOSTART_ALERT" = "1" ]; then
 
 echo "${green}Ticker autostart at login has been configured at:"
 echo " "
-echo "/home/$APP_USER/.config/lxsession/$LXDE_PROFILE/autostart${reset}"
+
+     # Setup to run at LXDE login
+     if [ -d /etc/xdg/lxsession ]; then
+     echo "/home/$APP_USER/.config/lxsession/$LXDE_PROFILE/autostart${reset}"
+     fi
+
 echo " "
 echo "${yellow}(the ticker should now start at boot/login with the $SET_BROWSER browser)${reset}"
 echo " "

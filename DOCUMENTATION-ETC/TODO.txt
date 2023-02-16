@@ -76,6 +76,9 @@ For a 24hr / 1hr / 1week trend stat, THE ONLY #FEASIBLE OPTION# IS TO USE DATA F
 Add SFTP setup as optional in auto-install, AND mention SSH login too (since the screen on the device will be occupied by the ticker running).
 
 
+Work more on Arch Linux support for the auto-installer.
+
+
 ///////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////
 
