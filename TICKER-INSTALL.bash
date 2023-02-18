@@ -1263,14 +1263,18 @@ EOF
     				
 				     # https://forums.raspberrypi.com/viewtopic.php?t=294014
 				
-     				# If autostart file doesn't exist yet
+     				# If autostart file doesn't exist yet, create it, and append the ticker autostart code
                          if [ ! -f /home/$APP_USER/.config/lxsession/$LXDE_PROFILE/autostart ]; then 
                          
                          echo " "
-                         echo "${cyan}Enabling USER-defined LXDE autostart (/home/$APP_USER/.config/lxsession/$LXDE_PROFILE/autostart), please wait...${reset}"
+                         echo "${cyan}Enabling USER-defined LXDE autostart (/home/$APP_USER/.config/lxsession/$LXDE_PROFILE/autostart), AND adding ticker autostart, please wait...${reset}"
                          echo " "
                          
                          \cp /etc/xdg/lxsession/$LXDE_PROFILE/autostart /home/$APP_USER/.config/lxsession/$LXDE_PROFILE/
+                         
+                         sleep 2
+                         
+                         echo -e "$TICKER_STARTUP" >> /home/$APP_USER/.config/lxsession/$LXDE_PROFILE/autostart
                          
                          # OR if we have not appended our ticker to an EXISTING autostart yet
                          elif [ "$LXDE_AUTOSTART_NEW" == "" ]; then 
