@@ -192,6 +192,7 @@ clean_system_update () {
 
      if [ -z "$ALLOW_FULL_UPGRADE" ]; then
      
+     echo " "
      echo "${yellow}Does the Operating System on this device update using the \"Rolling Release\" model (Kali, Manjaro, Ubuntu Rolling Rhino, Debian Unstable, etc), or the \"Long-Term Release\" model (Ubuntu, Raspberry Pi OS, Armbian Stable, Diet Pi, etc)?"
      echo " "
      echo "${red}(You can SEVERLY MESS UP a \"Rolling Release\" Operating System IF YOU DO NOT CHOOSE CORRECTLY HERE! In that case, you can SAFELY choose \"I don't know\".)${reset}"
@@ -292,7 +293,7 @@ GIT_PATH=$(get_app_path "git")
 
 if [ -z "$GIT_PATH" ]; then
 
-# Clears / updates apt cache, then upgrades (if NOT a rolling release)
+# Clears / updates cache, then upgrades (if NOT a rolling release)
 clean_system_update
 
 echo " "
@@ -309,7 +310,7 @@ CURL_PATH=$(get_app_path "curl")
 
 if [ -z "$CURL_PATH" ]; then
 
-# Clears / updates apt cache, then upgrades (if NOT a rolling release)
+# Clears / updates cache, then upgrades (if NOT a rolling release)
 clean_system_update
 
 echo " "
@@ -326,7 +327,7 @@ JQ_PATH=$(get_app_path "jq")
 
 if [ -z "$JQ_PATH" ]; then
 
-# Clears / updates apt cache, then upgrades (if NOT a rolling release)
+# Clears / updates cache, then upgrades (if NOT a rolling release)
 clean_system_update
 
 echo " "
@@ -343,7 +344,7 @@ WGET_PATH=$(get_app_path "wget")
 
 if [ -z "$WGET_PATH" ]; then
 
-# Clears / updates apt cache, then upgrades (if NOT a rolling release)
+# Clears / updates cache, then upgrades (if NOT a rolling release)
 clean_system_update
 
 echo " "
@@ -360,7 +361,7 @@ SED_PATH=$(get_app_path "sed")
 
 if [ -z "$SED_PATH" ]; then
 
-# Clears / updates apt cache, then upgrades (if NOT a rolling release)
+# Clears / updates cache, then upgrades (if NOT a rolling release)
 clean_system_update
 
 echo " "
@@ -377,7 +378,7 @@ LESS_PATH=$(get_app_path "less")
 				
 if [ -z "$LESS_PATH" ]; then
 
-# Clears / updates apt cache, then upgrades (if NOT a rolling release)
+# Clears / updates cache, then upgrades (if NOT a rolling release)
 clean_system_update
 
 echo " "
@@ -394,7 +395,7 @@ EXPECT_PATH=$(get_app_path "expect")
 				
 if [ -z "$EXPECT_PATH" ]; then
 
-# Clears / updates apt cache, then upgrades (if NOT a rolling release)
+# Clears / updates cache, then upgrades (if NOT a rolling release)
 clean_system_update
 
 echo " "
@@ -411,7 +412,7 @@ AVAHID_PATH=$(get_app_path "avahi-daemon")
 
 if [ -z "$AVAHID_PATH" ]; then
 
-# Clears / updates apt cache, then upgrades (if NOT a rolling release)
+# Clears / updates cache, then upgrades (if NOT a rolling release)
 clean_system_update
 
 echo " "
@@ -428,7 +429,7 @@ BC_PATH=$(get_app_path "bc")
 
 if [ -z "$BC_PATH" ]; then
 
-# Clears / updates apt cache, then upgrades (if NOT a rolling release)
+# Clears / updates cache, then upgrades (if NOT a rolling release)
 clean_system_update
 
 echo " "
@@ -459,7 +460,7 @@ IP=`hostname -I`
 
      if [ -z "$BSDTAR_PATH" ]; then
      
-     # Clears / updates apt cache, then upgrades (if NOT a rolling release)
+     # Clears / updates cache, then upgrades (if NOT a rolling release)
      clean_system_update
      
      echo " "
@@ -480,7 +481,7 @@ IP=$(ip -json route get 8.8.8.8 | jq -r '.[].prefsrc')
 
      if [ -z "$BSDTAR_PATH" ]; then
      
-     # Clears / updates apt cache, then upgrades (if NOT a rolling release)
+     # Clears / updates cache, then upgrades (if NOT a rolling release)
      clean_system_update
      
      echo " "
@@ -499,7 +500,7 @@ CRONIE_PATH=$(get_app_path "crond")
 
      if [ -z "$CRONIE_PATH" ]; then
      
-     # Clears / updates apt cache, then upgrades (if NOT a rolling release)
+     # Clears / updates cache, then upgrades (if NOT a rolling release)
      clean_system_update
      
      echo " "
@@ -678,7 +679,7 @@ echo " "
             echo " "
             
 
-            # Clears / updates apt cache, then upgrades (if NOT a rolling release)
+            # Clears / updates cache, then upgrades (if NOT a rolling release)
             clean_system_update
 
             $PACKAGE_INSTALL xserver-xorg lightdm lxde -y
@@ -887,7 +888,7 @@ OPTIONS="install_ticker_app remove_ticker_app skip"
 select opt in $OPTIONS; do
         if [ "$opt" = "install_ticker_app" ]; then
 
-                    # Clears / updates apt cache, then upgrades (if NOT a rolling release)
+                    # Clears / updates cache, then upgrades (if NOT a rolling release)
                     clean_system_update
         	
 				echo " "
@@ -1123,20 +1124,20 @@ select opt in $OPTIONS; do
        
         echo " "
         echo "${cyan}Removing Slideshow Crypto Ticker and some required components, please wait...${reset}"
-		  echo " "
+	   echo " "
 				
         # ONLY removing unclutter, AS WE DON'T WANT TO F!CK UP THE WHOLE SYSTEM, REMOVING ANY OTHER ALREADY-USED / DEPENDANT PACKAGES TOO!!
-		$PACKAGE_REMOVE unclutter -y
+	   $PACKAGE_REMOVE unclutter -y
 				
-		echo " "
-		echo "${cyan}Removal of 'unclutter' app package completed, please wait...${reset}"
-		echo " "
-		echo "${yellow}(IF YOU USED unclutter FOR ANOTHER APP, RE-INSTALL WITH: sudo $PACKAGE_INSTALL unclutter)${reset}"
-		echo " "		
+	   echo " "
+	   echo "${cyan}Removal of 'unclutter' app package completed, please wait...${reset}"
+	   echo " "
+	   echo "${yellow}(IF YOU USED unclutter FOR ANOTHER APP, RE-INSTALL WITH: sudo $PACKAGE_INSTALL unclutter)${reset}"
+	   echo " "		
 				
-		sleep 3
+	   sleep 3
 		
-		# Remove ticker autostart line in any LXDE autostart file
+	   # Remove ticker autostart line in any LXDE autostart file
         sed -i "/slideshow-crypto-ticker/d" /home/$APP_USER/.config/lxsession/$LXDE_PROFILE/autostart
         
         # Remove any #OLD# ticker autostart systemd service (which we no longer use)
@@ -1152,10 +1153,10 @@ select opt in $OPTIONS; do
         
         rm -rf /home/$APP_USER/slideshow-crypto-ticker > /dev/null 2>&1
 
-		  sleep 3
+	   sleep 3
         
-		  echo " "
-		  echo "${green}Slideshow Crypto Ticker has been removed from the system, PLEASE REBOOT to complete the removal process.${reset}"
+	   echo " "
+	   echo "${green}Slideshow Crypto Ticker has been removed from the system, PLEASE REBOOT to complete the removal process.${reset}"
         
         break
        elif [ "$opt" = "skip" ]; then
@@ -1262,14 +1263,18 @@ EOF
     				
 				     # https://forums.raspberrypi.com/viewtopic.php?t=294014
 				
-     				# If autostart file doesn't exist yet
+     				# If autostart file doesn't exist yet, create it, and append the ticker autostart code
                          if [ ! -f /home/$APP_USER/.config/lxsession/$LXDE_PROFILE/autostart ]; then 
                          
                          echo " "
-                         echo "${cyan}Enabling USER-defined LXDE autostart (/home/$APP_USER/.config/lxsession/$LXDE_PROFILE/autostart), please wait...${reset}"
+                         echo "${cyan}Enabling USER-defined LXDE autostart (/home/$APP_USER/.config/lxsession/$LXDE_PROFILE/autostart), AND adding ticker autostart, please wait...${reset}"
                          echo " "
                          
                          \cp /etc/xdg/lxsession/$LXDE_PROFILE/autostart /home/$APP_USER/.config/lxsession/$LXDE_PROFILE/
+                         
+                         sleep 2
+                         
+                         echo -e "$TICKER_STARTUP" >> /home/$APP_USER/.config/lxsession/$LXDE_PROFILE/autostart
                          
                          # OR if we have not appended our ticker to an EXISTING autostart yet
                          elif [ "$LXDE_AUTOSTART_NEW" == "" ]; then 
