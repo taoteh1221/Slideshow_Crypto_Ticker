@@ -101,6 +101,7 @@ TIME=$(date '+%H:%M:%S')
 # Current timestamp
 CURRENT_TIMESTAMP=$(date +%s)
 
+
 # If a symlink, get link target for script location
  # WE ALWAYS WANT THE FULL PATH!
 if [[ -L "$0" ]]; then
@@ -108,6 +109,7 @@ SCRIPT_LOCATION=$(readlink "$0")
 else
 SCRIPT_LOCATION="$( cd -- "$(dirname "$0")" >/dev/null 2>&1 ; pwd -P )/"$(basename "$0")""
 fi
+
 
 # Now set path / file vars, after setting SCRIPT_LOCATION
 SCRIPT_PATH="$( cd -- "$(dirname "$SCRIPT_LOCATION")" >/dev/null 2>&1 ; pwd -P )"
@@ -781,15 +783,16 @@ autologin-session=lxde
 \r
 EOF
 
-				# Setup LXDE to run at boot
+			 # Setup LXDE to run at boot
 				
-				touch /etc/lightdm/lightdm.conf
+			 touch /etc/lightdm/lightdm.conf
 					
-				echo -e "$LXDE_AUTO_LOGIN" > /etc/lightdm/lightdm.conf
+			 echo -e "$LXDE_AUTO_LOGIN" > /etc/lightdm/lightdm.conf
 			    
-			    elif [ -f /etc/lightdm/lightdm.conf ]; then
 			    
-			    DETECT_AUTOLOGIN=$(sudo sed -n '/autologin-user=/p' /etc/lightdm/lightdm.conf)
+			 elif [ -f /etc/lightdm/lightdm.conf ]; then
+			    
+			 DETECT_AUTOLOGIN=$(sudo sed -n '/autologin-user=/p' /etc/lightdm/lightdm.conf)
 			    
 			    
 			        if [ "$DETECT_AUTOLOGIN" != "" ]; then 
@@ -805,6 +808,7 @@ EOF
                 
                 sed -i "s/user-session=.*/user-session=LXDE/g" /etc/lightdm/lightdm.conf
                 sed -i "s/autologin-session=.*/autologin-session=lxde/g" /etc/lightdm/lightdm.conf
+                
                 
                 elif [ -n "$CHECK_LIGHTDM_D" ]; then
                 
@@ -827,6 +831,7 @@ EOF
                 sleep 2
                 sed -i "s/user-session=.*/user-session=LXDE/g" $LIGHTDM_CONFIG_FILE
                 sed -i "s/autologin-session=.*/autologin-session=lxde/g" $LIGHTDM_CONFIG_FILE
+                
                 
                 else
                 echo "${cyan}AUTO-LOGIN CONFIGURATION ERROR, AUTO-LOGIN #NOT# SETUP!${reset}"
