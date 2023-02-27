@@ -573,9 +573,18 @@ read -n1 -s -r -p $"Press y to continue (or press n to exit)..." key
 echo "${reset} "
 
     if [ "$key" = 'y' ] || [ "$key" = 'Y' ]; then
+    
     echo " "
     echo "${green}Continuing...${reset}"
+         
+    # If all clear for takeoff, make sure a group exists with same name as user,
+    # AND user is a member of it (believe it or not, I've seen this not always hold true!)
+    groupadd -f $APP_USER > /dev/null 2>&1
+    sleep 3
+    usermod -a -G $APP_USER $APP_USER > /dev/null 2>&1
+
     echo " "
+    
     else
     echo " "
     echo "${green}Exiting...${reset}"
@@ -960,6 +969,9 @@ select opt in $OPTIONS; do
     				sleep 1
     				
                     fi
+                    
+                    
+				# Safely install other packages seperately, so they aren't cancelled by 'package missing' errors...
 				
 				# Grapics card detection support for firefox (for browser GPU acceleration)
 				$PACKAGE_INSTALL libpci-dev -y
@@ -976,17 +988,33 @@ select opt in $OPTIONS; do
 				
 				sleep 1
 				
-				$PACKAGE_INSTALL mesa-utils mesa-common-dev -y
+				$PACKAGE_INSTALL mesa-utils -y
 				
 				sleep 1
 				
-				$PACKAGE_INSTALL mesa-vulkan-drivers vulkan-icd -y
-
+				$PACKAGE_INSTALL mesa-common-dev -y
 				
-				# Safely install other packages seperately, so they aren't cancelled by 'package missing' errors
-				$PACKAGE_INSTALL xdotool unclutter openssl x11-xserver-utils xautomation -y
+				sleep 1
 				
-				sleep 5
+				$PACKAGE_INSTALL mesa-vulkan-drivers -y
+				
+				sleep 1
+				
+				$PACKAGE_INSTALL vulkan-icd -y
+				
+				sleep 1
+				
+				$PACKAGE_INSTALL xdotool unclutter -y
+				
+				sleep 1
+				
+				$PACKAGE_INSTALL x11-xserver-utils -y
+				
+				sleep 1
+				
+				$PACKAGE_INSTALL xautomation -y
+				
+				sleep 3
 				
     			# FIX FOR 2022-1-28 RASPI OS CHROMIUM BUG (DOES #NOT# FIX SAME ISSUE ON ARMBIAN)
     			# https://github.com/RPi-Distro/chromium-browser/issues/28
@@ -1302,6 +1330,8 @@ EOF
                          fi    
 				
 				
+	               AUTOSTART_ALERT=1
+				
 				sleep 2
 				
 				fi
@@ -1309,8 +1339,6 @@ EOF
 								
 	   # Make sure any new files / folders have user permissions
 	   chown -R $APP_USER:$APP_USER /home/$APP_USER/.config > /dev/null 2>&1
-				
-	   AUTOSTART_ALERT=1
 					
 	   # Setup cron (to check logs after install: tail -f /var/log/syslog | grep cron -i)
 
@@ -1440,22 +1468,24 @@ fi
 
 if [ "$AUTOSTART_ALERT" = "1" ]; then
 
-echo "${green}Ticker autostart at login has been configured at:"
-echo " "
 
-     # Setup to run at LXDE login
-     if [ -d /etc/xdg/lxsession ]; then
-     echo "/home/$APP_USER/.config/lxsession/$LXDE_PROFILE/autostart${reset}"
-     fi
-
-echo " "
-echo "${yellow}(the ticker should now start at boot/login with the $SET_BROWSER browser)${reset}"
-echo " "
-				
 	if [ "$LXDE_ALERT" = "1" ]; then
-    echo " "
-    echo "${red}WARNING: LXDE Desktop's profile could NOT be determined (default 'LXDE' was used), TICKER AUTO-START MAY FAIL!${reset}"
-    echo " "
+				
+     echo " "
+     echo "${red}WARNING: LXDE Desktop's profile could NOT be determined (default 'LXDE' was used), TICKER AUTO-START MAY FAIL!${reset}"
+     echo " "
+
+     else
+	
+     echo "${green}Ticker autostart at login has been configured at:"
+     echo " "
+
+     echo "/home/$APP_USER/.config/lxsession/$LXDE_PROFILE/autostart${reset}"
+     
+     echo " "
+     echo "${yellow}(the ticker should now start at boot/login with the $SET_BROWSER browser)${reset}"
+     echo " "
+     
 	fi
 
 fi
