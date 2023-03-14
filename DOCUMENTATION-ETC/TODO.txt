@@ -26,6 +26,9 @@ OPTIMIZATIONS / BUGS / TESTS / UX / QA / OTHER SECTION
 ///////////////////////////////////////////////////////
 
 
+Make "CGecko" on ticker app be "CnGecko" instead.
+
+
 All NON-GLOBAL variables inside JAVASCRIPT functions should be started as 'var my_var_name': 
 
 https://stackoverflow.com/questions/10872006/how-do-i-change-the-value-of-a-global-variable-inside-of-a-function/10874509#10874509
