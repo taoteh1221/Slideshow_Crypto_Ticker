@@ -622,7 +622,7 @@ echo " "
 echo "${red}USE A #FULL# DESKTOP SETUP, #NOT# LITE, OR YOU LIKELY WILL HAVE SOME #UNICODE SYMBOL ISSUES# WITH CHROMIUM BROWSER EVEN"
 echo "AFTER UPGRADING TO GUI / CHROME (trust me)."
 echo " "
-echo "(Chromium, Epiphany, and Firefox are supported [chromium recommended ON LOW POWER DEVICES, all these browsers will be installed if available])${reset}"
+echo "(Chromium, Epiphany, and Firefox are supported [firefox is recommended for reliability, all these browsers will be installed if available])${reset}"
 echo " "
   				
 				
@@ -1223,14 +1223,8 @@ select opt in $OPTIONS; do
         if [ "$opt" = "auto_config_ticker_system" ]; then
   				
         echo " "
-        echo "${yellow}Select the NUMBER next to the browser you want to use to render the ticker (chromium recommended ON LOW POWER DEVICES).${reset}"
+        echo "${yellow}Select the NUMBER next to the browser you want to use to render the ticker (firefox is recommended for long term reliability).${reset}"
         echo " "
-                
-                
-                if [ -f /usr/bin/raspi-config ]; then
-                echo "${red}IT'S #HIGHLY RECOMMENDED# TO CHOOSE CHROMIUM ON A LOW POWER RASPBERRY PI DEVICE (FOR GRAPHICS ACCELERATION BENEFITS).${reset}"
-                echo " "
-                fi
 
                 
         USER_BROWSER="chromium epiphany firefox"
@@ -1527,7 +1521,7 @@ echo "${yellow}#AFTER BOOTING INTO THE DESKTOP INTERFACE#, to start Slideshow Cr
 echo " "
 echo "~/ticker-start"
 echo " "
-echo "If you prefer chromium, epiphany, or firefox (chromium recommended ON LOW POWER DEVICES):"
+echo "If you prefer chromium, epiphany, or firefox (firefox is recommended for long term reliability):"
 echo " "
 echo "~/ticker-start chromium"
 echo " "
