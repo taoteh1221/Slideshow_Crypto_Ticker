@@ -26,6 +26,18 @@ OPTIMIZATIONS / BUGS / TESTS / UX / QA / OTHER SECTION
 ///////////////////////////////////////////////////////
 
 
+Looks like we have to switch to using the snap package manager for
+ubuntu in the install bash scripts FOR ALL MY APPS. Some pre-requisite
+libraries are no longer available using apt, and are only available as
+'snap install X'.
+
+
+Check for "whitespace in paths" support in bash scripting (like we had to do for the BT radio script)
+
+
+.attr('style') ALWAYS OVERWRITES *ALL* PREVIOUS VALUES, SO WHEN USING IT, we need to combine attributes INTO ONE INSTANCE OF .attr('style').
+
+
 Make "CGecko" on ticker app be "CnGecko" instead.
 
 
