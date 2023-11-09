@@ -1,7 +1,5 @@
 
-Slideshow Crypto Ticker - Developed by Michael Kilday <mike@dragonfrugal.com>, released free / open source (under GPL v3)
-
-Copyright 2019-2023 GPLv3
+Copyright 2019-2024 GPLv3, Slideshow Crypto Ticker by Mike Kilday: Mike@DragonFrugal.com (leave this copyright / attribution intact in ALL forks / copies!) 
 
 Open source / 100% FREE real time slideshow crypto price ticker for Raspberry Pi LCD screens, including 24 hour volume and CoinGecko / Binance / Coinbase Pro / Kraken / Kucoin / Bitstamp / Bitfinex / HitBTC / OKex / Gate.io support (more market support coming in the future).
 
@@ -40,8 +38,6 @@ Donations support further development...
 Bitcoin:  3Nw6cvSgnLEFmQ1V4e8RSBG23G7pDjF3hW
 
 Ethereum:  0x644343e8D0A4cF33eee3E54fE5d5B8BFD0285EF8
-
-Helium:  13xs559435FGkh39qD9kXasaAnB8JRF8KowqPeUmKHWU46VYG1h
 
 Solana:  GvX4AU4V9atTBof9dT9oBnLPmPiz3mhoXBdqcxyRuQnU
 
@@ -110,7 +106,7 @@ If autostart does not work / is not setup, you can run this command MANUALLY, #A
 ~/ticker-start
 
 
-If you prefer chromium, epiphany, or firefox (chromium is the default):
+If you prefer chromium, epiphany, or firefox (firefox is recommended for long term reliability):
 
 ~/ticker-start chromium
 
@@ -170,7 +166,7 @@ ln -s ~/slideshow-crypto-ticker/bash/ticker-stop.bash ~/ticker-stop
 ---------------------
 
 
-Create / edit the following autostart file (create any directories that don't exist yet): /home/YOUR_USER_NAME/.config/lxsession/LXDE_PROFILE_NAME/autostart and add the following (chromium can be changed to epiphany, or firefox if desired)...
+Create / edit the following autostart file (create any directories that don't exist yet): /home/YOUR_USER_NAME/.config/lxsession/LXDE_PROFILE_NAME/autostart and add the following (firefox can be changed to epiphany, or chromium if desired, but firefox is usually the most reliable)...
 
 IMPORTANT: SUBSTITUTE "LXDE_PROFILE_NAME" FOR THE LXDE PROFILE NAME USED FOR YOUR LXDE SESSION (whatever the sub-folder name is INSIDE: /home/YOUR_USER_NAME/.config/lxpanel, on raspberry pi os it is: LXDE-pi, default if unknown should be: LXDE).
 
@@ -182,7 +178,7 @@ cp /etc/xdg/lxsession/LXDE_PROFILE_NAME/autostart /home/pi/.config/lxsession/LXD
 
 NEXT, we add the ticker autostart command at the end of the autostart file:
 
-@/home/YOUR_USER_NAME/slideshow-crypto-ticker/bash/lxde-auto-start.bash chromium
+@/home/YOUR_USER_NAME/slideshow-crypto-ticker/bash/lxde-auto-start.bash firefox
 
 
 After creating the LXDE Desktop autostart file above, the ticker will run on system startup when you login / auto-login to the LXDE Desktop.

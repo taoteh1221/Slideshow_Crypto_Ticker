@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Copyright 2019-2023 GPLv3, Slideshow Crypto Ticker by Mike Kilday: http://DragonFrugal.com
+# Copyright 2019-2024 GPLv3, Slideshow Crypto Ticker by Mike Kilday: Mike@DragonFrugal.com (leave this copyright / attribution intact in ALL forks / copies!)
 
 				
 FIND_DISPLAY=$(w -h $USER | awk '$3 ~ /:[0-9.]*/{print $3}')
@@ -27,9 +27,9 @@ sleep 2
 
 DEFAULT_BROWSER=$(cat ~/slideshow-crypto-ticker/cache/default_browser.dat)
 DEFAULT_BROWSER=$(echo "${DEFAULT_BROWSER}" | xargs) # Trim any whitespace
-# If DEFAULT browser parameter wasn't set, use chromium
+# If DEFAULT browser parameter wasn't set, use firefox
 if [ -z "$DEFAULT_BROWSER" ]; then
-DEFAULT_BROWSER="chromium"
+DEFAULT_BROWSER="firefox"
 fi
 
 

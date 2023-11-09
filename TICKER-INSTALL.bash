@@ -101,6 +101,7 @@ TIME=$(date '+%H:%M:%S')
 # Current timestamp
 CURRENT_TIMESTAMP=$(date +%s)
 
+
 # If a symlink, get link target for script location
  # WE ALWAYS WANT THE FULL PATH!
 if [[ -L "$0" ]]; then
@@ -108,6 +109,7 @@ SCRIPT_LOCATION=$(readlink "$0")
 else
 SCRIPT_LOCATION="$( cd -- "$(dirname "$0")" >/dev/null 2>&1 ; pwd -P )/"$(basename "$0")""
 fi
+
 
 # Now set path / file vars, after setting SCRIPT_LOCATION
 SCRIPT_PATH="$( cd -- "$(dirname "$SCRIPT_LOCATION")" >/dev/null 2>&1 ; pwd -P )"
@@ -571,9 +573,18 @@ read -n1 -s -r -p $"Press y to continue (or press n to exit)..." key
 echo "${reset} "
 
     if [ "$key" = 'y' ] || [ "$key" = 'Y' ]; then
+    
     echo " "
     echo "${green}Continuing...${reset}"
+         
+    # If all clear for takeoff, make sure a group exists with same name as user,
+    # AND user is a member of it (believe it or not, I've seen this not always hold true!)
+    groupadd -f $APP_USER > /dev/null 2>&1
+    sleep 3
+    usermod -a -G $APP_USER $APP_USER > /dev/null 2>&1
+
     echo " "
+    
     else
     echo " "
     echo "${green}Exiting...${reset}"
@@ -611,7 +622,7 @@ echo " "
 echo "${red}USE A #FULL# DESKTOP SETUP, #NOT# LITE, OR YOU LIKELY WILL HAVE SOME #UNICODE SYMBOL ISSUES# WITH CHROMIUM BROWSER EVEN"
 echo "AFTER UPGRADING TO GUI / CHROME (trust me)."
 echo " "
-echo "(Chromium, Epiphany, and Firefox are supported [chromium recommended ON LOW POWER DEVICES, all these browsers will be installed if available])${reset}"
+echo "(Chromium, Epiphany, and Firefox are supported [firefox is recommended for reliability, all these browsers will be installed if available])${reset}"
 echo " "
   				
 				
@@ -781,15 +792,16 @@ autologin-session=lxde
 \r
 EOF
 
-				# Setup LXDE to run at boot
+			 # Setup LXDE to run at boot
 				
-				touch /etc/lightdm/lightdm.conf
+			 touch /etc/lightdm/lightdm.conf
 					
-				echo -e "$LXDE_AUTO_LOGIN" > /etc/lightdm/lightdm.conf
+			 echo -e "$LXDE_AUTO_LOGIN" > /etc/lightdm/lightdm.conf
 			    
-			    elif [ -f /etc/lightdm/lightdm.conf ]; then
 			    
-			    DETECT_AUTOLOGIN=$(sudo sed -n '/autologin-user=/p' /etc/lightdm/lightdm.conf)
+			 elif [ -f /etc/lightdm/lightdm.conf ]; then
+			    
+			 DETECT_AUTOLOGIN=$(sudo sed -n '/autologin-user=/p' /etc/lightdm/lightdm.conf)
 			    
 			    
 			        if [ "$DETECT_AUTOLOGIN" != "" ]; then 
@@ -805,6 +817,7 @@ EOF
                 
                 sed -i "s/user-session=.*/user-session=LXDE/g" /etc/lightdm/lightdm.conf
                 sed -i "s/autologin-session=.*/autologin-session=lxde/g" /etc/lightdm/lightdm.conf
+                
                 
                 elif [ -n "$CHECK_LIGHTDM_D" ]; then
                 
@@ -827,6 +840,7 @@ EOF
                 sleep 2
                 sed -i "s/user-session=.*/user-session=LXDE/g" $LIGHTDM_CONFIG_FILE
                 sed -i "s/autologin-session=.*/autologin-session=lxde/g" $LIGHTDM_CONFIG_FILE
+                
                 
                 else
                 echo "${cyan}AUTO-LOGIN CONFIGURATION ERROR, AUTO-LOGIN #NOT# SETUP!${reset}"
@@ -955,6 +969,9 @@ select opt in $OPTIONS; do
     				sleep 1
     				
                     fi
+                    
+                    
+				# Safely install other packages seperately, so they aren't cancelled by 'package missing' errors...
 				
 				# Grapics card detection support for firefox (for browser GPU acceleration)
 				$PACKAGE_INSTALL libpci-dev -y
@@ -971,17 +988,33 @@ select opt in $OPTIONS; do
 				
 				sleep 1
 				
-				$PACKAGE_INSTALL mesa-utils mesa-common-dev -y
+				$PACKAGE_INSTALL mesa-utils -y
 				
 				sleep 1
 				
-				$PACKAGE_INSTALL mesa-vulkan-drivers vulkan-icd -y
-
+				$PACKAGE_INSTALL mesa-common-dev -y
 				
-				# Safely install other packages seperately, so they aren't cancelled by 'package missing' errors
-				$PACKAGE_INSTALL xdotool unclutter openssl x11-xserver-utils xautomation -y
+				sleep 1
 				
-				sleep 5
+				$PACKAGE_INSTALL mesa-vulkan-drivers -y
+				
+				sleep 1
+				
+				$PACKAGE_INSTALL vulkan-icd -y
+				
+				sleep 1
+				
+				$PACKAGE_INSTALL xdotool unclutter -y
+				
+				sleep 1
+				
+				$PACKAGE_INSTALL x11-xserver-utils -y
+				
+				sleep 1
+				
+				$PACKAGE_INSTALL xautomation -y
+				
+				sleep 3
 				
     			# FIX FOR 2022-1-28 RASPI OS CHROMIUM BUG (DOES #NOT# FIX SAME ISSUE ON ARMBIAN)
     			# https://github.com/RPi-Distro/chromium-browser/issues/28
@@ -1190,14 +1223,8 @@ select opt in $OPTIONS; do
         if [ "$opt" = "auto_config_ticker_system" ]; then
   				
         echo " "
-        echo "${yellow}Select the NUMBER next to the browser you want to use to render the ticker (chromium recommended ON LOW POWER DEVICES).${reset}"
+        echo "${yellow}Select the NUMBER next to the browser you want to use to render the ticker (firefox is recommended for long term reliability).${reset}"
         echo " "
-                
-                
-                if [ -f /usr/bin/raspi-config ]; then
-                echo "${red}IT'S #HIGHLY RECOMMENDED# TO CHOOSE CHROMIUM ON A LOW POWER RASPBERRY PI DEVICE (FOR GRAPHICS ACCELERATION BENEFITS).${reset}"
-                echo " "
-                fi
 
                 
         USER_BROWSER="chromium epiphany firefox"
@@ -1297,6 +1324,8 @@ EOF
                          fi    
 				
 				
+	               AUTOSTART_ALERT=1
+				
 				sleep 2
 				
 				fi
@@ -1304,8 +1333,6 @@ EOF
 								
 	   # Make sure any new files / folders have user permissions
 	   chown -R $APP_USER:$APP_USER /home/$APP_USER/.config > /dev/null 2>&1
-				
-	   AUTOSTART_ALERT=1
 					
 	   # Setup cron (to check logs after install: tail -f /var/log/syslog | grep cron -i)
 
@@ -1435,22 +1462,24 @@ fi
 
 if [ "$AUTOSTART_ALERT" = "1" ]; then
 
-echo "${green}Ticker autostart at login has been configured at:"
-echo " "
 
-     # Setup to run at LXDE login
-     if [ -d /etc/xdg/lxsession ]; then
-     echo "/home/$APP_USER/.config/lxsession/$LXDE_PROFILE/autostart${reset}"
-     fi
-
-echo " "
-echo "${yellow}(the ticker should now start at boot/login with the $SET_BROWSER browser)${reset}"
-echo " "
-				
 	if [ "$LXDE_ALERT" = "1" ]; then
-    echo " "
-    echo "${red}WARNING: LXDE Desktop's profile could NOT be determined (default 'LXDE' was used), TICKER AUTO-START MAY FAIL!${reset}"
-    echo " "
+				
+     echo " "
+     echo "${red}WARNING: LXDE Desktop's profile could NOT be determined (default 'LXDE' was used), TICKER AUTO-START MAY FAIL!${reset}"
+     echo " "
+
+     else
+	
+     echo "${green}Ticker autostart at login has been configured at:"
+     echo " "
+
+     echo "/home/$APP_USER/.config/lxsession/$LXDE_PROFILE/autostart${reset}"
+     
+     echo " "
+     echo "${yellow}(the ticker should now start at boot/login with the $SET_BROWSER browser)${reset}"
+     echo " "
+     
 	fi
 
 fi
@@ -1492,7 +1521,7 @@ echo "${yellow}#AFTER BOOTING INTO THE DESKTOP INTERFACE#, to start Slideshow Cr
 echo " "
 echo "~/ticker-start"
 echo " "
-echo "If you prefer chromium, epiphany, or firefox (chromium recommended ON LOW POWER DEVICES):"
+echo "If you prefer chromium, epiphany, or firefox (firefox is recommended for long term reliability):"
 echo " "
 echo "~/ticker-start chromium"
 echo " "
@@ -1579,8 +1608,6 @@ echo " "
 echo "${cyan}Bitcoin: ${green}3Nw6cvSgnLEFmQ1V4e8RSBG23G7pDjF3hW"
 echo " "
 echo "${cyan}Ethereum: ${green}0x644343e8D0A4cF33eee3E54fE5d5B8BFD0285EF8"
-echo " "
-echo "${cyan}Helium: ${green}13xs559435FGkh39qD9kXasaAnB8JRF8KowqPeUmKHWU46VYG1h"
 echo " "
 echo "${cyan}Solana: ${green}GvX4AU4V9atTBof9dT9oBnLPmPiz3mhoXBdqcxyRuQnU"
 echo " "

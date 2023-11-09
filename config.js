@@ -1,5 +1,5 @@
 
-// Copyright 2019-2023 GPLv3, Slideshow Crypto Ticker by Mike Kilday: http://DragonFrugal.com
+// Copyright 2019-2024 GPLv3, Slideshow Crypto Ticker by Mike Kilday: Mike@DragonFrugal.com (leave this copyright / attribution intact in ALL forks / copies!)
 
 var exchange_markets = []; // LEAVE ALONE, AND DON'T DELETE (REQUIRED!!)
 
@@ -51,7 +51,7 @@ exchange_markets['bitfinex'] = 'BTCUSD';
 ////
 ////
 // Coinbase markets (set to '' to disable)
-exchange_markets['coinbase'] = 'ETH-USD|SOL-USD|APT-USD'; 
+exchange_markets['coinbase'] = 'ETH-USD|SOL-USD'; 
 ////
 ////
 // Binance markets (set to '' to disable)
@@ -68,17 +68,17 @@ exchange_markets['okex'] = '';
 exchange_markets['hitbtc'] = ''; 
 ////
 ////
+// Gateio markets (set to '' to disable) 
+exchange_markets['gateio'] = 'RNDR_USDT|DAI_USDT';
+////
+////
 // Kucoin markets (set to '' to disable)
 // !!KUCOIN REQUIRES USING THE INSTALL SCRIPT!!
-exchange_markets['kucoin'] = 'HNT-USDT|MKR-USDT'; 
+exchange_markets['kucoin'] = 'MKR-USDT|AURY-USDT'; 
 ////
 ////
 // Kraken markets (set to '' to disable)
 exchange_markets['kraken'] = 'RAY/USD|ATLAS/USD|POLIS/USD|MANA/USD'; 
-////
-////
-// Gateio markets (set to '' to disable) 
-exchange_markets['gateio'] = 'SLC_USDT|SLRS_USDT';
 ////
 //// 
 // Coingecko markets (set to '' to disable)
@@ -95,12 +95,12 @@ exchange_markets['coingecko'] = 'grape-2:grape/usd|hive:hive/usd';
 
 
 // Screen orientation (offset in degrees)
-var orient_screen = 0; // Normal (upright) = 0, Flipped (upside down) = 180, Sideways (left or right) = 90 or 270
+var orient_screen = 180; // Normal (upright) = 0, Flipped (upside down) = 180, Sideways (left or right) = 90 or 270
 
 
 // Vertical position (adjusts the ticker's vertical position up/down)
 // CAN BE NEGATIVE, TO GO THE OPPOSITE WAY
-var vertical_position = 75; // Default = 37 (SMALL SCREEN), 75 (MEDIUM SCREEN), 150 (LARGE SCREEN)
+var vertical_position = 150; // Default = 37 (SMALL SCREEN), 75 (MEDIUM SCREEN), 150 (LARGE SCREEN)
 
 
 // Horizontal position (adjusts the ticker's horizontal position left/right)
@@ -128,15 +128,15 @@ var system_data_opacity = 0.70;  // Default = 0.70 (#CAN# BE DECIMALS HERE, WITH
 
 
 // Title font size
-var title_size = 115; // Default = 57 (SMALL SCREEN), 115 (MEDIUM SCREEN), 230 (LARGE SCREEN)
+var title_size = 230; // Default = 57 (SMALL SCREEN), 115 (MEDIUM SCREEN), 230 (LARGE SCREEN)
 
 
 // 24 hour volume font size
-var volume_size = 84; // Default = 42 (SMALL SCREEN), 84 (MEDIUM SCREEN), 168 (LARGE SCREEN)
+var volume_size = 168; // Default = 42 (SMALL SCREEN), 84 (MEDIUM SCREEN), 168 (LARGE SCREEN)
 
 
 // Ticker font size
-var ticker_size = 160; // Default = 80 (SMALL SCREEN), 160 (MEDIUM SCREEN), 320 (LARGE SCREEN)
+var ticker_size = 320; // Default = 80 (SMALL SCREEN), 160 (MEDIUM SCREEN), 320 (LARGE SCREEN)
 
 
 // Ticker arrow size RATIO (to ticker size), DECIMAL NUMBER FORMAT X.XX OF 1.00 OR LESS
@@ -149,7 +149,7 @@ var arrow_spacing = 20; // Default = 10 (SMALL SCREEN), 20 (MEDIUM SCREEN), 40 (
 
 
 // Maximum decimal places for ticker values worth under 1.00 in unit value, for prettier / less-cluttered interface
-var ticker_max_decimals = 6; // Default = 6
+var ticker_max_decimals = 7; // Default = 7
 
 
 // Minimum decimal places for ANY ticker values,

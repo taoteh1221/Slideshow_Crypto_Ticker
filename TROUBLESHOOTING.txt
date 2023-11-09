@@ -99,7 +99,7 @@ Binance started blocking access to some of their price APIs in certain jurasdict
   
 -----------------------------------------------------------------------------------------------------------------------------------------
 
-Restart the device running this app. If this fixes the problem, AND YOU ARE USING FIREFOX / EPIPHANY AS THE TICKER BROWSER, set the ticker browser to chromium INSTEAD (ANY OTHER BROWSERS MAY LACK HARDWARE ACCELERATION #ON LOW POWER DEVICES#). ALSO, make sure you are using a WELL-MAINTAINED version of a debian-based operating system for maximum compatibility with this app (Ubuntu or Raspberry Pi OS are VERY stable and reliable).
+Restart the device running this app. If this fixes the problem, AND YOU ARE USING CHROMIUM / EPIPHANY AS THE TICKER BROWSER, set the ticker browser to firefox INSTEAD (it's more reliable in my browser tests over long time periods). ALSO, make sure you are using a WELL-MAINTAINED version of a debian-based operating system for maximum compatibility with this app (Ubuntu or Raspberry Pi OS are VERY stable and reliable).
 
 
 =========================================================================================================================================

@@ -1,14 +1,14 @@
 #!/bin/bash
 
-COPYRIGHT_YEARS="2022-2023"
+COPYRIGHT_YEARS="2022-2024"
 
 # Version of this script
-APP_VERSION="1.07.0" # 2023/JANUARY/28TH
+APP_VERSION="1.09.3" # 2023/AUGUST/24TH
 
 ########################################################################################################################
 ########################################################################################################################
 
-# Copyright 2022-2023 GPLv3, Bluetooth Internet Radio By Mike Kilday: Mike@DragonFrugal.com
+# Copyright 2022-2024 GPLv3, Bluetooth Internet Radio By Mike Kilday: Mike@DragonFrugal.com (leave this copyright / attribution intact in ALL forks / copies!)
 
 # https://github.com/taoteh1221/Bluetooth_Internet_Radio
 
@@ -31,7 +31,7 @@ APP_VERSION="1.07.0" # 2023/JANUARY/28TH
 
 # ~/radio
  
-# Auto-selecting single / multi sub-option examples (MULTI SUB-OPTIONS #MUST# BE IN QUOTES!):
+# Auto-selecting single / multi option examples (MULTI OPTIONS #MUST# BE IN QUOTES!):
  
 # ~/radio "1 y"
 # ~/radio "upgrade y"
@@ -103,9 +103,17 @@ convert=$(echo "$convert" | sed -r "s/connect/10/g")
 # remove
 convert=$(echo "$convert" | sed -r "s/remove/11/g")
 
-# Pipe it through
-printf "%s\n" $convert | ~/radio
-exit
+
+     if [ ! -f ~/radio ]; then
+     echo " "
+     echo "Setting up a few things first, PLEASE RUN WITH YOUR CLI PARAMETERS *AGAIN AFTER* THIS SETUP COMPLETES..."
+     echo " "
+     else
+     # Pipe it through
+     printf "%s\n" $convert | ~/radio
+     exit
+     fi
+
 
 fi
 
@@ -278,13 +286,51 @@ fi
 ######################################
 
 
-# apt_clear_update function START
-apt_clear_update () {
+# clean_system_update function START
+clean_system_update () {
+
+
+     if [ -z "$ALLOW_FULL_UPGRADE" ]; then
+     
+     echo " "
+     echo "${yellow}Does the Operating System on this device update using the \"Rolling Release\" model (Kali, Manjaro, Ubuntu Rolling Rhino, Debian Unstable, etc), or the \"Long-Term Release\" model (Ubuntu, Raspberry Pi OS, Armbian Stable, Diet Pi, etc)?"
+     echo " "
+     echo "${red}(You can SEVERLY MESS UP a \"Rolling Release\" Operating System IF YOU DO NOT CHOOSE CORRECTLY HERE! In that case, you can SAFELY choose \"I don't know\".)${reset}"
+     echo " "
+     
+     echo "Enter the NUMBER next to your chosen option.${reset}"
+     
+     echo " "
+     
+          OPTIONS="rolling long_term i_dont_know"
+          
+          select opt in $OPTIONS; do
+                  if [ "$opt" = "long_term" ]; then
+                  ALLOW_FULL_UPGRADE="yes"
+                  echo " "
+                  echo "${green}Allowing system-wide updates before installs.${reset}"
+                  break
+                 else
+                  ALLOW_FULL_UPGRADE="no"
+                  echo " "
+                  echo "${green}Disabling system-wide updates before installs.${reset}"
+                  break
+                 fi
+          done
+            
+     echo " "
+     
+     fi
+
 
      if [ "$APT_CACHE_CLEARED" != "1" ]; then
+
+     echo "${cyan}Making sure your APT sources list is updated before installations, please wait...${reset}"
+     
+     echo " "
      
      # In case package list was ever corrupted (since we are about to rebuild it anyway...avoids possible errors)
-     sudo rm -rf /var/lib/apt/lists/* -vf
+     sudo rm -rf /var/lib/apt/lists/* -vf > /dev/null 2>&1
      
      APT_CACHE_CLEARED=1
      
@@ -294,10 +340,35 @@ apt_clear_update () {
      
      sleep 2
      
+     echo " "
+
+     echo "${cyan}APT sources list update complete.${reset}"
+     
+     echo " "
+     
+          if [ "$ALLOW_APT_UPGRADE" == "yes" ]; then
+
+          echo "${cyan}Making sure your system is updated before installations, please wait...${reset}"
+          
+          echo " "
+          
+          #DO NOT RUN dist-upgrade, bad things can happen, lol
+          sudo apt upgrade -y
+          				
+          sleep 2
+          
+          echo " "
+          				
+          echo "${cyan}System updated.${reset}"
+          				
+          echo " "
+          
+          fi
+     
      fi
 
 }
-# apt_clear_update function END
+# clean_system_update function END
 
 
 ######################################
@@ -312,8 +383,8 @@ PYTHON_PATH=$(which python3)
 
 if [ -z "$PYTHON_PATH" ]; then
 
-# Clears AND updates apt cache (IF it wasn't already this runtime session)
-apt_clear_update
+# Clears / updates cache, then upgrades (if NOT a rolling release)
+clean_system_update
 
 echo " "
 echo "${cyan}Installing required component python3, please wait...${reset}"
@@ -329,8 +400,8 @@ XDGUSER_PATH=$(which xdg-user-dir)
 
 if [ -z "$XDGUSER_PATH" ]; then
 
-# Clears AND updates apt cache (IF it wasn't already this runtime session)
-apt_clear_update
+# Clears / updates cache, then upgrades (if NOT a rolling release)
+clean_system_update
 
 echo " "
 echo "${cyan}Installing required component xdg-user-dirs, please wait...${reset}"
@@ -346,8 +417,8 @@ SYSLOG_PATH=$(which rsyslogd)
 
 if [ -z "$SYSLOG_PATH" ]; then
 
-# Clears AND updates apt cache (IF it wasn't already this runtime session)
-apt_clear_update
+# Clears / updates cache, then upgrades (if NOT a rolling release)
+clean_system_update
 
 echo " "
 echo "${cyan}Installing required component rsyslog, please wait...${reset}"
@@ -363,8 +434,8 @@ GIT_PATH=$(which git)
 
 if [ -z "$GIT_PATH" ]; then
 
-# Clears AND updates apt cache (IF it wasn't already this runtime session)
-apt_clear_update
+# Clears / updates cache, then upgrades (if NOT a rolling release)
+clean_system_update
 
 echo " "
 echo "${cyan}Installing required component git, please wait...${reset}"
@@ -380,8 +451,8 @@ CURL_PATH=$(which curl)
 
 if [ -z "$CURL_PATH" ]; then
 
-# Clears AND updates apt cache (IF it wasn't already this runtime session)
-apt_clear_update
+# Clears / updates cache, then upgrades (if NOT a rolling release)
+clean_system_update
 
 echo " "
 echo "${cyan}Installing required component curl, please wait...${reset}"
@@ -397,8 +468,8 @@ JQ_PATH=$(which jq)
 
 if [ -z "$JQ_PATH" ]; then
 
-# Clears AND updates apt cache (IF it wasn't already this runtime session)
-apt_clear_update
+# Clears / updates cache, then upgrades (if NOT a rolling release)
+clean_system_update
 
 echo " "
 echo "${cyan}Installing required component jq, please wait...${reset}"
@@ -414,8 +485,8 @@ WGET_PATH=$(which wget)
 
 if [ -z "$WGET_PATH" ]; then
 
-# Clears AND updates apt cache (IF it wasn't already this runtime session)
-apt_clear_update
+# Clears / updates cache, then upgrades (if NOT a rolling release)
+clean_system_update
 
 echo " "
 echo "${cyan}Installing required component wget, please wait...${reset}"
@@ -431,8 +502,8 @@ SED_PATH=$(which sed)
 
 if [ -z "$SED_PATH" ]; then
 
-# Clears AND updates apt cache (IF it wasn't already this runtime session)
-apt_clear_update
+# Clears / updates cache, then upgrades (if NOT a rolling release)
+clean_system_update
 
 echo " "
 echo "${cyan}Installing required component sed, please wait...${reset}"
@@ -448,8 +519,8 @@ LESS_PATH=$(which less)
 				
 if [ -z "$LESS_PATH" ]; then
 
-# Clears AND updates apt cache (IF it wasn't already this runtime session)
-apt_clear_update
+# Clears / updates cache, then upgrades (if NOT a rolling release)
+clean_system_update
 
 echo " "
 echo "${cyan}Installing required component less, please wait...${reset}"
@@ -465,8 +536,8 @@ EXPECT_PATH=$(which expect)
 				
 if [ -z "$EXPECT_PATH" ]; then
 
-# Clears AND updates apt cache (IF it wasn't already this runtime session)
-apt_clear_update
+# Clears / updates cache, then upgrades (if NOT a rolling release)
+clean_system_update
 
 echo " "
 echo "${cyan}Installing required component expect, please wait...${reset}"
@@ -482,8 +553,8 @@ AVAHID_PATH=$(which avahi-daemon)
 
 if [ -z "$AVAHID_PATH" ]; then
 
-# Clears AND updates apt cache (IF it wasn't already this runtime session)
-apt_clear_update
+# Clears / updates cache, then upgrades (if NOT a rolling release)
+clean_system_update
 
 echo " "
 echo "${cyan}Installing required component avahi-daemon, please wait...${reset}"
@@ -499,8 +570,8 @@ BC_PATH=$(which bc)
 
 if [ -z "$BC_PATH" ]; then
 
-# Clears AND updates apt cache (IF it wasn't already this runtime session)
-apt_clear_update
+# Clears / updates cache, then upgrades (if NOT a rolling release)
+clean_system_update
 
 echo " "
 echo "${cyan}Installing required component bc, please wait...${reset}"
@@ -531,8 +602,8 @@ bt_autoconnect_install () {
     # Install bluetooth-autoconnect.py if needed (AND we are #NOT# running as sudo)
     if [ ! -f "$BT_AUTOCONNECT_PATH" ] && [ "$EUID" != 0 ]; then
 
-    # Clears AND updates apt cache (IF it wasn't already this runtime session)
-    apt_clear_update
+    # Clears / updates cache, then upgrades (if NOT a rolling release)
+    clean_system_update
     
     echo " "
     echo "${cyan}Installing required component bluetooth-autoconnect and dependencies, please wait...${reset}"
@@ -550,7 +621,7 @@ bt_autoconnect_install () {
     
     sleep 2
     
-    mv -v --force TEMP-BT-AUTO-CONN.py $BT_AUTOCONNECT_PATH
+    mv -v --force TEMP-BT-AUTO-CONN.py "$BT_AUTOCONNECT_PATH"
     
     sleep 2
     
@@ -573,7 +644,7 @@ After=pulseaudio.service
 [Service]
 Type=simple
 \r
-ExecStart=python3 $BT_AUTOCONNECT_PATH
+ExecStart=python3 "$BT_AUTOCONNECT_PATH"
 [Install]
 WantedBy=pulseaudio.service
 \r
@@ -605,7 +676,7 @@ EOF
 
     # Run bluetooth-autoconnect.py (IF we are #NOT# running as sudo, AND no systemd startup service is installed)
     if [ -f "$BT_AUTOCONNECT_PATH" ] && [ "$EUID" != 0 ] && [ ! -f $HOME/.local/share/systemd/user/btautoconnect.service ]; then
-    python3 $BT_AUTOCONNECT_PATH
+    python3 "$BT_AUTOCONNECT_PATH"
     fi
 
 }
@@ -621,7 +692,7 @@ bt_autoconnect_check () {
         
 # Make sure we are connected to the bluetooth receiver (NOT just paired)
 # (SOME DEVICES MAY DISCONNECT AGAIN IF WHEN YOU LOGIN, YOU DON'T #QUICKLY# START A SOUND / RADIO STREAM)
-CONNECT_STATUS=$(python3 $BT_AUTOCONNECT_PATH)
+CONNECT_STATUS=$(python3 "$BT_AUTOCONNECT_PATH")
         
      if [ -n "$CONNECT_STATUS" ]; then
      echo " "
@@ -634,7 +705,7 @@ CONNECT_STATUS=$(python3 $BT_AUTOCONNECT_PATH)
 
 if [ ! -f ~/radio ]; then 
 
-ln -s $SCRIPT_LOCATION ~/radio
+ln -s "$SCRIPT_LOCATION" ~/radio
 
 echo " "
 echo "${red}IMPORTANT INFORMATION:"
@@ -658,7 +729,7 @@ echo "Running normally (displays options to choose from):"
 echo " "
 echo "${green}~/radio${cyan}"
 echo " "
-echo "Auto-selecting single / multi sub-option examples ${red}(MULTI SUB-OPTIONS #MUST# BE IN QUOTES!)${cyan}:"
+echo "Auto-selecting single / multi option examples ${red}(MULTI OPTIONS #MUST# BE IN QUOTES!)${cyan}:"
 echo " "
 echo "${green}~/radio \"1 y\""
 echo "${green}~/radio \"upgrade y\"${cyan}"
@@ -777,11 +848,11 @@ select opt in $OPTIONS; do
                     # Remove system link, to reset automatically after upgrade (in case script location changed)
                     rm ~/radio > /dev/null 2>&1
                     
-                    mv -v --force BT-TEMP.bash $SCRIPT_LOCATION
+                    mv -v --force BT-TEMP.bash "$SCRIPT_LOCATION"
                     
                     sleep 3
                 
-                    chmod +x $SCRIPT_LOCATION
+                    chmod +x "$SCRIPT_LOCATION"
                     				
                     sleep 1
                     				
@@ -866,11 +937,8 @@ select opt in $OPTIONS; do
         
         echo " "
 
-        # Clears AND updates apt cache (IF it wasn't already this runtime session)
-        apt_clear_update
-        
-        #DO NOT RUN dist-upgrade, bad things can happen, lol
-        apt upgrade -y
+        # Clears / updates cache, then upgrades (if NOT a rolling release)
+        clean_system_update
         
         echo " "
         				
@@ -933,8 +1001,8 @@ select opt in $OPTIONS; do
 				fi
         
 
-        # Clears AND updates apt cache (IF it wasn't already this runtime session)
-        apt_clear_update
+        # Clears / updates cache, then upgrades (if NOT a rolling release)
+        clean_system_update
         				
         echo " "
         
@@ -1073,7 +1141,7 @@ select opt in $OPTIONS; do
     		
     		rm $HOME/.local/share/systemd/user/btautoconnect.service > /dev/null 2>&1
     		
-    		rm $BT_AUTOCONNECT_PATH
+    		rm "$BT_AUTOCONNECT_PATH"
     		
     		sleep 2
     		
@@ -1257,8 +1325,8 @@ select opt in $OPTIONS; do
         
         # https://github.com/coderholic/pyradio/blob/master/build.md
 
-        # Clears AND updates apt cache (IF it wasn't already this runtime session)
-        apt_clear_update
+        # Clears / updates cache, then upgrades (if NOT a rolling release)
+        clean_system_update
         
         echo " "
         echo "${green}Installing pyradio and required components, please wait...${reset}"
@@ -1282,7 +1350,7 @@ select opt in $OPTIONS; do
         sleep 1
         
         # Install pyradio python3 dependencies
-        sudo apt install python3-setuptools python3-wheel python3-pip python3-requests python3-dnspython python3-psutil -y
+        sudo apt install python3-setuptools python3-wheel python3-pip python3-requests python3-dnspython python3-psutil python3-rich -y
         
         sleep 3
         
@@ -1350,8 +1418,8 @@ select opt in $OPTIONS; do
                 break
                elif [ "$opt" = "system_freezes" ]; then
 
-                # Clears AND updates apt cache (IF it wasn't already this runtime session)
-                apt_clear_update
+                # Clears / updates cache, then upgrades (if NOT a rolling release)
+                clean_system_update
                 
                 sudo apt install mplayer -y
                 
@@ -1748,12 +1816,12 @@ select opt in $OPTIONS; do
         bluetoothctl power on
         echo " "
         
-        echo "${cyan}Scanning for device $BLU_MAC, ${red}please wait 60 seconds or longer${cyan}...${reset}"
+        echo "${cyan}Scanning for device $BLU_MAC, ${red}please wait up to a few minutes${cyan}...${reset}"
         echo " "
         
         
         expect -c "
-        set timeout 20
+        set timeout 100
         spawn bluetoothctl
         send -- \"scan on\r\"
         expect \"$BLU_MAC\"
@@ -2146,8 +2214,6 @@ select opt in $OPTIONS; do
         echo " "
         echo "${cyan}Ethereum: ${green}0x644343e8D0A4cF33eee3E54fE5d5B8BFD0285EF8"
         echo " "
-        echo "${cyan}Helium: ${green}13xs559435FGkh39qD9kXasaAnB8JRF8KowqPeUmKHWU46VYG1h"
-        echo " "
         echo "${cyan}Solana: ${green}GvX4AU4V9atTBof9dT9oBnLPmPiz3mhoXBdqcxyRuQnU"
         echo " "
 
@@ -2210,7 +2276,7 @@ select opt in $OPTIONS; do
         elif [ "$opt" = "about_this_app" ]; then
        
         echo "${cyan} "
-        echo "Copyright $COPYRIGHT_YEARS GPLv3, Bluetooth Internet Radio By Mike Kilday: Mike@DragonFrugal.com"
+        echo "Copyright $COPYRIGHT_YEARS GPLv3, Bluetooth Internet Radio By Mike Kilday: Mike@DragonFrugal.com (leave this copyright / attribution intact in ALL forks / copies!)"
         
         echo " "
         echo "Version: ${APP_VERSION}"
@@ -2242,7 +2308,7 @@ select opt in $OPTIONS; do
         echo " "
         echo "${green}~/radio${cyan}"
         echo " "
-        echo "Auto-selecting single / multi sub-option examples ${red}(MULTI SUB-OPTIONS #MUST# BE IN QUOTES!)${cyan}:"
+        echo "Auto-selecting single / multi option examples ${red}(MULTI OPTIONS #MUST# BE IN QUOTES!)${cyan}:"
         echo " "
         echo "${green}~/radio \"1 y\""
         echo "${green}~/radio \"upgrade y\"${cyan}"

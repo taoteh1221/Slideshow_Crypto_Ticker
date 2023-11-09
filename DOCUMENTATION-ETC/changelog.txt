@@ -779,10 +779,14 @@ v3.12.2
 ---------------------------------------------------------
 
 
+---------------------------------------------------------
+v3.12.3
 
+-BUG FIX: Fixed Coinbase API requests formatting
 
+-Switched to using firefox as default ticker browser (any other browsers tend to crash / actup more often)
 
-
+---------------------------------------------------------
 
 
 

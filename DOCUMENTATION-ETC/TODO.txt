@@ -26,6 +26,21 @@ OPTIMIZATIONS / BUGS / TESTS / UX / QA / OTHER SECTION
 ///////////////////////////////////////////////////////
 
 
+Looks like we have to switch to using the snap package manager for
+ubuntu in the install bash scripts FOR ALL MY APPS. Some pre-requisite
+libraries are no longer available using apt ("Unable to locate package X"), and are only available as
+'snap install X'.
+
+
+Check for "whitespace in paths" support in bash scripting (like we had to do for the BT radio script)
+
+
+.attr('style') ALWAYS OVERWRITES *ALL* PREVIOUS VALUES, SO WHEN USING IT, we need to combine attributes INTO ONE INSTANCE OF .attr('style').
+
+
+Make "CGecko" on ticker app be "CnGecko" instead.
+
+
 All NON-GLOBAL variables inside JAVASCRIPT functions should be started as 'var my_var_name': 
 
 https://stackoverflow.com/questions/10872006/how-do-i-change-the-value-of-a-global-variable-inside-of-a-function/10874509#10874509
@@ -76,7 +91,7 @@ For a 24hr / 1hr / 1week trend stat, THE ONLY #FEASIBLE OPTION# IS TO USE DATA F
 Add SFTP setup as optional in auto-install, AND mention SSH login too (since the screen on the device will be occupied by the ticker running).
 
 
-Work more on Arch Linux support for the auto-installer.
+Convert Arch linux support in auto-installer over to redhat (yum), as Arch does have much pakage support for libraries we use.
 
 
 ///////////////////////////////////////////////////////
