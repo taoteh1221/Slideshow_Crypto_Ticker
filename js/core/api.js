@@ -1,5 +1,5 @@
 
-// Copyright 2019-2023 GPLv3, Slideshow Crypto Ticker by Mike Kilday: http://DragonFrugal.com
+// Copyright 2019-2024 GPLv3, Slideshow Crypto Ticker by Mike Kilday: Mike@DragonFrugal.com (leave this copyright / attribution intact in ALL forks / copies!)
 
 
 /////////////////////////////////////////////////////////////
@@ -298,9 +298,9 @@ kucoin_config(); // Check / load kucoin data BEFORE MARKET CONFIG
 
 // WE DYNAMICALLY ADD THE KUCOIN ENDPOINT within render_interface()
 
-api['binance'] = 'wss://stream.binance.com:9443/ws';
+api['binance'] = 'wss://ws-api.binance.com:9443/ws-api/v3';
 
-api['coinbase'] = 'wss://ws-feed.pro.coinbase.com';
+api['coinbase'] = 'wss://ws-feed.exchange.coinbase.com';
 
 api['kraken'] = 'wss://ws.kraken.com';
 
@@ -438,6 +438,7 @@ alph_symb_regex = /^[a-z0-9\/\-_|:]+$/i;
 				"product_ids": [
 				],
 				"channels": [
+                              "heartbeat",
 						{
 								"name": "ticker",
 								"product_ids": [
@@ -451,6 +452,7 @@ alph_symb_regex = /^[a-z0-9\/\-_|:]+$/i;
 			var loop = 0;
 			markets[exchange].forEach(element => {
 			subscribe_msg[exchange].product_ids[loop] = element;
+			subscribe_msg[exchange].channels[1].product_ids[loop] = element;
 			loop = loop + 1;
 			});
 		
