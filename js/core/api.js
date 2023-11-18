@@ -298,7 +298,7 @@ kucoin_config(); // Check / load kucoin data BEFORE MARKET CONFIG
 
 // WE DYNAMICALLY ADD THE KUCOIN ENDPOINT within render_interface()
 
-api['binance'] = 'wss://ws-api.binance.com:9443/ws-api/v3';
+api['binance'] = 'wss://stream.binance.com:9443/ws';
 
 api['coinbase'] = 'wss://ws-feed.exchange.coinbase.com';
 

@@ -66,7 +66,7 @@ MUTIPLE TICKERS (slideshow mode) *MINIMUM* system specs:
 #############################################################################################
 
 
-AUTOMATIC INSTALLATION
+AUTOMATIC INSTALLATION / UPGRADING
 
 IMPORTANT NOTES: This install script has been designed to run generically on Debian-based systems, but has only been tested on RaspberryPi / DietPi operating systems. For Ticker autostart at system boot, the LXDE Desktop is #REQUIRED# (this is the default desktop on RaspberryPi OS). The ticker can also be manually started (see CONFIGURING AFTER INSTALLATION).
 
@@ -77,7 +77,7 @@ To install / upgrade everything automatically on a RaspberryPi / DietPi device, 
 wget --no-cache -O TICKER-INSTALL.bash https://tinyurl.com/install-crypto-ticker;chmod +x TICKER-INSTALL.bash;sudo ./TICKER-INSTALL.bash
 
 
-Follow the prompts, and the automated script will install / configure the ticker. KUCOIN MARKETS #WILL NOT WORK# IF YOU DO NOT INSTALL THE TICKER PROPERLY!
+Follow the prompts, and the automated script will install / upgrade / configure the ticker. KUCOIN MARKETS #WILL NOT WORK# IF YOU DO NOT INSTALL THE TICKER PROPERLY!
 
 
 #############################################################################################
