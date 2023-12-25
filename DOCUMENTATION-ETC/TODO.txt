@@ -82,6 +82,9 @@ FEATURES / STRUCTURING SECTION
 ///////////////////////////////////////////////////////
 
 
+Add "coingecko terminal" DEX API support.
+
+
 Add optional clock (with day / date) to enable / disable showing as an item in the slideshow. Also look into adding a weather slideshow item too.
 
 
