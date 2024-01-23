@@ -82,6 +82,21 @@ FEATURES / STRUCTURING SECTION
 ///////////////////////////////////////////////////////
 
 
+Add IMX to demo assets
+
+
+add neon evm token $neon to demo assets
+
+
+Possible bug in character length of assets for coinbase, in ticker:
+https://github.com/taoteh1221/Slideshow_Crypto_Ticker/discussions/61
+
+
+User in telegram reporting that the latest raspberry pi os is not compatible with the ticker auto installer:
+__________________
+@taoteh1221 I was able to get the softeare to work. I used the legacy OS since they update the OS in December. It seems like it is the new version of the os. I think it has to do with resolution in new OS
+
+
 Add "coingecko terminal" DEX API support.
 
 
