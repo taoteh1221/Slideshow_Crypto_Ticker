@@ -74,18 +74,18 @@ exchange_markets['gateio'] = 'RNDR_USDT|DAI_USDT';
 ////
 // Kucoin markets (set to '' to disable)
 // !!KUCOIN REQUIRES USING THE INSTALL SCRIPT!!
-exchange_markets['kucoin'] = 'MKR-USDT|AURY-USDT'; 
+exchange_markets['kucoin'] = 'MKR-USDT|NEON-USDT'; 
 ////
 ////
 // Kraken markets (set to '' to disable)
-exchange_markets['kraken'] = 'RAY/USD|ATLAS/USD|POLIS/USD|MANA/USD'; 
+exchange_markets['kraken'] = 'JUP/USD|ATLAS/USD|POLIS/USD|MANA/USD'; 
 ////
 //// 
 // Coingecko markets (set to '' to disable)
 // USE COINGECKO'S API ID FOR EACH ASSET! (SEE COINGECKO ASSET PAGE'S INFO SECTION) 
 // PAIRING ASSET MUST BE SUPPORTED BY COINGECKO'S 'vs_currencies' API PARAMETER!
 // FORMAT IS 'api-id-here:symbol/pairing'
-exchange_markets['coingecko'] = 'grape-2:grape/usd|hive:hive/usd';
+exchange_markets['coingecko'] = 'grape-2:grape/usd|genesysgo-shadow:shdw/usd';
 
 
 // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
