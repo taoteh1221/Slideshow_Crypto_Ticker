@@ -74,7 +74,7 @@ exchange_markets['gateio'] = 'RNDR_USDT|DAI_USDT';
 ////
 // Kucoin markets (set to '' to disable)
 // !!KUCOIN REQUIRES USING THE INSTALL SCRIPT!!
-exchange_markets['kucoin'] = 'MKR-USDT|NEON-USDT'; 
+exchange_markets['kucoin'] = 'MKR-USDT|NEON-USDT|WEN-USDT'; 
 ////
 ////
 // Kraken markets (set to '' to disable)
@@ -85,7 +85,7 @@ exchange_markets['kraken'] = 'JUP/USD|ATLAS/USD|POLIS/USD|MANA/USD';
 // USE COINGECKO'S API ID FOR EACH ASSET! (SEE COINGECKO ASSET PAGE'S INFO SECTION) 
 // PAIRING ASSET MUST BE SUPPORTED BY COINGECKO'S 'vs_currencies' API PARAMETER!
 // FORMAT IS 'api-id-here:symbol/pairing'
-exchange_markets['coingecko'] = 'grape-2:grape/usd|genesysgo-shadow:shdw/usd';
+exchange_markets['coingecko'] = 'bonk:bonk/usd|genesysgo-shadow:shdw/usd';
 
 
 // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -128,15 +128,15 @@ var system_data_opacity = 0.70;  // Default = 0.70 (#CAN# BE DECIMALS HERE, WITH
 
 
 // Title font size
-var title_size = 230; // Default = 57 (SMALL SCREEN), 115 (MEDIUM SCREEN), 230 (LARGE SCREEN)
+var title_size = 220; // Default = 55 (SMALL SCREEN), 110 (MEDIUM SCREEN), 220 (LARGE SCREEN)
 
 
 // 24 hour volume font size
-var volume_size = 168; // Default = 42 (SMALL SCREEN), 84 (MEDIUM SCREEN), 168 (LARGE SCREEN)
+var volume_size = 160; // Default = 40 (SMALL SCREEN), 80 (MEDIUM SCREEN), 160 (LARGE SCREEN)
 
 
 // Ticker font size
-var ticker_size = 320; // Default = 80 (SMALL SCREEN), 160 (MEDIUM SCREEN), 320 (LARGE SCREEN)
+var ticker_size = 300; // Default = 75 (SMALL SCREEN), 150 (MEDIUM SCREEN), 300 (LARGE SCREEN)
 
 
 // Ticker arrow size RATIO (to ticker size), DECIMAL NUMBER FORMAT X.XX OF 1.00 OR LESS
@@ -149,7 +149,7 @@ var arrow_spacing = 20; // Default = 10 (SMALL SCREEN), 20 (MEDIUM SCREEN), 40 (
 
 
 // Maximum decimal places for ticker values worth under 1.00 in unit value, for prettier / less-cluttered interface
-var ticker_max_decimals = 7; // Default = 7
+var ticker_max_decimals = 6; // Default = 6
 
 
 // Minimum decimal places for ANY ticker values,
