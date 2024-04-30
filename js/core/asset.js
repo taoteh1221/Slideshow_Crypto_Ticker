@@ -83,13 +83,20 @@ results = new Array();
 // Merge fiat / crypto arrays TO NEW ARRAY (WITHOUT ALTERING EITHER ORIGINAL ARRAYS)
 scan_pairings = $.extend({}, fiat_pairings, crypto_pairings);
 
-// last 4 / last 3 characters of the market id
+// last characters of the market id
+last_6 = market_id.substr(market_id.length - 6);
+last_5 = market_id.substr(market_id.length - 5);
 last_4 = market_id.substr(market_id.length - 4);
 last_3 = market_id.substr(market_id.length - 3);
 
 
-	// Check for 4 character pairing configs existing FIRST
-	if ( typeof scan_pairings[last_4.toUpperCase()] !== 'undefined' ) {
+	if ( typeof scan_pairings[last_6.toUpperCase()] !== 'undefined' ) {
+	return last_6.toUpperCase();
+	}
+	else if ( typeof scan_pairings[last_5.toUpperCase()] !== 'undefined' ) {
+	return last_5.toUpperCase();
+	}
+	else if ( typeof scan_pairings[last_4.toUpperCase()] !== 'undefined' ) {
 	return last_4.toUpperCase();
 	}
 	else if ( typeof scan_pairings[last_3.toUpperCase()] !== 'undefined' ) {

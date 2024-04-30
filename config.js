@@ -85,7 +85,7 @@ exchange_markets['kraken'] = 'JUP/USD|ATLAS/USD|POLIS/USD|MANA/USD';
 // USE COINGECKO'S API ID FOR EACH ASSET! (SEE COINGECKO ASSET PAGE'S INFO SECTION) 
 // PAIRING ASSET MUST BE SUPPORTED BY COINGECKO'S 'vs_currencies' API PARAMETER!
 // FORMAT IS 'api-id-here:symbol/pairing'
-exchange_markets['coingecko'] = 'bonk:bonk/usd|genesysgo-shadow:shdw/usd';
+exchange_markets['coingecko'] = 'immutable-x:imx/usd|genesysgo-shadow:shdw/usd|bonk:bonk/usd';
 
 
 // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
