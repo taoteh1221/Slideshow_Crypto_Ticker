@@ -10,6 +10,9 @@ echo "Initializing, please wait..."
 echo " "
 
 
+######################################
+
+
 # EXPLICITLY set any dietpi paths 
 # Export too, in case we are calling another bash instance in this script
 if [ -f /boot/dietpi/.version ]; then
@@ -33,46 +36,29 @@ PATH=/usr/sbin:$PATH
 export PATH=$PATH
 fi
 
-######################################
 
-
-# Path to app (CROSS-DISTRO-COMPATIBLE)
-get_app_path() {
-app_path_result=$(whereis -b $1)
-app_path_result="${app_path_result#*$1: }"
-app_path_result=${app_path_result%%[[:space:]]*}
-app_path_result="${app_path_result#*$1:}"
-echo "$app_path_result"
-}
+# In case we are recursing back into this script (for filtering params etc),
+# flag export of a few more basic sys vars if present
+export XAUTHORITY=~/.Xauthority 
+export PWD=$PWD
 
 
 ######################################
 
-# https://stackoverflow.com/questions/5947742/how-to-change-the-output-color-of-echo-in-linux
 
-if hash tput > /dev/null 2>&1; then
+# Are we running on Ubuntu OS?
+IS_UBUNTU=$(cat /etc/os-release | grep "PRETTY_NAME" | grep "Ubuntu")
 
-red=`tput setaf 1`
-green=`tput setaf 2`
-yellow=`tput setaf 3`
-blue=`tput setaf 4`
-magenta=`tput setaf 5`
-cyan=`tput setaf 6`
 
-reset=`tput sgr0`
+######################################
 
-else
 
-red=``
-green=``
-yellow=``
-blue=``
-magenta=``
-cyan=``
+# Get date / time
+DATE=$(date '+%Y-%m-%d')
+TIME=$(date '+%H:%M:%S')
 
-reset=``
-
-fi
+# Current timestamp
+CURRENT_TIMESTAMP=$(date +%s)
 
 
 ######################################
@@ -80,7 +66,6 @@ fi
 
 # Get logged-in username (if sudo, this works best with logname)
 TERMINAL_USERNAME=$(logname)
-
 
 # If logname doesn't work, use the $SUDO_USER or $USER global var
 if [ -z "$TERMINAL_USERNAME" ]; then
@@ -94,12 +79,7 @@ if [ -z "$TERMINAL_USERNAME" ]; then
 fi
 
 
-# Get date / time
-DATE=$(date '+%Y-%m-%d')
-TIME=$(date '+%H:%M:%S')
-
-# Current timestamp
-CURRENT_TIMESTAMP=$(date +%s)
+######################################
 
 
 # If a symlink, get link target for script location
@@ -110,10 +90,15 @@ else
 SCRIPT_LOCATION="$( cd -- "$(dirname "$0")" >/dev/null 2>&1 ; pwd -P )/"$(basename "$0")""
 fi
 
-
 # Now set path / file vars, after setting SCRIPT_LOCATION
 SCRIPT_PATH="$( cd -- "$(dirname "$SCRIPT_LOCATION")" >/dev/null 2>&1 ; pwd -P )"
 SCRIPT_NAME=$(basename "$SCRIPT_LOCATION")
+
+# Parent directory of the script location
+PARENT_DIR="$(dirname "$SCRIPT_LOCATION")"
+
+
+######################################
 
 
 # Get the operating system and version
@@ -148,40 +133,100 @@ else
 fi
 
 
+# For setting user agent header in curl, since some API servers !REQUIRE! a set user agent OR THEY BLOCK YOU
+CUSTOM_CURL_USER_AGENT_HEADER="User-Agent: Curl (${OS}/$VER; compatible;)"
+
+
 ######################################
 
+# https://stackoverflow.com/questions/5947742/how-to-change-the-output-color-of-echo-in-linux
 
-echo " "
+if hash tput > /dev/null 2>&1; then
 
+red=`tput setaf 1`
+green=`tput setaf 2`
+yellow=`tput setaf 3`
+blue=`tput setaf 4`
+magenta=`tput setaf 5`
+cyan=`tput setaf 6`
 
-if [ "$EUID" -ne 0 ] || [ "$TERMINAL_USERNAME" == "root" ]; then 
- echo "${red}Please run as a NORMAL USER WITH 'sudo' PERMISSIONS (NOT LOGGED IN AS 'root').${reset}"
- echo " "
- echo "${cyan}Exiting...${reset}"
- echo " "
- exit
+reset=`tput sgr0`
+
+else
+
+red=``
+green=``
+yellow=``
+blue=``
+magenta=``
+cyan=``
+
+reset=``
+
 fi
 
 
+######################################
+
+
 if [ -f "/etc/debian_version" ]; then
+
 echo "${cyan}Your system has been detected as Debian-based, which is compatible with this automated installation script."
-PACKAGE_INSTALL="sudo apt install"
-PACKAGE_REMOVE="sudo apt --purge remove"
+
+# USE 'apt-get' IN SCRIPTING!
+# https://askubuntu.com/questions/990823/apt-gives-unstable-cli-interface-warning
+PACKAGE_INSTALL="sudo apt-get install"
+PACKAGE_REMOVE="sudo apt-get --purge remove"
+
 echo " "
 echo "Continuing...${reset}"
 echo " "
-elif [ -f "/etc/arch-release" ]; then
-echo "${cyan}Your system has been detected as Arch-based, which is compatible with this automated installation script."
-PACKAGE_INSTALL="sudo pacman -S"
-PACKAGE_REMOVE="sudo pacman -R"
+
+elif [ -f "/etc/redhat-release" ]; then
+
+echo "${cyan}Your system has been detected as Redhat-based, which is compatible with this automated installation script."
+
+PACKAGE_INSTALL="sudo yum install"
+PACKAGE_REMOVE="sudo yum remove"
+
 echo " "
 echo "Continuing...${reset}"
 echo " "
+
 else
-echo "${red}Your system has been detected as NOT BEING Debian-based. Your system is NOT compatible with this automated installation script."
+
+echo "${red}Your system has been detected as NOT BEING Debian-based OR Redhat-based. Your system is NOT compatible with this automated installation script."
+
+echo "${yellow} "
+read -n1 -s -r -p $"PRESS ANY KEY to exit..." key
+echo "${reset} "
+
+    if [ "$key" = 'y' ] || [ "$key" != 'y' ]; then
+    echo " "
+    echo "${green}Exiting...${reset}"
+    echo " "
+    exit
+    fi
+
+fi
+
+
+if [ "$EUID" -ne 0 ] || [ "$TERMINAL_USERNAME" == "root" ]; then 
+
 echo " "
-echo "Exiting...${reset}"
-exit
+echo "${red}Please run as a NORMAL USER WITH 'sudo' PERMISSIONS (NOT LOGGED IN AS 'root').${reset}"
+
+echo "${yellow} "
+read -n1 -s -r -p $"PRESS ANY KEY to exit..." key
+echo "${reset} "
+
+    if [ "$key" = 'y' ] || [ "$key" != 'y' ]; then
+    echo " "
+    echo "${green}Exiting...${reset}"
+    echo " "
+    exit
+    fi
+
 fi
 
 
@@ -225,9 +270,7 @@ clean_system_update () {
      fi
 
 
-     if [ "$PACKAGE_CACHE_REFRESHED" != "1" ]; then
-     
-     PACKAGE_CACHE_REFRESHED=1
+     if [ -z "$PACKAGE_CACHE_REFRESHED" ]; then
 
 
           if [ -f "/etc/debian_version" ]; then
@@ -241,9 +284,7 @@ clean_system_update () {
           
           sleep 2
           
-          sudo apt update
-          
-          sleep 2
+          sudo apt-get update
           
           echo " "
      
@@ -263,9 +304,9 @@ clean_system_update () {
           
                if [ -f "/etc/debian_version" ]; then
                #DO NOT RUN dist-upgrade, bad things can happen, lol
-               sudo apt upgrade -y
-               elif [ -f "/etc/arch-release" ]; then
-               sudo pacman -Syu
+               sudo apt-get upgrade -y
+               elif [ -f "/etc/redhat-release" ]; then
+               sudo yum upgrade -y
                fi
           
           
@@ -279,253 +320,182 @@ clean_system_update () {
           
           fi
      
+     
+     PACKAGE_CACHE_REFRESHED=1
+     
      fi
 
 }
 # clean_system_update function END
 
-
-######################################
-
-
-# Get SIMILAR (CROSS-DISTRO) primary dependency apps, if we haven't yet
-    
-# Install git if needed
-GIT_PATH=$(get_app_path "git")
-
-if [ -z "$GIT_PATH" ]; then
-
 # Clears / updates cache, then upgrades (if NOT a rolling release)
 clean_system_update
-
-echo " "
-echo "${cyan}Installing required component git, please wait...${reset}"
-echo " "
-
-sudo $PACKAGE_INSTALL git -y
-
-fi
-
-
-# Install curl if needed
-CURL_PATH=$(get_app_path "curl")
-
-if [ -z "$CURL_PATH" ]; then
-
-# Clears / updates cache, then upgrades (if NOT a rolling release)
-clean_system_update
-
-echo " "
-echo "${cyan}Installing required component curl, please wait...${reset}"
-echo " "
-
-sudo $PACKAGE_INSTALL curl -y
-
-fi
-
-
-# Install jq if needed
-JQ_PATH=$(get_app_path "jq")
-
-if [ -z "$JQ_PATH" ]; then
-
-# Clears / updates cache, then upgrades (if NOT a rolling release)
-clean_system_update
-
-echo " "
-echo "${cyan}Installing required component jq, please wait...${reset}"
-echo " "
-
-sudo $PACKAGE_INSTALL jq -y
-
-fi
-
-
-# Install wget if needed
-WGET_PATH=$(get_app_path "wget")
-
-if [ -z "$WGET_PATH" ]; then
-
-# Clears / updates cache, then upgrades (if NOT a rolling release)
-clean_system_update
-
-echo " "
-echo "${cyan}Installing required component wget, please wait...${reset}"
-echo " "
-
-sudo $PACKAGE_INSTALL wget -y
-
-fi
-
-
-# Install sed if needed
-SED_PATH=$(get_app_path "sed")
-
-if [ -z "$SED_PATH" ]; then
-
-# Clears / updates cache, then upgrades (if NOT a rolling release)
-clean_system_update
-
-echo " "
-echo "${cyan}Installing required component sed, please wait...${reset}"
-echo " "
-
-sudo $PACKAGE_INSTALL sed -y
-
-fi
-
-
-# Install less if needed
-LESS_PATH=$(get_app_path "less")
-				
-if [ -z "$LESS_PATH" ]; then
-
-# Clears / updates cache, then upgrades (if NOT a rolling release)
-clean_system_update
-
-echo " "
-echo "${cyan}Installing required component less, please wait...${reset}"
-echo " "
-
-sudo $PACKAGE_INSTALL less -y
-
-fi
-
-
-# Install expect if needed
-EXPECT_PATH=$(get_app_path "expect")
-				
-if [ -z "$EXPECT_PATH" ]; then
-
-# Clears / updates cache, then upgrades (if NOT a rolling release)
-clean_system_update
-
-echo " "
-echo "${cyan}Installing required component expect, please wait...${reset}"
-echo " "
-
-sudo $PACKAGE_INSTALL expect -y
-
-fi
-
-
-# Install avahi-daemon if needed (for .local names on internal / home network)
-AVAHID_PATH=$(get_app_path "avahi-daemon")
-
-if [ -z "$AVAHID_PATH" ]; then
-
-# Clears / updates cache, then upgrades (if NOT a rolling release)
-clean_system_update
-
-echo " "
-echo "${cyan}Installing required component avahi-daemon, please wait...${reset}"
-echo " "
-
-sudo $PACKAGE_INSTALL avahi-daemon -y
-
-fi
-
-
-# Install bc if needed (for decimal math in bash)
-BC_PATH=$(get_app_path "bc")
-
-if [ -z "$BC_PATH" ]; then
-
-# Clears / updates cache, then upgrades (if NOT a rolling release)
-clean_system_update
-
-echo " "
-echo "${cyan}Installing required component bc, please wait...${reset}"
-echo " "
-
-sudo $PACKAGE_INSTALL bc -y
-
-fi
-
-
-# SIMILAR (CROSS-DISTRO) dependency check END
 
 
 ######################################
 
 
-# Install bsdtar if needed (for opening archives)
-BSDTAR_PATH=$(get_app_path "bsdtar")
+# Path to app (CROSS-DISTRO-COMPATIBLE)
+get_app_path() {
+
+app_path_result=$(whereis -b $1)
+app_path_result="${app_path_result#*$1: }"
+app_path_result=${app_path_result%%[[:space:]]*}
+app_path_result="${app_path_result#*$1:}"
+     
+     
+     # If we have found the library already installed on this system
+     if [ ! -z "$app_path_result" ]; then
+     
+     PATH_CHECK_REENTRY="" # Reset reentry flag
+     
+     echo "$app_path_result"
+     
+     # If we are re-entering from the else statement below, quit trying, with warning sent to terminal (NOT function output)
+     elif [ ! -z "$PATH_CHECK_REENTRY" ]; then
+     
+     PATH_CHECK_REENTRY="" # Reset reentry flag
+     
+     echo "${red} " > /dev/tty
+     echo "System path for '$1' NOT FOUND, even AFTER package installation attempts, giving up." > /dev/tty
+     echo " " > /dev/tty
+
+     echo "*PLEASE* REPORT THIS ISSUE HERE, *IF THIS SCRIPT FAILS TO RUN PROPERLY FROM THIS POINT ONWARD*:" > /dev/tty
+     echo " " > /dev/tty
+     echo "https://github.com/taoteh1221/Slideshow_Crypto_Ticker/issues" > /dev/tty
+     echo "${reset} " > /dev/tty
+     
+     echo "${yellow} " > /dev/tty
+     read -n1 -s -r -p $"PRESS ANY KEY to continue..." key
+     echo "${reset} " > /dev/tty
+     
+         if [ "$key" = 'y' ] || [ "$key" != 'y' ]; then
+         echo " " > /dev/tty
+         echo "${green}Continuing...${reset}" > /dev/tty
+         echo " " > /dev/tty
+         fi
+     
+     echo " " > /dev/tty
+     
+     # If library not found, attempt package installation
+     else
+     
+     
+          # Handle package name exceptions...
+          if [ "$1" == "bsdtar" ]; then
+          
+               # bsdtar on Ubuntu 18.x and higher
+               if [ -f "/etc/debian_version" ]; then
+               SYS_PACK="libarchive-tools"
+               # bsdtar on Redhat
+               elif [ -f "/etc/redhat-release" ]; then
+               SYS_PACK="libarchive"
+               fi
+          
+          else
+          SYS_PACK="$1"
+          fi
+          
+          
+          # Terminal alert for good UX...
+          if [ "$1" != "$SYS_PACK" ]; then
+          echo " " > /dev/tty
+          echo "${yellow}'$1' is found WITHIN '$SYS_PACK', changing package request accordingly...${reset}" > /dev/tty
+          echo " " > /dev/tty
+          fi
 
 
-# Distro-specific logic, to set variables, get dependencies, etc
-if [ -f "/etc/debian_version" ]; then
-
-# Get the host ip address
-IP=`hostname -I` 
-				
-
-     if [ -z "$BSDTAR_PATH" ]; then
-     
-     # Clears / updates cache, then upgrades (if NOT a rolling release)
-     clean_system_update
-     
-     echo " "
-     echo "${cyan}Installing required component libarchive-tools, please wait...${reset}"
-     echo " "
-     
-     # Ubuntu 18.x and higher
-     $PACKAGE_INSTALL libarchive-tools -y
-     
-     fi
-     
-
-elif [ -f "/etc/arch-release" ]; then
-
-# Get the host ip address
-IP=$(ip -json route get 8.8.8.8 | jq -r '.[].prefsrc') 
-				
-
-     if [ -z "$BSDTAR_PATH" ]; then
-     
-     # Clears / updates cache, then upgrades (if NOT a rolling release)
-     clean_system_update
-     
-     echo " "
-     echo "${cyan}Installing required component libarchive, please wait...${reset}"
-     echo " "
-     
-     # Ubuntu 18.x and higher
-     $PACKAGE_INSTALL libarchive -y
-     
-     fi
-
-
-# Install cronie if needed (for a crond impementation)
-CRONIE_PATH=$(get_app_path "crond")	
-
-
-     if [ -z "$CRONIE_PATH" ]; then
-     
-     # Clears / updates cache, then upgrades (if NOT a rolling release)
-     clean_system_update
-     
-     echo " "
-     echo "${cyan}Installing required component cronie, please wait...${reset}"
-     echo " "
-     
-     $PACKAGE_INSTALL cronie -y
+     echo " " > /dev/tty
+     echo "${cyan}Installing required component '$SYS_PACK', please wait...${reset}" > /dev/tty
+     echo " " > /dev/tty
      
      sleep 3
+               
+     $PACKAGE_INSTALL $SYS_PACK -y > /dev/tty
      
-     systemctl enable --now cronie.service
      
+          # If UBUNTU (*NOT* any other OS) snap was detected on the system, try a snap install too
+          # (as they moved some libs over to snap / snap-only? now)
+          if [ ! -z "$UBUNTU_SNAP_PATH" ]; then
+          
+          UBUNTU_SNAP_INSTALL="sudo $UBUNTU_SNAP_PATH install"
+          
+          echo " " > /dev/tty
+          echo "${yellow}CHECKING FOR UBUNTU SNAP PACKAGE '$SYS_PACK', please wait...${reset}" > /dev/tty
+          echo " " > /dev/tty
+          
+          sleep 3
+          
+          $UBUNTU_SNAP_INSTALL $SYS_PACK > /dev/tty
+          
+          fi
+     
+     
+     sleep 2
+     
+     PATH_CHECK_REENTRY=1 # Set reentry flag, right before reentry
+     
+     echo $(get_app_path "$1")
+           
      fi
 
 
-fi
+}
 
 
 ######################################
 
 
-# For setting user agent header in curl, since some API servers !REQUIRE! a set user agent OR THEY BLOCK YOU
-CUSTOM_CURL_USER_AGENT_HEADER="User-Agent: Curl (${OS}/$VER; compatible;)"
+# Ubuntu uses snaps for very basic libraries these days, so we need to configure for possible snap installs
+if [ "$IS_UBUNTU" != "" ]; then
+UBUNTU_SNAP_PATH=$(get_app_path "snap")
+fi
+
+
+# Get PRIMARY dependency lib's paths (for bash scripting commands...auto-install is attempted, if not found on system)
+# (our usual standard library prerequisites [ordered alphabetically], for 99% of advanced bash scripting needs)
+
+# avahi-daemon
+AVAHID_PATH=$(get_app_path "avahi-daemon")
+
+# bc
+BC_PATH=$(get_app_path "bc")
+
+# bsdtar
+BSDTAR_PATH=$(get_app_path "bsdtar")
+
+# curl
+CURL_PATH=$(get_app_path "curl")
+
+# expect
+EXPECT_PATH=$(get_app_path "expect")
+    
+# git
+GIT_PATH=$(get_app_path "git")
+
+# jq
+JQ_PATH=$(get_app_path "jq")
+
+# less
+LESS_PATH=$(get_app_path "less")
+
+# sed
+SED_PATH=$(get_app_path "sed")
+
+# wget
+WGET_PATH=$(get_app_path "wget")
+
+# PRIMARY dependency lib's paths END
+				
+
+######################################
+
+
+# Get the *INTERNAL* NETWORK ip address
+IP=$(ip -o route get to 8.8.8.8 | sed -n 's/.*src \([0-9.]\+\).*/\1/p')
+
+
+######################################
 
 
 echo " "
@@ -721,17 +691,20 @@ fi
               
 # SET EARLY (IMMEADIATELY #AFTER# ANY LXDE INSTALL ABOVE), AS WE USE THIS IN A FEW PLACES
 # KNOWN raspi LXDE profile
-if [ -f /usr/bin/raspi-config ]; then
+if [ -d /etc/xdg/lxsession/LXDE-pi ]; then
+
 LXDE_PROFILE="LXDE-pi"
+
 # UNKNOWN generic LXDE profile
-elif [ -d /etc/xdg/lxsession ]; then
+elif [ -d /etc/xdg/lxsession/LXDE ]; then
       
 # Auto-detect or set to KNOWN LXDE default
 # Unfortunately not much documentation on listing LXDE profile names,
-# BUT looks fairly reliable to just check in /home/$APP_USER/.config/lxpanel
+# BUT looks fairly reliable to just check in /etc/xdg/lxsession
 # (IT SHOULD EXIST ALREADY AT THIS POINT)
 LXDE_PROFILE=$(ls /etc/xdg/lxsession)
-LXDE_PROFILE=$(echo "${LXDE_PROFILE}" | xargs) # trim whitespace
+LXDE_PROFILE=$(echo "${LXDE_PROFILE}" | xargs) # REMOVE any whitespace ON ENDS ONLY
+LXDE_PROFILE=$(echo "${LXDE_PROFILE}" | sed "s/LXDE //") # REMOVE "LXDE "
   
     # If LXDE profile var was NOT auto-setup properly
     # (contains whitespace MID-VARIABLE or is empty),
@@ -740,7 +713,23 @@ LXDE_PROFILE=$(echo "${LXDE_PROFILE}" | xargs) # trim whitespace
     LXDE_PROFILE="LXDE"
     LXDE_ALERT=1
     fi
-  
+
+else
+
+echo " "
+echo "${red}LXDE Desktop NOT detected (please install it, it is REQUIRED to continue).${reset}"
+
+echo "${yellow} "
+read -n1 -s -r -p $"PRESS ANY KEY to exit..." key
+echo "${reset} "
+
+    if [ "$key" = 'y' ] || [ "$key" != 'y' ]; then
+    echo " "
+    echo "${green}Exiting...${reset}"
+    echo " "
+    exit
+    fi
+
 fi
 
 
