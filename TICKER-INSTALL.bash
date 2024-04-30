@@ -186,7 +186,7 @@ echo " "
 
 elif [ -f "/etc/redhat-release" ]; then
 
-echo "${cyan}Your system has been detected as Redhat-based, which is compatible with this automated installation script."
+echo "${cyan}Your system has been detected as Redhat-based, which is ${red}CURRENTLY STILL IN DEVELOPMENT TO EVENTUALLY BE (BUT IS *NOT* YET) ${cyan}compatible with this automated installation script."
 
 PACKAGE_INSTALL="sudo yum install"
 PACKAGE_REMOVE="sudo yum remove"
