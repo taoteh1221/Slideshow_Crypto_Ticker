@@ -26,19 +26,10 @@ OPTIMIZATIONS / BUGS / TESTS / UX / QA / OTHER SECTION
 ///////////////////////////////////////////////////////
 
 
-Looks like we have to switch to using the snap package manager for
-ubuntu in the install bash scripts FOR ALL MY APPS. Some pre-requisite
-libraries are no longer available using apt ("Unable to locate package X"), and are only available as
-'snap install X'.
-
-
 Check for "whitespace in paths" support in bash scripting (like we had to do for the BT radio script)
 
 
 .attr('style') ALWAYS OVERWRITES *ALL* PREVIOUS VALUES, SO WHEN USING IT, we need to combine attributes INTO ONE INSTANCE OF .attr('style').
-
-
-Make "CGecko" on ticker app be "CnGecko" instead.
 
 
 All NON-GLOBAL variables inside JAVASCRIPT functions should be started as 'var my_var_name': 
@@ -82,6 +73,12 @@ FEATURES / STRUCTURING SECTION
 ///////////////////////////////////////////////////////
 
 
+Convert all ticker CSS units to 'vw' (like we already do for the CPU / Memory / Upgrade elements at the top).
+
+
+Add "coingecko terminal" DEX API support.
+
+
 Add optional clock (with day / date) to enable / disable showing as an item in the slideshow. Also look into adding a weather slideshow item too.
 
 
@@ -91,7 +88,7 @@ For a 24hr / 1hr / 1week trend stat, THE ONLY #FEASIBLE OPTION# IS TO USE DATA F
 Add SFTP setup as optional in auto-install, AND mention SSH login too (since the screen on the device will be occupied by the ticker running).
 
 
-Convert Arch linux support in auto-installer over to redhat (yum), as Arch does have much pakage support for libraries we use.
+Add full redhat support for auto-installer.
 
 
 ///////////////////////////////////////////////////////

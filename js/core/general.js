@@ -426,7 +426,7 @@ render = render.replace(/okex/gi, "OKex");
 render = render.replace(/mart/gi, "Mart");
 render = render.replace(/ftx/gi, "FTX");
 render = render.replace(/gateio/gi, "Gate.io");
-render = render.replace(/coingecko/gi, "CGecko");
+render = render.replace(/coingecko/gi, "CnGecko");
 render = render.replace(/dex/gi, "DEX");
 
 return render;

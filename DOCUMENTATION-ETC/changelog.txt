@@ -799,6 +799,16 @@ v3.12.4
 ---------------------------------------------------------
 
 
+---------------------------------------------------------
+v3.13.0
+
+-Refactored auto-installer
+
+-Detection / (optional) fixing of low swap space on debian-based devices (so running a desktop interface doesn't use all the system memory on low power devices)
+
+---------------------------------------------------------
+
+
 
 
 

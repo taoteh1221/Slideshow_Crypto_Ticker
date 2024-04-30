@@ -673,29 +673,6 @@ function websocket_connect(exchange) {
 	   if ( is_json(e.data) == true ) {
 	   msg = JSON.parse(e.data);
 	   }
-	   else if ( exchange == 'EXCHANGE_NAME_HERE' ) {
-       
-       // NOTES ON DECOMPRESSING (ALSO NEEDED sockets[exchange].binaryType = "arraybuffer"; before opening websocket)
-       
-	   // https://nodeca.github.io/pako/
-	   // https://stackoverflow.com/questions/4507316/zlib-decompression-client-side
-	   // https://stackoverflow.com/questions/57264517/pako-js-error-invalid-stored-block-lengths-when-trying-to-inflate-websocket-m
-	   
-	   // THESE IDIOTS CHANGED SOMETHING AT THE END OF 2/2022 IN THEIR API...FIGURE OUT WTF IT IS SOMEDAY, OR JUST REMOVE SUPPORT FOR THIS EXCHAGE!
-       
-          try {
-              
-              // Decompress the data, convert to string
-              msg = JSON.parse(pako.inflateRaw(e.data, {
-              to: 'string'
-              }));
-              
-          }
-          catch (err) {
-          console.log(err);
-          }
-  
-	   }
 	   else {
 	   msg = e.data;
 	   }
