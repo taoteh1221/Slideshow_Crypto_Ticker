@@ -128,11 +128,11 @@ var system_data_opacity = 0.70;  // Default = 0.70 (#CAN# BE DECIMALS HERE, WITH
 
 
 // Title font size
-var title_size = 220; // Default = 55 (SMALL SCREEN), 110 (MEDIUM SCREEN), 220 (LARGE SCREEN)
+var title_size = 200; // Default = 50 (SMALL SCREEN), 100 (MEDIUM SCREEN), 200 (LARGE SCREEN)
 
 
 // 24 hour volume font size
-var volume_size = 160; // Default = 40 (SMALL SCREEN), 80 (MEDIUM SCREEN), 160 (LARGE SCREEN)
+var volume_size = 150; // Default = 38 (SMALL SCREEN), 75 (MEDIUM SCREEN), 150 (LARGE SCREEN)
 
 
 // Ticker font size
