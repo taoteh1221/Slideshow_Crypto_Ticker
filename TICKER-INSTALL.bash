@@ -599,7 +599,7 @@ echo "${yellow}If this information is NOT correct, please exit installation and 
 echo " "
 
 echo "${yellow} "
-read -n1 -s -r -p $"Press y to continue (or press n to exit)..." key
+read -n1 -s -r -p $"Press Y to continue (or press N to exit)..." key
 echo "${reset} "
 
     if [ "$key" = 'y' ] || [ "$key" = 'Y' ]; then
@@ -640,7 +640,7 @@ echo " "
 echo "It is ONLY recommended to install this ticker app IF your device has an LCD screen installed.${reset}"
 echo " "
 
-echo "${yellow}This script MAY NOT work on ALL Debian-based / Arch-based system setups.${reset}"
+echo "${yellow}This script MAY NOT work on ALL Debian-based / RedHat-based system setups.${reset}"
 echo " "
 
 echo "${cyan}Your operating system has been detected as:"
@@ -676,7 +676,7 @@ echo "${yellow}PLEASE REPORT ANY ISSUES HERE: $ISSUES_URL${reset}"
 echo " "
 
 echo "${yellow} "
-read -n1 -s -r -p $"Press y to continue (or press n to exit)..." key
+read -n1 -s -r -p $"Press Y to continue (or press N to exit)..." key
 echo "${reset} "
 
     if [ "$key" = 'y' ] || [ "$key" = 'Y' ]; then
@@ -1671,6 +1671,24 @@ else
 echo " "
 echo "${red}TICKER #REQUIRES# RUNNING A DESKTOP INTERFACE AT STARTUP, AS THE USER: '${APP_USER}'${reset}"
 echo " "
+
+fi
+
+
+if [ "$SSH_SETUP" = "1" ]; then
+
+echo "${yellow}SFTP login details are..."
+echo " "
+
+echo "${green}INTERNAL NETWORK SFTP host (port 22, on home / internal network):"
+echo " "
+echo "$IP"
+echo " "
+
+echo "SFTP username: $APP_USER"
+echo " "
+echo "SFTP password: (password for system user $APP_USER)"
+echo "${reset} "
 
 fi
 
