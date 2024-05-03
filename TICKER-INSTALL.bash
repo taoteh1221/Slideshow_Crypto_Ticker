@@ -698,7 +698,8 @@ echo " "
 
 # If we are NOT running raspi os, AND lxde desktop IS NOT INSTALLED,
 # then we offer the option to install LXDE
-if [ ! -f /usr/bin/raspi-config ] && [ ! -d /etc/xdg/lxsession ]; then
+# (UNLESS IT'S UBUNTU, WHICH DOES NOT LIKE OUR AUTO-CONFIG *TO SAY THE LEAST*)
+if [ "$IS_UBUNTU" == "" ] && [ ! -f /usr/bin/raspi-config ] && [ ! -d /etc/xdg/lxsession ]; then
 
 echo "${red}WE NEED TO MAKE SURE LXDE #AND# LIGHTDM ARE INSTALLED, IF YOU WANT THE TICKER TO #AUTOMATICALLY RUN ON SYSTEM STARTUP# / REBOOT."
 echo " "
@@ -735,6 +736,21 @@ echo " "
             break
            fi
     done
+
+elif [ "$IS_UBUNTU" != "" ]; then
+
+echo "${red}THIS AUTO-INSTALL SCRIPT IS *NOT* CURRENTLY COMPATIBLE WITH UBUNTU (LXDE auto-login does NOT work, and CORRUPTS Ubuntu's Desktop login screen). PLEASE USE A DIFFERENT OPERATING SYSTEM FOR NOW (Debian / RaspberryPi OS, Armbian, etc)."
+
+echo "${yellow} "
+read -n1 -s -r -p $"PRESS ANY KEY to exit..." key
+echo "${reset} "
+
+    if [ "$key" = 'y' ] || [ "$key" != 'y' ]; then
+    echo " "
+    echo "${green}Exiting...${reset}"
+    echo " "
+    exit
+    fi
 
 fi
 
