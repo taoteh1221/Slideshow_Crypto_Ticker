@@ -41,7 +41,10 @@ fi
 
 # In case we are recursing back into this script (for filtering params etc),
 # flag export of a few more basic sys vars if present
+
+# Authentication of X sessions
 export XAUTHORITY=~/.Xauthority 
+# Working directory
 export PWD=$PWD
 
 
@@ -183,7 +186,7 @@ fi
 
 if [ -f "/etc/debian_version" ]; then
 
-echo "${cyan}Your system has been detected as Debian-based, which is compatible with this automated installation script."
+echo "${cyan}Your system has been detected as Debian-based, which is compatible with this automated script."
 
 # USE 'apt-get' IN SCRIPTING!
 # https://askubuntu.com/questions/990823/apt-gives-unstable-cli-interface-warning
@@ -196,7 +199,7 @@ echo " "
 
 elif [ -f "/etc/redhat-release" ]; then
 
-echo "${cyan}Your system has been detected as Redhat-based, which is ${red}CURRENTLY STILL IN DEVELOPMENT TO EVENTUALLY BE (BUT IS *NOT* YET) ${cyan}compatible with this automated installation script."
+echo "${cyan}Your system has been detected as Redhat-based, which is ${red}CURRENTLY STILL IN DEVELOPMENT TO EVENTUALLY BE (BUT IS *NOT* YET) ${cyan}compatible with this automated script."
 
 PACKAGE_INSTALL="sudo yum install"
 PACKAGE_REMOVE="sudo yum remove"
@@ -207,7 +210,7 @@ echo " "
 
 else
 
-echo "${red}Your system has been detected as NOT BEING Debian-based OR Redhat-based. Your system is NOT compatible with this automated installation script."
+echo "${red}Your system has been detected as NOT BEING Debian-based OR Redhat-based. Your system is NOT compatible with this automated script."
 
 echo "${yellow} "
 read -n1 -s -r -p $"PRESS ANY KEY to exit..." key
@@ -277,6 +280,15 @@ app_path_result="${app_path_result#*$1:}"
           # bsdtar on Ubuntu 18.x and higher
           if [ "$1" == "bsdtar" ] && [ -f "/etc/debian_version" ]; then
           SYS_PACK="libarchive-tools"
+          
+          # xdg-user-dir (debian package name differs slightly)
+          elif [ "$1" == "xdg-user-dir" ] && [ -f "/etc/debian_version" ]; then
+          SYS_PACK="xdg-user-dirs"
+
+          # rsyslogd (debian package name differs slightly)
+          elif [ "$1" == "rsyslogd" ] && [ -f "/etc/debian_version" ]; then
+          SYS_PACK="rsyslog"
+
           else
           SYS_PACK="$1"
           fi
@@ -1417,7 +1429,7 @@ echo " "
 ######################################
 
 
-echo "Enabling the built-in SSH server on your system allows easy remote installation / updating of your web site files via SFTP (from another computer on your home / internal network), with Filezilla or any other SFTP-enabled FTP software."
+echo "Enabling the built-in SSH server on your system allows easy remote management via SSH / SFTP (from another computer on your home / internal network), with Putty / Filezilla or any other SSH / SFTP enabled client software."
 echo " "
 
 echo "If you choose to NOT enable SSH on your system, you'll need to install / update your web site files directly on the device itself (not recommended)."
@@ -1698,8 +1710,13 @@ echo " "
 
 echo "${green}INTERNAL NETWORK SFTP host (port 22, on home / internal network):"
 echo " "
+echo "IP ADDRESS (may change, unless set as static for this device within the router):"
 echo "$IP"
 echo " "
+echo "HOST ADDRESS (ONLY works on linux / mac / windows, NOT android as of 2020):"
+echo "${yellow}(IF YOU JUST CHANGED '${HOSTNAME}' in raspi / dietpi config, USE THAT INSTEAD)"
+echo "${green} "
+echo "${HOSTNAME}.local"
 
 echo "SFTP username: $APP_USER"
 echo " "
