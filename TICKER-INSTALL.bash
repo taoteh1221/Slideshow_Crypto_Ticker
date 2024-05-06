@@ -225,6 +225,19 @@ echo "${reset} "
 
 fi
 
+     
+echo "${yellow} "
+read -n1 -s -r -p $"PRESS ANY KEY to continue..." key
+echo "${reset} "
+     
+    if [ "$key" = 'y' ] || [ "$key" != 'y' ]; then
+    echo " "
+    echo "${green}Continuing...${reset}"
+    echo " "
+    fi
+     
+echo " "
+
 
 ######################################
 
@@ -663,6 +676,19 @@ echo " "
 echo "${red}USE A #FULL# DESKTOP SETUP, #NOT# LITE, OR YOU LIKELY WILL HAVE SOME #UNICODE SYMBOL ISSUES# WITH CHROMIUM BROWSER EVEN AFTER UPGRADING TO GUI / CHROME (trust me)."
 echo " "
 echo "(Chromium, Epiphany, and Firefox are supported [firefox is recommended for reliability, all these browsers will be installed if available])${reset}"
+echo " "
+
+     
+echo "${yellow} "
+read -n1 -s -r -p $"PRESS ANY KEY to continue..." key
+echo "${reset} "
+     
+    if [ "$key" = 'y' ] || [ "$key" != 'y' ]; then
+    echo " "
+    echo "${green}Continuing...${reset}"
+    echo " "
+    fi
+     
 echo " "
   				
 				
@@ -1727,7 +1753,22 @@ fi
 
 
 echo "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
+echo " "
 
+echo " "
+echo "${red}!!!!!BE SURE TO SCROLL UP, TO SAVE #ALL THE APP USAGE DOCUMENTATION# PRINTED OUT ABOVE, BEFORE YOU SIGN OFF FROM THIS TERMINAL SESSION!!!!!${reset}"
+
+     
+echo "${yellow} "
+read -n1 -s -r -p $"PRESS ANY KEY to continue..." key
+echo "${reset} "
+     
+    if [ "$key" = 'y' ] || [ "$key" != 'y' ]; then
+    echo " "
+    echo "${green}Continuing...${reset}"
+    echo " "
+    fi
+     
 echo " "
 
 
@@ -1754,8 +1795,6 @@ export TICKER_INSTALL_RAN=1
                     
 if [ -z "$FOLIO_INSTALL_RAN" ]; then
 
-echo " "
-echo "${red}!!!!!BE SURE TO SCROLL UP, TO SAVE #ALL THE TICKER APP USAGE DOCUMENTATION# PRINTED OUT ABOVE, BEFORE YOU SIGN OFF FROM THIS TERMINAL SESSION!!!!!${reset}"
 
 echo " "
 echo "Also check out my 100% FREE open source PRIVATE cryptocurrency investment portfolio tracker, with email / text / Alexa / Telegram alerts, charts, mining calculators, leverage / gain / loss / balance stats, news feeds and more:"
@@ -1811,11 +1850,19 @@ OPTIONS="install_portfolio_tracker skip"
 else
 
 echo " "
-echo "${cyan}Installation / setup has finished, exiting to terminal...${reset}"
+echo "${red}!!!!!BE SURE TO SCROLL UP, TO SAVE #ALL THE APP USAGE DOCUMENTATION# PRINTED OUT ABOVE, BEFORE YOU SIGN OFF FROM THIS TERMINAL SESSION!!!!!${reset}"
 echo " "
-echo "${red}!!!!!BE SURE TO SCROLL UP, TO SAVE #ALL THE TICKER APP USAGE DOCUMENTATION# PRINTED OUT ABOVE, BEFORE YOU SIGN OFF FROM THIS TERMINAL SESSION!!!!!${reset}"
-echo " "
-exit
+
+echo "${yellow} "
+read -n1 -s -r -p $"Installation / setup has finished, PRESS ANY KEY to exit..." key
+echo "${reset} "
+
+    if [ "$key" = 'y' ] || [ "$key" != 'y' ]; then
+    echo " "
+    echo "${green}Exiting...${reset}"
+    echo " "
+    exit
+    fi
 
 fi
 
