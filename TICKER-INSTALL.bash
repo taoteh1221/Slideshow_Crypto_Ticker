@@ -41,15 +41,11 @@ fi
 
 # In case we are recursing back into this script (for filtering params etc),
 # flag export of a few more basic sys vars if present
+
+# Authentication of X sessions
 export XAUTHORITY=~/.Xauthority 
+# Working directory
 export PWD=$PWD
-
-
-######################################
-
-
-# Are we running on Ubuntu OS?
-IS_UBUNTU=$(cat /etc/os-release | grep "PRETTY_NAME" | grep "Ubuntu")
 
 
 ######################################
@@ -62,26 +58,8 @@ TIME=$(date '+%H:%M:%S')
 # Current timestamp
 CURRENT_TIMESTAMP=$(date +%s)
 
-
-######################################
-
-
-# Get logged-in username (if sudo, this works best with logname)
-TERMINAL_USERNAME=$(logname)
-
-# If logname doesn't work, use the $SUDO_USER or $USER global var
-if [ -z "$TERMINAL_USERNAME" ]; then
-
-    if [ -z "$SUDO_USER" ]; then
-    TERMINAL_USERNAME=$USER
-    else
-    TERMINAL_USERNAME=$SUDO_USER
-    fi
-
-fi
-
-
-######################################
+# Are we running on Ubuntu OS?
+IS_UBUNTU=$(cat /etc/os-release | grep "PRETTY_NAME" | grep "Ubuntu")
 
 
 # If a symlink, get link target for script location
@@ -98,9 +76,6 @@ SCRIPT_NAME=$(basename "$SCRIPT_LOCATION")
 
 # Parent directory of the script location
 PARENT_DIR="$(dirname "$SCRIPT_LOCATION")"
-
-
-######################################
 
 
 # Get the operating system and version
@@ -141,6 +116,7 @@ CUSTOM_CURL_USER_AGENT_HEADER="User-Agent: Curl (${OS}/$VER; compatible;)"
 
 ######################################
 
+
 # https://stackoverflow.com/questions/5947742/how-to-change-the-output-color-of-echo-in-linux
 
 if hash tput > /dev/null 2>&1; then
@@ -171,43 +147,16 @@ fi
 ######################################
 
 
-if [ -f "/etc/debian_version" ]; then
+# Get logged-in username (if sudo, this works best with logname)
+TERMINAL_USERNAME=$(logname)
 
-echo "${cyan}Your system has been detected as Debian-based, which is compatible with this automated installation script."
+# If logname doesn't work, use the $SUDO_USER or $USER global var
+if [ -z "$TERMINAL_USERNAME" ]; then
 
-# USE 'apt-get' IN SCRIPTING!
-# https://askubuntu.com/questions/990823/apt-gives-unstable-cli-interface-warning
-PACKAGE_INSTALL="sudo apt-get install"
-PACKAGE_REMOVE="sudo apt-get --purge remove"
-
-echo " "
-echo "Continuing...${reset}"
-echo " "
-
-elif [ -f "/etc/redhat-release" ]; then
-
-echo "${cyan}Your system has been detected as Redhat-based, which is ${red}CURRENTLY STILL IN DEVELOPMENT TO EVENTUALLY BE (BUT IS *NOT* YET) ${cyan}compatible with this automated installation script."
-
-PACKAGE_INSTALL="sudo yum install"
-PACKAGE_REMOVE="sudo yum remove"
-
-echo " "
-echo "Continuing...${reset}"
-echo " "
-
-else
-
-echo "${red}Your system has been detected as NOT BEING Debian-based OR Redhat-based. Your system is NOT compatible with this automated installation script."
-
-echo "${yellow} "
-read -n1 -s -r -p $"PRESS ANY KEY to exit..." key
-echo "${reset} "
-
-    if [ "$key" = 'y' ] || [ "$key" != 'y' ]; then
-    echo " "
-    echo "${green}Exiting...${reset}"
-    echo " "
-    exit
+    if [ -z "$SUDO_USER" ]; then
+    TERMINAL_USERNAME=$USER
+    else
+    TERMINAL_USERNAME=$SUDO_USER
     fi
 
 fi
@@ -230,6 +179,64 @@ echo "${reset} "
     fi
 
 fi
+
+
+######################################
+
+
+if [ -f "/etc/debian_version" ]; then
+
+echo "${cyan}Your system has been detected as Debian-based, which is compatible with this automated script."
+
+# USE 'apt-get' IN SCRIPTING!
+# https://askubuntu.com/questions/990823/apt-gives-unstable-cli-interface-warning
+PACKAGE_INSTALL="sudo apt-get install"
+PACKAGE_REMOVE="sudo apt-get --purge remove"
+
+echo " "
+echo "Continuing...${reset}"
+echo " "
+
+elif [ -f "/etc/redhat-release" ]; then
+
+echo "${cyan}Your system has been detected as Redhat-based, which is ${red}CURRENTLY STILL IN DEVELOPMENT TO EVENTUALLY BE (BUT IS *NOT* YET) ${cyan}compatible with this automated script."
+
+PACKAGE_INSTALL="sudo yum install"
+PACKAGE_REMOVE="sudo yum remove"
+
+echo " "
+echo "Continuing...${reset}"
+echo " "
+
+else
+
+echo "${red}Your system has been detected as NOT BEING Debian-based OR Redhat-based. Your system is NOT compatible with this automated script."
+
+echo "${yellow} "
+read -n1 -s -r -p $"PRESS ANY KEY to exit..." key
+echo "${reset} "
+
+    if [ "$key" = 'y' ] || [ "$key" != 'y' ]; then
+    echo " "
+    echo "${green}Exiting...${reset}"
+    echo " "
+    exit
+    fi
+
+fi
+
+     
+echo "${yellow} "
+read -n1 -s -r -p $"PRESS ANY KEY to continue..." key
+echo "${reset} "
+     
+    if [ "$key" = 'y' ] || [ "$key" != 'y' ]; then
+    echo " "
+    echo "${green}Continuing...${reset}"
+    echo " "
+    fi
+     
+echo " "
 
 
 ######################################
@@ -282,16 +289,19 @@ app_path_result="${app_path_result#*$1:}"
      
      
           # Handle package name exceptions...
-          if [ "$1" == "bsdtar" ]; then
           
-               # bsdtar on Ubuntu 18.x and higher
-               if [ -f "/etc/debian_version" ]; then
-               SYS_PACK="libarchive-tools"
-               # bsdtar on Redhat
-               elif [ -f "/etc/redhat-release" ]; then
-               SYS_PACK="libarchive"
-               fi
+          # bsdtar on Ubuntu 18.x and higher
+          if [ "$1" == "bsdtar" ] && [ -f "/etc/debian_version" ]; then
+          SYS_PACK="libarchive-tools"
           
+          # xdg-user-dir (debian package name differs slightly)
+          elif [ "$1" == "xdg-user-dir" ] && [ -f "/etc/debian_version" ]; then
+          SYS_PACK="xdg-user-dirs"
+
+          # rsyslogd (debian package name differs slightly)
+          elif [ "$1" == "rsyslogd" ] && [ -f "/etc/debian_version" ]; then
+          SYS_PACK="rsyslog"
+
           else
           SYS_PACK="$1"
           fi
@@ -353,20 +363,22 @@ fi
 
 
 # ON DEBIAN-BASED SYSTEMS ONLY:
-# Do we have no swap, OR less swap than 1024MB?
-if [ -f "/etc/debian_version" ] && ( [ "$(free | awk '/^Swap:/ { print $2 }')" = "0" ] ||
-[ "$(free --bytes | awk '/^Swap:/ { print $2 }')" -lt 1024000000 ] ); then
+# Do we have less than 900MB PHYSICAL RAM (IN KILOBYTES),
+# AND no swap / less swap virtual memory than 900MB (IN BYTES)?
+if [ -f "/etc/debian_version" ] && [ "$(awk '/MemTotal/ {print $2}' /proc/meminfo)" -lt 900000 ] && (
+[ "$(free | awk '/^Swap:/ { print $2 }')" = "0" ] || [ "$(free --bytes | awk '/^Swap:/ { print $2 }')" -lt 900000000 ]
+); then
 
-echo "${red}YOU HAVE LESS THAN 1GB SWAP MEMORY ON THIS DEBIAN-BASED SYSTEM, which MAY cause system freezing, IF you have a desktop display attached!${reset}"
+echo "${red}YOU HAVE LESS THAN 900MB *PHYSICAL* MEMORY, AND ALSO HAVE LESS THAN 900MB SWAP *VIRTUAL* MEMORY. This MAY cause your system to FREEZE, *IF* you have a desktop display attached!${reset}"
 
 echo "${yellow} "
-read -n1 -s -r -p $"PRESS F to fix this, OR any other key to skip..." key
+read -n1 -s -r -p $"PRESS F to fix this (sets swap virtual memory to 1GB), OR any other key to skip fixing..." key
 echo "${reset} "
 
     if [ "$key" = 'f' ] || [ "$key" = 'F' ]; then
 
     echo " "
-    echo "${cyan}Changing Swap Memory size to 1GB, please wait (THIS MAY TAKE AWHILE ON SMALLER SYSTEMS)...${reset}"
+    echo "${cyan}Changing Swap Virtual Memory size to 1GB, please wait (THIS MAY TAKE AWHILE ON SMALLER SYSTEMS)...${reset}"
     echo " "
     
     # Required components check...
@@ -591,9 +603,7 @@ fi
 
 if [ ! -d "/home/$APP_USER/" ]; then    		
 echo " "
-echo "${red}Directory /home/$APP_USER/ DOES NOT exist, cannot install Slideshow Crypto Ticker."
-echo " "
-echo "Please create user $APP_USER's home directory before running this installation.${reset}"
+echo "${red}Directory /home/$APP_USER/ DOES NOT exist, cannot install Slideshow Crypto Ticker. Please create user $APP_USER's home directory before running this installation.${reset}"
 exit
 fi
 
@@ -614,7 +624,7 @@ echo "${yellow}If this information is NOT correct, please exit installation and 
 echo " "
 
 echo "${yellow} "
-read -n1 -s -r -p $"Press y to continue (or press n to exit)..." key
+read -n1 -s -r -p $"Press Y to continue (or press N to exit)..." key
 echo "${reset} "
 
     if [ "$key" = 'y' ] || [ "$key" = 'Y' ]; then
@@ -649,14 +659,13 @@ echo " "
 
 echo "${yellow}TECHNICAL NOTE:"
 echo " "
-echo "This script was designed to install on popular Debian-based / RedHat-based operating systems (Debian, Ubuntu, Raspberry Pi OS [Raspbian], Armbian, DietPi, Fedora, RHEL, CentOS, etc),"
-echo "for small single-board computers WITH SMALL LCD SCREENS TO RUN THE TICKER 24/7 (ALL THE TIME)."
+echo "This script was designed to install on popular Debian-based ${green}(STABLE / POLISHED)${yellow} / RedHat-based ${red}(UNSTABLE / WORK-IN-PROGRESS)${yellow} operating systems (Debian, Ubuntu, Raspberry Pi OS [Raspbian], Armbian, DietPi, Fedora, RHEL, CentOS, etc), for small single-board computers WITH SMALL LCD SCREENS TO RUN THE TICKER 24/7 (ALL THE TIME)."
 echo " "
 
 echo "It is ONLY recommended to install this ticker app IF your device has an LCD screen installed.${reset}"
 echo " "
 
-echo "${yellow}This script MAY NOT work on ALL Debian-based / Arch-based system setups.${reset}"
+echo "${yellow}This script MAY NOT work on ALL Debian-based / RedHat-based system setups.${reset}"
 echo " "
 
 echo "${cyan}Your operating system has been detected as:"
@@ -664,10 +673,22 @@ echo " "
 echo "$OS v$VER${reset}"
 echo " "
 
-echo "${red}USE A #FULL# DESKTOP SETUP, #NOT# LITE, OR YOU LIKELY WILL HAVE SOME #UNICODE SYMBOL ISSUES# WITH CHROMIUM BROWSER EVEN"
-echo "AFTER UPGRADING TO GUI / CHROME (trust me)."
+echo "${red}USE A #FULL# DESKTOP SETUP, #NOT# LITE, OR YOU LIKELY WILL HAVE SOME #UNICODE SYMBOL ISSUES# WITH CHROMIUM BROWSER EVEN AFTER UPGRADING TO GUI / CHROME (trust me)."
 echo " "
 echo "(Chromium, Epiphany, and Firefox are supported [firefox is recommended for reliability, all these browsers will be installed if available])${reset}"
+echo " "
+
+     
+echo "${yellow} "
+read -n1 -s -r -p $"PRESS ANY KEY to continue..." key
+echo "${reset} "
+     
+    if [ "$key" = 'y' ] || [ "$key" != 'y' ]; then
+    echo " "
+    echo "${green}Continuing...${reset}"
+    echo " "
+    fi
+     
 echo " "
   				
 				
@@ -693,7 +714,7 @@ echo "${yellow}PLEASE REPORT ANY ISSUES HERE: $ISSUES_URL${reset}"
 echo " "
 
 echo "${yellow} "
-read -n1 -s -r -p $"Press y to continue (or press n to exit)..." key
+read -n1 -s -r -p $"Press Y to continue (or press N to exit)..." key
 echo "${reset} "
 
     if [ "$key" = 'y' ] || [ "$key" = 'Y' ]; then
@@ -715,10 +736,10 @@ echo " "
 
 # If we are NOT running raspi os, AND lxde desktop IS NOT INSTALLED,
 # then we offer the option to install LXDE
-if [ ! -f /usr/bin/raspi-config ] && [ ! -d /etc/xdg/lxsession ]; then
+# (UNLESS IT'S UBUNTU, WHICH DOES NOT LIKE OUR AUTO-CONFIG *TO SAY THE LEAST*)
+if [ "$IS_UBUNTU" == "" ] && [ ! -f /usr/bin/raspi-config ] && [ ! -d /etc/xdg/lxsession ]; then
 
-echo "${red}WE NEED TO MAKE SURE LXDE #AND# LIGHTDM ARE INSTALLED,"
-echo "IF YOU WANT THE TICKER TO #AUTOMATICALLY RUN ON SYSTEM STARTUP# / REBOOT."
+echo "${red}WE NEED TO MAKE SURE LXDE #AND# LIGHTDM ARE INSTALLED, IF YOU WANT THE TICKER TO #AUTOMATICALLY RUN ON SYSTEM STARTUP# / REBOOT."
 echo " "
 echo "CHOOSE \"LIGHTDM\" IF ASKED, FOR \"AUTO-LOGIN AT BOOT\" CAPABILITIES.${reset}"
 echo " "
@@ -733,10 +754,6 @@ echo " "
             echo " "
             echo "${cyan}Installing LXDE desktop and required components, please wait...${reset}"
             echo " "
-            
-
-            # Clears / updates cache, then upgrades (if NOT a rolling release)
-            clean_system_update
 
             $PACKAGE_INSTALL xserver-xorg lightdm lxde -y
             
@@ -757,6 +774,21 @@ echo " "
             break
            fi
     done
+
+elif [ "$IS_UBUNTU" != "" ]; then
+
+echo "${red}THIS AUTO-INSTALL SCRIPT IS *NOT* CURRENTLY COMPATIBLE WITH UBUNTU (LXDE auto-login does NOT work, and CORRUPTS Ubuntu's Desktop login screen). PLEASE USE A DIFFERENT OPERATING SYSTEM FOR NOW (Debian / RaspberryPi OS, Armbian, etc)."
+
+echo "${yellow} "
+read -n1 -s -r -p $"PRESS ANY KEY to exit..." key
+echo "${reset} "
+
+    if [ "$key" = 'y' ] || [ "$key" != 'y' ]; then
+    echo " "
+    echo "${green}Exiting...${reset}"
+    echo " "
+    exit
+    fi
 
 fi
 
@@ -815,8 +847,7 @@ fi
 if [ -d /etc/xdg/lxsession ]; then
 
         
-echo "${red}WE NEED TO MAKE SURE LXDE #AND# LIGHTDM AUTO-LOGIN AT STARTUP, AS THE USER '${APP_USER}',"
-echo "IF YOU WANT THE TICKER TO #AUTOMATICALLY RUN ON SYSTEM STARTUP# / REBOOT."
+echo "${red}WE NEED TO MAKE SURE LXDE #AND# LIGHTDM AUTO-LOGIN AT STARTUP, AS THE USER '${APP_USER}', IF YOU WANT THE TICKER TO #AUTOMATICALLY RUN ON SYSTEM STARTUP# / REBOOT."
 echo " "
 echo "CHOOSE \"LIGHTDM\" IF ASKED, FOR \"AUTO-LOGIN AT BOOT\" CAPABILITIES.${reset}"
 echo " "
@@ -923,8 +954,7 @@ EOF
             
                 # If we are running dietpi OS, WARN USER AN ADDITIONAL STEP #MAY# BE NEEDED
                 if [ -f /boot/dietpi/.version ]; then
-                echo "${red}DietPi #SHOULD NOT REQUIRE# USING THE dietpi-autostart UTILITY TO SET LXDE TO AUTO-LOGIN"
-                echo "AS THE USER '${APP_USER}', SINCE #WE JUST SETUP LXDE AUTO-LOGIN ALREADY#.${reset}"
+                echo "${red}DietPi #SHOULD NOT REQUIRE# USING THE dietpi-autostart UTILITY TO SET LXDE TO AUTO-LOGIN AS THE USER '${APP_USER}', SINCE #WE JUST SETUP LXDE AUTO-LOGIN ALREADY#.${reset}"
                 fi
             
             
@@ -941,8 +971,7 @@ EOF
 
 else
 
-echo "${red}THIS TICKER #REQUIRES# RUNNING #LIGHTDM# AND THE DESKTOP INTERFACE #LXDE# IN AUTO-LOGIN MODE AT STARTUP,"
-echo "AS THE USER '${APP_USER}', IF YOU WANT THE TICKER TO #AUTOMATICALLY RUN ON SYSTEM STARTUP# / REBOOT.${reset}"
+echo "${red}THIS TICKER #REQUIRES# RUNNING #LIGHTDM# AND THE DESKTOP INTERFACE #LXDE# IN AUTO-LOGIN MODE AT STARTUP, AS THE USER '${APP_USER}', IF YOU WANT THE TICKER TO #AUTOMATICALLY RUN ON SYSTEM STARTUP# / REBOOT.${reset}"
 
 fi
 
@@ -952,8 +981,7 @@ echo " "
 ######################################
 
 
-echo "Do you want this script to automatically download the latest version of Slideshow Crypto Ticker"
-echo "from Github.com, and install it?"
+echo "Do you want this script to automatically download the latest version of Slideshow Crypto Ticker from Github.com, and install it?"
 echo " "
 echo "(auto-install will overwrite / upgrade any previous install located at: /home/$APP_USER/slideshow-crypto-ticker)"
 echo " "
@@ -965,9 +993,6 @@ OPTIONS="install_ticker_app remove_ticker_app skip"
 
 select opt in $OPTIONS; do
         if [ "$opt" = "install_ticker_app" ]; then
-
-                    # Clears / updates cache, then upgrades (if NOT a rolling release)
-                    clean_system_update
         	
 				echo " "
 				
@@ -1217,7 +1242,7 @@ select opt in $OPTIONS; do
 	   echo " "
 	   echo "${cyan}Removal of 'unclutter' app package completed, please wait...${reset}"
 	   echo " "
-	   echo "${yellow}(IF YOU USED unclutter FOR ANOTHER APP, RE-INSTALL WITH: sudo $PACKAGE_INSTALL unclutter)${reset}"
+	   echo "${red}(IF YOU USED 'unclutter' FOR ANOTHER APP, *RE-INSTALL* WITH: sudo $PACKAGE_INSTALL unclutter)${reset}"
 	   echo " "		
 				
 	   sleep 3
@@ -1427,9 +1452,72 @@ done
 echo " "
 
 
-
 ######################################
 
+
+echo "Enabling the built-in SSH server on your system allows easy remote management via SSH / SFTP (from another computer on your home / internal network), with Putty / Filezilla or any other SSH / SFTP enabled client software."
+echo " "
+
+echo "If you choose to NOT enable SSH on your system, you'll need to install / update your web site files directly on the device itself (not recommended)."
+echo " "
+
+echo "If you do use SSH, ---make sure the password for username '$APP_USER' is strong---, because anybody on your home / internal network will have access if they know the username/password!"
+echo " "
+
+if [ -f "/usr/bin/raspi-config" ]; then
+echo "${yellow}Select 1 or 2 to choose whether to setup SSH (under 'Interfacing Options' in raspi-config), or skip it.${reset}"
+echo " "
+echo "${red}IF YOU CHOOSE OPTION 1, AND IT ASKS IF YOU WANT TO REBOOT AFTER CONFIGURATION, CHOOSE 'NO' OTHERWISE #THIS AUTO-INSTALL WILL ABORT PREMATURELY#! ONLY REBOOT #AFTER# AUTO-INSTALL WITH: sudo reboot${reset}"
+else
+echo "${yellow}Select 1 or 2 to choose whether to setup SSH, or skip it.${reset}"
+fi
+
+echo " "
+
+OPTIONS="setup_ssh skip"
+
+select opt in $OPTIONS; do
+        if [ "$opt" = "setup_ssh" ]; then
+        
+
+				if [ -f "/usr/bin/raspi-config" ]; then
+				echo " "
+				echo "${cyan}Initiating raspi-config, please wait...${reset}"
+				# WE NEED SUDO HERE, or raspi-config fails in bash
+				sudo raspi-config
+				elif [ -f /boot/dietpi/.version ]; then
+				echo " "
+				echo "${cyan}Initiating dietpi-software, please wait...${reset}"
+				dietpi-software
+				else
+				
+				echo " "
+				echo "${green}Proceeding with openssh-server installation, please wait...${reset}"
+				echo " "
+				
+				$PACKAGE_INSTALL openssh-server -y
+				
+				sleep 3
+				
+				echo " "
+				echo "${green}openssh-server installation completed.${reset}"
+				
+				fi
+        
+        
+        SSH_SETUP=1
+        break
+       elif [ "$opt" = "skip" ]; then
+        echo " "
+        echo "${green}Skipping SSH setup.${reset}"
+        break
+       fi
+done
+       
+echo " "
+
+
+######################################
 
 
 echo "${red}WARNING:"
@@ -1498,8 +1586,7 @@ echo "${reset} "
 
 if [ "$CONFIG_BACKUP" = "1" ]; then
 
-echo "${green}The previously-installed Slideshow Crypto Ticker configuration"
-echo "file /home/$APP_USER/slideshow-crypto-ticker/config.js has been backed up to:"
+echo "${green}The PREVIOUSLY-installed Slideshow Crypto Ticker configuration file /home/$APP_USER/slideshow-crypto-ticker/config.js has been backed up to:"
 echo " "
 echo "/home/$APP_USER/slideshow-crypto-ticker/config.js.BACKUP.$DATE${reset}"
 echo " "
@@ -1549,8 +1636,7 @@ fi
 
 if [ "$AUTOSTART_ALERT" = "1" ]; then
 
-echo "${yellow}If autostart does not work, you can run this command MANUALLY,"
-echo "#AFTER BOOTING INTO THE DESKTOP INTERFACE#, to start Slideshow Crypto Ticker:"
+echo "${yellow}If autostart does not work, you can run this command MANUALLY, #AFTER BOOTING INTO THE DESKTOP INTERFACE#, to start Slideshow Crypto Ticker:"
 echo " "
 echo "~/ticker-start"
 echo " "
@@ -1589,9 +1675,7 @@ echo "${reset} "
 fi
 
 
-echo "${yellow}Edit the following file in a text editor to activate different exchanges / crypto assets / base pairings,"
-echo "and to configure settings for slideshow speed / font sizes and colors / background color / vertical position /"
-echo "screen orientation / google font used / monospace emulation / activated pairings / etc / etc:"
+echo "${yellow}Edit the following file in a text editor to activate different exchanges / crypto assets / base pairings, and to configure settings for slideshow speed / font sizes and colors / background color / vertical position / screen orientation / google font used / monospace emulation / activated pairings / etc / etc:"
 echo " "
 echo "/home/$APP_USER/slideshow-crypto-ticker/config.js"
 echo " "
@@ -1606,15 +1690,13 @@ echo " "
 echo "~/ticker-restart"
 echo "${reset} "
 
-echo "${cyan}Ticker installation / setup should be complete (if you chose those options), unless you saw any error"
-echo "messages on your screen during setup."
+echo "${cyan}Ticker installation / setup should be complete (if you chose those options), unless you saw any error messages on your screen during setup."
 echo "${reset} "
 
 
 if [ "$GOODTFT_SETUP" = "1" ]; then
 
-echo "${yellow}TO COMPLETE THE 'goodtft LCD-show' LCD DRIVERS SETUP, run this command below"
-echo "to configure / activate your 'goodtft LCD-show' LCD screen:"
+echo "${yellow}TO COMPLETE THE 'goodtft LCD-show' LCD DRIVERS SETUP, run this command below to configure / activate your 'goodtft LCD-show' LCD screen:"
 echo " "
 echo "~/goodtft-only"
 echo " "
@@ -1647,8 +1729,46 @@ echo " "
 fi
 
 
-echo "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
+if [ "$SSH_SETUP" = "1" ]; then
 
+echo "${yellow}SFTP login details are..."
+echo " "
+
+echo "${green}INTERNAL NETWORK SFTP host (port 22, on home / internal network):"
+echo " "
+echo "IP ADDRESS (may change, unless set as static for this device within the router):"
+echo "$IP"
+echo " "
+echo "HOST ADDRESS (ONLY works on linux / mac / windows, NOT android as of 2020):"
+echo "${yellow}(IF YOU JUST CHANGED '${HOSTNAME}' in raspi / dietpi config, USE THAT INSTEAD)"
+echo "${green} "
+echo "${HOSTNAME}.local"
+
+echo "SFTP username: $APP_USER"
+echo " "
+echo "SFTP password: (password for system user $APP_USER)"
+echo "${reset} "
+
+fi
+
+
+echo "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
+echo " "
+
+echo " "
+echo "${red}!!!!!BE SURE TO SCROLL UP, TO SAVE #ALL THE APP USAGE DOCUMENTATION# PRINTED OUT ABOVE, BEFORE YOU SIGN OFF FROM THIS TERMINAL SESSION!!!!!${reset}"
+
+     
+echo "${yellow} "
+read -n1 -s -r -p $"PRESS ANY KEY to continue..." key
+echo "${reset} "
+     
+    if [ "$key" = 'y' ] || [ "$key" != 'y' ]; then
+    echo " "
+    echo "${green}Continuing...${reset}"
+    echo " "
+    fi
+     
 echo " "
 
 
@@ -1675,14 +1795,9 @@ export TICKER_INSTALL_RAN=1
                     
 if [ -z "$FOLIO_INSTALL_RAN" ]; then
 
-echo " "
-echo "${red}!!!!!BE SURE TO SCROLL UP, TO SAVE #ALL THE TICKER APP USAGE DOCUMENTATION#"
-echo "PRINTED OUT ABOVE, BEFORE YOU SIGN OFF FROM THIS TERMINAL SESSION!!!!!${reset}"
 
 echo " "
-echo "Also check out my 100% FREE open source PRIVATE cryptocurrency investment portfolio tracker,"
-echo "with email / text / Alexa / Telegram alerts, charts, mining calculators,"
-echo "leverage / gain / loss / balance stats, news feeds and more:"
+echo "Also check out my 100% FREE open source PRIVATE cryptocurrency investment portfolio tracker, with email / text / Alexa / Telegram alerts, charts, mining calculators, leverage / gain / loss / balance stats, news feeds and more:"
 echo " "
 echo "https://taoteh1221.github.io"
 echo " "
@@ -1735,12 +1850,19 @@ OPTIONS="install_portfolio_tracker skip"
 else
 
 echo " "
-echo "${cyan}Installation / setup has finished, exiting to terminal...${reset}"
+echo "${red}!!!!!BE SURE TO SCROLL UP, TO SAVE #ALL THE APP USAGE DOCUMENTATION# PRINTED OUT ABOVE, BEFORE YOU SIGN OFF FROM THIS TERMINAL SESSION!!!!!${reset}"
 echo " "
-echo "${red}!!!!!BE SURE TO SCROLL UP, TO SAVE #ALL THE TICKER APP USAGE DOCUMENTATION#"
-echo "PRINTED OUT ABOVE, BEFORE YOU SIGN OFF FROM THIS TERMINAL SESSION!!!!!${reset}"
-echo " "
-exit
+
+echo "${yellow} "
+read -n1 -s -r -p $"Installation / setup has finished, PRESS ANY KEY to exit..." key
+echo "${reset} "
+
+    if [ "$key" = 'y' ] || [ "$key" != 'y' ]; then
+    echo " "
+    echo "${green}Exiting...${reset}"
+    echo " "
+    exit
+    fi
 
 fi
 

@@ -69,7 +69,7 @@ exchange_markets['hitbtc'] = '';
 ////
 ////
 // Gateio markets (set to '' to disable) 
-exchange_markets['gateio'] = 'RNDR_USDT|DAI_USDT';
+exchange_markets['gateio'] = 'ZEUS_USDT|RNDR_USDT|DAI_USDT';
 ////
 ////
 // Kucoin markets (set to '' to disable)
