@@ -61,6 +61,9 @@ CURRENT_TIMESTAMP=$(date +%s)
 # Are we running on Ubuntu OS?
 IS_UBUNTU=$(cat /etc/os-release | grep "PRETTY_NAME" | grep "Ubuntu")
 
+# Are we already using lightdm, as the display manager?
+LIGHTDM_DISPLAY=$(cat /etc/X11/default-display-manager | grep "lightdm")
+
 
 # If a symlink, get link target for script location
  # WE ALWAYS WANT THE FULL PATH!
@@ -301,6 +304,10 @@ app_path_result="${app_path_result#*$1:}"
           # rsyslogd (debian package name differs slightly)
           elif [ "$1" == "rsyslogd" ] && [ -f "/etc/debian_version" ]; then
           SYS_PACK="rsyslog"
+
+          # xorg (debian package name differs)
+          elif [ "$1" == "xorg" ] && [ -f "/etc/debian_version" ]; then
+          SYS_PACK="xserver-xorg"
 
           else
           SYS_PACK="$1"
@@ -566,11 +573,17 @@ JQ_PATH=$(get_app_path "jq")
 # less
 LESS_PATH=$(get_app_path "less")
 
+# lightdm (NEEDED TO BE USED AS THE DISPLAY MANAGER, FOR LXDE / AUTOBOOT)
+LIGHTDM_PATH=$(get_app_path "lightdm")
+
 # sed
 SED_PATH=$(get_app_path "sed")
 
 # wget
 WGET_PATH=$(get_app_path "wget")
+
+# xorg (NEEDED TO BE USED AS THE WINDOW SYSTEM, FOR LXDE / AUTOBOOT)
+XORG_PATH=$(get_app_path "xorg")
 
 # PRIMARY dependency lib's paths END
 				
@@ -735,13 +748,13 @@ echo " "
 
 
 # If we are NOT running raspi os, AND lxde desktop IS NOT INSTALLED,
-# then we offer the option to install LXDE
-# (UNLESS IT'S UBUNTU, WHICH DOES NOT LIKE OUR AUTO-CONFIG *TO SAY THE LEAST*)
-if [ "$IS_UBUNTU" == "" ] && [ ! -f /usr/bin/raspi-config ] && [ ! -d /etc/xdg/lxsession ]; then
+# then we offer the option to install LXDE, AND WE SET THE DISPLAY MANAGER TO LIGHTDM (IF NOT ALREADY SET)
+if [ "$LIGHTDM_PATH" != "" ] && [ ! -f /usr/bin/raspi-config ] && [ ! -d /etc/xdg/lxsession ]; then
 
-echo "${red}WE NEED TO MAKE SURE LXDE #AND# LIGHTDM ARE INSTALLED, IF YOU WANT THE TICKER TO #AUTOMATICALLY RUN ON SYSTEM STARTUP# / REBOOT."
+echo "${red}WE NEED TO MAKE SURE LXDE #AND# LIGHTDM ARE SETUP, IF YOU WANT THE TICKER TO #AUTOMATICALLY RUN ON SYSTEM STARTUP# / REBOOT."
 echo " "
-echo "CHOOSE \"LIGHTDM\" IF ASKED, FOR \"AUTO-LOGIN AT BOOT\" CAPABILITIES.${reset}"
+echo "CHOOSE \"LIGHTDM\" IF ASKED, FOR \"AUTO-LOGIN AT BOOT\" CAPABILITIES."
+echo "(THIS SCRIPT WILL ALSO AUTO-SETUP LIGHTDM, EVEN IF YOU DO NOT GET A PROMPT)${reset}"
 echo " "
 echo "${yellow}Select 1 or 2 to choose whether to install LXDE Desktop, or skip.${reset}"
 echo " "
@@ -755,7 +768,7 @@ echo " "
             echo "${cyan}Installing LXDE desktop and required components, please wait...${reset}"
             echo " "
 
-            $PACKAGE_INSTALL xserver-xorg lightdm lxde -y
+            $PACKAGE_INSTALL lxde -y
             
             sleep 3
             
@@ -766,6 +779,24 @@ echo " "
             echo "${cyan}LXDE desktop has been installed.${reset}"
             echo " "
             
+                if [ "$LIGHTDM_DISPLAY" == "" ]; then
+					
+			 # Set lightdm as the new display manager
+			 echo -e "$LIGHTDM_PATH" > /etc/X11/default-display-manager
+			 
+			 dpkg-reconfigure
+			 
+                echo " "
+                echo "${cyan}'lightdm' has been set as the display manager.${reset}"
+                echo " "
+                
+                else
+                
+                echo " "
+                echo "${cyan}'lightdm' was already set as the display manager.${reset}"
+                echo " "
+                
+                fi
             
             break
            elif [ "$opt" = "skip" ]; then
@@ -775,20 +806,21 @@ echo " "
            fi
     done
 
-elif [ "$IS_UBUNTU" != "" ]; then
 
-echo "${red}THIS AUTO-INSTALL SCRIPT IS *NOT* CURRENTLY COMPATIBLE WITH UBUNTU (LXDE auto-login does NOT work, and CORRUPTS Ubuntu's Desktop login screen). PLEASE USE A DIFFERENT OPERATING SYSTEM FOR NOW (Debian / RaspberryPi OS, Armbian, etc)."
-
-echo "${yellow} "
-read -n1 -s -r -p $"PRESS ANY KEY to exit..." key
-echo "${reset} "
-
-    if [ "$key" = 'y' ] || [ "$key" != 'y' ]; then
-    echo " "
-    echo "${green}Exiting...${reset}"
-    echo " "
-    exit
-    fi
+elif [ "$LIGHTDM_PATH" == "" ]; then
+                
+                echo "${red}'lightdm' (display manager) could NOT be found or installed. PLEASE INSTALL MANUALLY, OR TRY A DIFFERENT OPERATING SYSTEM (Ubuntu, Debian, RaspberryPi OS, Armbian, etc)."
+               
+                echo "${yellow} "
+                read -n1 -s -r -p $"PRESS ANY KEY to exit..." key
+                echo "${reset} "
+               
+                    if [ "$key" = 'y' ] || [ "$key" != 'y' ]; then
+                    echo " "
+                    echo "${green}Exiting...${reset}"
+                    echo " "
+                    exit
+                    fi
 
 fi
 
