@@ -772,9 +772,6 @@ echo " "
             
             sleep 3
             
-            # Enable GUI on boot
-            systemctl set-default graphical
-            
             echo " "
             echo "${cyan}LXDE desktop has been installed.${reset}"
             echo " "
@@ -783,8 +780,6 @@ echo " "
 					
 			 # Set lightdm as the new display manager
 			 echo -e "$LIGHTDM_PATH" > /etc/X11/default-display-manager
-			 
-			 dpkg-reconfigure
 			 
                 echo " "
                 echo "${cyan}'lightdm' has been set as the display manager.${reset}"
@@ -797,6 +792,21 @@ echo " "
                 echo " "
                 
                 fi
+                
+            
+            # Enable GUI on boot
+            systemctl set-default graphical
+		  
+		  # Assure lightdm is being used
+		  dpkg-reconfigure lightdm
+                
+            # Assure a graphical TARGET is set, or system MAY hang on boot
+            # https://askubuntu.com/questions/74551/lightdm-not-starting-on-boot/939995#939995
+            rm /etc/systemd/system/default.target
+            
+            echo " "
+            systemctl set-default graphical.target
+            echo " "
             
             break
            elif [ "$opt" = "skip" ]; then
@@ -899,7 +909,12 @@ echo " "
             
                 # Auto-login LXDE logic...
                 
-                if [ -d /etc/lightdm/lightdm.conf.d ]; then
+                if [ -d /usr/share/lightdm/lightdm.conf.d ]; then
+                LIGHTDM_CONF_DIR="/usr/share/lightdm/lightdm.conf.d"
+                CHECK_LIGHTDM_D=$(ls /usr/share/lightdm/lightdm.conf.d)
+                CHECK_LIGHTDM_D=$(echo "${CHECK_LIGHTDM_D}" | xargs) # trim whitespace
+                elif [ -d /etc/lightdm/lightdm.conf.d ]; then
+                LIGHTDM_CONF_DIR="/etc/lightdm/lightdm.conf.d"
                 CHECK_LIGHTDM_D=$(ls /etc/lightdm/lightdm.conf.d)
                 CHECK_LIGHTDM_D=$(echo "${CHECK_LIGHTDM_D}" | xargs) # trim whitespace
                 else
@@ -914,7 +929,7 @@ echo " "
 read -r -d '' LXDE_AUTO_LOGIN <<- EOF
 \r
 autologin-user=$APP_USER
-user-session=LXDE
+user-session=lxde
 autologin-session=lxde
 \r
 EOF
@@ -930,6 +945,8 @@ EOF
 			    
 			 DETECT_AUTOLOGIN=$(sudo sed -n '/autologin-user=/p' /etc/lightdm/lightdm.conf)
 			    
+			 DETECT_AUTOLOGIN_SESSION=$(sudo sed -n '/autologin-session=/p' /etc/lightdm/lightdm.conf)
+			    
 			    
 			        if [ "$DETECT_AUTOLOGIN" != "" ]; then 
                        sed -i "s/#autologin-user=.*/autologin-user=${APP_USER}/g" /etc/lightdm/lightdm.conf
@@ -941,18 +958,28 @@ EOF
 			        
                 
                 sleep 2
+			    
+			    
+			        if [ "$DETECT_AUTOLOGIN_SESSION" != "" ]; then 
+                       sed -i "s/#autologin-session=.*/autologin-session=lxde/g" /etc/lightdm/lightdm.conf
+                       sleep 2
+                       sed -i "s/autologin-session=.*/autologin-session=lxde/g" /etc/lightdm/lightdm.conf
+                       elif [ "$DETECT_AUTOLOGIN_SESSION" == "" ]; then 
+                       sudo bash -c "echo 'autologin-session=lxde' >> /etc/lightdm/lightdm.conf"
+			        fi
                 
-                sed -i "s/user-session=.*/user-session=LXDE/g" /etc/lightdm/lightdm.conf
-                sed -i "s/autologin-session=.*/autologin-session=lxde/g" /etc/lightdm/lightdm.conf
+                sed -i "s/user-session=.*/user-session=lxde/g" /etc/lightdm/lightdm.conf
                 
                 
                 elif [ -n "$CHECK_LIGHTDM_D" ]; then
                 
                 # Find the PROPER config file in the /lightdm.conf.d/ directory
-			 LIGHTDM_CONFIG_FILE=$(grep -r 'user-session' /etc/lightdm/lightdm.conf.d | awk -F: '{print $1}')
+			 LIGHTDM_CONFIG_FILE=$(grep -r 'user-session' $LIGHTDM_CONF_DIR | awk -F: '{print $1}')
                 LIGHTDM_CONFIG_FILE=$(echo "${LIGHTDM_CONFIG_FILE}" | xargs) # trim whitespace
 			    
 			 DETECT_AUTOLOGIN=$(sudo sed -n '/autologin-user=/p' $LIGHTDM_CONFIG_FILE)
+			    
+			 DETECT_AUTOLOGIN_SESSION=$(sudo sed -n '/autologin-session=/p' $LIGHTDM_CONFIG_FILE)
 			    
 			    
 			        if [ "$DETECT_AUTOLOGIN" != "" ]; then 
@@ -965,8 +992,17 @@ EOF
 			        
                 
                 sleep 2
-                sed -i "s/user-session=.*/user-session=LXDE/g" $LIGHTDM_CONFIG_FILE
-                sed -i "s/autologin-session=.*/autologin-session=lxde/g" $LIGHTDM_CONFIG_FILE
+			    
+			    
+			        if [ "$DETECT_AUTOLOGIN_SESSION" != "" ]; then 
+                       sed -i "s/#autologin-session=.*/autologin-session=lxde/g" $LIGHTDM_CONFIG_FILE
+                       sleep 2
+                       sed -i "s/autologin-session=.*/autologin-session=lxde/g" $LIGHTDM_CONFIG_FILE
+                       elif [ "$DETECT_AUTOLOGIN_SESSION" == "" ]; then 
+                       sudo bash -c "echo 'autologin-session=lxde' >> ${LIGHTDM_CONFIG_FILE}"
+			        fi
+			        
+                sed -i "s/user-session=.*/user-session=lxde/g" $LIGHTDM_CONFIG_FILE
                 
                 
                 else
