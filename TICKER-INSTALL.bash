@@ -309,6 +309,14 @@ app_path_result="${app_path_result#*$1:}"
           elif [ "$1" == "xorg" ] && [ -f "/etc/debian_version" ]; then
           SYS_PACK="xserver-xorg"
 
+          # chromium-browser (debian package name differs)
+          elif [ "$1" == "chromium-browser" ] && [ -f "/etc/debian_version" ]; then
+          SYS_PACK="chromium"
+
+          # epiphany-browser (debian package name differs)
+          elif [ "$1" == "epiphany-browser" ] && [ -f "/etc/debian_version" ]; then
+          SYS_PACK="epiphany"
+
           else
           SYS_PACK="$1"
           fi
@@ -688,7 +696,7 @@ echo " "
 
 echo "${red}USE A #FULL# DESKTOP SETUP, #NOT# LITE, OR YOU LIKELY WILL HAVE SOME #UNICODE SYMBOL ISSUES# WITH CHROMIUM BROWSER EVEN AFTER UPGRADING TO GUI / CHROME (trust me)."
 echo " "
-echo "(Chromium, Epiphany, and Firefox are supported [firefox is recommended for reliability, all these browsers will be installed if available])${reset}"
+echo "Chromium, Epiphany, and Firefox are supported (firefox is recommended for reliability, all these browsers will be installed if available). IF A BROWSER DOES NOT WORK, PLEASE CHECK MANUALLY THAT IT IS INSTALLED PROPERLY, AND MAKE SURE IT IS NOT CRASHING ON STARTUP!${reset}"
 echo " "
 
      
@@ -929,8 +937,8 @@ echo " "
 read -r -d '' LXDE_AUTO_LOGIN <<- EOF
 \r
 autologin-user=$APP_USER
-user-session=lxde
-autologin-session=lxde
+user-session=$LXDE_PROFILE
+autologin-session=$LXDE_PROFILE
 \r
 EOF
 
@@ -961,14 +969,14 @@ EOF
 			    
 			    
 			        if [ "$DETECT_AUTOLOGIN_SESSION" != "" ]; then 
-                       sed -i "s/#autologin-session=.*/autologin-session=lxde/g" /etc/lightdm/lightdm.conf
+                       sed -i "s/#autologin-session=.*/autologin-session=${LXDE_PROFILE}/g" /etc/lightdm/lightdm.conf
                        sleep 2
-                       sed -i "s/autologin-session=.*/autologin-session=lxde/g" /etc/lightdm/lightdm.conf
+                       sed -i "s/autologin-session=.*/autologin-session=${LXDE_PROFILE}/g" /etc/lightdm/lightdm.conf
                        elif [ "$DETECT_AUTOLOGIN_SESSION" == "" ]; then 
-                       sudo bash -c "echo 'autologin-session=lxde' >> /etc/lightdm/lightdm.conf"
+                       sudo bash -c "echo 'autologin-session=${LXDE_PROFILE}' >> /etc/lightdm/lightdm.conf"
 			        fi
                 
-                sed -i "s/user-session=.*/user-session=lxde/g" /etc/lightdm/lightdm.conf
+                sed -i "s/user-session=.*/user-session=${LXDE_PROFILE}/g" /etc/lightdm/lightdm.conf
                 
                 
                 elif [ -n "$CHECK_LIGHTDM_D" ]; then
@@ -995,14 +1003,14 @@ EOF
 			    
 			    
 			        if [ "$DETECT_AUTOLOGIN_SESSION" != "" ]; then 
-                       sed -i "s/#autologin-session=.*/autologin-session=lxde/g" $LIGHTDM_CONFIG_FILE
+                       sed -i "s/#autologin-session=.*/autologin-session=${LXDE_PROFILE}/g" $LIGHTDM_CONFIG_FILE
                        sleep 2
-                       sed -i "s/autologin-session=.*/autologin-session=lxde/g" $LIGHTDM_CONFIG_FILE
+                       sed -i "s/autologin-session=.*/autologin-session=${LXDE_PROFILE}/g" $LIGHTDM_CONFIG_FILE
                        elif [ "$DETECT_AUTOLOGIN_SESSION" == "" ]; then 
-                       sudo bash -c "echo 'autologin-session=lxde' >> ${LIGHTDM_CONFIG_FILE}"
+                       sudo bash -c "echo 'autologin-session=${LXDE_PROFILE}' >> ${LIGHTDM_CONFIG_FILE}"
 			        fi
 			        
-                sed -i "s/user-session=.*/user-session=lxde/g" $LIGHTDM_CONFIG_FILE
+                sed -i "s/user-session=.*/user-session=${LXDE_PROFILE}/g" $LIGHTDM_CONFIG_FILE
                 
                 
                 else
@@ -1068,6 +1076,15 @@ select opt in $OPTIONS; do
 				
 				echo " "
 				
+				     # FORCE UBUNTU SNAP INSTALLS
+				     # (included snaps can be messed up, especially on Ubuntu Armbian)
+				     if [ "$IS_UBUNTU" != "" ]; then
+				     $UBUNTU_SNAP_INSTALL firefox
+				     $UBUNTU_SNAP_INSTALL chromium
+				     $UBUNTU_SNAP_INSTALL epiphany
+				     fi
+				     
+				     
 				# Firefox on raspbian
 				$PACKAGE_INSTALL firefox-esr -y
 				

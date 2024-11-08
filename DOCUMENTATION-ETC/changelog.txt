@@ -817,6 +817,14 @@ v3.14.0
 ---------------------------------------------------------
 
 
+---------------------------------------------------------
+v3.14.1
+
+-FIX: Fixed auto-installer compatibility support for Ubuntu, related to LXDE Desktop installation and configuration
+
+---------------------------------------------------------
+
+
 
 
 
