@@ -61,6 +61,9 @@ CURRENT_TIMESTAMP=$(date +%s)
 # Are we running on Ubuntu OS?
 IS_UBUNTU=$(cat /etc/os-release | grep "PRETTY_NAME" | grep "Ubuntu")
 
+# Are we already using lightdm, as the display manager?
+LIGHTDM_DISPLAY=$(cat /etc/X11/default-display-manager | grep "lightdm")
+
 
 # If a symlink, get link target for script location
  # WE ALWAYS WANT THE FULL PATH!
@@ -301,6 +304,18 @@ app_path_result="${app_path_result#*$1:}"
           # rsyslogd (debian package name differs slightly)
           elif [ "$1" == "rsyslogd" ] && [ -f "/etc/debian_version" ]; then
           SYS_PACK="rsyslog"
+
+          # xorg (debian package name differs)
+          elif [ "$1" == "xorg" ] && [ -f "/etc/debian_version" ]; then
+          SYS_PACK="xserver-xorg"
+
+          # chromium-browser (debian package name differs)
+          elif [ "$1" == "chromium-browser" ] && [ -f "/etc/debian_version" ]; then
+          SYS_PACK="chromium"
+
+          # epiphany-browser (debian package name differs)
+          elif [ "$1" == "epiphany-browser" ] && [ -f "/etc/debian_version" ]; then
+          SYS_PACK="epiphany"
 
           else
           SYS_PACK="$1"
@@ -566,11 +581,17 @@ JQ_PATH=$(get_app_path "jq")
 # less
 LESS_PATH=$(get_app_path "less")
 
+# lightdm (NEEDED TO BE USED AS THE DISPLAY MANAGER, FOR LXDE / AUTOBOOT)
+LIGHTDM_PATH=$(get_app_path "lightdm")
+
 # sed
 SED_PATH=$(get_app_path "sed")
 
 # wget
 WGET_PATH=$(get_app_path "wget")
+
+# xorg (NEEDED TO BE USED AS THE WINDOW SYSTEM, FOR LXDE / AUTOBOOT)
+XORG_PATH=$(get_app_path "xorg")
 
 # PRIMARY dependency lib's paths END
 				
@@ -675,7 +696,7 @@ echo " "
 
 echo "${red}USE A #FULL# DESKTOP SETUP, #NOT# LITE, OR YOU LIKELY WILL HAVE SOME #UNICODE SYMBOL ISSUES# WITH CHROMIUM BROWSER EVEN AFTER UPGRADING TO GUI / CHROME (trust me)."
 echo " "
-echo "(Chromium, Epiphany, and Firefox are supported [firefox is recommended for reliability, all these browsers will be installed if available])${reset}"
+echo "Chromium, Epiphany, and Firefox are supported (firefox is recommended for reliability, all these browsers will be installed if available). IF A BROWSER DOES NOT WORK, PLEASE CHECK MANUALLY THAT IT IS INSTALLED PROPERLY, AND MAKE SURE IT IS NOT CRASHING ON STARTUP!${reset}"
 echo " "
 
      
@@ -735,13 +756,13 @@ echo " "
 
 
 # If we are NOT running raspi os, AND lxde desktop IS NOT INSTALLED,
-# then we offer the option to install LXDE
-# (UNLESS IT'S UBUNTU, WHICH DOES NOT LIKE OUR AUTO-CONFIG *TO SAY THE LEAST*)
-if [ "$IS_UBUNTU" == "" ] && [ ! -f /usr/bin/raspi-config ] && [ ! -d /etc/xdg/lxsession ]; then
+# then we offer the option to install LXDE, AND WE SET THE DISPLAY MANAGER TO LIGHTDM (IF NOT ALREADY SET)
+if [ "$LIGHTDM_PATH" != "" ] && [ ! -f /usr/bin/raspi-config ] && [ ! -d /etc/xdg/lxsession ]; then
 
-echo "${red}WE NEED TO MAKE SURE LXDE #AND# LIGHTDM ARE INSTALLED, IF YOU WANT THE TICKER TO #AUTOMATICALLY RUN ON SYSTEM STARTUP# / REBOOT."
+echo "${red}WE NEED TO MAKE SURE LXDE #AND# LIGHTDM ARE SETUP, IF YOU WANT THE TICKER TO #AUTOMATICALLY RUN ON SYSTEM STARTUP# / REBOOT."
 echo " "
-echo "CHOOSE \"LIGHTDM\" IF ASKED, FOR \"AUTO-LOGIN AT BOOT\" CAPABILITIES.${reset}"
+echo "CHOOSE \"LIGHTDM\" IF ASKED, FOR \"AUTO-LOGIN AT BOOT\" CAPABILITIES."
+echo "(THIS SCRIPT WILL ALSO AUTO-SETUP LIGHTDM, EVEN IF YOU DO NOT GET A PROMPT)${reset}"
 echo " "
 echo "${yellow}Select 1 or 2 to choose whether to install LXDE Desktop, or skip.${reset}"
 echo " "
@@ -755,17 +776,45 @@ echo " "
             echo "${cyan}Installing LXDE desktop and required components, please wait...${reset}"
             echo " "
 
-            $PACKAGE_INSTALL xserver-xorg lightdm lxde -y
+            $PACKAGE_INSTALL lxde -y
             
             sleep 3
-            
-            # Enable GUI on boot
-            systemctl set-default graphical
             
             echo " "
             echo "${cyan}LXDE desktop has been installed.${reset}"
             echo " "
             
+                if [ "$LIGHTDM_DISPLAY" == "" ]; then
+					
+			 # Set lightdm as the new display manager
+			 echo -e "$LIGHTDM_PATH" > /etc/X11/default-display-manager
+			 
+                echo " "
+                echo "${cyan}'lightdm' has been set as the display manager.${reset}"
+                echo " "
+                
+                else
+                
+                echo " "
+                echo "${cyan}'lightdm' was already set as the display manager.${reset}"
+                echo " "
+                
+                fi
+                
+            
+            # Enable GUI on boot
+            systemctl set-default graphical
+		  
+		  # Assure lightdm is being used
+		  dpkg-reconfigure lightdm
+                
+            # Assure a graphical TARGET is set, or system MAY hang on boot
+            # https://askubuntu.com/questions/74551/lightdm-not-starting-on-boot/939995#939995
+            rm /etc/systemd/system/default.target
+            
+            echo " "
+            systemctl set-default graphical.target
+            echo " "
             
             break
            elif [ "$opt" = "skip" ]; then
@@ -775,20 +824,21 @@ echo " "
            fi
     done
 
-elif [ "$IS_UBUNTU" != "" ]; then
 
-echo "${red}THIS AUTO-INSTALL SCRIPT IS *NOT* CURRENTLY COMPATIBLE WITH UBUNTU (LXDE auto-login does NOT work, and CORRUPTS Ubuntu's Desktop login screen). PLEASE USE A DIFFERENT OPERATING SYSTEM FOR NOW (Debian / RaspberryPi OS, Armbian, etc)."
-
-echo "${yellow} "
-read -n1 -s -r -p $"PRESS ANY KEY to exit..." key
-echo "${reset} "
-
-    if [ "$key" = 'y' ] || [ "$key" != 'y' ]; then
-    echo " "
-    echo "${green}Exiting...${reset}"
-    echo " "
-    exit
-    fi
+elif [ "$LIGHTDM_PATH" == "" ]; then
+                
+                echo "${red}'lightdm' (display manager) could NOT be found or installed. PLEASE INSTALL MANUALLY, OR TRY A DIFFERENT OPERATING SYSTEM (Ubuntu, Debian, RaspberryPi OS, Armbian, etc)."
+               
+                echo "${yellow} "
+                read -n1 -s -r -p $"PRESS ANY KEY to exit..." key
+                echo "${reset} "
+               
+                    if [ "$key" = 'y' ] || [ "$key" != 'y' ]; then
+                    echo " "
+                    echo "${green}Exiting...${reset}"
+                    echo " "
+                    exit
+                    fi
 
 fi
 
@@ -867,7 +917,12 @@ echo " "
             
                 # Auto-login LXDE logic...
                 
-                if [ -d /etc/lightdm/lightdm.conf.d ]; then
+                if [ -d /usr/share/lightdm/lightdm.conf.d ]; then
+                LIGHTDM_CONF_DIR="/usr/share/lightdm/lightdm.conf.d"
+                CHECK_LIGHTDM_D=$(ls /usr/share/lightdm/lightdm.conf.d)
+                CHECK_LIGHTDM_D=$(echo "${CHECK_LIGHTDM_D}" | xargs) # trim whitespace
+                elif [ -d /etc/lightdm/lightdm.conf.d ]; then
+                LIGHTDM_CONF_DIR="/etc/lightdm/lightdm.conf.d"
                 CHECK_LIGHTDM_D=$(ls /etc/lightdm/lightdm.conf.d)
                 CHECK_LIGHTDM_D=$(echo "${CHECK_LIGHTDM_D}" | xargs) # trim whitespace
                 else
@@ -882,8 +937,8 @@ echo " "
 read -r -d '' LXDE_AUTO_LOGIN <<- EOF
 \r
 autologin-user=$APP_USER
-user-session=LXDE
-autologin-session=lxde
+user-session=$LXDE_PROFILE
+autologin-session=$LXDE_PROFILE
 \r
 EOF
 
@@ -898,6 +953,8 @@ EOF
 			    
 			 DETECT_AUTOLOGIN=$(sudo sed -n '/autologin-user=/p' /etc/lightdm/lightdm.conf)
 			    
+			 DETECT_AUTOLOGIN_SESSION=$(sudo sed -n '/autologin-session=/p' /etc/lightdm/lightdm.conf)
+			    
 			    
 			        if [ "$DETECT_AUTOLOGIN" != "" ]; then 
                        sed -i "s/#autologin-user=.*/autologin-user=${APP_USER}/g" /etc/lightdm/lightdm.conf
@@ -909,18 +966,28 @@ EOF
 			        
                 
                 sleep 2
+			    
+			    
+			        if [ "$DETECT_AUTOLOGIN_SESSION" != "" ]; then 
+                       sed -i "s/#autologin-session=.*/autologin-session=${LXDE_PROFILE}/g" /etc/lightdm/lightdm.conf
+                       sleep 2
+                       sed -i "s/autologin-session=.*/autologin-session=${LXDE_PROFILE}/g" /etc/lightdm/lightdm.conf
+                       elif [ "$DETECT_AUTOLOGIN_SESSION" == "" ]; then 
+                       sudo bash -c "echo 'autologin-session=${LXDE_PROFILE}' >> /etc/lightdm/lightdm.conf"
+			        fi
                 
-                sed -i "s/user-session=.*/user-session=LXDE/g" /etc/lightdm/lightdm.conf
-                sed -i "s/autologin-session=.*/autologin-session=lxde/g" /etc/lightdm/lightdm.conf
+                sed -i "s/user-session=.*/user-session=${LXDE_PROFILE}/g" /etc/lightdm/lightdm.conf
                 
                 
                 elif [ -n "$CHECK_LIGHTDM_D" ]; then
                 
                 # Find the PROPER config file in the /lightdm.conf.d/ directory
-			 LIGHTDM_CONFIG_FILE=$(grep -r 'user-session' /etc/lightdm/lightdm.conf.d | awk -F: '{print $1}')
+			 LIGHTDM_CONFIG_FILE=$(grep -r 'user-session' $LIGHTDM_CONF_DIR | awk -F: '{print $1}')
                 LIGHTDM_CONFIG_FILE=$(echo "${LIGHTDM_CONFIG_FILE}" | xargs) # trim whitespace
 			    
 			 DETECT_AUTOLOGIN=$(sudo sed -n '/autologin-user=/p' $LIGHTDM_CONFIG_FILE)
+			    
+			 DETECT_AUTOLOGIN_SESSION=$(sudo sed -n '/autologin-session=/p' $LIGHTDM_CONFIG_FILE)
 			    
 			    
 			        if [ "$DETECT_AUTOLOGIN" != "" ]; then 
@@ -933,8 +1000,17 @@ EOF
 			        
                 
                 sleep 2
-                sed -i "s/user-session=.*/user-session=LXDE/g" $LIGHTDM_CONFIG_FILE
-                sed -i "s/autologin-session=.*/autologin-session=lxde/g" $LIGHTDM_CONFIG_FILE
+			    
+			    
+			        if [ "$DETECT_AUTOLOGIN_SESSION" != "" ]; then 
+                       sed -i "s/#autologin-session=.*/autologin-session=${LXDE_PROFILE}/g" $LIGHTDM_CONFIG_FILE
+                       sleep 2
+                       sed -i "s/autologin-session=.*/autologin-session=${LXDE_PROFILE}/g" $LIGHTDM_CONFIG_FILE
+                       elif [ "$DETECT_AUTOLOGIN_SESSION" == "" ]; then 
+                       sudo bash -c "echo 'autologin-session=${LXDE_PROFILE}' >> ${LIGHTDM_CONFIG_FILE}"
+			        fi
+			        
+                sed -i "s/user-session=.*/user-session=${LXDE_PROFILE}/g" $LIGHTDM_CONFIG_FILE
                 
                 
                 else
@@ -1000,6 +1076,15 @@ select opt in $OPTIONS; do
 				
 				echo " "
 				
+				     # FORCE UBUNTU SNAP INSTALLS
+				     # (included snaps can be messed up, especially on Ubuntu Armbian)
+				     if [ "$IS_UBUNTU" != "" ]; then
+				     $UBUNTU_SNAP_INSTALL firefox
+				     $UBUNTU_SNAP_INSTALL chromium
+				     $UBUNTU_SNAP_INSTALL epiphany
+				     fi
+				     
+				     
 				# Firefox on raspbian
 				$PACKAGE_INSTALL firefox-esr -y
 				
