@@ -69,12 +69,12 @@ exchange_markets['hitbtc'] = '';
 ////
 ////
 // Gateio markets (set to '' to disable) 
-exchange_markets['gateio'] = 'ZEUS_USDT|RNDR_USDT|DAI_USDT';
+exchange_markets['gateio'] = 'ZEUS_USDT|RENDER_USDT';
 ////
 ////
 // Kucoin markets (set to '' to disable)
 // !!KUCOIN REQUIRES USING THE INSTALL SCRIPT!!
-exchange_markets['kucoin'] = 'MKR-USDT|NEON-USDT|WEN-USDT'; 
+exchange_markets['kucoin'] = 'NEON-USDT|WEN-USDT'; 
 ////
 ////
 // Kraken markets (set to '' to disable)
@@ -85,7 +85,7 @@ exchange_markets['kraken'] = 'JUP/USD|ATLAS/USD|POLIS/USD|MANA/USD';
 // USE COINGECKO'S API ID FOR EACH ASSET! (SEE COINGECKO ASSET PAGE'S INFO SECTION) 
 // PAIRING ASSET MUST BE SUPPORTED BY COINGECKO'S 'vs_currencies' API PARAMETER!
 // FORMAT IS 'api-id-here:symbol/pairing'
-exchange_markets['coingecko'] = 'immutable-x:imx/usd|genesysgo-shadow:shdw/usd|bonk:bonk/usd';
+exchange_markets['coingecko'] = 'immutable-x:imx/usd|genesysgo-shadow:shdw/usd|bonk:bonk/usd|popcat:popcat/usd';
 
 
 // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
