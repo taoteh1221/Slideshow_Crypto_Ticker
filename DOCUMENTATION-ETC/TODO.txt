@@ -48,9 +48,6 @@ API INTEGRATION SECTION
 ///////////////////////////////////////////////////////
 
 
-https://docs.bonfida.com/#websocket
-
-
 https://exchange-docs.crypto.com/spot/index.html#websocket-subscriptions
 
 
