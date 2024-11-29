@@ -59,7 +59,7 @@ TIME=$(date '+%H:%M:%S')
 CURRENT_TIMESTAMP=$(date +%s)
 
 # Are we running on Ubuntu OS?
-IS_UBUNTU=$(cat /etc/os-release | grep "PRETTY_NAME" | grep "Ubuntu")
+IS_UBUNTU=$(cat /etc/os-release | grep "Ubuntu")
 
 
 # If a symlink, get link target for script location
@@ -389,13 +389,13 @@ echo "${reset} "
     echo "${cyan}Disabling auto suspend / sleep...${reset}"
     echo " "
     
+    echo -e "ran" > ${HOME}/.sleep_disabled.dat
+    
          if [ -f "/etc/debian_version" ]; then
          sudo systemctl mask sleep.target suspend.target hibernate.target hybrid-sleep.target > /dev/null 2>&1
          elif [ -f "/etc/redhat-release" ]; then
          sudo -u gdm dbus-run-session gsettings set org.gnome.settings-daemon.plugins.power sleep-inactive-ac-timeout 0 > /dev/null 2>&1
          fi
-    
-    echo -e "ran" > ${HOME}/.sleep_disabled.dat
 	   
     else
 
@@ -993,13 +993,14 @@ echo " "
             
                 # Auto-login LXDE logic...
                 
-                if [ -d /usr/share/lightdm/lightdm.conf.d ]; then
-                LIGHTDM_CONF_DIR="/usr/share/lightdm/lightdm.conf.d"
-                CHECK_LIGHTDM_D=$(ls /usr/share/lightdm/lightdm.conf.d)
-                CHECK_LIGHTDM_D=$(echo "${CHECK_LIGHTDM_D}" | xargs) # trim whitespace
-                elif [ -d /etc/lightdm/lightdm.conf.d ]; then
+                if [ -d /etc/lightdm/lightdm.conf.d ]; then
                 LIGHTDM_CONF_DIR="/etc/lightdm/lightdm.conf.d"
                 CHECK_LIGHTDM_D=$(ls /etc/lightdm/lightdm.conf.d)
+                CHECK_LIGHTDM_D=$(echo "${CHECK_LIGHTDM_D}" | xargs) # trim whitespace
+                # SECONDARY POSSIBLE LOCATION, FOR MULTI-FILE CONFIG DFIRECTORY SETUP
+                elif [ -d /usr/share/lightdm/lightdm.conf.d ]; then
+                LIGHTDM_CONF_DIR="/usr/share/lightdm/lightdm.conf.d"
+                CHECK_LIGHTDM_D=$(ls /usr/share/lightdm/lightdm.conf.d)
                 CHECK_LIGHTDM_D=$(echo "${CHECK_LIGHTDM_D}" | xargs) # trim whitespace
                 else
                 CHECK_LIGHTDM_D=""
@@ -1007,6 +1008,8 @@ echo " "
                 
                 
                 if [ ! -f /etc/lightdm/lightdm.conf ] && [ -z "$CHECK_LIGHTDM_D" ]; then
+                
+                echo "${cyan}LIGHTDM config NOT detected, CREATING at: /etc/lightdm/lightdm.conf${reset}"
                 
                 
 # Don't nest / indent, or it could malform the settings            
@@ -1026,6 +1029,8 @@ EOF
 			    
 			    
 			 elif [ -f /etc/lightdm/lightdm.conf ]; then
+                
+                echo "${cyan}LIGHTDM config detected at: /etc/lightdm/lightdm.conf${reset}"
 			    
 			 DETECT_AUTOLOGIN=$(sudo sed -n '/autologin-user=/p' /etc/lightdm/lightdm.conf)
 			    
@@ -1060,6 +1065,8 @@ EOF
                 # Find the PROPER config file in the /lightdm.conf.d/ directory
 			 LIGHTDM_CONFIG_FILE=$(grep -r 'user-session' $LIGHTDM_CONF_DIR | awk -F: '{print $1}')
                 LIGHTDM_CONFIG_FILE=$(echo "${LIGHTDM_CONFIG_FILE}" | xargs) # trim whitespace
+                
+                echo "${cyan}LIGHTDM config detected at: $LIGHTDM_CONFIG_FILE${reset}"
 			    
 			 DETECT_AUTOLOGIN=$(sudo sed -n '/autologin-user=/p' $LIGHTDM_CONFIG_FILE)
 			    
@@ -1095,9 +1102,6 @@ EOF
             
             
             sleep 2
-            
-            # Enable GUI on boot
-            systemctl set-default graphical
             
             echo " "
             echo "${green}LXDE desktop auto-login has been configured.${reset}"
