@@ -61,9 +61,6 @@ CURRENT_TIMESTAMP=$(date +%s)
 # Are we running on Ubuntu OS?
 IS_UBUNTU=$(cat /etc/os-release | grep "PRETTY_NAME" | grep "Ubuntu")
 
-# Are we already using lightdm, as the display manager?
-LIGHTDM_DISPLAY=$(cat /etc/X11/default-display-manager | grep "lightdm")
-
 
 # If a symlink, get link target for script location
  # WE ALWAYS WANT THE FULL PATH!
@@ -618,9 +615,6 @@ JQ_PATH=$(get_app_path "jq")
 # less
 LESS_PATH=$(get_app_path "less")
 
-# lightdm (NEEDED TO BE USED AS THE DISPLAY MANAGER, FOR LXDE / AUTOBOOT)
-LIGHTDM_PATH=$(get_app_path "lightdm")
-
 # sed
 SED_PATH=$(get_app_path "sed")
 
@@ -794,7 +788,7 @@ echo " "
 
 # If we are NOT running raspi os, AND lxde desktop IS NOT INSTALLED,
 # then we offer the option to install LXDE, AND WE SET THE DISPLAY MANAGER TO LIGHTDM (IF NOT ALREADY SET)
-if [ "$LIGHTDM_PATH" != "" ] && [ ! -f /usr/bin/raspi-config ] && [ ! -d /etc/xdg/lxsession ]; then
+if [ ! -f /usr/bin/raspi-config ] && [ ! -d /etc/xdg/lxsession ]; then
 
 echo "${red}WE NEED TO MAKE SURE LXDE #AND# LIGHTDM ARE SETUP, IF YOU WANT THE TICKER TO #AUTOMATICALLY RUN ON SYSTEM STARTUP# / REBOOT."
 echo " "
@@ -813,9 +807,15 @@ echo " "
             echo "${cyan}Installing LXDE desktop and required components, please wait...${reset}"
             echo " "
 
-            $PACKAGE_INSTALL lxde -y
+            $PACKAGE_INSTALL lightdm lxde -y
             
             sleep 3
+
+            # lightdm (NEEDED TO BE USED AS THE DISPLAY MANAGER, FOR LXDE / AUTOBOOT)
+            LIGHTDM_PATH=$(get_app_path "lightdm")
+
+            # Are we already using lightdm, as the display manager?
+            LIGHTDM_DISPLAY=$(cat /etc/X11/default-display-manager | grep "lightdm")
             
             echo " "
             echo "${cyan}LXDE desktop has been installed.${reset}"
@@ -839,20 +839,52 @@ echo " "
                 fi
                 
             
+            # CROSS-PLATFORM LIGHTDM SETUP COMMANDS...
+            
+            echo " "
+            echo "${cyan}Configuring LIGHTDM display manager, please wait...${reset}"
+            echo " "
+            
             # Enable GUI on boot
             systemctl set-default graphical
+            echo " "
+            
+            sleep 3
 		  
 		  # Assure lightdm is being used
 		  dpkg-reconfigure lightdm
+            echo " "
+            
+            sleep 3
                 
             # Assure a graphical TARGET is set, or system MAY hang on boot
             # https://askubuntu.com/questions/74551/lightdm-not-starting-on-boot/939995#939995
             rm /etc/systemd/system/default.target
             
-            echo " "
+            sleep 3
+            
             systemctl set-default graphical.target
             echo " "
             
+            sleep 3
+                        
+            # DISABLE gdm at boot
+            sudo systemctl disable gdm.service
+            echo " "
+            
+            sleep 3
+            
+            echo " "
+            echo "${cyan}Configuring LIGHTDM display manager is complete.${reset}"
+            echo " "
+          
+            # ENABLE lightdm at boot
+            # DEBUG: sudo lightdm –-test-mode --debug
+            # DEBUG: journalctl -b -u lightdm.service
+            sudo systemctl enable lightdm.service
+            
+            sleep 3
+     
             break
            elif [ "$opt" = "skip" ]; then
             echo " "
@@ -862,7 +894,14 @@ echo " "
     done
 
 
-elif [ "$LIGHTDM_PATH" == "" ]; then
+fi
+
+
+# lightdm (NEEDED TO BE USED AS THE DISPLAY MANAGER, FOR LXDE / AUTOBOOT)
+LIGHTDM_PATH=$(get_app_path "lightdm")
+
+
+if [ "$LIGHTDM_PATH" == "" ]; then
                 
                 echo "${red}'lightdm' (display manager) could NOT be found or installed. PLEASE INSTALL MANUALLY, OR TRY A DIFFERENT OPERATING SYSTEM (Ubuntu, Debian, RaspberryPi OS, Armbian, etc)."
                
@@ -876,7 +915,7 @@ elif [ "$LIGHTDM_PATH" == "" ]; then
                     echo " "
                     exit
                     fi
-
+                    
 fi
 
 
