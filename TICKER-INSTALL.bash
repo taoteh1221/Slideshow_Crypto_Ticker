@@ -59,7 +59,7 @@ TIME=$(date '+%H:%M:%S')
 CURRENT_TIMESTAMP=$(date +%s)
 
 # Are we running on Ubuntu OS?
-IS_UBUNTU=$(cat /etc/os-release | grep "Ubuntu")
+IS_UBUNTU=$(cat /etc/os-release | grep -i "ubuntu")
 
 
 # If a symlink, get link target for script location
@@ -993,23 +993,46 @@ echo " "
             
                 # Auto-login LXDE logic...
                 
+                
+                # FIRST LOCATION CHECK, FOR MULTI-FILE CONFIG DIRECTORY SETUP
                 if [ -d /etc/lightdm/lightdm.conf.d ]; then
+                
                 LIGHTDM_CONF_DIR="/etc/lightdm/lightdm.conf.d"
+                
                 CHECK_LIGHTDM_D=$(ls /etc/lightdm/lightdm.conf.d)
                 CHECK_LIGHTDM_D=$(echo "${CHECK_LIGHTDM_D}" | xargs) # trim whitespace
-                # SECONDARY POSSIBLE LOCATION, FOR MULTI-FILE CONFIG DFIRECTORY SETUP
-                elif [ -d /usr/share/lightdm/lightdm.conf.d ]; then
-                LIGHTDM_CONF_DIR="/usr/share/lightdm/lightdm.conf.d"
-                CHECK_LIGHTDM_D=$(ls /usr/share/lightdm/lightdm.conf.d)
-                CHECK_LIGHTDM_D=$(echo "${CHECK_LIGHTDM_D}" | xargs) # trim whitespace
-                else
-                CHECK_LIGHTDM_D=""
+                
+                # Find the PROPER config file in the /lightdm.conf.d/ directory
+			 LIGHTDM_CONFIG_FILE=$(grep -r 'user-session' $LIGHTDM_CONF_DIR | awk -F: '{print $1}')
+                LIGHTDM_CONFIG_FILE=$(echo "${LIGHTDM_CONFIG_FILE}" | xargs) # trim whitespace
+                
                 fi
                 
                 
-                if [ ! -f /etc/lightdm/lightdm.conf ] && [ -z "$CHECK_LIGHTDM_D" ]; then
+                # SECONDARY POSSIBLE LOCATION, FOR MULTI-FILE CONFIG DIRECTORY SETUP
+                if [ -z "$LIGHTDM_CONFIG_FILE" ] && [ -d /usr/share/lightdm/lightdm.conf.d ]; then
                 
-                echo "${cyan}LIGHTDM config NOT detected, CREATING at: /etc/lightdm/lightdm.conf${reset}"
+                LIGHTDM_CONF_DIR="/usr/share/lightdm/lightdm.conf.d"
+                
+                CHECK_LIGHTDM_D=$(ls /usr/share/lightdm/lightdm.conf.d)
+                CHECK_LIGHTDM_D=$(echo "${CHECK_LIGHTDM_D}" | xargs) # trim whitespace
+                
+                # Find the PROPER config file in the /lightdm.conf.d/ directory
+			 LIGHTDM_CONFIG_FILE=$(grep -r 'user-session' $LIGHTDM_CONF_DIR | awk -F: '{print $1}')
+                LIGHTDM_CONFIG_FILE=$(echo "${LIGHTDM_CONFIG_FILE}" | xargs) # trim whitespace
+                
+                fi
+                
+                
+                # DEFAULT LOCATION, IF NO MULTI-FILE CONFIG DIRECTORY SETUP DETECTED
+                if [ -z "$LIGHTDM_CONFIG_FILE" ]; then
+                LIGHTDM_CONFIG_FILE="/etc/lightdm/lightdm.conf"
+                fi
+                
+                
+                if [ ! -f "$LIGHTDM_CONFIG_FILE" ]; then
+                
+                echo "${cyan}LIGHTDM config NOT detected, CREATING at: ${LIGHTDM_CONFIG_FILE}${reset}"
                 
                 
 # Don't nest / indent, or it could malform the settings            
@@ -1023,48 +1046,12 @@ EOF
 
 			 # Setup LXDE to run at boot
 				
-			 touch /etc/lightdm/lightdm.conf
+			 touch $LIGHTDM_CONFIG_FILE
 					
-			 echo -e "$LXDE_AUTO_LOGIN" > /etc/lightdm/lightdm.conf
+			 echo -e "$LXDE_AUTO_LOGIN" > $LIGHTDM_CONFIG_FILE
+			 
 			    
-			    
-			 elif [ -f /etc/lightdm/lightdm.conf ]; then
-                
-                echo "${cyan}LIGHTDM config detected at: /etc/lightdm/lightdm.conf${reset}"
-			    
-			 DETECT_AUTOLOGIN=$(sudo sed -n '/autologin-user=/p' /etc/lightdm/lightdm.conf)
-			    
-			 DETECT_AUTOLOGIN_SESSION=$(sudo sed -n '/autologin-session=/p' /etc/lightdm/lightdm.conf)
-			    
-			    
-			        if [ "$DETECT_AUTOLOGIN" != "" ]; then 
-                       sed -i "s/#autologin-user=.*/autologin-user=${APP_USER}/g" /etc/lightdm/lightdm.conf
-                       sleep 2
-                       sed -i "s/autologin-user=.*/autologin-user=${APP_USER}/g" /etc/lightdm/lightdm.conf
-                       elif [ "$DETECT_AUTOLOGIN" == "" ]; then 
-                       sudo bash -c "echo 'autologin-user=${APP_USER}' >> /etc/lightdm/lightdm.conf"
-			        fi
-			        
-                
-                sleep 2
-			    
-			    
-			        if [ "$DETECT_AUTOLOGIN_SESSION" != "" ]; then 
-                       sed -i "s/#autologin-session=.*/autologin-session=${LXDE_PROFILE}/g" /etc/lightdm/lightdm.conf
-                       sleep 2
-                       sed -i "s/autologin-session=.*/autologin-session=${LXDE_PROFILE}/g" /etc/lightdm/lightdm.conf
-                       elif [ "$DETECT_AUTOLOGIN_SESSION" == "" ]; then 
-                       sudo bash -c "echo 'autologin-session=${LXDE_PROFILE}' >> /etc/lightdm/lightdm.conf"
-			        fi
-                
-                sed -i "s/user-session=.*/user-session=${LXDE_PROFILE}/g" /etc/lightdm/lightdm.conf
-                
-                
-                elif [ -n "$CHECK_LIGHTDM_D" ]; then
-                
-                # Find the PROPER config file in the /lightdm.conf.d/ directory
-			 LIGHTDM_CONFIG_FILE=$(grep -r 'user-session' $LIGHTDM_CONF_DIR | awk -F: '{print $1}')
-                LIGHTDM_CONFIG_FILE=$(echo "${LIGHTDM_CONFIG_FILE}" | xargs) # trim whitespace
+			 elif [ -f "$LIGHTDM_CONFIG_FILE" ]; then
                 
                 echo "${cyan}LIGHTDM config detected at: $LIGHTDM_CONFIG_FILE${reset}"
 			    
@@ -1114,14 +1101,13 @@ EOF
                 fi
             
             
-            
-            
             break
            elif [ "$opt" = "skip" ]; then
             echo " "
             echo "${green}Skipping LXDE desktop setup...${reset}"
             break
            fi
+           
     done
     
 
@@ -1159,9 +1145,14 @@ select opt in $OPTIONS; do
 				     # FORCE UBUNTU SNAP INSTALLS
 				     # (included snaps can be messed up, especially on Ubuntu Armbian)
 				     if [ "$IS_UBUNTU" != "" ]; then
+				     
 				     $UBUNTU_SNAP_INSTALL firefox
+				     
 				     $UBUNTU_SNAP_INSTALL chromium
-				     $UBUNTU_SNAP_INSTALL epiphany
+				     
+				     # SEEMS to throw error that BREAKS this script, due to not existing?
+				     #$UBUNTU_SNAP_INSTALL epiphany 
+				     
 				     fi
 				     
 				     
