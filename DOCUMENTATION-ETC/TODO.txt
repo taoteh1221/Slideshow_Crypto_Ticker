@@ -70,6 +70,27 @@ FEATURES / STRUCTURING SECTION
 ///////////////////////////////////////////////////////
 
 
+add the LDXE desktop install logic in the fedora setup script, to the
+ticker auto-installer.
+
+
+FEDORA ONLY REQUIRES THIS BELOW, FOR LIGHTDM AUTO-LOGIN:
+https://christitus.com/lightdm-configuration/
+===============================================================
+AutoLogin with LightDM
+Change the following part of the file to autologin. Note: This does pose a security risk and should never be done in a business
+
+lightdm.conf Under [Seat:*]
+
+autologin-guest=false
+autologin-user=username
+autologin-user-timeout=0
+autologin-in-background=false
+#autologin-session=
+Copy
+I generally uncomment the following lines above and just change this line autologin-user=username and then it will autologin that user on the next reboot. Note: You can use the autologin-guest instead of user to have it autologin as a guest account.
+===============================================================
+
 Convert all ticker CSS units to 'vw' (like we already do for the CPU / Memory / Upgrade elements at the top).
 
 
