@@ -1,10 +1,10 @@
 
-// Copyright 2019-2024 GPLv3, Slideshow Crypto Ticker by Mike Kilday: Mike@DragonFrugal.com (leave this copyright / attribution intact in ALL forks / copies!)
+// Copyright 2019-2025 GPLv3, Slideshow Crypto Ticker by Mike Kilday: Mike@DragonFrugal.com (leave this copyright / attribution intact in ALL forks / copies!)
 
 
 
 // Application version
-var app_version = '3.14.1';  // 2024/NOVEMBER/8TH
+var app_version = '3.14.2';  // 2025/FEBRUARY/16TH
 
 
 // BLANK var inits
@@ -141,8 +141,8 @@ $(".moving_left_side").css({ "opacity": system_data_opacity });
 	// If monospace emulation is properly enabled, set the CSS attributes
 	if ( monospace_check() == true ) {
 	console.log('Enabling monospace emulation rendering.');
-	$(".ticker .monospace").css({ "width": Math.round(ticker_size * monospace_width) + "px" });
-	$(".volume .monospace").css({ "width": Math.round(volume_size * monospace_width) + "px" });
+	$(".ticker .monospace").css({ "width": Math.round(ticker_size * monospace_width) + "vw" });
+	$(".volume .monospace").css({ "width": Math.round(volume_size * monospace_width) + "vw" });
 	}
 	else {
 	console.log('Skipping monospace emulation rendering (no proper decimal value of 1.00 or less detected).');

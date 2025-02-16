@@ -1,5 +1,5 @@
 
-// Copyright 2019-2024 GPLv3, Slideshow Crypto Ticker by Mike Kilday: Mike@DragonFrugal.com (leave this copyright / attribution intact in ALL forks / copies!)
+// Copyright 2019-2025 GPLv3, Slideshow Crypto Ticker by Mike Kilday: Mike@DragonFrugal.com (leave this copyright / attribution intact in ALL forks / copies!)
 
 var exchange_markets = []; // LEAVE ALONE, AND DON'T DELETE (REQUIRED!!)
 
@@ -74,18 +74,18 @@ exchange_markets['gateio'] = 'ZEUS_USDT|RENDER_USDT';
 ////
 // Kucoin markets (set to '' to disable)
 // !!KUCOIN REQUIRES USING THE INSTALL SCRIPT!!
-exchange_markets['kucoin'] = 'NEON-USDT|WEN-USDT'; 
+exchange_markets['kucoin'] = 'NEON-USDT|POPCAT-USDT'; 
 ////
 ////
 // Kraken markets (set to '' to disable)
-exchange_markets['kraken'] = 'JUP/USD|ATLAS/USD|POLIS/USD|MANA/USD'; 
+exchange_markets['kraken'] = 'JUP/USD|POLIS/USD|MANA/USD'; 
 ////
 //// 
 // Coingecko markets (set to '' to disable)
 // USE COINGECKO'S API ID FOR EACH ASSET! (SEE COINGECKO ASSET PAGE'S INFO SECTION) 
 // PAIRING ASSET MUST BE SUPPORTED BY COINGECKO'S 'vs_currencies' API PARAMETER!
 // FORMAT IS 'api-id-here:symbol/pairing'
-exchange_markets['coingecko'] = 'immutable-x:imx/usd|genesysgo-shadow:shdw/usd|bonk:bonk/usd|popcat:popcat/usd';
+exchange_markets['coingecko'] = 'sonic-svm:sonic/usd|bonk:bonk/usd';
 
 
 // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -95,17 +95,17 @@ exchange_markets['coingecko'] = 'immutable-x:imx/usd|genesysgo-shadow:shdw/usd|b
 
 
 // Screen orientation (offset in degrees)
-var orient_screen = 180; // Normal (upright) = 0, Flipped (upside down) = 180, Sideways (left or right) = 90 or 270
+var orient_screen = 0; // Normal (upright) = 0, Flipped (upside down) = 180, Sideways (left or right) = 90 or 270
 
 
 // Vertical position (adjusts the ticker's vertical position up/down)
 // CAN BE NEGATIVE, TO GO THE OPPOSITE WAY
-var vertical_position = 150; // Default = 37 (SMALL SCREEN), 75 (MEDIUM SCREEN), 150 (LARGE SCREEN)
+var vertical_position = 6.75; // Default = 6.75
 
 
 // Horizontal position (adjusts the ticker's horizontal position left/right)
 // CAN BE NEGATIVE, TO GO THE OPPOSITE WAY
-var horizontal_position = 0; // Default = 10 (SMALL SCREEN), 0 (MEDIUM/LARGE SCREEN)
+var horizontal_position = 0.00; // Default = 0.00
 
 
 // Show exchange name in title (next to asset ticker symbol)
@@ -128,24 +128,24 @@ var system_data_opacity = 0.70;  // Default = 0.70 (#CAN# BE DECIMALS HERE, WITH
 
 
 // Title font size
-var title_size = 200; // Default = 50 (SMALL SCREEN), 100 (MEDIUM SCREEN), 200 (LARGE SCREEN)
-
-
-// 24 hour volume font size
-var volume_size = 150; // Default = 38 (SMALL SCREEN), 75 (MEDIUM SCREEN), 150 (LARGE SCREEN)
+var title_size = 10.5; // Default = 10.5
 
 
 // Ticker font size
-var ticker_size = 300; // Default = 75 (SMALL SCREEN), 150 (MEDIUM SCREEN), 300 (LARGE SCREEN)
+var ticker_size = 15.5; // Default = 15.5
 
 
-// Ticker arrow size RATIO (to ticker size), DECIMAL NUMBER FORMAT X.XX OF 1.00 OR LESS
+// 24 hour volume font size
+var volume_size = 7.5; // Default = 7.5
+
+
+// Ticker arrow size RATIO (to ticker size), DECIMAL NUMBER FORMAT X.XX OF 100.00 OR LESS
 // THIS #ALREADY AUTO-RESIZES# BASED ON THE TICKER SIZE, SO YOU USUALLY CAN LEAVE THIS
 // #AS-IS#, UNLESS YOU WANT THE RATIO TO TICKER SIZE DIFFERENT!
-var arrow_size = 0.65; // Default = 0.65 (same height as ticker price text)
+var arrow_size = 0.70; // Default = 0.70 (makes it ROUGHLY same height as ticker price text)
 ////
 // Spacing between ticker arrow, and ticker price text
-var arrow_spacing = 20; // Default = 10 (SMALL SCREEN), 20 (MEDIUM SCREEN), 40 (LARGE SCREEN)
+var arrow_spacing = 2.50; // Default = 2.50
 
 
 // Maximum decimal places for ticker values worth under 1.00 in unit value, for prettier / less-cluttered interface

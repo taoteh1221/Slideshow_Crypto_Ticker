@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Copyright 2019-2024 GPLv3, Slideshow Crypto Ticker by Mike Kilday: Mike@DragonFrugal.com (leave this copyright / attribution intact in ALL forks / copies!)
+# Copyright 2019-2025 GPLv3, Slideshow Crypto Ticker by Mike Kilday: Mike@DragonFrugal.com (leave this copyright / attribution intact in ALL forks / copies!)
 
 
 ISSUES_URL="https://github.com/taoteh1221/Slideshow_Crypto_Ticker/issues"
@@ -46,6 +46,16 @@ fi
 export XAUTHORITY=~/.Xauthority 
 # Working directory
 export PWD=$PWD
+
+
+######################################
+
+# Are we running on an ARM-based CPU?
+if [ -f "/etc/debian_version" ]; then
+IS_ARM=$(dpkg --print-architecture | grep -i "arm")
+elif [ -f "/etc/redhat-release" ]; then
+IS_ARM=$(uname -r | grep -i "aarch64")
+fi
 
 
 ######################################
@@ -242,6 +252,21 @@ echo " "
 ######################################
 
 
+# Ubuntu uses snaps for very basic libraries these days, so we need to configure for possible snap installs
+if [ "$IS_UBUNTU" != "" ]; then
+
+sudo apt install snapd -y
+
+sleep 3
+          
+UBUNTU_SNAP_INSTALL="sudo snap install"
+
+fi
+
+
+######################################
+
+
 # Path to app (CROSS-DISTRO-COMPATIBLE)
 get_app_path() {
 
@@ -294,13 +319,17 @@ app_path_result="${app_path_result#*$1:}"
           if [ "$1" == "bsdtar" ] && [ -f "/etc/debian_version" ]; then
           SYS_PACK="libarchive-tools"
           
-          # xdg-user-dir (debian package name differs slightly)
+          # xdg-user-dir (debian package name differs)
           elif [ "$1" == "xdg-user-dir" ] && [ -f "/etc/debian_version" ]; then
           SYS_PACK="xdg-user-dirs"
 
-          # rsyslogd (debian package name differs slightly)
+          # rsyslogd (debian package name differs)
           elif [ "$1" == "rsyslogd" ] && [ -f "/etc/debian_version" ]; then
           SYS_PACK="rsyslog"
+
+          # snap (debian package name differs)
+          elif [ "$1" == "snap" ] && [ -f "/etc/debian_version" ]; then
+          SYS_PACK="snapd"
 
           # xorg (debian package name differs)
           elif [ "$1" == "xorg" ] && [ -f "/etc/debian_version" ]; then
@@ -338,9 +367,8 @@ app_path_result="${app_path_result#*$1:}"
      
           # If UBUNTU (*NOT* any other OS) snap was detected on the system, try a snap install too
           # (as they moved some libs over to snap / snap-only? now)
-          if [ ! -z "$UBUNTU_SNAP_PATH" ]; then
-          
-          UBUNTU_SNAP_INSTALL="sudo $UBUNTU_SNAP_PATH install"
+          # (only if we are NOT installing snap itself)
+          if [ $SYS_PACK != "snapd" ]; then
           
           echo " " > /dev/tty
           echo "${yellow}CHECKING FOR UBUNTU SNAP PACKAGE '$SYS_PACK', please wait...${reset}" > /dev/tty
@@ -363,12 +391,6 @@ app_path_result="${app_path_result#*$1:}"
 
 
 }
-
-
-# Ubuntu uses snaps for very basic libraries these days, so we need to configure for possible snap installs
-if [ "$IS_UBUNTU" != "" ]; then
-UBUNTU_SNAP_PATH=$(get_app_path "snap")
-fi
 
 
 ######################################
@@ -807,8 +829,23 @@ echo " "
             echo "${cyan}Installing LXDE desktop and required components, please wait...${reset}"
             echo " "
 
-            $PACKAGE_INSTALL lightdm lxde -y
             
+                if [ -f "/etc/debian_version" ]; then
+                
+                $PACKAGE_INSTALL lightdm lxde -y
+
+                elif [ -f "/etc/redhat-release" ]; then
+
+                $PACKAGE_INSTALL lightdm -y
+                
+                sleep 3
+
+                # GROUP install REQUIRED for LXDE install command
+                sudo dnf group install -y lxde-desktop
+                
+                fi
+	   
+	   
             sleep 3
 
             # lightdm (NEEDED TO BE USED AS THE DISPLAY MANAGER, FOR LXDE / AUTOBOOT)
@@ -997,28 +1034,23 @@ echo " "
                 # FIRST LOCATION CHECK, FOR MULTI-FILE CONFIG DIRECTORY SETUP
                 if [ -d /etc/lightdm/lightdm.conf.d ]; then
                 
+                # Find the PROPER config file in the checked config directory
                 LIGHTDM_CONF_DIR="/etc/lightdm/lightdm.conf.d"
                 
-                CHECK_LIGHTDM_D=$(ls /etc/lightdm/lightdm.conf.d)
-                CHECK_LIGHTDM_D=$(echo "${CHECK_LIGHTDM_D}" | xargs) # trim whitespace
-                
-                # Find the PROPER config file in the /lightdm.conf.d/ directory
-			 LIGHTDM_CONFIG_FILE=$(grep -r 'user-session' $LIGHTDM_CONF_DIR | awk -F: '{print $1}')
+	           LIGHTDM_CONFIG_FILE=$(grep -r 'user-session' $LIGHTDM_CONF_DIR | awk -F: '{print $1}')
                 LIGHTDM_CONFIG_FILE=$(echo "${LIGHTDM_CONFIG_FILE}" | xargs) # trim whitespace
                 
                 fi
                 
                 
-                # SECONDARY POSSIBLE LOCATION, FOR MULTI-FILE CONFIG DIRECTORY SETUP
+                # SECONDARY POSSIBLE LOCATION (IF NOT FOUND), FOR MULTI-FILE CONFIG DIRECTORY SETUP
                 if [ -z "$LIGHTDM_CONFIG_FILE" ] && [ -d /usr/share/lightdm/lightdm.conf.d ]; then
                 
+                
+                # Find the PROPER config file in the checked config directory
                 LIGHTDM_CONF_DIR="/usr/share/lightdm/lightdm.conf.d"
                 
-                CHECK_LIGHTDM_D=$(ls /usr/share/lightdm/lightdm.conf.d)
-                CHECK_LIGHTDM_D=$(echo "${CHECK_LIGHTDM_D}" | xargs) # trim whitespace
-                
-                # Find the PROPER config file in the /lightdm.conf.d/ directory
-			 LIGHTDM_CONFIG_FILE=$(grep -r 'user-session' $LIGHTDM_CONF_DIR | awk -F: '{print $1}')
+	           LIGHTDM_CONFIG_FILE=$(grep -r 'user-session' $LIGHTDM_CONF_DIR | awk -F: '{print $1}')
                 LIGHTDM_CONFIG_FILE=$(echo "${LIGHTDM_CONFIG_FILE}" | xargs) # trim whitespace
                 
                 fi
@@ -1089,6 +1121,12 @@ EOF
             
             
             sleep 2
+            
+            # On NEW LXDE installs (usually Fedora, but this SHOULD be safe to run on ANY),
+            # just make sure the setup config params are uncommented (active)
+            sed -i "s/^#user-session/user-session/g" $LIGHTDM_CONFIG_FILE
+            sed -i "s/^#autologin-user/autologin-user/g" $LIGHTDM_CONFIG_FILE
+            sed -i "s/^#autologin-session/autologin-session/g" $LIGHTDM_CONFIG_FILE
             
             echo " "
             echo "${green}LXDE desktop auto-login has been configured.${reset}"
@@ -1206,42 +1244,57 @@ select opt in $OPTIONS; do
                     
 				# Safely install other packages seperately, so they aren't cancelled by 'package missing' errors...
 				
-				# Grapics card detection support for firefox (for browser GPU acceleration)
-				$PACKAGE_INSTALL libpci-dev -y
+				
+                        if [ -f "/etc/debian_version" ]; then
+                        
+     				# Grapics card detection support for firefox (for browser GPU acceleration)
+     				$PACKAGE_INSTALL libpci-dev -y
+     				
+     				sleep 1
+     				
+     				# Not sure we need this Mesa 3D Graphics Library / OpenGL stuff, but leave for
+     				# now until we determine why firefox is having issues enabling GPU acceleration
+     				$PACKAGE_INSTALL freeglut3-dev -y
+     				
+     				sleep 1
+     				
+     				$PACKAGE_INSTALL libglu1-mesa-dev -y
+     				
+     				sleep 1
+     				
+     				$PACKAGE_INSTALL mesa-utils -y
+     				
+     				sleep 1
+     				
+     				$PACKAGE_INSTALL mesa-common-dev -y
+     				
+     				sleep 1
+     				
+     				$PACKAGE_INSTALL mesa-vulkan-drivers -y
+     				
+     				sleep 1
+     				
+     				$PACKAGE_INSTALL vulkan-icd -y
+     				
+     				sleep 1
+				
+				     $PACKAGE_INSTALL x11-xserver-utils -y
+     				
+     				sleep 1
+                        
+                        elif [ -f "/etc/redhat-release" ]; then
+                        
+                        # Install generic graphics card libraries, and other interface-related libraries
+                        $PACKAGE_INSTALL -y --skip-broken --skip-unavailable libglvnd-glx libglvnd-opengl libglvnd-devel qt5-qtx11extras xorg-x11-server-utils
+                        
+                        fi
+	   
+				
+				$PACKAGE_INSTALL xdotool -y
 				
 				sleep 1
 				
-				# Not sure we need this Mesa 3D Graphics Library / OpenGL stuff, but leave for
-				# now until we determine why firefox is having issues enabling GPU acceleration
-				$PACKAGE_INSTALL freeglut3-dev -y
-				
-				sleep 1
-				
-				$PACKAGE_INSTALL libglu1-mesa-dev -y
-				
-				sleep 1
-				
-				$PACKAGE_INSTALL mesa-utils -y
-				
-				sleep 1
-				
-				$PACKAGE_INSTALL mesa-common-dev -y
-				
-				sleep 1
-				
-				$PACKAGE_INSTALL mesa-vulkan-drivers -y
-				
-				sleep 1
-				
-				$PACKAGE_INSTALL vulkan-icd -y
-				
-				sleep 1
-				
-				$PACKAGE_INSTALL xdotool unclutter -y
-				
-				sleep 1
-				
-				$PACKAGE_INSTALL x11-xserver-utils -y
+				$PACKAGE_INSTALL unclutter -y
 				
 				sleep 1
 				

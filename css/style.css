@@ -1,5 +1,5 @@
 /*
- * Copyright 2019-2024 GPLv3, Slideshow Crypto Ticker by Mike Kilday: Mike@DragonFrugal.com (leave this copyright / attribution intact in ALL forks / copies!)
+ * Copyright 2019-2025 GPLv3, Slideshow Crypto Ticker by Mike Kilday: Mike@DragonFrugal.com (leave this copyright / attribution intact in ALL forks / copies!)
  */
 
 
@@ -30,7 +30,6 @@ div .monospace {
 	white-space: nowrap;
   overflow: hidden;
   font-weight: 350;
-  font-size: 48px;
   transform: scale(1, 1);
   padding: 0px;
   margin: 0px;
@@ -46,7 +45,6 @@ color: #ffff00;
   white-space: nowrap;
   overflow: hidden;
   font-weight: 350;
-  font-size: 60px;
   transform: scale(1, 1);
   padding: 0px;
   margin: 0px;
@@ -63,7 +61,6 @@ color: #ffff00;
   white-space: nowrap;
   overflow: hidden;
   font-weight: 350;
-  font-size: 29px;
   transform: scale(1, 1);
   padding: 0px;
   margin: 0px;
@@ -99,7 +96,7 @@ color: #ffff00;
 
 .spacing {
   position: relative;
-  margin-top: 30px;
+  margin-top: 3.5vw;
 }
 
 

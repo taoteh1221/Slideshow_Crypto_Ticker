@@ -70,8 +70,7 @@ FEATURES / STRUCTURING SECTION
 ///////////////////////////////////////////////////////
 
 
-add the LDXE desktop install logic in the fedora setup script, to the
-ticker auto-installer.
+Add logic for debian and redhat, to freeze kernel updates on ARM devices (like we do in my fedora setup script). Armbian has armbian-config "system settings > updates > disable firmware updates" to automate this.
 
 
 FEDORA ONLY REQUIRES THIS BELOW, FOR LIGHTDM AUTO-LOGIN:
@@ -90,8 +89,6 @@ autologin-in-background=false
 Copy
 I generally uncomment the following lines above and just change this line autologin-user=username and then it will autologin that user on the next reboot. Note: You can use the autologin-guest instead of user to have it autologin as a guest account.
 ===============================================================
-
-Convert all ticker CSS units to 'vw' (like we already do for the CPU / Memory / Upgrade elements at the top).
 
 
 Add "coingecko terminal" DEX API support.
