@@ -1,5 +1,5 @@
 
-// Copyright 2019-2024 GPLv3, Slideshow Crypto Ticker by Mike Kilday: Mike@DragonFrugal.com (leave this copyright / attribution intact in ALL forks / copies!)
+// Copyright 2019-2025 GPLv3, Slideshow Crypto Ticker by Mike Kilday: Mike@DragonFrugal.com (leave this copyright / attribution intact in ALL forks / copies!)
 
 
 
@@ -149,17 +149,17 @@ arrow_width = Math.round(arrow_height * 0.84);
 arrow_border_width = Math.round(arrow_width / 2);
 	
 // Arrow height
-$("div.arrow_wrapper").css({ "height": arrow_height + "px" });
-$("span.buy").css({ "border-bottom": arrow_height + "px solid rgb(105, 199, 115)" });
-$("span.sell").css({ "border-top": arrow_height + "px solid rgb(199, 105, 105)" });
+$("div.arrow_wrapper").css({ "height": arrow_height + "vw" });
+$("span.buy").css({ "border-bottom": arrow_height + "vw solid rgb(105, 199, 115)" });
+$("span.sell").css({ "border-top": arrow_height + "vw solid rgb(199, 105, 105)" });
 
 // Arrow width
-$("div.arrow_wrapper").css({ "width": arrow_width + "px" });
-$("span.arrow").css({ "border-left": arrow_border_width + "px solid transparent" });
-$("span.arrow").css({ "border-right": arrow_border_width + "px solid transparent" });
+$("div.arrow_wrapper").css({ "width": arrow_width + "vw" });
+$("span.arrow").css({ "border-left": arrow_border_width + "vw solid transparent" });
+$("span.arrow").css({ "border-right": arrow_border_width + "vw solid transparent" });
 
 // Arrow right-side spacing
-$("div.arrow_wrapper").css({ "margin-right": arrow_spacing + 'px' });
+$("div.arrow_wrapper").css({ "margin-right": arrow_spacing + 'vw' });
 
 }
 
@@ -498,11 +498,11 @@ market_key = js_safe_key(market_id, exchange);
 
 	html = '<div id="wrapper_' + market_key + '" class="asset_tickers">'+
     
-	'<div class="title" style="font-size: '+title_size+'px; font-weight: '+font_weight+';"><span id="asset_' + market_key + '">' + asset + '</span> <span class="status_wrapper_'+exchange+'"><span class="parenth_'+market_key+'">(<span class="status status_'+exchange+' status_'+market_key+'">Loading</span>)</span></span></div>'+
+	'<div class="title" style="font-size: '+title_size+'vw; font-weight: '+font_weight+';"><span id="asset_' + market_key + '">' + asset + '</span> <span class="status_wrapper_'+exchange+'"><span class="parenth_'+market_key+'">(<span class="status status_'+exchange+' status_'+market_key+'">Loading</span>)</span></span></div>'+
 	
-	'<div class="ticker" style="font-size: '+ticker_size+'px; font-weight: '+font_weight+';" id="ticker_' + market_key + '"></div>'+
+	'<div class="ticker" style="font-size: '+ticker_size+'vw; font-weight: '+font_weight+';" id="ticker_' + market_key + '"></div>'+
     
-	'<div class="volume" style="font-size: '+volume_size+'px; font-weight: '+font_weight+';" id="volume_' + market_key + '"></div>'+
+	'<div class="volume" style="font-size: '+volume_size+'vw; font-weight: '+font_weight+';" id="volume_' + market_key + '"></div>'+
 	
 	'</div>';
 	

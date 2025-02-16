@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Copyright 2019-2024 GPLv3, Slideshow Crypto Ticker by Mike Kilday: Mike@DragonFrugal.com (leave this copyright / attribution intact in ALL forks / copies!)
+# Copyright 2019-2025 GPLv3, Slideshow Crypto Ticker by Mike Kilday: Mike@DragonFrugal.com (leave this copyright / attribution intact in ALL forks / copies!)
 
 # Authentication of X sessions
 export XAUTHORITY=~/.Xauthority 
@@ -31,33 +31,6 @@ fi
 
 # Give system time to boot
 sleep 20
-				
-FIND_DISPLAY=$(cat -e "/proc/$$/environ" | sed 's/\^@/\n/g' | grep DISPLAY | sed 's/.*=\(.*\).*/\1/')
-
-
-# If DISPLAY parameter wasn't set, try systemd environment check
-if [ -z "$FIND_DISPLAY" ]; then
-FIND_DISPLAY=$(systemctl --user show-environment | grep DISPLAY | sed 's/.*=\(.*\).*/\1/')
-fi
-
-
-# If DISPLAY parameter STILL wasn't set, use :0 (DEFAULT for 1st display)
-if [ -z "$FIND_DISPLAY" ]; then
-FIND_DISPLAY=":0"
-fi
-
-
-DISPLAY=$FIND_DISPLAY
-
-export DISPLAY=$FIND_DISPLAY
-
-xset s off
-
-xset -dpms
-
-xset s noblank
-
-unclutter -idle 0.5 -root &
 
 # Cache updating (MAKE SURE IT EXISTS BEFORE RUNNING THE TICKER)
 bash ~/slideshow-crypto-ticker/bash/cron/cache.bash

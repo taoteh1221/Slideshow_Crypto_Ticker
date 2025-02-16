@@ -1,16 +1,16 @@
 #!/bin/bash
 
 
-COPYRIGHT_YEARS="2022-2024"
+COPYRIGHT_YEARS="2022-2025"
 
 # Version of this script
-APP_VERSION="1.11.0" # 2024/SEPTEMBER/29TH
+APP_VERSION="1.11.1" # 2024/DECEMBER/22ND
 
 
 ########################################################################################################################
 ########################################################################################################################
 
-# Copyright 2022-2024 GPLv3, Bluetooth Internet Radio By Mike Kilday: Mike@DragonFrugal.com (leave this copyright / attribution intact in ALL forks / copies!)
+# Copyright 2022-2025 GPLv3, Bluetooth Internet Radio By Mike Kilday: Mike@DragonFrugal.com (leave this copyright / attribution intact in ALL forks / copies!)
 
 # https://github.com/taoteh1221/Bluetooth_Internet_Radio
 
@@ -42,10 +42,12 @@ APP_VERSION="1.11.0" # 2024/SEPTEMBER/29TH
 # ~/radio "7 1 b3"
 # ~/radio "internet 1 b3"
 # (plays default INTERNET playlist in background, 3rd station)
+# ~/radio "internet 1 b3vlc"
+# (plays default INTERNET playlist in background, 3rd station, RESET default player to: vlc)
  
-# ~/radio "9 1 bs"
-# ~/radio "local 1 bs"
-# (plays default LOCAL music folder [RECURSIVELY] in background, shuffling)
+# ~/radio "9 bsr"
+# ~/radio "local bsr"
+# (rescans music files / plays LOCAL music folder ~/Music/MPlayer [RECURSIVELY] in background, shuffling)
  
 # ~/radio 10
 # ~/radio off
@@ -189,7 +191,7 @@ TIME=$(date '+%H:%M:%S')
 CURRENT_TIMESTAMP=$(date +%s)
 
 # Are we running on Ubuntu OS?
-IS_UBUNTU=$(cat /etc/os-release | grep "PRETTY_NAME" | grep "Ubuntu")
+IS_UBUNTU=$(cat /etc/os-release | grep -i "ubuntu")
 
 
 # If a symlink, get link target for script location
@@ -411,6 +413,18 @@ app_path_result="${app_path_result#*$1:}"
           elif [ "$1" == "rsyslogd" ] && [ -f "/etc/debian_version" ]; then
           SYS_PACK="rsyslog"
 
+          # xorg (debian package name differs)
+          elif [ "$1" == "xorg" ] && [ -f "/etc/debian_version" ]; then
+          SYS_PACK="xserver-xorg"
+
+          # chromium-browser (debian package name differs)
+          elif [ "$1" == "chromium-browser" ] && [ -f "/etc/debian_version" ]; then
+          SYS_PACK="chromium"
+
+          # epiphany-browser (debian package name differs)
+          elif [ "$1" == "epiphany-browser" ] && [ -f "/etc/debian_version" ]; then
+          SYS_PACK="epiphany"
+
           else
           SYS_PACK="$1"
           fi
@@ -465,6 +479,43 @@ app_path_result="${app_path_result#*$1:}"
 # Ubuntu uses snaps for very basic libraries these days, so we need to configure for possible snap installs
 if [ "$IS_UBUNTU" != "" ]; then
 UBUNTU_SNAP_PATH=$(get_app_path "snap")
+fi
+
+
+######################################
+
+
+# Make sure automatic suspend / sleep is disabled
+if [ ! -f "${HOME}/.sleep_disabled.dat" ]; then
+
+echo "${red}We need to make sure your system will NOT AUTO SUSPEND / SLEEP, or your app server could stop running.${reset}"
+
+echo "${yellow} "
+read -n1 -s -r -p $"PRESS F to fix this (disables auto suspend / sleep), OR any other key to skip fixing..." key
+echo "${reset} "
+
+    if [ "$key" = 'f' ] || [ "$key" = 'F' ]; then
+
+    echo " "
+    echo "${cyan}Disabling auto suspend / sleep...${reset}"
+    echo " "
+    
+    echo -e "ran" > ${HOME}/.sleep_disabled.dat
+    
+         if [ -f "/etc/debian_version" ]; then
+         sudo systemctl mask sleep.target suspend.target hibernate.target hybrid-sleep.target > /dev/null 2>&1
+         elif [ -f "/etc/redhat-release" ]; then
+         sudo -u gdm dbus-run-session gsettings set org.gnome.settings-daemon.plugins.power sleep-inactive-ac-timeout 0 > /dev/null 2>&1
+         fi
+	   
+    else
+
+    echo " "
+    echo "${green}Skipping...${reset}"
+    echo " "
+    
+    fi
+
 fi
 
 
@@ -859,10 +910,12 @@ echo " "
 echo "${green}~/radio \"7 1 b3\""
 echo "${green}~/radio \"internet 1 b3\"${cyan}"
 echo "(plays default INTERNET playlist in background, 3rd station)"
+echo "${green}~/radio \"internet 1 b3vlc\"${cyan}"
+echo "(plays default INTERNET playlist in background, 3rd station, RESET default player to: vlc)"
 echo " "
-echo "${green}~/radio \"9 1 bs\""
-echo "${green}~/radio \"local 1 bs\"${cyan}"
-echo "(plays default LOCAL music folder [RECURSIVELY] in background, shuffling)"
+echo "${green}~/radio \"9 bsr\""
+echo "${green}~/radio \"local bsr\"${cyan}"
+echo "(rescans music files / plays LOCAL music folder ~/Music/MPlayer [RECURSIVELY] in background, shuffling)"
 echo " "
 echo "${green}~/radio 10"
 echo "${green}~/radio off${cyan}"
@@ -1540,7 +1593,7 @@ select opt in $OPTIONS; do
                 sed -i 's/connection_timeout = .*/connection_timeout = 30/g' ~/.config/pyradio/config > /dev/null 2>&1
          
                 echo " "
-                echo "${green}Increased pyradio connection timout to 30 seconds.${reset}"
+                echo "${green}Increased pyradio connection timout config to 30 seconds.${reset}"
        
                 break
                elif [ "$opt" = "system_freezes" ]; then
@@ -1554,7 +1607,7 @@ select opt in $OPTIONS; do
                 sed -i 's/player = .*/player = mplayer, vlc, mpv/g' ~/.config/pyradio/config > /dev/null 2>&1
                 
                 echo " "
-                echo "${green}Set mplayer to default pyradio stream player.${reset}"
+                echo "${green}RESET pyradio stream players config (to: mplayer, vlc, mpv).${reset}"
                 
                 
                 break
@@ -1676,7 +1729,7 @@ select opt in $OPTIONS; do
         echo " "
         echo "Full list of controls:"
         echo " "
-        echo "https://github.com/coderholic/pyradio/blob/master/README.md#controls"
+        echo "https://github.com/coderholic/pyradio/blob/master/docs/index.md#controls"
         echo " "
         
             # IF FIRST RUN, FORCE SHOWING PYRADIO ON SCREEN (SO USER CONFIG FILES GET CREATED IN HOME DIR)
@@ -1726,36 +1779,38 @@ select opt in $OPTIONS; do
             # We have already initialized pyradio and mpv beforehand,
             # so we can tweak a few config settings now before we start them up
             
-            
-                # Raspberry pi device compatibilities
-                if [ -f "/usr/bin/raspi-config" ]; then
-                
-                # mpv crashes a raspberry pi zero, mplayer does not (and vlc doesn't handle network disruption too well)
-                sed -i 's/player = .*/player = mplayer, vlc, mpv/g' ~/.config/pyradio/config > /dev/null 2>&1
-                
-                sleep 1
-
-                # mpv fails opening streams in pyradio on raspi devices, unless we set the connection timeout high
-                sed -i 's/connection_timeout = .*/connection_timeout = 30/g' ~/.config/pyradio/config > /dev/null 2>&1
-                
-                # mpv default volume is VERY low on raspi os, so we set it to 100 instead
-                sed -i 's/volume=.*/volume=100/g' ~/.config/mpv/mpv.conf > /dev/null 2>&1
-         
-                echo " "
-                echo "${red}Raspberry Pi compatibility settings for pyradio have been applied.${reset}"
-                echo " "
-            
-                fi
-            
-        
             echo "${yellow} "
             echo "Enter B to run pyradio in the background, or S to show on-screen..." 
             echo "(to include the playlist number, enter b[num] / s[num] instead, eg: b2)"
+            echo "(to reset default player, add player name, eg: b2mplayer)"
+            echo "(valid options are: mplayer, vlc, mpv)"
             echo "${reset} "
             
             read keystroke
                 
-            PLAY_NUM="${keystroke:1}"
+            SET_PLAYER="${keystroke:2:3}"
+                
+                
+                # If set player param WAS NOT correctly included (AND NOT BLANK), set it to defaults
+                if [[ $SET_PLAYER != "" ]] && [[ $SET_PLAYER != "mpl" ]] && [[ $SET_PLAYER != "vlc" ]] && [[ $SET_PLAYER != "mpv" ]]; then
+                SET_PLAYER=""
+                PLAYER_DESC=" (using player defaults [INVALID player value entered])"
+                elif [[ $SET_PLAYER == "mpl" ]]; then
+                SET_PLAYER="mplayer"
+                PLAYER_DESC=" (setting player to: ${SET_PLAYER})"
+                elif [[ $SET_PLAYER != "" ]]; then
+                PLAYER_DESC=" (setting player to: ${SET_PLAYER})"
+                fi
+            
+                
+                # If set player param was CORRECTLY included
+                if [[ $SET_PLAYER != "" ]]; then
+                sed -i "s/player = .*/player = ${SET_PLAYER}/g" ~/.config/pyradio/config > /dev/null 2>&1
+                sleep 1
+                fi
+                
+            
+            PLAY_NUM="${keystroke:1:1}"
             
                 
                 # If playlist number WAS NOT included 
@@ -1770,13 +1825,14 @@ select opt in $OPTIONS; do
                 if [ -z "$PLAY_NUM" ]; then
                 PLAY_NUM=1
                 fi
+                
+                
+                echo " "
+                echo "${green}Tuning pyradio to station ${PLAY_NUM}, in the ${PLAYLIST_DESC} playlist${PLAYER_DESC}...${reset}"
+                echo " "
     
     
                 if [[ ${keystroke:0:1} == "b" ]] || [[ ${keystroke:0:1} == "B" ]]; then
-                
-                echo " "
-                echo "${green}Tuning pyradio to station ${PLAY_NUM}, in the ${PLAYLIST_DESC} playlist...${reset}"
-                echo " "
                 
                 # Export the vars to screen's bash session, OR IT WON'T RUN!
                 export PLAY_NUM=$PLAY_NUM
@@ -1923,62 +1979,11 @@ select opt in $OPTIONS; do
         
         bt_autoconnect_check > /dev/null 2>&1
         
-        echo " "
-        echo "${yellow}Select 1 or 2 to choose whether to load a custom directory, or the default one.${reset}"
-        echo " "
-        
-        OPTIONS="default_directory custom_directory"
-        
-        select opt in $OPTIONS; do
-                if [ "$opt" = "custom_directory" ]; then
-        
-                echo " "
-                echo "${yellow}Enter the #FULL SYSTEM PATH# (example: start with /home/$TERMINAL_USERNAME/ for your home directory)"
-                echo "to your CUSTOM music directory, OR leave blank to use the default one.${reset}"
-                echo " "
-                
-                read CUSTOM_MUSIC_DIR
-                echo " "
-                                
-                	if [ -z "$CUSTOM_MUSIC_DIR" ]; then
-                 	MUSIC_DIR="$HOME/Music/MPlayer"
-                 	MUSIC_DIR_DESC="default"
-                    echo " "
-                 	echo "${green}Using default music directory...${reset}"
-                    echo " "
-                 	else
-                 	MUSIC_DIR="$CUSTOM_MUSIC_DIR"
-                 	MUSIC_DIR_DESC="custom"
-                    echo " "
-                    echo "${green}Using custom music directory from: $CUSTOM_MUSIC_DIR${reset}"
-                    echo " "
-                 	fi
-                
-                break
-               elif [ "$opt" = "default_directory" ]; then
-                MUSIC_DIR="$HOME/Music/MPlayer"
-                MUSIC_DIR_DESC="default"
-                echo " "
-                echo "${green}Using default music directory...${reset}"
-                echo " "
-                break
-               fi
-        done
-        
-        
-            if [ -z "$MUSIC_DIR" ]; then
-
-            echo " "
-            echo "${green}Music directory was NOT chosen, exiting...${reset}"
-            echo " "
-            
-            exit
-            
-            fi
-        
+        MUSIC_DIR="$HOME/Music/MPlayer"
+               
         
             # IF WE NEED TO CREATE THE MUSIC DIRECTORY
-            if [ ! -d /home/$TERMINAL_USERNAME/Music/MPlayer ]; then
+            if [ ! -d "$MUSIC_DIR" ]; then
 
             echo "${red} "
             echo "###########################################################################################"
@@ -1994,17 +1999,23 @@ select opt in $OPTIONS; do
             echo "${reset} "
         
                 if [ "$keystroke" = 'y' ] || [ "$keystroke" = 'Y' ]; then
-            
-    		      echo " "
-    			 echo "${cyan}Initiating mplayer MUSIC FOLDER setup, please wait...${reset}"
-                
-                sleep 3
     			
     			 mkdir -p $HOME/Music/MPlayer
+    			 
+    		      echo " "
+    			 echo "${cyan}mplayer MUSIC FOLDER created at: ~/Music/MPlayer"
+                echo " "
+    			 echo "Please re-run this script AFTER MOVING YOUR MUSIC TO THIS FOLDER, exiting...${reset}"
+                echo " "
+                
+                exit
             
                 else
-                echo "${green}mplayer MUSIC FOLDER setup has been cancelled.${reset}"
+
+                echo "${green}mplayer MUSIC FOLDER setup has been cancelled, exiting...${reset}"
                 echo " "
+                exit
+                
                 fi
                 
             
@@ -2012,14 +2023,14 @@ select opt in $OPTIONS; do
             else
                 
                 
-                files_recursive () {
+                recursive_media_scan () {
                      
                 shopt -s nullglob dotglob
                     
                         for pathname in "$1"/*; do
                         
                             if [ -d "$pathname" ]; then
-                                files_recursive "$pathname"
+                                recursive_media_scan "$pathname"
                             else
                                 case "$pathname" in
                                     *.mp3|*.ogg|*.wav|*.flac|*.mp4)
@@ -2031,40 +2042,58 @@ select opt in $OPTIONS; do
                         
                 }
                
-               
-                if [ ! -f ${MUSIC_DIR}/playlist.dat ]; then
-                
-                echo "${green}No playlist found, creating one now at: ${MUSIC_DIR}/playlist.dat${reset}"
-                echo " "
-
-                MPLAYER_PLAYLIST=$(files_recursive "$MUSIC_DIR")
-                
-                echo -e "$MPLAYER_PLAYLIST" > ${MUSIC_DIR}/playlist.dat
-
-                sleep 3
-    
-                fi
-                
                 
             echo "${yellow} "
             echo "Enter B to run mplayer in the background, or S to show on-screen..." 
-            echo "(to SHUFFLE append S instead, eg: BS...append N for normal playback, eg: SN)"
+            echo "(to SHUFFLE append S, eg: BS...append N or nothing to skip shuffling, eg: BN)"
+            echo "(to RESCAN to include NEW music files, append R [AFTER SHUFFLE VALUE], eg: BSR...append N or nothing to skip rescanning, eg: BSN)"
             echo "${reset} "
             
             read keystroke
                 
-            IS_SHUFFLED="${keystroke:1}"
-            
+            IS_RESCAN="${keystroke:2:1}"
                 
-                # If shuffle param WAS NOT included 
-                if [ -z "$IS_SHUFFLED" ]; then
-                echo "${yellow} "
-                read -p 'Enter S for shuffle, or N for normal: ' IS_SHUFFLED
-                echo "${reset} "
+                
+                # If rescan param WAS NOT included, set to N
+                if [ -z "$IS_RESCAN" ]; then
+                IS_RESCAN="N"
+                fi
+                
+                
+                if [[ $IS_RESCAN == "r" ]] || [[ $IS_RESCAN == "R" ]]; then
+                SCAN_DESC="RE-scanning"
+                else
+                SCAN_DESC="Scanning"
                 fi
             
+               
+                if [ ! -f ${MUSIC_DIR}/playlist.dat ] || [[ $IS_RESCAN == "r" ]] || [[ $IS_RESCAN == "R" ]]; then
+                     
+                rm ${MUSIC_DIR}/playlist.dat > /dev/null 2>&1
+                     
+                sleep 1
                 
-                # If shuffle param STILL WAS NOT included, set to N
+                echo "${green}${SCAN_DESC} media, and creating a NEW playlist at: ${MUSIC_DIR}/playlist.dat${reset}"
+                echo " "
+
+                MPLAYER_PLAYLIST=$(recursive_media_scan "$MUSIC_DIR")
+                
+                echo -e "$MPLAYER_PLAYLIST" > ${MUSIC_DIR}/playlist.dat
+
+                sleep 3
+                
+                else
+             
+                echo "${green}Playlist already exists, SKIPPING media SCAN.${reset}"
+                echo " "
+    
+                fi
+                
+            
+            IS_SHUFFLED="${keystroke:1:1}"
+            
+                
+                # If shuffle param WAS NOT included, set to N
                 if [ -z "$IS_SHUFFLED" ]; then
                 IS_SHUFFLED="N"
                 fi
@@ -2078,11 +2107,16 @@ select opt in $OPTIONS; do
                 SHUFF_DESC="Playing"
                 fi
     
+                
+            echo " "
+            echo "${green}${SHUFF_DESC} mplayer, in ${MUSIC_DIR} music directory...${reset}"
+            echo " "
+                
     
                 if [[ ${keystroke:0:1} == "b" ]] || [[ ${keystroke:0:1} == "B" ]]; then
                 
                 echo " "
-                echo "${green}${SHUFF_DESC} mplayer, in ${MUSIC_DIR_DESC} music directory...${reset}"
+                echo "${green}BACKGROUND mode enabled...${reset}"
                 echo " "
                 
                 # Export the vars to screen's bash session, OR IT WON'T RUN!
@@ -2093,8 +2127,7 @@ select opt in $OPTIONS; do
                 elif [[ ${keystroke:0:1} == "s" ]] || [[ ${keystroke:0:1} == "S" ]]; then
                 
                 echo " "
-                echo "${green}${SHUFF_DESC} mplayer, in ${MUSIC_DIR_DESC} music directory...${reset}"
-                echo " "
+                echo "${green}SHOW mode enabled...${reset}"
                 echo "${red}WHEN YOU ARE DONE LISTENING: hold down the 2 keys Ctrl+C at the same time, until you exit this script.${reset}"
                 echo " "
                 
@@ -2759,16 +2792,16 @@ select opt in $OPTIONS; do
         
         elif [ "$opt" = "about_this_app" ]; then
        
-        echo "${cyan} "
+        echo "${red} "
         echo "Copyright $COPYRIGHT_YEARS GPLv3, Bluetooth Internet Radio By Mike Kilday: Mike@DragonFrugal.com (leave this copyright / attribution intact in ALL forks / copies!)"
         
-        echo " "
+        echo "${yellow} "
         echo "Version: ${APP_VERSION}"
         echo " "
         echo "https://github.com/taoteh1221/Bluetooth_Internet_Radio"
         echo " "
         
-        echo "Fully automated setup of bluetooth, internet radio player (PyRadio), local music files player (mplayer), on a headless RaspberryPi,"
+        echo "${cyan}Fully automated setup of bluetooth, internet radio player (PyRadio), local music files player (mplayer), on a headless RaspberryPi,"
         echo "connecting to a stereo system's bluetooth receiver (bash script, chmod +x it to run)."
         echo " "
         
@@ -2777,10 +2810,10 @@ select opt in $OPTIONS; do
         echo "USER THAT WILL RUN THE APP (user must have sudo privileges):"
         echo " "
         
-        echo "wget --no-cache -O bt-radio-setup.bash https://tinyurl.com/bt-radio-setup;chmod +x bt-radio-setup.bash;./bt-radio-setup.bash"
+        echo "${yellow}wget --no-cache -O bt-radio-setup.bash https://tinyurl.com/bt-radio-setup;chmod +x bt-radio-setup.bash;./bt-radio-setup.bash"
         echo " "
         
-        echo "AFTER installation, ~/radio is installed as a shortcut command pointing to this script,"
+        echo "${cyan}AFTER installation, ~/radio is installed as a shortcut command pointing to this script,"
         echo "and paired bluetooth reconnects (if disconnected) when you start a new terminal session."
         echo " "
         
@@ -2801,10 +2834,12 @@ select opt in $OPTIONS; do
         echo "${green}~/radio \"7 1 b3\""
         echo "${green}~/radio \"internet 1 b3\"${cyan}"
         echo "(plays default INTERNET playlist in background, 3rd station)"
+        echo "${green}~/radio \"internet 1 b3vlc\"${cyan}"
+        echo "(plays default INTERNET playlist in background, 3rd station, RESET default player to: vlc)"
         echo " "
-        echo "${green}~/radio \"9 1 bs\""
-        echo "${green}~/radio \"local 1 bs\"${cyan}"
-        echo "(plays default LOCAL music folder [RECURSIVELY] in background, shuffling)"
+        echo "${green}~/radio \"9 bsr\""
+        echo "${green}~/radio \"local bsr\"${cyan}"
+        echo "(rescans music files / plays LOCAL music folder ~/Music/MPlayer [RECURSIVELY] in background, shuffling)"
         echo " "
         echo "${green}~/radio 10"
         echo "${green}~/radio off${cyan}"
