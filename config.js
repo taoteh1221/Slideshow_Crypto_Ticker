@@ -100,7 +100,7 @@ var orient_screen = 0; // Normal (upright) = 0, Flipped (upside down) = 180, Sid
 
 // Vertical position (adjusts the ticker's vertical position up/down)
 // CAN BE NEGATIVE, TO GO THE OPPOSITE WAY
-var vertical_position = 6.75; // Default = 6.75
+var vertical_position = 6.25; // Default = 6.25
 
 
 // Horizontal position (adjusts the ticker's horizontal position left/right)
@@ -137,6 +137,10 @@ var ticker_size = 15.5; // Default = 15.5
 
 // 24 hour volume font size
 var volume_size = 7.5; // Default = 7.5
+
+
+// SPACING between title / ticker price / 24 hour volume
+var ticker_spacing = 2.75; // Default = 2.75
 
 
 // Ticker arrow size RATIO (to ticker size), DECIMAL NUMBER FORMAT X.XX OF 100.00 OR LESS

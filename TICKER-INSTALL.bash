@@ -517,14 +517,20 @@ clean_system_update () {
      echo " "
      echo "${yellow}Does the Operating System on this device update using the \"Rolling Release\" model (Kali, Manjaro, Ubuntu Rolling Rhino, Debian Unstable, etc), or the \"Long-Term Release\" model (Debian, Ubuntu, Raspberry Pi OS, Armbian Stable, Diet Pi, etc)?"
      echo " "
-     echo "${red}(You can SEVERLY MESS UP a \"Rolling Release\" Operating System IF YOU DO NOT CHOOSE CORRECTLY HERE! In that case, you can SAFELY choose \"I don't know\".)${reset}"
+     echo "${red}(You can SEVERELY MESS UP a \"Rolling Release\" Operating System IF YOU DO NOT CHOOSE CORRECTLY HERE! In that case, you can SAFELY choose \"I don't know\".)${reset}"
      echo " "
+     
+     
+          if [ ! -f /usr/bin/raspi-config ] && [ "$IS_ARM" != "" ]; then
+          echo "${red}(Your ARM-based device MAY NOT BOOT IF YOU RUN SYSTEM UPGRADES [if you have NOT freezed kernel updating / rebooted FIRST]. To play it safe, you can just choose \"ARM Device\")${reset}"
+          echo " "
+          fi
      
      echo "Enter the NUMBER next to your chosen option.${reset}"
      
      echo " "
      
-          OPTIONS="rolling long_term i_dont_know"
+          OPTIONS="rolling long_term i_dont_know arm_device"
           
           select opt in $OPTIONS; do
                   if [ "$opt" = "long_term" ]; then
@@ -808,9 +814,14 @@ echo " "
 ######################################
 
 
-# If we are NOT running raspi os, AND lxde desktop IS NOT INSTALLED,
+# lightdm CHECK
+LIGHTDM_CHECK=$(which lightdm)
+LIGHTDM_CHECK=$(echo "${LIGHTDM_CHECK}" | xargs) # trim whitespace
+
+
+# If lightdm OR lxde desktop session IS NOT INSTALLED,
 # then we offer the option to install LXDE, AND WE SET THE DISPLAY MANAGER TO LIGHTDM (IF NOT ALREADY SET)
-if [ ! -f /usr/bin/raspi-config ] && [ ! -d /etc/xdg/lxsession ]; then
+if [ "$LIGHTDM_CHECK" == "" ] || [ ! -d /etc/xdg/lxsession ]; then
 
 echo "${red}WE NEED TO MAKE SURE LXDE #AND# LIGHTDM ARE SETUP, IF YOU WANT THE TICKER TO #AUTOMATICALLY RUN ON SYSTEM STARTUP# / REBOOT."
 echo " "
