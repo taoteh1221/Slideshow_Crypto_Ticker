@@ -1039,7 +1039,7 @@ echo " "
             echo " "
             
             
-                # Auto-login LXDE logic...
+                # Auto-login lightdm / LXDE CONFIG logic...
                 
                 
                 # FIRST LOCATION CHECK, FOR MULTI-FILE CONFIG DIRECTORY SETUP
@@ -1075,7 +1075,7 @@ echo " "
                 
                 if [ ! -f "$LIGHTDM_CONFIG_FILE" ]; then
                 
-                echo "${cyan}LIGHTDM config NOT detected, CREATING at: ${LIGHTDM_CONFIG_FILE}${reset}"
+                echo "${cyan}LIGHTDM config NOT detected, CREATING DEFAULT CONFIG at: ${LIGHTDM_CONFIG_FILE}${reset}"
                 
                 
 # Don't nest / indent, or it could malform the settings            
@@ -1127,7 +1127,7 @@ EOF
                 
                 
                 else
-                echo "${cyan}AUTO-LOGIN CONFIGURATION ERROR, AUTO-LOGIN #NOT# SETUP!${reset}"
+                echo "${red}AUTO-LOGIN CONFIGURATION ERROR, AUTO-LOGIN #NOT# SETUP!${reset}"
                 fi
             
             
