@@ -46,6 +46,13 @@ fi
 export XAUTHORITY=~/.Xauthority 
 # Working directory
 export PWD=$PWD
+				
+
+######################################
+
+
+# Get the *INTERNAL* NETWORK ip address
+IP=$(ip -o route get to 8.8.8.8 | sed -n 's/.*src \([0-9.]\+\).*/\1/p')
 
 
 ######################################
@@ -315,34 +322,73 @@ app_path_result="${app_path_result#*$1:}"
      
           # Handle package name exceptions...
           
-          # bsdtar on Ubuntu 18.x and higher
-          if [ "$1" == "bsdtar" ] && [ -f "/etc/debian_version" ]; then
-          SYS_PACK="libarchive-tools"
+          if [ -f "/etc/debian_version" ]; then
           
-          # xdg-user-dir (debian package name differs)
-          elif [ "$1" == "xdg-user-dir" ] && [ -f "/etc/debian_version" ]; then
-          SYS_PACK="xdg-user-dirs"
-
-          # rsyslogd (debian package name differs)
-          elif [ "$1" == "rsyslogd" ] && [ -f "/etc/debian_version" ]; then
-          SYS_PACK="rsyslog"
-
-          # snap (debian package name differs)
-          elif [ "$1" == "snap" ] && [ -f "/etc/debian_version" ]; then
-          SYS_PACK="snapd"
-
-          # xorg (debian package name differs)
-          elif [ "$1" == "xorg" ] && [ -f "/etc/debian_version" ]; then
-          SYS_PACK="xserver-xorg"
-
-          # chromium-browser (debian package name differs)
-          elif [ "$1" == "chromium-browser" ] && [ -f "/etc/debian_version" ]; then
-          SYS_PACK="chromium"
-
-          # epiphany-browser (debian package name differs)
-          elif [ "$1" == "epiphany-browser" ] && [ -f "/etc/debian_version" ]; then
-          SYS_PACK="epiphany"
-
+          
+               # bsdtar on Ubuntu 18.x and higher
+               if [ "$1" == "bsdtar" ]; then
+               SYS_PACK="libarchive-tools"
+               
+               # xdg-user-dir (package name differs)
+               elif [ "$1" == "xdg-user-dir" ]; then
+               SYS_PACK="xdg-user-dirs"
+     
+               # rsyslogd (package name differs)
+               elif [ "$1" == "rsyslogd" ]; then
+               SYS_PACK="rsyslog"
+     
+               # snap (package name differs)
+               elif [ "$1" == "snap" ]; then
+               SYS_PACK="snapd"
+     
+               # xorg (package name differs)
+               elif [ "$1" == "xorg" ]; then
+               SYS_PACK="xserver-xorg"
+     
+               # chromium-browser (package name differs)
+               elif [ "$1" == "chromium-browser" ]; then
+               SYS_PACK="chromium"
+     
+               # epiphany-browser (package name differs)
+               elif [ "$1" == "epiphany-browser" ]; then
+               SYS_PACK="epiphany"
+     
+               else
+               SYS_PACK="$1"
+               fi
+          
+          
+          elif [ -f "/etc/redhat-release" ]; then
+          
+          
+               if [ "$1" == "xdg-user-dir" ]; then
+               SYS_PACK="xdg-user-dirs"
+     
+               # rsyslogd (package name differs)
+               elif [ "$1" == "rsyslogd" ]; then
+               SYS_PACK="rsyslog"
+     
+               # xorg (package name differs)
+               elif [ "$1" == "xorg" ]; then
+               SYS_PACK="gnome-session-xsession"
+     
+               # chromium-browser (package name differs)
+               elif [ "$1" == "chromium-browser" ]; then
+               SYS_PACK="chromium"
+     
+               # epiphany-browser (package name differs)
+               elif [ "$1" == "epiphany-browser" ]; then
+               SYS_PACK="epiphany"
+     
+               # avahi-daemon (package name differs)
+               elif [ "$1" == "avahi-daemon" ]; then
+               SYS_PACK="avahi"
+     
+               else
+               SYS_PACK="$1"
+               fi
+               
+               
           else
           SYS_PACK="$1"
           fi
@@ -710,13 +756,6 @@ WGET_PATH=$(get_app_path "wget")
 XORG_PATH=$(get_app_path "xorg")
 
 # PRIMARY dependency lib's paths END
-				
-
-######################################
-
-
-# Get the *INTERNAL* NETWORK ip address
-IP=$(ip -o route get to 8.8.8.8 | sed -n 's/.*src \([0-9.]\+\).*/\1/p')
 
 
 ######################################
@@ -871,6 +910,21 @@ echo " "
 ######################################
 
 
+if [ -f "/etc/redhat-release" ]; then
+
+# Install cron / fire it up (will persist between reboots)
+$PACKAGE_INSTALL -y cronie
+
+sleep 3
+
+sudo systemctl start crond.service
+
+fi
+
+
+######################################
+
+
 # lightdm CHECK
 LIGHTDM_CHECK=$(which lightdm)
 LIGHTDM_CHECK=$(echo "${LIGHTDM_CHECK}" | xargs) # trim whitespace
@@ -1001,6 +1055,8 @@ echo " "
 
 fi
 
+
+sleep 5
 
 # lightdm (NEEDED TO BE USED AS THE DISPLAY MANAGER, FOR LXDE / AUTOBOOT)
 LIGHTDM_PATH=$(get_app_path "lightdm")
@@ -1242,51 +1298,58 @@ OPTIONS="install_ticker_app remove_ticker_app skip"
 select opt in $OPTIONS; do
         if [ "$opt" = "install_ticker_app" ]; then
         	
-				echo " "
+			 echo " "
+			 echo "${cyan}Proceeding with required component installation, please wait...${reset}"
+			 echo " "
 				
-				echo "${cyan}Proceeding with required component installation, please wait...${reset}"
 				
-				echo " "
-				
-				     # FORCE UBUNTU SNAP INSTALLS
-				     # (included snaps can be messed up, especially on Ubuntu Armbian)
-				     if [ "$IS_UBUNTU" != "" ]; then
+				# FORCE UBUNTU SNAP INSTALLS
+				# (included snaps can be messed up, especially on Ubuntu Armbian)
+				if [ "$IS_UBUNTU" != "" ]; then
 				     
-				     $UBUNTU_SNAP_INSTALL firefox
+				$UBUNTU_SNAP_INSTALL firefox
 				     
-				     $UBUNTU_SNAP_INSTALL chromium
+				$UBUNTU_SNAP_INSTALL chromium
 				     
-				     # SEEMS to throw error that BREAKS this script, due to not existing?
-				     #$UBUNTU_SNAP_INSTALL epiphany 
+				# SEEMS to throw error that BREAKS this script, due to not existing?
+				#$UBUNTU_SNAP_INSTALL epiphany 
 				     
-				     fi
+				fi
 				     
 				     
-				# Firefox on raspbian
-				$PACKAGE_INSTALL firefox-esr -y
+			 # Firefox on raspbian
+			 $PACKAGE_INSTALL firefox-esr -y
 				
-				sleep 1
+			 sleep 1
 				
-				# Firefox on ubuntu, etc
-				$PACKAGE_INSTALL firefox -y
+			 # epiphany on raspbian
+			 $PACKAGE_INSTALL epiphany-browser -y
 				
-				sleep 1
+			 sleep 1
 				
-				# epiphany on raspbian
-				$PACKAGE_INSTALL epiphany-browser -y
+			 # Chromium on raspbian
+			 $PACKAGE_INSTALL chromium-browser -y
 				
-				sleep 1
-				
-				# Chromium on raspbian
-				$PACKAGE_INSTALL chromium-browser -y
-				
-				sleep 5
+		      sleep 5
+
+                # Look for 'firefox-esr'
+                FIREFOX_PATH=$(get_app_path "firefox-esr")
+
+                    # If 'firefox-esr' NOT found, install epiphany
+                    if [ -z "$FIREFOX_PATH" ]; then
+    
+    				# epiphany on ubuntu, etc
+    				$PACKAGE_INSTALL firefox -y
+    				
+    				sleep 1
+    				
+                    fi
 
                 # Look for 'epiphany-browser'
                 EPIPHANY_PATH=$(get_app_path "epiphany-browser")
 
-                    # If 'epiphany-browser' NOT found, install epiphany UNLESS THIS IS RASPI OS
-                    if [ -z "$EPIPHANY_PATH" ] && [ ! -f /usr/bin/raspi-config ]; then
+                    # If 'epiphany-browser' NOT found, install epiphany
+                    if [ -z "$EPIPHANY_PATH" ]; then
     
     				# epiphany on ubuntu, etc
     				$PACKAGE_INSTALL epiphany -y
@@ -1298,9 +1361,9 @@ select opt in $OPTIONS; do
                 # Look for 'chromium-browser'
                 CHROMIUM_PATH=$(get_app_path "chromium-browser")
 
-                    # If 'chromium-browser' NOT found, install chromium UNLESS THIS IS RASPI OS
+                    # If 'chromium-browser' NOT found, install chromium
                     # ('chromium-browser' IS DEFAULT ON RASPI OS, AND THIS WOULD TRIGGER REPLACING IT WITH A #DOWNGRADED# VERSION)
-                    if [ -z "$CHROMIUM_PATH" ] && [ ! -f /usr/bin/raspi-config ]; then
+                    if [ -z "$CHROMIUM_PATH" ]; then
     
     				# Chromium on ubuntu, etc
     				$PACKAGE_INSTALL chromium -y
@@ -1310,76 +1373,76 @@ select opt in $OPTIONS; do
                     fi
                     
                     
-				# Safely install other packages seperately, so they aren't cancelled by 'package missing' errors...
 				
+                    if [ -f "/etc/debian_version" ]; then
+                        
+				# Safely install other packages separately, so they aren't cancelled by 'package missing' errors
+                        
+     			# Grapics card detection support for firefox (for browser GPU acceleration)
+     			$PACKAGE_INSTALL libpci-dev -y
+     				
+     			sleep 1
+     				
+     			# Not sure we need this Mesa 3D Graphics Library / OpenGL stuff, but leave for
+     			# now until we determine why firefox is having issues enabling GPU acceleration
+     			$PACKAGE_INSTALL freeglut3-dev -y
+     				
+     			sleep 1
+     				
+     			$PACKAGE_INSTALL libglu1-mesa-dev -y
+     				
+     			sleep 1
+     				
+     			$PACKAGE_INSTALL mesa-utils -y
+     				
+     			sleep 1
+     				
+     			$PACKAGE_INSTALL mesa-common-dev -y
+     				
+     			sleep 1
+     				
+     			$PACKAGE_INSTALL mesa-vulkan-drivers -y
+     				
+     			sleep 1
+     				
+     			$PACKAGE_INSTALL vulkan-icd -y
+     				
+     			sleep 1
 				
-                        if [ -f "/etc/debian_version" ]; then
+				$PACKAGE_INSTALL x11-xserver-utils -y
+     				
+     			sleep 1
                         
-     				# Grapics card detection support for firefox (for browser GPU acceleration)
-     				$PACKAGE_INSTALL libpci-dev -y
-     				
-     				sleep 1
-     				
-     				# Not sure we need this Mesa 3D Graphics Library / OpenGL stuff, but leave for
-     				# now until we determine why firefox is having issues enabling GPU acceleration
-     				$PACKAGE_INSTALL freeglut3-dev -y
-     				
-     				sleep 1
-     				
-     				$PACKAGE_INSTALL libglu1-mesa-dev -y
-     				
-     				sleep 1
-     				
-     				$PACKAGE_INSTALL mesa-utils -y
-     				
-     				sleep 1
-     				
-     				$PACKAGE_INSTALL mesa-common-dev -y
-     				
-     				sleep 1
-     				
-     				$PACKAGE_INSTALL mesa-vulkan-drivers -y
-     				
-     				sleep 1
-     				
-     				$PACKAGE_INSTALL vulkan-icd -y
-     				
-     				sleep 1
-				
-				     $PACKAGE_INSTALL x11-xserver-utils -y
-     				
-     				sleep 1
+                    elif [ -f "/etc/redhat-release" ]; then
                         
-                        elif [ -f "/etc/redhat-release" ]; then
+                    # Install generic graphics card libraries, and other interface-related libraries
+                    $PACKAGE_INSTALL -y --skip-broken --skip-unavailable libglvnd-glx libglvnd-opengl libglvnd-devel qt5-qtx11extras xorg-x11-server-utils
                         
-                        # Install generic graphics card libraries, and other interface-related libraries
-                        $PACKAGE_INSTALL -y --skip-broken --skip-unavailable libglvnd-glx libglvnd-opengl libglvnd-devel qt5-qtx11extras xorg-x11-server-utils
-                        
-                        fi
+                    fi
 	   
 				
-				$PACKAGE_INSTALL xdotool -y
+			$PACKAGE_INSTALL xdotool -y
 				
-				sleep 1
+			sleep 1
 				
-				$PACKAGE_INSTALL unclutter -y
+			$PACKAGE_INSTALL unclutter -y
 				
-				sleep 1
+			sleep 1
 				
-				$PACKAGE_INSTALL xautomation -y
+			$PACKAGE_INSTALL xautomation -y
 				
-				sleep 3
+			sleep 3
 				
     			# FIX FOR 2022-1-28 RASPI OS CHROMIUM BUG (DOES #NOT# FIX SAME ISSUE ON ARMBIAN)
     			# https://github.com/RPi-Distro/chromium-browser/issues/28
     			# /etc/chromium.d/ticker-fix-egl CAN BE NAMED ANYTHING, AS LONG AS IT'S IN /etc/chromium.d/
     			
-				mkdir -p /etc/chromium.d/ > /dev/null 2>&1
+			mkdir -p /etc/chromium.d/ > /dev/null 2>&1
 				
-				sleep 2
+			sleep 2	
 				
-				
-    				CHROMIUM_GL=$(sed -n '/ --use-gl=egl/p' /etc/chromium.d/ticker-fix-egl)
+    			CHROMIUM_GL=$(sed -n '/ --use-gl=egl/p' /etc/chromium.d/ticker-fix-egl)
+			
 				
                     if [ "$CHROMIUM_GL" == "" ]; then 
                     
@@ -1393,120 +1456,120 @@ select opt in $OPTIONS; do
                     fi        
                     
 				
-				echo " "
+			echo " "
 				
-				echo "${cyan}Required component installation completed.${reset}"
+			echo "${cyan}Required component installation completed.${reset}"
 				
-				sleep 3
+			sleep 3
 				
-				echo " "
+			echo " "
 				
 				
-					if [ -f /home/$APP_USER/slideshow-crypto-ticker/config.js ]; then
+				if [ -f /home/$APP_USER/slideshow-crypto-ticker/config.js ]; then
 					
-					\cp /home/$APP_USER/slideshow-crypto-ticker/config.js /home/$APP_USER/slideshow-crypto-ticker/config.js.BACKUP.$DATE
+				\cp /home/$APP_USER/slideshow-crypto-ticker/config.js /home/$APP_USER/slideshow-crypto-ticker/config.js.BACKUP.$DATE
 						
-					chown $APP_USER:$APP_USER /home/$APP_USER/slideshow-crypto-ticker/config.js.BACKUP.$DATE
+				chown $APP_USER:$APP_USER /home/$APP_USER/slideshow-crypto-ticker/config.js.BACKUP.$DATE
 						
-					CONFIG_BACKUP=1
+				CONFIG_BACKUP=1
 					
-					fi
+				fi
 				
 				
-				echo "${cyan}Downloading and installing the latest version of Slideshow Crypto Ticker, from Github.com, please wait...${reset}"
-				
-				echo " "
-				
-				mkdir Slideshow-Crypto-Ticker-TEMP
-				
-				cd Slideshow-Crypto-Ticker-TEMP
-				
-				ZIP_DL=$(curl -s 'https://api.github.com/repos/taoteh1221/Slideshow_Crypto_Ticker/releases/latest' | jq -r '.zipball_url')
-				
-				wget -O Slideshow-Crypto-Ticker-TEMP.zip $ZIP_DL
-				
-				bsdtar --strip-components=1 -xvf Slideshow-Crypto-Ticker-TEMP.zip
-				
-				rm Slideshow-Crypto-Ticker-TEMP.zip
-				
-				# Remove depreciated directory structure from any previous installs
-				rm -rf /home/$APP_USER/slideshow-crypto-ticker/apps > /dev/null 2>&1
-				rm -rf /home/$APP_USER/slideshow-crypto-ticker/scripts > /dev/null 2>&1
-				rm -rf /home/$APP_USER/slideshow-crypto-ticker/cache/json > /dev/null 2>&1
-				rm -rf /home/$APP_USER/slideshow-crypto-ticker/cache/js > /dev/null 2>&1
+			echo "${cyan}Downloading and installing the latest version of Slideshow Crypto Ticker, from Github.com, please wait...${reset}"
+			
+			echo " "
+			
+			mkdir Slideshow-Crypto-Ticker-TEMP
+			
+			cd Slideshow-Crypto-Ticker-TEMP
+			
+			ZIP_DL=$(curl -s 'https://api.github.com/repos/taoteh1221/Slideshow_Crypto_Ticker/releases/latest' | jq -r '.zipball_url')
+			
+			wget -O Slideshow-Crypto-Ticker-TEMP.zip $ZIP_DL
+			
+			bsdtar --strip-components=1 -xvf Slideshow-Crypto-Ticker-TEMP.zip
+			
+			rm Slideshow-Crypto-Ticker-TEMP.zip
+			
+			# Remove depreciated directory structure from any previous installs
+			rm -rf /home/$APP_USER/slideshow-crypto-ticker/apps > /dev/null 2>&1
+			rm -rf /home/$APP_USER/slideshow-crypto-ticker/scripts > /dev/null 2>&1
+			rm -rf /home/$APP_USER/slideshow-crypto-ticker/cache/json > /dev/null 2>&1
+			rm -rf /home/$APP_USER/slideshow-crypto-ticker/cache/js > /dev/null 2>&1
 
-				sleep 1
-				
-  				# Copy over the upgrade install files to the install directory, after cleaning up dev files
-				# No trailing forward slash here
-				
-  				mkdir -p /home/$APP_USER/slideshow-crypto-ticker
-				
-				rm -rf .git > /dev/null 2>&1
-				rm -rf .github > /dev/null 2>&1
-				rm .gitattributes > /dev/null 2>&1
-				rm .gitignore > /dev/null 2>&1
-				rm .whitesource > /dev/null 2>&1
-				rm CODEOWNERS > /dev/null 2>&1
-				rm /home/$APP_USER/slideshow-crypto-ticker/bash/switch-display.bash > /dev/null 2>&1
-				rm /home/$APP_USER/slideshow-crypto-ticker/bash/ticker-auto-start.bash > /dev/null 2>&1
-				rm /home/$APP_USER/slideshow-crypto-ticker/bash/chromium-refresh.bash > /dev/null 2>&1
-				rm /home/$APP_USER/slideshow-crypto-ticker/bash/chromium.bash > /dev/null 2>&1
-				rm /home/$APP_USER/slideshow-crypto-ticker/bash/epiphany.bash > /dev/null 2>&1
-				rm /home/$APP_USER/slideshow-crypto-ticker/bash/firefox.bash > /dev/null 2>&1
-				rm /home/$APP_USER/slideshow-crypto-ticker/bash/ticker-init.bash > /dev/null 2>&1
-				rm /home/$APP_USER/slideshow-crypto-ticker/bash/cron.bash > /dev/null 2>&1
-				rm /home/$APP_USER/slideshow-crypto-ticker/bash/cron/kucoin-auth.bash > /dev/null 2>&1
-				rm /home/$APP_USER/slideshow-crypto-ticker/bash/cron/raspi-temps.bash > /dev/null 2>&1
-				rm /home/$APP_USER/slideshow-crypto-ticker/js/jquery.min.js > /dev/null 2>&1
-				rm /home/$APP_USER/slideshow-crypto-ticker/js/functions.js > /dev/null 2>&1
-				rm /home/$APP_USER/slideshow-crypto-ticker/js/init.js > /dev/null 2>&1
-				rm /home/$APP_USER/slideshow-crypto-ticker/cache/cache.js > /dev/null 2>&1
-				rm /home/$APP_USER/slideshow-crypto-ticker/cache/raspi_data.js > /dev/null 2>&1
-				rm /home/$APP_USER/slideshow-crypto-ticker/cache/browser.bash > /dev/null 2>&1
-				rm /home/$APP_USER/slideshow-crypto-ticker/ATTRIBUTION-CREDIT-INFO.txt > /dev/null 2>&1
-				rm /home/$APP_USER/slideshow-crypto-ticker/images/upload-cloud-fill.svg > /dev/null 2>&1
-				rm /home/$APP_USER/reload > /dev/null 2>&1
-				
-				\cp -r ./ /home/$APP_USER/slideshow-crypto-ticker
+			sleep 1
+			
+  			# Copy over the upgrade install files to the install directory, after cleaning up dev files
+			# No trailing forward slash here
+			
+  			mkdir -p /home/$APP_USER/slideshow-crypto-ticker
+			
+			rm -rf .git > /dev/null 2>&1
+			rm -rf .github > /dev/null 2>&1
+			rm .gitattributes > /dev/null 2>&1
+			rm .gitignore > /dev/null 2>&1
+			rm .whitesource > /dev/null 2>&1
+			rm CODEOWNERS > /dev/null 2>&1
+			rm /home/$APP_USER/slideshow-crypto-ticker/bash/switch-display.bash > /dev/null 2>&1
+			rm /home/$APP_USER/slideshow-crypto-ticker/bash/ticker-auto-start.bash > /dev/null 2>&1
+			rm /home/$APP_USER/slideshow-crypto-ticker/bash/chromium-refresh.bash > /dev/null 2>&1
+			rm /home/$APP_USER/slideshow-crypto-ticker/bash/chromium.bash > /dev/null 2>&1
+			rm /home/$APP_USER/slideshow-crypto-ticker/bash/epiphany.bash > /dev/null 2>&1
+			rm /home/$APP_USER/slideshow-crypto-ticker/bash/firefox.bash > /dev/null 2>&1
+			rm /home/$APP_USER/slideshow-crypto-ticker/bash/ticker-init.bash > /dev/null 2>&1
+			rm /home/$APP_USER/slideshow-crypto-ticker/bash/cron.bash > /dev/null 2>&1
+			rm /home/$APP_USER/slideshow-crypto-ticker/bash/cron/kucoin-auth.bash > /dev/null 2>&1
+			rm /home/$APP_USER/slideshow-crypto-ticker/bash/cron/raspi-temps.bash > /dev/null 2>&1
+			rm /home/$APP_USER/slideshow-crypto-ticker/js/jquery.min.js > /dev/null 2>&1
+			rm /home/$APP_USER/slideshow-crypto-ticker/js/functions.js > /dev/null 2>&1
+			rm /home/$APP_USER/slideshow-crypto-ticker/js/init.js > /dev/null 2>&1
+			rm /home/$APP_USER/slideshow-crypto-ticker/cache/cache.js > /dev/null 2>&1
+			rm /home/$APP_USER/slideshow-crypto-ticker/cache/raspi_data.js > /dev/null 2>&1
+			rm /home/$APP_USER/slideshow-crypto-ticker/cache/browser.bash > /dev/null 2>&1
+			rm /home/$APP_USER/slideshow-crypto-ticker/ATTRIBUTION-CREDIT-INFO.txt > /dev/null 2>&1
+			rm /home/$APP_USER/slideshow-crypto-ticker/images/upload-cloud-fill.svg > /dev/null 2>&1
+			rm /home/$APP_USER/reload > /dev/null 2>&1
+			
+			\cp -r ./ /home/$APP_USER/slideshow-crypto-ticker
 
-				sleep 3
-				
-				cd ../
-				
-				rm -rf Slideshow-Crypto-Ticker-TEMP
-				
-				chmod -R 755 /home/$APP_USER/slideshow-crypto-ticker/bash
-				
-				# No trailing forward slash here
-				chown -R $APP_USER:$APP_USER /home/$APP_USER/slideshow-crypto-ticker
-				
-				# If an older depreciated version, just re-create the symlink after deleting to be safe
-				
-				rm /home/$APP_USER/ticker-restart > /dev/null 2>&1
-				
-				sleep 1
+			sleep 3
 			
-				ln -s /home/$APP_USER/slideshow-crypto-ticker/bash/ticker-restart.bash /home/$APP_USER/ticker-restart
-				
-				chown $APP_USER:$APP_USER /home/$APP_USER/ticker-restart
+			cd ../
 			
-				ln -s /home/$APP_USER/slideshow-crypto-ticker/bash/ticker-start.bash /home/$APP_USER/ticker-start
-				
-				chown $APP_USER:$APP_USER /home/$APP_USER/ticker-start
+			rm -rf Slideshow-Crypto-Ticker-TEMP
 			
-				ln -s /home/$APP_USER/slideshow-crypto-ticker/bash/ticker-stop.bash /home/$APP_USER/ticker-stop
-				
-				chown $APP_USER:$APP_USER /home/$APP_USER/ticker-stop
-				
-				echo " "
-				
-				echo "${green}Slideshow Crypto Ticker has been installed.${reset}"
+			chmod -R 755 /home/$APP_USER/slideshow-crypto-ticker/bash
+			
+			# No trailing forward slash here
+			chown -R $APP_USER:$APP_USER /home/$APP_USER/slideshow-crypto-ticker
+			
+			# If an older depreciated version, just re-create the symlink after deleting to be safe
+			
+			rm /home/$APP_USER/ticker-restart > /dev/null 2>&1
+			
+			sleep 1
+			
+			ln -s /home/$APP_USER/slideshow-crypto-ticker/bash/ticker-restart.bash /home/$APP_USER/ticker-restart
+			
+			chown $APP_USER:$APP_USER /home/$APP_USER/ticker-restart
+			
+			ln -s /home/$APP_USER/slideshow-crypto-ticker/bash/ticker-start.bash /home/$APP_USER/ticker-start
+			
+			chown $APP_USER:$APP_USER /home/$APP_USER/ticker-start
+			
+			ln -s /home/$APP_USER/slideshow-crypto-ticker/bash/ticker-stop.bash /home/$APP_USER/ticker-stop
+			
+			chown $APP_USER:$APP_USER /home/$APP_USER/ticker-stop
+			
+			echo " "
+			
+			echo "${green}Slideshow Crypto Ticker has been installed.${reset}"
 				
 	        	INSTALL_SETUP=1
    	     	
-   	     	
         break
+        
        elif [ "$opt" = "remove_ticker_app" ]; then
        
         echo " "
@@ -1519,7 +1582,7 @@ select opt in $OPTIONS; do
 	   echo " "
 	   echo "${cyan}Removal of 'unclutter' app package completed, please wait...${reset}"
 	   echo " "
-	   echo "${red}(IF YOU USED 'unclutter' FOR ANOTHER APP, *RE-INSTALL* WITH: sudo $PACKAGE_INSTALL unclutter)${reset}"
+	   echo "${red}(IF YOU USED 'unclutter' FOR ANOTHER APP, *RE-INSTALL* WITH: $PACKAGE_INSTALL unclutter)${reset}"
 	   echo " "		
 				
 	   sleep 3
