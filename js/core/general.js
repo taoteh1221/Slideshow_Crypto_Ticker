@@ -980,6 +980,9 @@ $("#volume_" + update_key).html(volume_item);
      }
 
 
+// SPACING between title / price / volume
+$(".spacing").css({ "margin-top": ticker_spacing + 'vw' });
+
 }
 
 
