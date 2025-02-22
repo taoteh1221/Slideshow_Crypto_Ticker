@@ -1749,7 +1749,7 @@ select opt in $OPTIONS; do
         rm /lib/systemd/system/ticker.service > /dev/null 2>&1
 				
 		      
-		      # Setup to run at wayfire login
+		      # Setup if running labwc (wayland compositor)
                 if [ "$RUNNING_LABWC" != "" ]; then
 
 # Don't nest / indent, or it could malform the settings            
@@ -1804,7 +1804,7 @@ EOF
 				
 				sleep 2
 			 
-		      # Setup to run at wayfire login
+		      # Setup if running wayfire (wayland compositor)
                 elif [ "$RUNNING_WAYFIRE" != "" ]; then
 
 # Don't nest / indent, or it could malform the settings            
@@ -1860,7 +1860,7 @@ EOF
 				
 				sleep 2
 			 
-			 # Setup to run at LXDE login
+			 # Setup to run at LXDE login (with x11)
                 elif [ -d /etc/xdg/lxsession ]; then
 
 # Don't nest / indent, or it could malform the settings            
