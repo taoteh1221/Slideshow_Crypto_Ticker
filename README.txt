@@ -109,6 +109,11 @@ After updating config.js, restart the ticker with this command:
 
 ~/ticker-restart
 
+If NOT using x11 as a DISPLAY MANAGER, you can OPTIONALLY include which browser to reload with:
+
+~/ticker-restart chromium
+
+
 
 If autostart does not work / is not setup, you can run this command MANUALLY, #AFTER BOOTING INTO THE DESKTOP INTERFACE#, to start Slideshow Crypto Ticker:
 
@@ -161,7 +166,7 @@ Run these commands (logged in as user YOUR_USER_NAME):
 
 sudo apt-get update && sudo apt-get upgrade
 
-sudo apt-get install xdotool unclutter sed -y
+sudo apt-get install xdotool sed -y
 
 chmod -R 755 ~/slideshow-crypto-ticker/bash
 
@@ -187,7 +192,7 @@ cp /etc/xdg/lxsession/LXDE_PROFILE_NAME/autostart /home/pi/.config/lxsession/LXD
 
 NEXT, we add the ticker autostart command at the end of the autostart file:
 
-@/home/YOUR_USER_NAME/slideshow-crypto-ticker/bash/lxde-auto-start.bash firefox
+@/home/YOUR_USER_NAME/slideshow-crypto-ticker/bash/bootup-auto-start.bash firefox
 
 
 After creating the LXDE Desktop autostart file above, the ticker will run on system startup when you login / auto-login to the LXDE Desktop.

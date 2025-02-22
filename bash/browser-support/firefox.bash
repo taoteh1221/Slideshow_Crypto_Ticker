@@ -49,21 +49,33 @@ DISPLAY=$FIND_DISPLAY
 
 export DISPLAY=$FIND_DISPLAY
 
+# Are we using wayland display manager?
+RUNNING_WAYLAND=$(loginctl show-session $(loginctl | grep $(whoami) | awk '{print $1}') -p Type | grep -i wayland)
+
+# Are we using x11 display manager?
+RUNNING_X11=$(loginctl show-session $(loginctl | grep $(whoami) | awk '{print $1}') -p Type | grep -i x11)
+
+
+if [ "$RUNNING_X11" != "" ]; then
+
 xset s off
 
 xset -dpms
 
 xset s noblank
 
-unclutter -idle 0.5 -root &
+fi
+
 			
 # Firefox's FULL PATH
 FIREFOX_PATH=$(which firefox-esr)
+
 
 # If 'firefox-esr' wasn't found, look for 'firefox'
 if [ -z "$FIREFOX_PATH" ]; then
 FIREFOX_PATH=$(which firefox)
 fi
+
 
 # Enable graphics acceleration
 export MOZ_ACCELERATED=1

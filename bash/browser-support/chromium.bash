@@ -49,21 +49,33 @@ DISPLAY=$FIND_DISPLAY
 
 export DISPLAY=$FIND_DISPLAY
 
+# Are we using wayland display manager?
+RUNNING_WAYLAND=$(loginctl show-session $(loginctl | grep $(whoami) | awk '{print $1}') -p Type | grep -i wayland)
+
+# Are we using x11 display manager?
+RUNNING_X11=$(loginctl show-session $(loginctl | grep $(whoami) | awk '{print $1}') -p Type | grep -i x11)
+
+
+if [ "$RUNNING_X11" != "" ]; then
+
 xset s off
 
 xset -dpms
 
 xset s noblank
 
-unclutter -idle 0.5 -root &
+fi
+
 		
 # Chromium's FULL PATH
 CHROMIUM_PATH=$(which chromium)
+
 
 # If 'chromium' wasn't found, look for 'chromium-browser'
 if [ -z "$CHROMIUM_PATH" ]; then
 CHROMIUM_PATH=$(which chromium-browser)
 fi
+
 
 # Incognito mode doesn't prompt to restore previous session, yay
 # We also set it to not check for upgrades for 7 days (SETTING TO ZERO DOES NOT WORK), 

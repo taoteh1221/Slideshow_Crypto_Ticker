@@ -78,6 +78,24 @@ CURRENT_TIMESTAMP=$(date +%s)
 # Are we running on Ubuntu OS?
 IS_UBUNTU=$(cat /etc/os-release | grep -i "ubuntu")
 
+# Are we using x11 display manager?
+RUNNING_X11=$(loginctl show-session $(loginctl | grep $(whoami) | awk '{print $1}') -p Type | grep -i x11)
+
+# Are we using wayland display manager?
+RUNNING_WAYLAND=$(loginctl show-session $(loginctl | grep $(whoami) | awk '{print $1}') -p Type | grep -i wayland)
+
+
+# Are we running a wayland compositor?
+if [ "$RUNNING_WAYLAND" != "" ]; then
+
+# Are we using wayfire compositor?
+RUNNING_WAYFIRE=$(ps aux | grep wayfire | grep -v grep) # EXCLUDE THE WORD GREP!
+	   
+# Are we using labwc compositor?
+RUNNING_LABWC=$(ps aux | grep labwc | grep -v grep) # EXCLUDE THE WORD GREP!
+
+fi
+	   
 
 # If a symlink, get link target for script location
  # WE ALWAYS WANT THE FULL PATH!
@@ -414,7 +432,7 @@ app_path_result="${app_path_result#*$1:}"
           # If UBUNTU (*NOT* any other OS) snap was detected on the system, try a snap install too
           # (as they moved some libs over to snap / snap-only? now)
           # (only if we are NOT installing snap itself)
-          if [ $SYS_PACK != "snapd" ]; then
+          if [ "$IS_UBUNTU" != "" ] && [ $SYS_PACK != "snapd" ]; then
           
           echo " " > /dev/tty
           echo "${yellow}CHECKING FOR UBUNTU SNAP PACKAGE '$SYS_PACK', please wait...${reset}" > /dev/tty
@@ -630,7 +648,7 @@ clean_system_update () {
      
      
           if [ ! -f /usr/bin/raspi-config ] && [ "$IS_ARM" != "" ]; then
-          echo "${red}(Your ARM-based device MAY NOT BOOT IF YOU RUN SYSTEM UPGRADES [if you have NOT freezed kernel updating / rebooted FIRST]. To play it safe, you can just choose \"ARM Device\")${reset}"
+          echo "${red}(Your ARM-based device MAY NOT BOOT IF YOU RUN SYSTEM UPGRADES [if you have NOT freezed kernel updating / rebooted FIRST]. To play it safe, you can just choose \"NON Raspberry Pi ARM Device\")${reset}"
           echo " "
           fi
      
@@ -638,7 +656,7 @@ clean_system_update () {
      
      echo " "
      
-          OPTIONS="rolling long_term i_dont_know arm_device"
+          OPTIONS="rolling long_term i_dont_know non_raspberrypi_arm_device"
           
           select opt in $OPTIONS; do
                   if [ "$opt" = "long_term" ]; then
@@ -911,6 +929,42 @@ echo "${reset} "
 
 echo " "
                     
+  					
+if [ -f "/usr/bin/raspi-config" ]; then
+echo "${red}YOU MAY NEED TO *DISABLE* SCREEN BLANKING ON YOUR RASPBERRY PI DEVICE, SO THE TICKER SHOWS ON YOUR SCREEN 24 HOURS A DAY."
+echo " "
+echo "${green}Run this command, and then choose 'Display Options -> Screen Blanking -> NO':"
+echo " "
+echo "sudo raspi-config${reset}"
+echo " "
+echo "${red}This will keep your screen turned on."
+echo " "
+
+echo "${yellow} "
+read -n1 -s -r -p $"PRESS F to run raspi-config and fix this NOW, OR any other key to skip fixing..." key
+echo "${reset} "
+
+    if [ "$key" = 'f' ] || [ "$key" = 'F' ]; then
+
+    sudo raspi-config
+    
+    sleep 1
+
+    echo " "
+    echo "${cyan}Resuming auto-installer...${reset}"
+    echo " "
+	   
+    else
+
+    echo " "
+    echo "${green}Skipping...${reset}"
+    echo " "
+    
+    fi
+
+
+fi
+
 
 ######################################
 
@@ -1089,8 +1143,8 @@ fi
 
               
 # SET EARLY (IMMEADIATELY #AFTER# ANY LXDE INSTALL ABOVE), AS WE USE THIS IN A FEW PLACES
-# KNOWN raspi LXDE profile
-if [ -d /etc/xdg/lxsession/LXDE-pi ]; then
+# KNOWN raspi LXDE profile (ONLY IF WE ARE *NOT* RUNNING WAYLAND [INDICATING LXDE IS *NOT* RUNNING])
+if [ -d /etc/xdg/lxsession/LXDE-pi ] && [ "$RUNNING_WAYLAND" == "" ]; then
 
 LXDE_PROFILE="LXDE-pi"
 
@@ -1135,10 +1189,9 @@ fi
 ######################################
 
        
-# If LXDE is installed
-if [ -d /etc/xdg/lxsession ]; then
+# If LXDE is installed, AND WE ARE *NOT* RUNNING WAYLAND (INDICATING LXDE IS *NOT* RUNNING)
+if [ -d /etc/xdg/lxsession ] && [ "$RUNNING_WAYLAND" == "" ]; then
 
-        
 echo "${red}WE NEED TO MAKE SURE LXDE #AND# LIGHTDM AUTO-LOGIN AT STARTUP, AS THE USER '${APP_USER}', IF YOU WANT THE TICKER TO #AUTOMATICALLY RUN ON SYSTEM STARTUP# / REBOOT."
 echo " "
 echo "CHOOSE \"LIGHTDM\" IF ASKED, FOR \"AUTO-LOGIN AT BOOT\" CAPABILITIES.${reset}"
@@ -1151,51 +1204,57 @@ echo " "
     select opt in $OPTIONS; do
             if [ "$opt" = "autologin_lxde" ]; then
 
-            
-            echo " "
-            echo "${cyan}Configuring lightdm auto-login at boot for user '${APP_USER}', please wait...${reset}"
-            echo " "
-            
-            
+                if [ -f "/usr/bin/raspi-config" ]; then
+                 
+                echo " "
+                echo "${red}Raspberry Pi OS should already have auto-login enabled, skipping auto-login setup...${reset}"
+                echo " "
+                
+                else
+                 
+                echo " "
+                echo "${cyan}Configuring lightdm auto-login at boot for user '${APP_USER}', please wait...${reset}"
+                echo " "
+                     
                 # Auto-login lightdm / LXDE CONFIG logic...
-                
-                
-                # FIRST LOCATION CHECK, FOR MULTI-FILE CONFIG DIRECTORY SETUP
-                if [ -d /etc/lightdm/lightdm.conf.d ]; then
-                
-                # Find the PROPER config file in the checked config directory
-                LIGHTDM_CONF_DIR="/etc/lightdm/lightdm.conf.d"
-                
-	           LIGHTDM_CONFIG_FILE=$(grep -r 'user-session' $LIGHTDM_CONF_DIR | awk -F: '{print $1}')
-                LIGHTDM_CONFIG_FILE=$(echo "${LIGHTDM_CONFIG_FILE}" | xargs) # trim whitespace
-                
-                fi
-                
-                
-                # SECONDARY POSSIBLE LOCATION (IF NOT FOUND), FOR MULTI-FILE CONFIG DIRECTORY SETUP
-                if [ -z "$LIGHTDM_CONFIG_FILE" ] && [ -d /usr/share/lightdm/lightdm.conf.d ]; then
-                
-                
-                # Find the PROPER config file in the checked config directory
-                LIGHTDM_CONF_DIR="/usr/share/lightdm/lightdm.conf.d"
-                
-	           LIGHTDM_CONFIG_FILE=$(grep -r 'user-session' $LIGHTDM_CONF_DIR | awk -F: '{print $1}')
-                LIGHTDM_CONFIG_FILE=$(echo "${LIGHTDM_CONFIG_FILE}" | xargs) # trim whitespace
-                
-                fi
-                
-                
-                # DEFAULT LOCATION, IF NO MULTI-FILE CONFIG DIRECTORY SETUP DETECTED
-                if [ -z "$LIGHTDM_CONFIG_FILE" ]; then
-                LIGHTDM_CONFIG_FILE="/etc/lightdm/lightdm.conf"
-                fi
-                
-                
-                if [ ! -f "$LIGHTDM_CONFIG_FILE" ]; then
-                
-                echo "${cyan}LIGHTDM config NOT detected, CREATING DEFAULT CONFIG at: ${LIGHTDM_CONFIG_FILE}${reset}"
-                
-                
+                     
+                     
+                     # FIRST LOCATION CHECK, FOR MULTI-FILE CONFIG DIRECTORY SETUP
+                     if [ -d /etc/lightdm/lightdm.conf.d ]; then
+                     
+                     # Find the PROPER config file in the checked config directory
+                     LIGHTDM_CONF_DIR="/etc/lightdm/lightdm.conf.d"
+                     
+     	           LIGHTDM_CONFIG_FILE=$(grep -r 'user-session' $LIGHTDM_CONF_DIR | awk -F: '{print $1}')
+                     LIGHTDM_CONFIG_FILE=$(echo "${LIGHTDM_CONFIG_FILE}" | xargs) # trim whitespace
+                     
+                     fi
+                     
+                     
+                     # SECONDARY POSSIBLE LOCATION (IF NOT FOUND), FOR MULTI-FILE CONFIG DIRECTORY SETUP
+                     if [ -z "$LIGHTDM_CONFIG_FILE" ] && [ -d /usr/share/lightdm/lightdm.conf.d ]; then
+                     
+                     
+                     # Find the PROPER config file in the checked config directory
+                     LIGHTDM_CONF_DIR="/usr/share/lightdm/lightdm.conf.d"
+                     
+     	           LIGHTDM_CONFIG_FILE=$(grep -r 'user-session' $LIGHTDM_CONF_DIR | awk -F: '{print $1}')
+                     LIGHTDM_CONFIG_FILE=$(echo "${LIGHTDM_CONFIG_FILE}" | xargs) # trim whitespace
+                     
+                     fi
+                     
+                     
+                     # DEFAULT LOCATION, IF NO MULTI-FILE CONFIG DIRECTORY SETUP DETECTED
+                     if [ -z "$LIGHTDM_CONFIG_FILE" ]; then
+                     LIGHTDM_CONFIG_FILE="/etc/lightdm/lightdm.conf"
+                     fi
+                     
+                     
+                     if [ ! -f "$LIGHTDM_CONFIG_FILE" ]; then
+                     
+                     echo "${cyan}LIGHTDM config NOT detected, CREATING DEFAULT CONFIG at: ${LIGHTDM_CONFIG_FILE}${reset}"
+                     
+                     
 # Don't nest / indent, or it could malform the settings            
 read -r -d '' LXDE_AUTO_LOGIN <<- EOF
 \r
@@ -1205,68 +1264,71 @@ autologin-session=$LXDE_PROFILE
 \r
 EOF
 
-			 # Setup LXDE to run at boot
-				
-			 touch $LIGHTDM_CONFIG_FILE
-					
-			 echo -e "$LXDE_AUTO_LOGIN" > $LIGHTDM_CONFIG_FILE
-			 
-			    
-			 elif [ -f "$LIGHTDM_CONFIG_FILE" ]; then
-                
-                echo "${cyan}LIGHTDM config detected at: $LIGHTDM_CONFIG_FILE${reset}"
-			    
-			 DETECT_AUTOLOGIN=$(sudo sed -n '/autologin-user=/p' $LIGHTDM_CONFIG_FILE)
-			    
-			 DETECT_AUTOLOGIN_SESSION=$(sudo sed -n '/autologin-session=/p' $LIGHTDM_CONFIG_FILE)
-			    
-			    
-			        if [ "$DETECT_AUTOLOGIN" != "" ]; then 
-                       sed -i "s/#autologin-user=.*/autologin-user=${APP_USER}/g" $LIGHTDM_CONFIG_FILE
-                       sleep 2
-                       sed -i "s/autologin-user=.*/autologin-user=${APP_USER}/g" $LIGHTDM_CONFIG_FILE
-                       elif [ "$DETECT_AUTOLOGIN" == "" ]; then 
-                       sudo bash -c "echo 'autologin-user=${APP_USER}' >> ${LIGHTDM_CONFIG_FILE}"
-			        fi
-			        
-                
+     			 # Setup LXDE to run at boot
+     				
+     			 touch $LIGHTDM_CONFIG_FILE
+     					
+     			 echo -e "$LXDE_AUTO_LOGIN" > $LIGHTDM_CONFIG_FILE
+     			 
+     			    
+     			 elif [ -f "$LIGHTDM_CONFIG_FILE" ]; then
+                     
+                     echo "${cyan}LIGHTDM config detected at: $LIGHTDM_CONFIG_FILE${reset}"
+     			    
+     			 DETECT_AUTOLOGIN=$(sudo sed -n '/autologin-user=/p' $LIGHTDM_CONFIG_FILE)
+     			    
+     			 DETECT_AUTOLOGIN_SESSION=$(sudo sed -n '/autologin-session=/p' $LIGHTDM_CONFIG_FILE)
+     			    
+     			    
+     			        if [ "$DETECT_AUTOLOGIN" != "" ]; then 
+                            sed -i "s/#autologin-user=.*/autologin-user=${APP_USER}/g" $LIGHTDM_CONFIG_FILE
+                            sleep 2
+                            sed -i "s/autologin-user=.*/autologin-user=${APP_USER}/g" $LIGHTDM_CONFIG_FILE
+                            elif [ "$DETECT_AUTOLOGIN" == "" ]; then 
+                            sudo bash -c "echo 'autologin-user=${APP_USER}' >> ${LIGHTDM_CONFIG_FILE}"
+     			        fi
+     			        
+                     
+                     sleep 2
+     			    
+     			    
+     			        if [ "$DETECT_AUTOLOGIN_SESSION" != "" ]; then 
+                            sed -i "s/#autologin-session=.*/autologin-session=${LXDE_PROFILE}/g" $LIGHTDM_CONFIG_FILE
+                            sleep 2
+                            sed -i "s/autologin-session=.*/autologin-session=${LXDE_PROFILE}/g" $LIGHTDM_CONFIG_FILE
+                            elif [ "$DETECT_AUTOLOGIN_SESSION" == "" ]; then 
+                            sudo bash -c "echo 'autologin-session=${LXDE_PROFILE}' >> ${LIGHTDM_CONFIG_FILE}"
+     			        fi
+     			        
+                     sed -i "s/user-session=.*/user-session=${LXDE_PROFILE}/g" $LIGHTDM_CONFIG_FILE
+                     
+                     
+                     else
+                     echo "${red}AUTO-LOGIN CONFIGURATION ERROR, AUTO-LOGIN #NOT# SETUP!${reset}"
+                     fi
+                 
+                 
                 sleep 2
-			    
-			    
-			        if [ "$DETECT_AUTOLOGIN_SESSION" != "" ]; then 
-                       sed -i "s/#autologin-session=.*/autologin-session=${LXDE_PROFILE}/g" $LIGHTDM_CONFIG_FILE
-                       sleep 2
-                       sed -i "s/autologin-session=.*/autologin-session=${LXDE_PROFILE}/g" $LIGHTDM_CONFIG_FILE
-                       elif [ "$DETECT_AUTOLOGIN_SESSION" == "" ]; then 
-                       sudo bash -c "echo 'autologin-session=${LXDE_PROFILE}' >> ${LIGHTDM_CONFIG_FILE}"
-			        fi
-			        
-                sed -i "s/user-session=.*/user-session=${LXDE_PROFILE}/g" $LIGHTDM_CONFIG_FILE
-                
-                
-                else
-                echo "${red}AUTO-LOGIN CONFIGURATION ERROR, AUTO-LOGIN #NOT# SETUP!${reset}"
+                 
+                # On NEW LXDE installs (usually Fedora, but this SHOULD be safe to run on ANY),
+                # just make sure the setup config params are uncommented (active)
+                sed -i "s/^#user-session/user-session/g" $LIGHTDM_CONFIG_FILE
+                sed -i "s/^#autologin-user/autologin-user/g" $LIGHTDM_CONFIG_FILE
+                sed -i "s/^#autologin-session/autologin-session/g" $LIGHTDM_CONFIG_FILE
+                 
+                echo " "
+                echo "${green}LXDE desktop auto-login has been configured.${reset}"
+                echo " "
+                 
+                 
+                     # If we are running dietpi OS, WARN USER AN ADDITIONAL STEP #MAY# BE NEEDED
+                     if [ -f /boot/dietpi/.version ]; then
+                     echo "${red}DietPi #SHOULD NOT REQUIRE# USING THE dietpi-autostart UTILITY TO SET LXDE TO AUTO-LOGIN AS THE USER '${APP_USER}', SINCE #WE JUST SETUP LXDE AUTO-LOGIN ALREADY#.${reset}"
+                     fi
+            
+            
                 fi
-            
-            
-            sleep 2
-            
-            # On NEW LXDE installs (usually Fedora, but this SHOULD be safe to run on ANY),
-            # just make sure the setup config params are uncommented (active)
-            sed -i "s/^#user-session/user-session/g" $LIGHTDM_CONFIG_FILE
-            sed -i "s/^#autologin-user/autologin-user/g" $LIGHTDM_CONFIG_FILE
-            sed -i "s/^#autologin-session/autologin-session/g" $LIGHTDM_CONFIG_FILE
-            
-            echo " "
-            echo "${green}LXDE desktop auto-login has been configured.${reset}"
-            echo " "
-            
-            
-                # If we are running dietpi OS, WARN USER AN ADDITIONAL STEP #MAY# BE NEEDED
-                if [ -f /boot/dietpi/.version ]; then
-                echo "${red}DietPi #SHOULD NOT REQUIRE# USING THE dietpi-autostart UTILITY TO SET LXDE TO AUTO-LOGIN AS THE USER '${APP_USER}', SINCE #WE JUST SETUP LXDE AUTO-LOGIN ALREADY#.${reset}"
-                fi
-            
+                
             
             break
            elif [ "$opt" = "skip" ]; then
@@ -1425,16 +1487,18 @@ select opt in $OPTIONS; do
                         
                     fi
 	   
+	               
+	               # xdotool / xautomation only works on x11
+				if [ "$RUNNING_X11" != "" ]; then
 				
-			$PACKAGE_INSTALL xdotool -y
-				
-			sleep 1
-				
-			$PACKAGE_INSTALL unclutter -y
-				
-			sleep 1
-				
-			$PACKAGE_INSTALL xautomation -y
+			     $PACKAGE_INSTALL xdotool -y
+
+			     sleep 1
+
+			     $PACKAGE_INSTALL xautomation -y
+
+			     fi
+			     
 				
 			sleep 3
 				
@@ -1518,6 +1582,7 @@ select opt in $OPTIONS; do
 			rm CODEOWNERS > /dev/null 2>&1
 			rm /home/$APP_USER/slideshow-crypto-ticker/bash/switch-display.bash > /dev/null 2>&1
 			rm /home/$APP_USER/slideshow-crypto-ticker/bash/ticker-auto-start.bash > /dev/null 2>&1
+			rm /home/$APP_USER/slideshow-crypto-ticker/bash/lxde-auto-start.bash > /dev/null 2>&1
 			rm /home/$APP_USER/slideshow-crypto-ticker/bash/chromium-refresh.bash > /dev/null 2>&1
 			rm /home/$APP_USER/slideshow-crypto-ticker/bash/chromium.bash > /dev/null 2>&1
 			rm /home/$APP_USER/slideshow-crypto-ticker/bash/epiphany.bash > /dev/null 2>&1
@@ -1580,20 +1645,13 @@ select opt in $OPTIONS; do
         echo " "
         echo "${cyan}Removing Slideshow Crypto Ticker and some required components, please wait...${reset}"
 	   echo " "
-				
-        # ONLY removing unclutter, AS WE DON'T WANT TO F!CK UP THE WHOLE SYSTEM, REMOVING ANY OTHER ALREADY-USED / DEPENDANT PACKAGES TOO!!
-	   $PACKAGE_REMOVE unclutter -y
-				
-	   echo " "
-	   echo "${cyan}Removal of 'unclutter' app package completed, please wait...${reset}"
-	   echo " "
-	   echo "${red}(IF YOU USED 'unclutter' FOR ANOTHER APP, *RE-INSTALL* WITH: $PACKAGE_INSTALL unclutter)${reset}"
-	   echo " "		
-				
-	   sleep 3
 		
-	   # Remove ticker autostart line in any LXDE autostart file
-        sed -i "/slideshow-crypto-ticker/d" /home/$APP_USER/.config/lxsession/$LXDE_PROFILE/autostart
+	   # Remove ticker autostart line in any autostart files
+        sed -i "/slideshow-crypto-ticker/d" /home/$APP_USER/.config/labwc/autostart > /dev/null 2>&1
+        
+        sed -i "/slideshow-crypto-ticker/d" /home/$APP_USER/.config/wayfire.ini > /dev/null 2>&1
+        
+        sed -i "/slideshow-crypto-ticker/d" /home/$APP_USER/.config/lxsession/$LXDE_PROFILE/autostart > /dev/null 2>&1
         
         # Remove any #OLD# ticker autostart systemd service (which we no longer use)
         rm /lib/systemd/system/ticker.service > /dev/null 2>&1
@@ -1690,14 +1748,124 @@ select opt in $OPTIONS; do
         # REMOVE #OLD WAY# THIS SCRIPT USED TO DO IT
         rm /lib/systemd/system/ticker.service > /dev/null 2>&1
 				
-				
-			 # Setup to run at LXDE login
-                if [ -d /etc/xdg/lxsession ]; then
-                    	
+		      
+		      # Setup to run at wayfire login
+                if [ "$RUNNING_LABWC" != "" ]; then
 
 # Don't nest / indent, or it could malform the settings            
 read -r -d '' TICKER_STARTUP <<- EOF
-@/home/$APP_USER/slideshow-crypto-ticker/bash/lxde-auto-start.bash $SET_BROWSER
+bash /home/$APP_USER/slideshow-crypto-ticker/bash/bootup-auto-start.bash $SET_BROWSER 2>&1 &
+\r
+EOF
+				
+				
+				
+    			 WAYFIRE_AUTOSTART_NEW=$(sed -n '/bootup-auto-start.bash/p' /home/$APP_USER/.config/labwc/autostart)
+    			 WAYFIRE_AUTOSTART_BROWSER=$(sed -n "/bootup-auto-start.bash ${SET_BROWSER}/p" /home/$APP_USER/.config/labwc/autostart)
+    			
+    				
+				     # https://forums.raspberrypi.com/viewtopic.php?t=294014
+				
+     				# If autostart file doesn't exist yet, create it, and append the ticker autostart code
+                         if [ ! -f /home/$APP_USER/.config/labwc/autostart ]; then 
+                         
+                         echo " "
+                         echo "${cyan}Enabling USER-defined WayFire autostart (/home/$APP_USER/.config/labwc/autostart), AND adding ticker autostart, please wait...${reset}"
+                         echo " "
+                         
+                         touch /home/$APP_USER/.config/labwc/autostart
+                         
+                         sleep 2
+                         
+                         echo -e "$TICKER_STARTUP" >> /home/$APP_USER/.config/labwc/autostart
+                         
+                         # OR if we have not appended our ticker to an EXISTING autostart yet
+                         elif [ "$WAYFIRE_AUTOSTART_NEW" == "" ]; then 
+                         
+                         echo " "
+                         echo "${cyan}Adding ticker autostart to USER-defined WayFire autostart (/home/$APP_USER/.config/labwc/autostart), please wait...${reset}"
+                         echo " "
+                         
+                         echo -e "$TICKER_STARTUP" >> /home/$APP_USER/.config/labwc/autostart
+                         
+                         # OR if we just changed to a different browser
+                         elif [ "$WAYFIRE_AUTOSTART_BROWSER" == "" ]; then
+                         
+                         echo " "
+                         echo "${cyan}Updating ticker autostart browser to ${SET_BROWSER}, in USER-defined WayFire autostart (/home/$APP_USER/.config/labwc/autostart), please wait...${reset}"
+                         echo " "
+                         
+                         sed -i "s/bootup-auto-start.bash .*/bootup-auto-start.bash ${SET_BROWSER}/g" /home/$APP_USER/.config/labwc/autostart
+     				    
+                         fi    
+				
+				
+	               AUTOSTART_ALERT=1
+				
+				sleep 2
+			 
+		      # Setup to run at wayfire login
+                elif [ "$RUNNING_WAYFIRE" != "" ]; then
+
+# Don't nest / indent, or it could malform the settings            
+read -r -d '' TICKER_STARTUP <<- EOF
+[autostart]
+ticker = bash /home/$APP_USER/slideshow-crypto-ticker/bash/bootup-auto-start.bash $SET_BROWSER
+\r
+EOF
+				
+				
+				
+    			 WAYFIRE_AUTOSTART_NEW=$(sed -n '/bootup-auto-start.bash/p' /home/$APP_USER/.config/wayfire.ini)
+    			 WAYFIRE_AUTOSTART_BROWSER=$(sed -n "/bootup-auto-start.bash ${SET_BROWSER}/p" /home/$APP_USER/.config/wayfire.ini)
+    			
+    				
+				     # https://forums.raspberrypi.com/viewtopic.php?t=294014
+				
+     				# If autostart file doesn't exist yet, create it, and append the ticker autostart code
+                         if [ ! -f /home/$APP_USER/.config/wayfire.ini ]; then 
+                         
+                         echo " "
+                         echo "${cyan}Enabling USER-defined WayFire autostart (/home/$APP_USER/.config/wayfire.ini), AND adding ticker autostart, please wait...${reset}"
+                         echo " "
+                         
+                         touch /home/$APP_USER/.config/wayfire.ini
+                         
+                         sleep 2
+                         
+                         echo -e "$TICKER_STARTUP" >> /home/$APP_USER/.config/wayfire.ini
+                         
+                         # OR if we have not appended our ticker to an EXISTING autostart yet
+                         elif [ "$WAYFIRE_AUTOSTART_NEW" == "" ]; then 
+                         
+                         echo " "
+                         echo "${cyan}Adding ticker autostart to USER-defined WayFire autostart (/home/$APP_USER/.config/wayfire.ini), please wait...${reset}"
+                         echo " "
+                         
+                         echo -e "$TICKER_STARTUP" >> /home/$APP_USER/.config/wayfire.ini
+                         
+                         # OR if we just changed to a different browser
+                         elif [ "$WAYFIRE_AUTOSTART_BROWSER" == "" ]; then
+                         
+                         echo " "
+                         echo "${cyan}Updating ticker autostart browser to ${SET_BROWSER}, in USER-defined WayFire autostart (/home/$APP_USER/.config/wayfire.ini), please wait...${reset}"
+                         echo " "
+                         
+                         sed -i "s/bootup-auto-start.bash .*/bootup-auto-start.bash ${SET_BROWSER}/g" /home/$APP_USER/.config/wayfire.ini
+     				    
+                         fi    
+				
+				
+	               AUTOSTART_ALERT=1
+				
+				sleep 2
+			 
+			 # Setup to run at LXDE login
+                elif [ -d /etc/xdg/lxsession ]; then
+
+# Don't nest / indent, or it could malform the settings            
+read -r -d '' TICKER_STARTUP <<- EOF
+@/home/$APP_USER/slideshow-crypto-ticker/bash/bootup-auto-start.bash $SET_BROWSER
 \r
 EOF
 				
@@ -1706,8 +1874,8 @@ EOF
 			 sleep 2
 				
 				
-    			 LXDE_AUTOSTART_NEW=$(sed -n '/lxde-auto-start.bash/p' /home/$APP_USER/.config/lxsession/$LXDE_PROFILE/autostart)
-    			 LXDE_AUTOSTART_BROWSER=$(sed -n "/lxde-auto-start.bash ${SET_BROWSER}/p" /home/$APP_USER/.config/lxsession/$LXDE_PROFILE/autostart)
+    			 LXDE_AUTOSTART_NEW=$(sed -n '/bootup-auto-start.bash/p' /home/$APP_USER/.config/lxsession/$LXDE_PROFILE/autostart)
+    			 LXDE_AUTOSTART_BROWSER=$(sed -n "/bootup-auto-start.bash ${SET_BROWSER}/p" /home/$APP_USER/.config/lxsession/$LXDE_PROFILE/autostart)
     			
     				
 				     # https://forums.raspberrypi.com/viewtopic.php?t=294014
@@ -1741,7 +1909,7 @@ EOF
                          echo "${cyan}Updating ticker autostart browser to ${SET_BROWSER}, in USER-defined LXDE autostart (/home/$APP_USER/.config/lxsession/$LXDE_PROFILE/autostart), please wait...${reset}"
                          echo " "
                          
-                         sed -i "s/lxde-auto-start.bash .*/lxde-auto-start.bash ${SET_BROWSER}/g" /home/$APP_USER/.config/lxsession/$LXDE_PROFILE/autostart
+                         sed -i "s/bootup-auto-start.bash .*/bootup-auto-start.bash ${SET_BROWSER}/g" /home/$APP_USER/.config/lxsession/$LXDE_PROFILE/autostart
      				    
                          fi    
 				
@@ -2033,6 +2201,10 @@ echo " "
 echo "After updating config.js, restart the ticker with this command:"
 echo " "
 echo "~/ticker-restart"
+echo " "
+echo "If NOT using x11 as a DISPLAY MANAGER, you can OPTIONALLY include which browser to reload with:"
+echo " "
+echo "~/ticker-restart chromium"
 echo "${reset} "
 
 echo "${cyan}Ticker installation / setup should be complete (if you chose those options), unless you saw any error messages on your screen during setup."
