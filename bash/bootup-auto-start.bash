@@ -41,9 +41,9 @@ DEFAULT_BROWSER=$(cat ~/slideshow-crypto-ticker/cache/default_browser.dat)
 DEFAULT_BROWSER=$(echo "${DEFAULT_BROWSER}" | xargs) # Trim any whitespace
 
 
-# If DEFAULT browser parameter wasn't set, use firefox
+# If DEFAULT browser parameter wasn't set, use chromium
 if [ -z "$DEFAULT_BROWSER" ]; then
-DEFAULT_BROWSER="firefox"
+DEFAULT_BROWSER="chromium"
 fi
 
 

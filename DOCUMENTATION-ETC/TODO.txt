@@ -70,7 +70,7 @@ FEATURES / STRUCTURING SECTION
 ///////////////////////////////////////////////////////
 
 
-Add logic for debian and redhat, to freeze kernel updates on ARM devices (like we do in my fedora setup script). Armbian has armbian-config "system settings > updates > disable firmware updates" to automate this.
+Add logic for vanilla debian / ubuntu, to automate users being able to freeze kernel updates on ARM devices (like we do for fedora / armbian).
 
 
 FEDORA ONLY REQUIRES THIS BELOW, FOR LIGHTDM AUTO-LOGIN:

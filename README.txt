@@ -120,7 +120,7 @@ If autostart does not work / is not setup, you can run this command MANUALLY, #A
 ~/ticker-start
 
 
-If you prefer chromium, epiphany, or firefox (firefox is recommended for long term reliability):
+If you prefer chromium, epiphany, or firefox (chromium is recommended for long term reliability):
 
 ~/ticker-start chromium
 
@@ -180,22 +180,47 @@ ln -s ~/slideshow-crypto-ticker/bash/ticker-stop.bash ~/ticker-stop
 ---------------------
 
 
-Create / edit the following autostart file (create any directories that don't exist yet): /home/YOUR_USER_NAME/.config/lxsession/LXDE_PROFILE_NAME/autostart and add the following (firefox can be changed to epiphany, or chromium if desired, but firefox is usually the most reliable)...
+Create / edit one of the following autostart files (depending if you are running LXDE Desktop, OR [modern raspi os] wayland-based labwc Desktop...create any directories that don't exist yet)...
+
+
+---------------------
+
+
+LXDE:
+
+/home/YOUR_USER_NAME/.config/lxsession/LXDE_PROFILE_NAME/autostart
 
 IMPORTANT: SUBSTITUTE "LXDE_PROFILE_NAME" FOR THE LXDE PROFILE NAME USED FOR YOUR LXDE SESSION (whatever the sub-folder name is INSIDE: /home/YOUR_USER_NAME/.config/lxpanel, on raspberry pi os it is: LXDE-pi, default if unknown should be: LXDE).
 
-
-FIRST, IF THE FILE DOES #NOT# EXIST YET, we need to copy the SYSTEM defaults over with this command:
+FIRST, IF THE FILE DOES #NOT# EXIST YET, we need to copy the SYSTEM DEFAULTS over with this command (OR YOU MAY CRASH YOUR DESKTOP!):
 
 cp /etc/xdg/lxsession/LXDE_PROFILE_NAME/autostart /home/pi/.config/lxsession/LXDE_PROFILE_NAME/
 
+NEXT, we add the ticker autostart command at the end of the autostart file:
+
+@/home/YOUR_USER_NAME/slideshow-crypto-ticker/bash/bootup-auto-start.bash chromium
+
+
+---------------------
+
+
+Wayland/labwc:
+
+/home/YOUR_USER_NAME/.config/labwc/autostart
+
+Create a blank file, if it does not already exist.
 
 NEXT, we add the ticker autostart command at the end of the autostart file:
 
-@/home/YOUR_USER_NAME/slideshow-crypto-ticker/bash/bootup-auto-start.bash firefox
+bash /home/YOUR_USER_NAME/slideshow-crypto-ticker/bash/bootup-auto-start.bash chromium 2>&1 &
 
 
-After creating the LXDE Desktop autostart file above, the ticker will run on system startup when you login / auto-login to the LXDE Desktop.
+---------------------
+
+
+IMPORTANT NOTE ON ABOVE CONFIGS:
+
+After creating the appropriate autostart file above, the ticker will run on system startup when you login / auto-login to the Desktop. Chromium can be changed to epiphany or firefox if desired, but chromium is USUALLY the most reliable.
 
 
 ---------------------
