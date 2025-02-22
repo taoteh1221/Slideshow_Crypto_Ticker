@@ -63,7 +63,7 @@ DISPLAY=$FIND_DISPLAY
 
 export DISPLAY=$FIND_DISPLAY
 
-xdotool type F5
+xdotool key F5
 
 # NON-X11
 else
