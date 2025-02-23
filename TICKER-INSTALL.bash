@@ -90,24 +90,6 @@ CURRENT_TIMESTAMP=$(date +%s)
 # Are we running on Ubuntu OS?
 IS_UBUNTU=$(cat /etc/os-release | grep -i "ubuntu")
 
-# Are we using x11 display manager?
-RUNNING_X11=$(loginctl show-session $(loginctl | grep $(whoami) | awk '{print $1}') -p Type | grep -i x11)
-
-# Are we using wayland display manager?
-RUNNING_WAYLAND=$(loginctl show-session $(loginctl | grep $(whoami) | awk '{print $1}') -p Type | grep -i wayland)
-
-
-# Are we running a wayland compositor?
-if [ "$RUNNING_WAYLAND" != "" ]; then
-
-# Are we using wayfire compositor?
-RUNNING_WAYFIRE=$(ps aux | grep wayfire | grep -v grep) # EXCLUDE THE WORD GREP!
-	   
-# Are we using labwc compositor?
-RUNNING_LABWC=$(ps aux | grep labwc | grep -v grep) # EXCLUDE THE WORD GREP!
-
-fi
-	   
 
 # If a symlink, get link target for script location
  # WE ALWAYS WANT THE FULL PATH!
@@ -116,6 +98,7 @@ SCRIPT_LOCATION=$(readlink "$0")
 else
 SCRIPT_LOCATION="$( cd -- "$(dirname "$0")" >/dev/null 2>&1 ; pwd -P )/"$(basename "$0")""
 fi
+
 
 # Now set path / file vars, after setting SCRIPT_LOCATION
 SCRIPT_PATH="$( cd -- "$(dirname "$SCRIPT_LOCATION")" >/dev/null 2>&1 ; pwd -P )"
@@ -231,6 +214,29 @@ fi
 ######################################
 
 
+# Find out what display manager is being used on the PHYSICAL display
+DISPLAY_SESSION=$(loginctl show-user "$TERMINAL_USERNAME" -p Display --value)
+DISPLAY_SESSION=$(echo "${DISPLAY_SESSION}" | xargs) # trim whitespace
+
+# Are we using x11 display manager?
+RUNNING_X11=$(loginctl show-session "$DISPLAY_SESSION" -p Type | grep -i x11)
+
+# Are we using wayland display manager?
+RUNNING_WAYLAND=$(loginctl show-session "$DISPLAY_SESSION" -p Type | grep -i wayland)
+
+
+# Are we running a wayland compositor?
+if [ "$RUNNING_WAYLAND" != "" ]; then
+
+# Are we using wayfire compositor?
+RUNNING_WAYFIRE=$(ps aux | grep wayfire | grep -v grep) # EXCLUDE THE WORD GREP!
+	   
+# Are we using labwc compositor?
+RUNNING_LABWC=$(ps aux | grep labwc | grep -v grep) # EXCLUDE THE WORD GREP!
+
+fi
+
+
 if [ -f "/etc/debian_version" ]; then
 
 echo "${green}Your system has been detected as Debian-based, which is compatible with this automated script."
@@ -246,7 +252,7 @@ echo " "
 
 elif [ -f "/etc/redhat-release" ]; then
 
-echo "${yellow}Your system has been detected as Redhat-based, which is ${red}CURRENTLY STILL IN DEVELOPMENT TO EVENTUALLY BE (BUT IS *NOT* YET) ${yellow} fully compatible with this automated script."
+echo "${green}Your system has been detected as Redhat-based, which is compatible with this automated script."
 
 PACKAGE_INSTALL="sudo yum install"
 PACKAGE_REMOVE="sudo yum remove"
@@ -925,7 +931,7 @@ echo " "
 
 echo "${yellow}TECHNICAL NOTE:"
 echo " "
-echo "This script was designed to install on popular Debian-based ${green}(STABLE / POLISHED)${yellow} / RedHat-based ${red}(UNSTABLE / WORK-IN-PROGRESS)${yellow} operating systems (Debian, Ubuntu, Raspberry Pi OS [Raspbian], Armbian, DietPi, Fedora, RHEL, CentOS, etc), for small single-board computers WITH SMALL LCD SCREENS TO RUN THE TICKER 24/7 (ALL THE TIME)."
+echo "This script was designed to install on popular Debian-based ${green}(STABLE / POLISHED)${yellow} / RedHat-based ${green}(STABLE / POLISHED)${yellow} operating systems (Debian, Ubuntu, Raspberry Pi OS [Raspbian], Armbian, DietPi, Fedora, CentOS, RedHat Enterprise, etc), for small single-board computers WITH SMALL LCD SCREENS TO RUN THE TICKER 24/7 (ALL THE TIME)."
 echo " "
 
 echo "It is ONLY recommended to install this ticker app IF your device has an LCD screen installed.${reset}"
@@ -976,24 +982,19 @@ echo " "
 fi
 
 
-echo "${yellow}PLEASE REPORT ANY ISSUES HERE: $ISSUES_URL${reset}"
+echo "${red}PLEASE REPORT ANY ISSUES HERE: $ISSUES_URL${reset}"
 echo " "
 
 echo "${yellow} "
-read -n1 -s -r -p $"Press Y to continue (or press N to exit)..." key
+read -n1 -s -r -p $"PRESS ANY KEY to continue..." key
 echo "${reset} "
-
-    if [ "$key" = 'y' ] || [ "$key" = 'Y' ]; then
+     
+    if [ "$key" = 'y' ] || [ "$key" != 'y' ]; then
     echo " "
     echo "${green}Continuing...${reset}"
     echo " "
-    else
-    echo " "
-    echo "${green}Exiting...${reset}"
-    echo " "
-    exit
     fi
-
+     
 echo " "
               
 
@@ -1187,7 +1188,7 @@ sleep 5
 LIGHTDM_PATH=$(get_app_path "lightdm")
 
 
-# IF we are NOT running wayland/labwc (who knows if raspi wayland/labwc will continue using it?)
+# IF we are NOT running wayland/labwc (who knows if raspi wayland/labwc will continue using lightdm?)
 if [ "$LIGHTDM_PATH" == "" ] && [ "$RUNNING_LABWC" == "" ]; then
                 
                 echo "${red}'lightdm' (display manager) could NOT be found or installed. PLEASE INSTALL MANUALLY, OR TRY A DIFFERENT OPERATING SYSTEM (Ubuntu, Debian, RaspberryPi OS, Armbian, etc)."
@@ -1409,7 +1410,7 @@ echo " "
     done
     
 
-else
+elif [ "$RUNNING_LABWC" == "" ]; then
 
 echo "${red}THIS TICKER #REQUIRES# RUNNING #LIGHTDM# AND THE DESKTOP INTERFACE #LXDE# IN AUTO-LOGIN MODE AT STARTUP, AS THE USER '${APP_USER}', IF YOU WANT THE TICKER TO #AUTOMATICALLY RUN ON SYSTEM STARTUP# / REBOOT.${reset}"
 
@@ -1839,7 +1840,7 @@ EOF
                          if [ ! -f /home/$APP_USER/.config/labwc/autostart ]; then 
                          
                          echo " "
-                         echo "${cyan}Enabling USER-defined WayFire autostart (/home/$APP_USER/.config/labwc/autostart), AND adding ticker autostart, please wait...${reset}"
+                         echo "${cyan}Enabling USER-defined labwc autostart (/home/$APP_USER/.config/labwc/autostart), AND adding ticker autostart, please wait...${reset}"
                          echo " "
                          
                          touch /home/$APP_USER/.config/labwc/autostart
@@ -2360,6 +2361,11 @@ echo " "
 
 ######################################
 
+echo "${red} "
+echo "============================================================="
+echo "=======  E N D   O F   I N S T A L L A T I O N  ============="
+echo "============================================================="
+echo "${reset} "
 
 echo "${yellow}ANY DONATIONS (LARGE OR SMALL) HELP SUPPORT DEVELOPMENT OF MY APPS..."
 echo " "
@@ -2422,10 +2428,10 @@ OPTIONS="install_portfolio_tracker skip"
        
         echo " "
         echo "${green}Skipping the OPTIONAL portfolio tracker install...${reset}"
-		echo " "
-		echo "${cyan}Installation / setup has finished, exiting to terminal...${reset}"
+	   echo " "
+	   echo "${cyan}Installation / setup has finished, exiting to terminal...${reset}"
         echo " "
-		exit
+	   exit
 		  
         break
         
