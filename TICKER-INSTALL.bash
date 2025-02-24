@@ -69,17 +69,6 @@ fi
 ######################################
 
 
-# Are we using lightdm, as the display manager?
-if [ -f "/etc/debian_version" ]; then
-LIGHTDM_DISPLAY=$(cat /etc/X11/default-display-manager | grep "lightdm")
-elif [ -f "/etc/redhat-release" ]; then
-LIGHTDM_DISPLAY=$(ls -al /etc/systemd/system/display-manager.service | grep "lightdm")
-fi
-
-
-######################################
-
-
 # Get date / time
 DATE=$(date '+%Y-%m-%d')
 TIME=$(date '+%H:%M:%S')
@@ -234,7 +223,19 @@ RUNNING_WAYFIRE=$(ps aux | grep wayfire | grep -v grep) # EXCLUDE THE WORD GREP!
 # Are we using labwc compositor?
 RUNNING_LABWC=$(ps aux | grep labwc | grep -v grep) # EXCLUDE THE WORD GREP!
 
+elif [ "RUNNING_X11" != "" ]; then
+
+     # Are we using lightdm, as the display manager?
+     if [ -f "/etc/debian_version" ]; then
+     LIGHTDM_DISPLAY=$(cat /etc/X11/default-display-manager | grep "lightdm")
+     elif [ -f "/etc/redhat-release" ]; then
+     LIGHTDM_DISPLAY=$(ls -al /etc/systemd/system/display-manager.service | grep "lightdm")
+     fi
+
 fi
+
+
+######################################
 
 
 if [ -f "/etc/debian_version" ]; then
@@ -335,7 +336,7 @@ app_path_result="${app_path_result#*$1:}"
      echo "System path for '$1' NOT FOUND, even AFTER package installation attempts, giving up." > /dev/tty
      echo " " > /dev/tty
 
-     echo "*PLEASE* REPORT THIS ISSUE HERE, *IF THIS SCRIPT FAILS TO RUN PROPERLY FROM THIS POINT ONWARD*:" > /dev/tty
+     echo "*PLEASE* REPORT THIS ISSUE HERE, *IF THIS SCRIPT OR THE INSTALLED APP FAILS TO RUN PROPERLY FROM THIS POINT ONWARD*:" > /dev/tty
      echo " " > /dev/tty
      echo "$ISSUES_URL" > /dev/tty
      echo "${reset} " > /dev/tty
@@ -711,14 +712,14 @@ clean_system_update () {
      
           if [ ! -f /usr/bin/raspi-config ] && [ "$IS_ARM" != "" ]; then
           
-          echo "${red}(Your ARM-based device MAY NOT BOOT IF YOU RUN SYSTEM UPGRADES [if you have NOT freezed kernel firmware updating / rebooted FIRST]. To play it safe, you can SAFELY choose \"NON Raspberry Pi ARM Device\", OR \"I don't know\")${reset}"
+          echo "${red}(Your ARM-based device MAY NOT BOOT IF YOU RUN SYSTEM UPGRADES [if you have NOT freezed kernel firmware updating / rebooted FIRST]. To play it safe, you can SAFELY choose \"NOT Raspberry Pi OS Software\", OR \"I don't know\")${reset}"
           echo " "
      
           echo "Enter the NUMBER next to your chosen option.${reset}"
      
           echo " "
           
-          OPTIONS="rolling long_term i_dont_know non_raspberrypi_arm_device"
+          OPTIONS="rolling long_term i_dont_know not_raspberrypi_os_software"
           
           else
      
@@ -945,9 +946,7 @@ echo " "
 echo "$OS v$VER${reset}"
 echo " "
 
-echo "${red}USE A #FULL# DESKTOP SETUP, #NOT# LITE, OR YOU LIKELY WILL HAVE SOME #UNICODE SYMBOL ISSUES# WITH CHROMIUM BROWSER EVEN AFTER UPGRADING TO GUI / CHROME (trust me)."
-echo " "
-echo "Chromium, Epiphany, and Firefox are supported (chromium is recommended for reliability, all these browsers will be installed if available). IF A BROWSER DOES NOT WORK, PLEASE CHECK MANUALLY THAT IT IS INSTALLED PROPERLY, AND MAKE SURE IT IS NOT CRASHING ON STARTUP!${reset}"
+echo "${red}Chromium, Epiphany, and Firefox are supported (chromium is recommended for reliability, all these browsers will be installed if available). IF A BROWSER DOES NOT WORK, PLEASE CHECK MANUALLY THAT IT IS INSTALLED PROPERLY, AND MAKE SURE IT IS NOT CRASHING ON STARTUP!${reset}"
 echo " "
 
      
@@ -1212,33 +1211,19 @@ fi
               
 # SET EARLY (IMMEADIATELY #AFTER# ANY LXDE INSTALL ABOVE), AS WE USE THIS IN A FEW PLACES
 # KNOWN raspi LXDE profile, IF we are NOT running wayland/labwc
-if [ -d /etc/xdg/lxsession/LXDE-pi ] && [ "$RUNNING_LABWC" == "" ]; then
+if [ -d /etc/xdg/lxsession/LXDE-pi ] && [ "$RUNNING_LABWC" == "" ] && [ "$RUNNING_WAYFIRE" == "" ]; then
 
 LXDE_PROFILE="LXDE-pi"
 
 # UNKNOWN generic LXDE profile, IF we are NOT running wayland/labwc
-elif [ -d /etc/xdg/lxsession/LXDE ] && [ "$RUNNING_LABWC" == "" ]; then
+elif [ -d /etc/xdg/lxsession/LXDE ] && [ "$RUNNING_LABWC" == "" ] && [ "$RUNNING_WAYFIRE" == "" ]; then
       
-# Auto-detect or set to KNOWN LXDE default
-# Unfortunately not much documentation on listing LXDE profile names,
-# BUT looks fairly reliable to just check in /etc/xdg/lxsession
-# (IT SHOULD EXIST ALREADY AT THIS POINT)
-LXDE_PROFILE=$(ls /etc/xdg/lxsession)
-LXDE_PROFILE=$(echo "${LXDE_PROFILE}" | xargs) # REMOVE any whitespace ON ENDS ONLY
-LXDE_PROFILE=$(echo "${LXDE_PROFILE}" | sed "s/LXDE //") # REMOVE "LXDE "
-  
-    # If LXDE profile var was NOT auto-setup properly
-    # (contains whitespace MID-VARIABLE or is empty),
-    # go with KNOWN default from LXDE documentation
-    if [[ $LXDE_PROFILE =~ " " ]] || [ -z "$LXDE_PROFILE" ]; then
-    LXDE_PROFILE="LXDE"
-    LXDE_ALERT=1
-    fi
+LXDE_PROFILE="LXDE"
 
-elif [ "$RUNNING_LABWC" == "" ]; then
+elif [ "$RUNNING_LABWC" == "" ] && [ "$RUNNING_WAYFIRE" == "" ]; then
 
 echo " "
-echo "${red}LXDE Desktop NOT detected (please install it, it is REQUIRED to continue).${reset}"
+echo "${red}LXDE Desktop NOT detected (please install it, as it is REQUIRED to continue).${reset}"
 
 echo "${yellow} "
 read -n1 -s -r -p $"PRESS ANY KEY to exit..." key
@@ -1251,6 +1236,19 @@ echo "${reset} "
     exit
     fi
 
+fi
+
+
+######################################
+
+
+# Set autostart file path
+if [ "$LXDE_PROFILE" != "" ]; then
+AUTOSTART_LOCATION="/home/$APP_USER/.config/lxsession/$LXDE_PROFILE/autostart"
+elif [ "$RUNNING_LABWC" != "" ]; then
+AUTOSTART_LOCATION="/home/$APP_USER/.config/labwc/autostart"
+elif [ "$RUNNING_WAYFIRE" != "" ]; then
+AUTOSTART_LOCATION="/home/$APP_USER/.config/wayfire.ini"
 fi
 
 
@@ -1313,7 +1311,10 @@ EOF
      
      sed -i "s/user-session=.*/user-session=${LXDE_PROFILE}/g" $LIGHTDM_CONFIG_FILE
      
+     sleep 1
+     
      # Make sure the modded setup config params are uncommented (active [redhat setups])
+     sed -i "s/^#greeter-session/greeter-session/g" $LIGHTDM_CONFIG_FILE
      sed -i "s/^#user-session/user-session/g" $LIGHTDM_CONFIG_FILE
      
      fi	    
@@ -1369,7 +1370,7 @@ echo " "
      			 fi
      			        
                      
-                sleep 2
+                sleep 1
      			    
      			    
      			 if [ "$DETECT_AUTOLOGIN_SESSION" != "" ]; then 
@@ -1379,12 +1380,18 @@ echo " "
      			 fi
      			 
                  
-                sleep 2
+                sleep 1
+                
+                # Assure autologin timeout is DISABLED (WITH A ZERO)
+                sed -i "s/autologin-user-timeout=.*/autologin-user-timeout=0/g" $LIGHTDM_CONFIG_FILE
+                
+                sleep 1
                  
                 # On NEW LXDE installs (usually Fedora, but this SHOULD be safe to run on ANY),
                 # just make sure the setup config params are uncommented (active)
                 sed -i "s/^#autologin-user/autologin-user/g" $LIGHTDM_CONFIG_FILE
                 sed -i "s/^#autologin-session/autologin-session/g" $LIGHTDM_CONFIG_FILE
+                sed -i "s/^#autologin-user-timeout/autologin-user-timeout/g" $LIGHTDM_CONFIG_FILE
                  
                 echo " "
                 echo "${green}LXDE desktop auto-login has been configured.${reset}"
@@ -1557,18 +1564,14 @@ select opt in $OPTIONS; do
                         
                     fi
 	   
-	               
-	               # xdotool / xautomation only works on x11
-				if [ "$RUNNING_X11" != "" ]; then
-				
-			     $PACKAGE_INSTALL xdotool -y
+	          
+	          # X11 TOOLS
+	          # (DON'T RUN AN X11 CHECK, JUST INSTALL REGARDLESS, AS WE MAY BE SETTING UP HEADLESS INITIALLY!)     
+			$PACKAGE_INSTALL xdotool -y
 
-			     sleep 1
+			sleep 1
 
-			     $PACKAGE_INSTALL xautomation -y
-
-			     fi
-			     
+			$PACKAGE_INSTALL xautomation -y
 				
 			sleep 3
 				
@@ -1716,12 +1719,8 @@ select opt in $OPTIONS; do
         echo "${cyan}Removing Slideshow Crypto Ticker and some required components, please wait...${reset}"
 	   echo " "
 		
-	   # Remove ticker autostart line in any autostart files
-        sed -i "/slideshow-crypto-ticker/d" /home/$APP_USER/.config/labwc/autostart > /dev/null 2>&1
-        
-        sed -i "/slideshow-crypto-ticker/d" /home/$APP_USER/.config/wayfire.ini > /dev/null 2>&1
-        
-        sed -i "/slideshow-crypto-ticker/d" /home/$APP_USER/.config/lxsession/$LXDE_PROFILE/autostart > /dev/null 2>&1
+	   # Remove ticker autostart line in any autostart file
+        sed -i "/slideshow-crypto-ticker/d" $AUTOSTART_LOCATION > /dev/null 2>&1
         
         # Remove any #OLD# ticker autostart systemd service (which we no longer use)
         rm /lib/systemd/system/ticker.service > /dev/null 2>&1
@@ -1813,11 +1812,11 @@ select opt in $OPTIONS; do
 	   echo -e "$SET_BROWSER" > /home/$APP_USER/slideshow-crypto-ticker/cache/default_browser.dat
 				
 	   chown -R $APP_USER:$APP_USER /home/$APP_USER/slideshow-crypto-ticker/cache > /dev/null 2>&1
-			
-
-        # REMOVE #OLD WAY# THIS SCRIPT USED TO DO IT
-        rm /lib/systemd/system/ticker.service > /dev/null 2>&1
 				
+	   # Scan for any existing autostart file data
+	   AUTOSTART_NEW=$(sed -n '/bootup-auto-start.bash/p' $AUTOSTART_LOCATION)
+    	   AUTOSTART_BROWSER=$(sed -n "/bootup-auto-start.bash ${SET_BROWSER}/p" $AUTOSTART_LOCATION)
+    			
 		      
 		      # Setup if running labwc (wayland compositor)
                 if [ "$RUNNING_LABWC" != "" ]; then
@@ -1827,52 +1826,6 @@ read -r -d '' TICKER_STARTUP <<- EOF
 bash /home/$APP_USER/slideshow-crypto-ticker/bash/bootup-auto-start.bash $SET_BROWSER 2>&1 &
 \r
 EOF
-				
-				
-				
-    			 WAYFIRE_AUTOSTART_NEW=$(sed -n '/bootup-auto-start.bash/p' /home/$APP_USER/.config/labwc/autostart)
-    			 WAYFIRE_AUTOSTART_BROWSER=$(sed -n "/bootup-auto-start.bash ${SET_BROWSER}/p" /home/$APP_USER/.config/labwc/autostart)
-    			
-    				
-				     # https://forums.raspberrypi.com/viewtopic.php?t=294014
-				
-     				# If autostart file doesn't exist yet, create it, and append the ticker autostart code
-                         if [ ! -f /home/$APP_USER/.config/labwc/autostart ]; then 
-                         
-                         echo " "
-                         echo "${cyan}Enabling USER-defined labwc autostart (/home/$APP_USER/.config/labwc/autostart), AND adding ticker autostart, please wait...${reset}"
-                         echo " "
-                         
-                         touch /home/$APP_USER/.config/labwc/autostart
-                         
-                         sleep 2
-                         
-                         echo -e "$TICKER_STARTUP" >> /home/$APP_USER/.config/labwc/autostart
-                         
-                         # OR if we have not appended our ticker to an EXISTING autostart yet
-                         elif [ "$WAYFIRE_AUTOSTART_NEW" == "" ]; then 
-                         
-                         echo " "
-                         echo "${cyan}Adding ticker autostart to USER-defined WayFire autostart (/home/$APP_USER/.config/labwc/autostart), please wait...${reset}"
-                         echo " "
-                         
-                         echo -e "$TICKER_STARTUP" >> /home/$APP_USER/.config/labwc/autostart
-                         
-                         # OR if we just changed to a different browser
-                         elif [ "$WAYFIRE_AUTOSTART_BROWSER" == "" ]; then
-                         
-                         echo " "
-                         echo "${cyan}Updating ticker autostart browser to ${SET_BROWSER}, in USER-defined WayFire autostart (/home/$APP_USER/.config/labwc/autostart), please wait...${reset}"
-                         echo " "
-                         
-                         sed -i "s/bootup-auto-start.bash .*/bootup-auto-start.bash ${SET_BROWSER}/g" /home/$APP_USER/.config/labwc/autostart
-     				    
-                         fi    
-				
-				
-	               AUTOSTART_ALERT=1
-				
-				sleep 2
 			 
 		      # Setup if running wayfire (wayland compositor)
                 elif [ "$RUNNING_WAYFIRE" != "" ]; then
@@ -1883,55 +1836,13 @@ read -r -d '' TICKER_STARTUP <<- EOF
 ticker = bash /home/$APP_USER/slideshow-crypto-ticker/bash/bootup-auto-start.bash $SET_BROWSER
 \r
 EOF
-				
-				
-				
-    			 WAYFIRE_AUTOSTART_NEW=$(sed -n '/bootup-auto-start.bash/p' /home/$APP_USER/.config/wayfire.ini)
-    			 WAYFIRE_AUTOSTART_BROWSER=$(sed -n "/bootup-auto-start.bash ${SET_BROWSER}/p" /home/$APP_USER/.config/wayfire.ini)
-    			
-    				
-				     # https://forums.raspberrypi.com/viewtopic.php?t=294014
-				
-     				# If autostart file doesn't exist yet, create it, and append the ticker autostart code
-                         if [ ! -f /home/$APP_USER/.config/wayfire.ini ]; then 
-                         
-                         echo " "
-                         echo "${cyan}Enabling USER-defined WayFire autostart (/home/$APP_USER/.config/wayfire.ini), AND adding ticker autostart, please wait...${reset}"
-                         echo " "
-                         
-                         touch /home/$APP_USER/.config/wayfire.ini
-                         
-                         sleep 2
-                         
-                         echo -e "$TICKER_STARTUP" >> /home/$APP_USER/.config/wayfire.ini
-                         
-                         # OR if we have not appended our ticker to an EXISTING autostart yet
-                         elif [ "$WAYFIRE_AUTOSTART_NEW" == "" ]; then 
-                         
-                         echo " "
-                         echo "${cyan}Adding ticker autostart to USER-defined WayFire autostart (/home/$APP_USER/.config/wayfire.ini), please wait...${reset}"
-                         echo " "
-                         
-                         echo -e "$TICKER_STARTUP" >> /home/$APP_USER/.config/wayfire.ini
-                         
-                         # OR if we just changed to a different browser
-                         elif [ "$WAYFIRE_AUTOSTART_BROWSER" == "" ]; then
-                         
-                         echo " "
-                         echo "${cyan}Updating ticker autostart browser to ${SET_BROWSER}, in USER-defined WayFire autostart (/home/$APP_USER/.config/wayfire.ini), please wait...${reset}"
-                         echo " "
-                         
-                         sed -i "s/bootup-auto-start.bash .*/bootup-auto-start.bash ${SET_BROWSER}/g" /home/$APP_USER/.config/wayfire.ini
-     				    
-                         fi    
-				
-				
-	               AUTOSTART_ALERT=1
-				
-				sleep 2
 			 
 			 # Setup to run at LXDE login (with x11)
                 elif [ -d /etc/xdg/lxsession ]; then
+                
+			 mkdir -p /home/$APP_USER/.config/lxsession/$LXDE_PROFILE > /dev/null 2>&1
+				
+			 sleep 2
 
 # Don't nest / indent, or it could malform the settings            
 read -r -d '' TICKER_STARTUP <<- EOF
@@ -1939,62 +1850,60 @@ read -r -d '' TICKER_STARTUP <<- EOF
 \r
 EOF
 				
-			 mkdir -p /home/$APP_USER/.config/lxsession/$LXDE_PROFILE > /dev/null 2>&1
+		      fi
+						
+						
+			 # https://forums.raspberrypi.com/viewtopic.php?t=294014
 				
-			 sleep 2
-				
-				
-    			 LXDE_AUTOSTART_NEW=$(sed -n '/bootup-auto-start.bash/p' /home/$APP_USER/.config/lxsession/$LXDE_PROFILE/autostart)
-    			 LXDE_AUTOSTART_BROWSER=$(sed -n "/bootup-auto-start.bash ${SET_BROWSER}/p" /home/$APP_USER/.config/lxsession/$LXDE_PROFILE/autostart)
-    			
-    				
-				     # https://forums.raspberrypi.com/viewtopic.php?t=294014
-				
-     				# If autostart file doesn't exist yet, create it, and append the ticker autostart code
-                         if [ ! -f /home/$APP_USER/.config/lxsession/$LXDE_PROFILE/autostart ]; then 
+     		 # If autostart file doesn't exist yet, create it, and append the ticker autostart code
+                if [ ! -f $AUTOSTART_LOCATION ]; then 
                          
-                         echo " "
-                         echo "${cyan}Enabling USER-defined LXDE autostart (/home/$APP_USER/.config/lxsession/$LXDE_PROFILE/autostart), AND adding ticker autostart, please wait...${reset}"
-                         echo " "
+                echo " "
+                echo "${cyan}Enabling USER-defined autostart (${AUTOSTART_LOCATION}), AND adding ticker autostart, please wait...${reset}"
+                echo " "
+
                          
-                         \cp /etc/xdg/lxsession/$LXDE_PROFILE/autostart /home/$APP_USER/.config/lxsession/$LXDE_PROFILE/
+                      if [ "$LXDE_PROFILE" != "" ]; then
+                      \cp /etc/xdg/lxsession/$LXDE_PROFILE/autostart /home/$APP_USER/.config/lxsession/$LXDE_PROFILE/
+                      else
+                      touch $AUTOSTART_LOCATION
+                      fi
                          
-                         sleep 2
                          
-                         echo -e "$TICKER_STARTUP" >> /home/$APP_USER/.config/lxsession/$LXDE_PROFILE/autostart
+                sleep 2
                          
-                         # OR if we have not appended our ticker to an EXISTING autostart yet
-                         elif [ "$LXDE_AUTOSTART_NEW" == "" ]; then 
+                echo -e "$TICKER_STARTUP" >> $AUTOSTART_LOCATION
                          
-                         echo " "
-                         echo "${cyan}Adding ticker autostart to USER-defined LXDE autostart (/home/$APP_USER/.config/lxsession/$LXDE_PROFILE/autostart), please wait...${reset}"
-                         echo " "
+                # OR if we have not appended our ticker to an EXISTING autostart yet
+                elif [ "$AUTOSTART_NEW" == "" ]; then 
                          
-                         echo -e "$TICKER_STARTUP" >> /home/$APP_USER/.config/lxsession/$LXDE_PROFILE/autostart
+                echo " "
+                echo "${cyan}Adding ticker autostart to USER-defined autostart (${AUTOSTART_LOCATION}), please wait...${reset}"
+                echo " "
                          
-                         # OR if we just changed to a different browser
-                         elif [ "$LXDE_AUTOSTART_BROWSER" == "" ]; then
+                echo -e "$TICKER_STARTUP" >> $AUTOSTART_LOCATION
                          
-                         echo " "
-                         echo "${cyan}Updating ticker autostart browser to ${SET_BROWSER}, in USER-defined LXDE autostart (/home/$APP_USER/.config/lxsession/$LXDE_PROFILE/autostart), please wait...${reset}"
-                         echo " "
+                # OR if we just changed to a different browser
+                elif [ "$AUTOSTART_BROWSER" == "" ]; then
                          
-                         sed -i "s/bootup-auto-start.bash .*/bootup-auto-start.bash ${SET_BROWSER}/g" /home/$APP_USER/.config/lxsession/$LXDE_PROFILE/autostart
+                echo " "
+                echo "${cyan}Updating ticker autostart browser to ${SET_BROWSER}, in USER-defined autostart (${AUTOSTART_LOCATION}), please wait...${reset}"
+                echo " "
+                         
+                sed -i "s/bootup-auto-start.bash .*/bootup-auto-start.bash ${SET_BROWSER}/g" $AUTOSTART_LOCATION
      				    
-                         fi    
+                fi    
 				
 				
-	               AUTOSTART_ALERT=1
-				
-				sleep 2
-				
-				fi
-				
-								
+	   AUTOSTART_ALERT=1
+						
 	   # Make sure any new files / folders have user permissions
 	   chown -R $APP_USER:$APP_USER /home/$APP_USER/.config > /dev/null 2>&1
 					
 	   # Setup cron (to check logs after install: tail -f /var/log/syslog | grep cron -i)
+	   
+        # REMOVE ANY EXISTING #OLD WAY# THIS SCRIPT USED TO DO IT
+        rm /lib/systemd/system/ticker.service > /dev/null 2>&1
 
 	   CRONJOB="* * * * * $APP_USER bash /home/$APP_USER/slideshow-crypto-ticker/bash/cron/cron.bash > /dev/null 2>&1"
 
@@ -2011,18 +1920,9 @@ EOF
 				
 	   echo " "
 	   echo "${green}Slideshow Crypto Ticker system configuration complete.${reset}"
-	   echo " "
-
-				
-		      if [ "$LXDE_ALERT" = "1" ]; then
-    			 echo " "
-                echo "${red}WARNING: LXDE Desktop's profile could NOT be determined (default 'LXDE' was used), TICKER AUTO-START MAY FAIL!${reset}"
-    			 echo " "
-			 fi
-				
+	   echo " "	
 	   
 	   CONFIG_SETUP=1
-   	     	
 
         break
        elif [ "$opt" = "skip" ]; then
@@ -2184,25 +2084,14 @@ fi
 
 if [ "$AUTOSTART_ALERT" = "1" ]; then
 
+echo "${green}Ticker autostart at login has been configured at:"
+echo " "
 
-	if [ "$LXDE_ALERT" = "1" ]; then
-				
-     echo " "
-     echo "${red}WARNING: LXDE Desktop's profile could NOT be determined (default 'LXDE' was used), TICKER AUTO-START MAY FAIL!${reset}"
-     echo " "
-
-     else
-	
-     echo "${green}Ticker autostart at login has been configured at:"
-     echo " "
-
-     echo "/home/$APP_USER/.config/lxsession/$LXDE_PROFILE/autostart${reset}"
+echo "${AUTOSTART_LOCATION}${reset}"
      
-     echo " "
-     echo "${yellow}(the ticker should now start at boot/login with the $SET_BROWSER browser)${reset}"
-     echo " "
-     
-	fi
+echo " "
+echo "${yellow}(the ticker should now start at boot/login with the $SET_BROWSER browser)${reset}"
+echo " "
 
 fi
 

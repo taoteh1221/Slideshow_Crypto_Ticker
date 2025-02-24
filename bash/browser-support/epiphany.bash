@@ -91,13 +91,13 @@ export WEBKIT_DISABLE_TBS=1
 # No fullscreen flag, AND -a for kiosk mode doesn't go fullscreen, 
 # so we use xte AFTER epiphany starts to toggle fullscreen with F11
 # USE #FULL# PATH TO AVOID POSSIBLE BUGS IN BROWSER!
-$EPIPHANY_PATH -a -i --profile ~/.config/epiphany $HOME/slideshow-crypto-ticker/index.html
+$EPIPHANY_PATH -a -i --profile ~/.config/epiphany $HOME/slideshow-crypto-ticker/index.html &
 
 
 # Epiphany does NOT seem to have a fullscreen command,
 # BUT we can only virtually type F11 (for fullscreen) on x11
 if [ "$RUNNING_X11" != "" ]; then
-sleep 15
-xte "key F11" -x $FIND_DISPLAY
+sleep 30
+xdotool key F11
 fi
 

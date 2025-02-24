@@ -66,7 +66,15 @@ xset s noblank
 
 fi
 
-		
+				
+# In case user changed the hostname, just blow away singleton data in the cache
+# (OTHERWISE CHROMIUM WON'T START!)
+# https://github.com/puppeteer/puppeteer/issues/4860
+if [ -d ~/.config/chromium ]; then
+rm -rf ~/.config/chromium/Singleton*
+fi
+
+
 # Chromium's FULL PATH
 CHROMIUM_PATH=$(which chromium)
 
