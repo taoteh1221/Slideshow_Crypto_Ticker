@@ -708,7 +708,7 @@ clean_system_update () {
      if [ -z "$ALLOW_FULL_UPGRADE" ]; then
      
      echo " "
-     echo "${yellow}Does the Operating System on this device update using the \"Rolling Release\" model (Kali, Manjaro, Ubuntu Rolling Rhino, Debian Unstable, etc), or the \"Long-Term Release\" model (Debian, Ubuntu, Raspberry Pi OS, Armbian Stable, Diet Pi, etc)?"
+     echo "${yellow}Does the Operating System on this device update using the \"Rolling Release\" model (Kali, Manjaro, Ubuntu Rolling Rhino, Debian Unstable, Fedora Rawhide, etc), or the \"Long-Term Release\" model (Debian, Ubuntu, Raspberry Pi OS, Armbian Stable, Diet Pi, Fedora, etc)?"
      echo " "
      echo "${red}(You can SEVERELY MESS UP a \"Rolling Release\" Operating System IF YOU DO NOT CHOOSE CORRECTLY HERE! In that case, you can SAFELY choose \"I don't know\".)${reset}"
      echo " "
@@ -2200,7 +2200,7 @@ fi
 if [ "$AUTOSTART_ALERT" = "1" ]; then
 
 echo " "
-echo "${red}TICKER AUTO-START #REQUIRES# RUNNING THE LXDE DESKTOP AT STARTUP, AS THE USER: '${APP_USER}'${reset}"
+echo "${red}TICKER AUTO-START #REQUIRES# RUNNING EITHER THE LXDE DESKTOP OR RASPBERRY PI OS DESKTOP AT STARTUP, AS THE USER: '${APP_USER}'${reset}"
 echo " "
 
 else
@@ -2259,7 +2259,9 @@ echo " "
 
 echo "${red} "
 echo "============================================================="
-echo "=======  E N D   O F   I N S T A L L A T I O N  ============="
+echo "============================================================="
+echo "=======  E N D   O F   I N S T A L L A T I O N !  ==========="
+echo "============================================================="
 echo "============================================================="
 echo "${reset} "
 
