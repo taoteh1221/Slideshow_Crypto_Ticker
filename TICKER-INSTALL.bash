@@ -947,7 +947,7 @@ echo " "
 
 echo "${cyan}Your system has been detected as:"
 echo " "
-echo "$OS v$VER (display: ${DISPLAY_TYPE})${reset}"
+echo "$OS v$VER (CURRENT display: ${DISPLAY_TYPE})${reset}"
 echo " "
 
 echo "${red}Chromium, Epiphany, and Firefox are supported (chromium is recommended for reliability, all these browsers will be installed if available). IF A BROWSER DOES NOT WORK, PLEASE CHECK MANUALLY THAT IT IS INSTALLED PROPERLY, AND MAKE SURE IT IS NOT CRASHING ON STARTUP!${reset}"
