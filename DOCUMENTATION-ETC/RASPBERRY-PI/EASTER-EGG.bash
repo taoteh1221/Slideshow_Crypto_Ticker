@@ -4,7 +4,7 @@
 COPYRIGHT_YEARS="2022-2025"
 
 # Version of this script
-APP_VERSION="1.12.0" # 2025/FEBRUARY/17TH
+APP_VERSION="1.12.1" # 2025/FEBRUARY/23RD
 
 
 ########################################################################################################################
@@ -189,6 +189,7 @@ IP=$(ip -o route get to 8.8.8.8 | sed -n 's/.*src \([0-9.]\+\).*/\1/p')
 
 ######################################
 
+
 # Are we running on an ARM-based CPU?
 if [ -f "/etc/debian_version" ]; then
 IS_ARM=$(dpkg --print-architecture | grep -i "arm")
@@ -218,6 +219,7 @@ SCRIPT_LOCATION=$(readlink "$0")
 else
 SCRIPT_LOCATION="$( cd -- "$(dirname "$0")" >/dev/null 2>&1 ; pwd -P )/"$(basename "$0")""
 fi
+
 
 # Now set path / file vars, after setting SCRIPT_LOCATION
 SCRIPT_PATH="$( cd -- "$(dirname "$SCRIPT_LOCATION")" >/dev/null 2>&1 ; pwd -P )"
@@ -299,6 +301,7 @@ fi
 # Get logged-in username (if sudo, this works best with logname)
 TERMINAL_USERNAME=$(logname)
 
+
 # If logname doesn't work, use the $SUDO_USER or $USER global var
 if [ -z "$TERMINAL_USERNAME" ]; then
 
@@ -323,6 +326,38 @@ fi
 
 
 ######################################
+
+
+# Find out what display manager is being used on the PHYSICAL display
+DISPLAY_SESSION=$(loginctl show-user "$TERMINAL_USERNAME" -p Display --value)
+DISPLAY_SESSION=$(echo "${DISPLAY_SESSION}" | xargs) # trim whitespace
+
+# Display type
+DISPLAY_TYPE=$(loginctl show-session "$DISPLAY_SESSION" -p Type)
+
+# Are we using x11 display manager?
+RUNNING_X11=$(echo "$DISPLAY_TYPE" | grep -i x11)
+
+# Are we using wayland display manager?
+RUNNING_WAYLAND=$(echo "$DISPLAY_TYPE" | grep -i wayland)
+
+
+# Are we running a wayland compositor?
+if [ "$RUNNING_WAYLAND" != "" ]; then
+	   
+# Are we using labwc compositor?
+RUNNING_LABWC=$(ps aux | grep labwc | grep -v grep) # EXCLUDE THE WORD GREP!
+
+elif [ "$RUNNING_X11" != "" ]; then
+
+     # Are we using lightdm, as the display manager?
+     if [ -f "/etc/debian_version" ]; then
+     LIGHTDM_DISPLAY=$(cat /etc/X11/default-display-manager | grep "lightdm")
+     elif [ -f "/etc/redhat-release" ]; then
+     LIGHTDM_DISPLAY=$(ls -al /etc/systemd/system/display-manager.service | grep "lightdm")
+     fi
+
+fi
 
 
 if [ -f "/etc/debian_version" ]; then
@@ -410,7 +445,7 @@ app_path_result="${app_path_result#*$1:}"
      echo "System path for '$1' NOT FOUND, even AFTER package installation attempts, giving up." > /dev/tty
      echo " " > /dev/tty
 
-     echo "*PLEASE* REPORT THIS ISSUE HERE, *IF THIS SCRIPT FAILS TO RUN PROPERLY FROM THIS POINT ONWARD*:" > /dev/tty
+     echo "*PLEASE* REPORT THIS ISSUE HERE, *IF THIS SCRIPT OR THE INSTALLED APP FAILS TO RUN PROPERLY FROM THIS POINT ONWARD*:" > /dev/tty
      echo " " > /dev/tty
      echo "$ISSUES_URL" > /dev/tty
      echo "${reset} " > /dev/tty
@@ -524,7 +559,7 @@ app_path_result="${app_path_result#*$1:}"
      
           # If UBUNTU (*NOT* any other OS) snap was detected on the system, try a snap install too
           # (as they moved some libs over to snap / snap-only? now)
-          if [ $SYS_PACK != "snapd" ]; then
+          if [ "$IS_UBUNTU" != "" ] && [ $SYS_PACK != "snapd" ]; then
           
           echo " " > /dev/tty
           echo "${yellow}CHECKING FOR UBUNTU SNAP PACKAGE '$SYS_PACK', please wait...${reset}" > /dev/tty
@@ -591,7 +626,7 @@ fi
 
 # ON ARM REDHAT-BASED SYSTEMS ONLY:
 # Do we have kernel updates disabled?
-if [ -f "/etc/redhat-release" ]; then
+if [ -f "/etc/redhat-release" ] && [ ! -f "${HOME}/.redhat_kernel_alert.dat" ]; then
 
 # Are we auto-selecting the NEWEST kernel, to boot by default in grub?
 KERNEL_BOOTED_UPDATES=$(sudo sed -n '/UPDATEDEFAULT=yes/p' /etc/sysconfig/kernel)
@@ -644,6 +679,52 @@ KERNEL_BOOTED_UPDATES=$(sudo sed -n '/UPDATEDEFAULT=yes/p' /etc/sysconfig/kernel
      
      fi
 
+
+echo -e "ran" > ${HOME}/.redhat_kernel_alert.dat
+
+fi
+              
+
+######################################
+
+
+# Armbian freeze kernel updates
+if [ -f "/usr/bin/armbian-config" ] && [ ! -f "${HOME}/.armbian_kernel_alert.dat" ]; then
+echo "${red}YOU MAY NEED TO *DISABLE* KERNEL UPDATES ON YOUR ARMBIAN DEVICE (IF YOU HAVE NOT ALREADY), SO YOUR DEVICE ALWAYS BOOTS UP PROPERLY."
+echo " "
+echo "${green}Run this command, and then choose 'System > Updates > Disable Armbian firmware upgrades':"
+echo " "
+echo "sudo armbian-config${reset}"
+echo " "
+echo "${red}This will assure you always use a kernel compatible with your device."
+echo " "
+
+echo "${yellow} "
+read -n1 -s -r -p $"PRESS F to run armbian-config and fix this NOW, OR any other key to skip fixing..." key
+echo "${reset} "
+
+    if [ "$key" = 'f' ] || [ "$key" = 'F' ]; then
+
+    sudo armbian-config
+    
+    sleep 1
+
+    echo " "
+    echo "${cyan}Resuming auto-installer..."
+    echo " "
+    echo "${red}DON'T FORGET TO REBOOT BEFORE ALLOWING ANY SYSTEM UPGRADES!${reset}"
+    echo " "
+	   
+    else
+
+    echo " "
+    echo "${green}Skipping...${reset}"
+    echo " "
+    
+    fi
+
+
+echo -e "ran" > ${HOME}/.armbian_kernel_alert.dat
 
 fi
 
@@ -733,22 +814,34 @@ clean_system_update () {
      if [ -z "$ALLOW_FULL_UPGRADE" ]; then
      
      echo " "
-     echo "${yellow}Does the Operating System on this device update using the \"Rolling Release\" model (Kali, Manjaro, Ubuntu Rolling Rhino, Debian Unstable, etc), or the \"Long-Term Release\" model (Debian, Ubuntu, Raspberry Pi OS, Armbian Stable, Diet Pi, etc)?"
-     echo " "
-     echo "${red}(You can SEVERELY MESS UP a \"Rolling Release\" Operating System IF YOU DO NOT CHOOSE CORRECTLY HERE! In that case, you can SAFELY choose \"I don't know\".)${reset}"
-     echo " "
+     echo "${yellow}Does the Operating System on this device update using the \"Rolling Release\" model (Kali, Manjaro, Ubuntu Rolling Rhino, Debian Unstable, Fedora Rawhide, etc), or the \"Long-Term Release\" model (Debian, Ubuntu, Raspberry Pi OS, Armbian Stable, Diet Pi, Fedora, etc)?"
+     echo "${reset} "
      
      
           if [ ! -f /usr/bin/raspi-config ] && [ "$IS_ARM" != "" ]; then
-          echo "${red}(Your ARM-based device MAY NOT BOOT IF YOU RUN SYSTEM UPGRADES [if you have NOT freezed kernel updating / rebooted FIRST]. To play it safe, you can just choose \"ARM Device\")${reset}"
+          
+          echo "${red}(You can SEVERELY MESS UP an ${yellow}ARM-based / NOT-RASPI-OS \"Rolling Release\" Operating System${red}, IF YOU DO NOT CHOOSE CORRECTLY HERE! In that case, you can SAFELY choose \"I don't know\".)${reset}"
           echo " "
+     
+          echo "${red}(Your ${yellow}ARM-based / NOT-RASPI-OS Operating System${red} MAY NOT BOOT IF YOU RUN SYSTEM UPGRADES [if you have NOT frozen kernel firmware updating / rebooted FIRST]. To avoid this potential issue (IF you have NOT frozen kernel firmware updating), you can SAFELY choose \"NOT Raspberry Pi OS Software\", OR \"I don't know\")${reset}"
+          echo " "
+     
+          echo "Enter the NUMBER next to your chosen option.${reset}"
+     
+          echo " "
+          
+          OPTIONS="rolling long_term i_dont_know not_raspberrypi_os_software"
+          
+          else
+     
+          echo "Enter the NUMBER next to your chosen option.${reset}"
+     
+          echo " "
+          
+          OPTIONS="rolling long_term i_dont_know"
+          
           fi
      
-     echo "Enter the NUMBER next to your chosen option.${reset}"
-     
-     echo " "
-     
-          OPTIONS="rolling long_term i_dont_know"
           
           select opt in $OPTIONS; do
                   if [ "$opt" = "long_term" ]; then

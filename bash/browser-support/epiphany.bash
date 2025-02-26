@@ -49,13 +49,46 @@ DISPLAY=$FIND_DISPLAY
 
 export DISPLAY=$FIND_DISPLAY
 
+
+# Get logged-in username (if sudo, this works best with logname)
+TERMINAL_USERNAME=$(logname)
+
+
+# If logname doesn't work, use the $SUDO_USER or $USER global var
+if [ -z "$TERMINAL_USERNAME" ]; then
+
+    if [ -z "$SUDO_USER" ]; then
+    TERMINAL_USERNAME=$USER
+    else
+    TERMINAL_USERNAME=$SUDO_USER
+    fi
+
+fi
+
+
+# Find out what display manager is being used on the PHYSICAL display
+DISPLAY_SESSION=$(loginctl show-user "$TERMINAL_USERNAME" -p Display --value)
+DISPLAY_SESSION=$(echo "${DISPLAY_SESSION}" | xargs) # trim whitespace
+
+# Display type
+DISPLAY_TYPE=$(loginctl show-session "$DISPLAY_SESSION" -p Type)
+
+# Are we using x11 display manager?
+RUNNING_X11=$(echo "$DISPLAY_TYPE" | grep -i x11)
+
+# Are we using wayland display manager?
+RUNNING_WAYLAND=$(echo "$DISPLAY_TYPE" | grep -i wayland)
+
+
+if [ "$RUNNING_X11" != "" ]; then
+
 xset s off
 
 xset -dpms
 
 xset s noblank
 
-unclutter -idle 0.5 -root &
+fi
 
 				
 # Create epiphany user directory if it doesn't exist yet
@@ -67,10 +100,12 @@ fi
 # epiphany's FULL PATH
 EPIPHANY_PATH=$(which epiphany)
 
+
 # If 'epiphany' wasn't found, look for 'epiphany-browser'
 if [ -z "$EPIPHANY_PATH" ]; then
 EPIPHANY_PATH=$(which epiphany-browser)
 fi
+
 
 # Reduce crashes
 export WEBKIT_DISABLE_TBS=1
@@ -80,7 +115,13 @@ export WEBKIT_DISABLE_TBS=1
 # No fullscreen flag, AND -a for kiosk mode doesn't go fullscreen, 
 # so we use xte AFTER epiphany starts to toggle fullscreen with F11
 # USE #FULL# PATH TO AVOID POSSIBLE BUGS IN BROWSER!
-$EPIPHANY_PATH -a -i --profile ~/.config/epiphany $HOME/slideshow-crypto-ticker/index.html --display=$FIND_DISPLAY &
-sleep 15
-xte "key F11" -x $FIND_DISPLAY
+$EPIPHANY_PATH -a -i --profile ~/.config/epiphany $HOME/slideshow-crypto-ticker/index.html &
+
+
+# Epiphany does NOT seem to have a fullscreen command,
+# BUT we can only virtually type F11 (for fullscreen) on x11
+if [ "$RUNNING_X11" != "" ]; then
+sleep 30
+xdotool key F11
+fi
 

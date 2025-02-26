@@ -30,7 +30,7 @@ fi
 
 
 # Give system time to boot
-sleep 20
+sleep 15
 
 # Cache updating (MAKE SURE IT EXISTS BEFORE RUNNING THE TICKER)
 bash ~/slideshow-crypto-ticker/bash/cron/cache.bash
@@ -41,9 +41,9 @@ DEFAULT_BROWSER=$(cat ~/slideshow-crypto-ticker/cache/default_browser.dat)
 DEFAULT_BROWSER=$(echo "${DEFAULT_BROWSER}" | xargs) # Trim any whitespace
 
 
-# If DEFAULT browser parameter wasn't set, use firefox
+# If DEFAULT browser parameter wasn't set, use chromium
 if [ -z "$DEFAULT_BROWSER" ]; then
-DEFAULT_BROWSER="firefox"
+DEFAULT_BROWSER="chromium"
 fi
 
 
@@ -51,16 +51,19 @@ fi
 if [ -z "$1" ]; then
 SET_BROWSER=$DEFAULT_BROWSER
 echo " "
-echo "Browser not specified, using default browser ${DEFAULT_BROWSER}..."
+echo "Browser not specified, using default browser ${SET_BROWSER}..."
 echo " "
 else
 
     if [ -f ~/slideshow-crypto-ticker/bash/browser-support/$1.bash ]; then
     SET_BROWSER=$1
+    echo " "
+    echo "Using browser '$SET_BROWSER'..."
+    echo " "
     else
     SET_BROWSER=$DEFAULT_BROWSER
     echo " "
-    echo "Browser '$1' not supported, falling back to default browser ${DEFAULT_BROWSER}..."
+    echo "Browser '$1' not supported, falling back to default browser ${SET_BROWSER}..."
     echo " "
     fi
     
