@@ -517,9 +517,10 @@ fi
 ######################################
 
 
-# ON ARM REDHAT-BASED SYSTEMS ONLY:
 # Do we have kernel updates disabled?
-if [ -f "/etc/redhat-release" ] && [ ! -f "${HOME}/.redhat_kernel_alert.dat" ]; then
+
+# ON ARM REDHAT-BASED SYSTEMS
+if [ -f "/etc/redhat-release" ]; then
 
 # Are we auto-selecting the NEWEST kernel, to boot by default in grub?
 KERNEL_BOOTED_UPDATES=$(sudo sed -n '/UPDATEDEFAULT=yes/p' /etc/sysconfig/kernel)
@@ -532,6 +533,7 @@ KERNEL_BOOTED_UPDATES=$(sudo sed -n '/UPDATEDEFAULT=yes/p' /etc/sysconfig/kernel
      echo "${yellow} "
      read -n1 -s -r -p $"PRESS F to fix this (disable grub auto-selecting NEW kernels to boot), OR any other key to skip fixing..." key
      echo "${reset} "
+     
      
          if [ "$key" = 'f' ] || [ "$key" = 'F' ]; then
      
@@ -573,16 +575,8 @@ KERNEL_BOOTED_UPDATES=$(sudo sed -n '/UPDATEDEFAULT=yes/p' /etc/sysconfig/kernel
      fi
 
 
-echo -e "ran" > ${HOME}/.redhat_kernel_alert.dat
-
-fi
-              
-
-######################################
-
-
 # Armbian freeze kernel updates
-if [ -f "/usr/bin/armbian-config" ] && [ ! -f "${HOME}/.armbian_kernel_alert.dat" ]; then
+elif [ -f "/usr/bin/armbian-config" ]; then
 echo "${red}YOU MAY NEED TO *DISABLE* KERNEL UPDATES ON YOUR ARMBIAN DEVICE (IF YOU HAVE NOT ALREADY), SO YOUR DEVICE ALWAYS BOOTS UP PROPERLY."
 echo " "
 echo "${green}Run this command, and then choose 'System > Updates > Disable Armbian firmware upgrades':"
@@ -595,6 +589,7 @@ echo " "
 echo "${yellow} "
 read -n1 -s -r -p $"PRESS F to run armbian-config and fix this NOW, OR any other key to skip fixing..." key
 echo "${reset} "
+
 
     if [ "$key" = 'f' ] || [ "$key" = 'F' ]; then
 
@@ -616,8 +611,6 @@ echo "${reset} "
     
     fi
 
-
-echo -e "ran" > ${HOME}/.armbian_kernel_alert.dat
 
 fi
 
@@ -1319,6 +1312,8 @@ EOF
      sleep 1
      
      # Make sure the modded setup config params are uncommented (active [redhat setups])
+     # greeter-session in Fedora's conf.d subdirectory does NOT support AUTOLOGIN,
+     # so we uncomment the correct value in lightdm's MAIN config (which overrides prev val)
      sed -i "s/^#greeter-session/greeter-session/g" $LIGHTDM_CONFIG_FILE
      sed -i "s/^#user-session/user-session/g" $LIGHTDM_CONFIG_FILE
      
