@@ -4,7 +4,7 @@
 COPYRIGHT_YEARS="2022-2025"
 
 # Version of this script
-APP_VERSION="1.12.1" # 2025/FEBRUARY/23RD
+APP_VERSION="1.13.0" # 2025/SEPTEMBER/25TH
 
 
 ########################################################################################################################
@@ -93,8 +93,11 @@ convert=$(echo "$convert" | sed -r "s/devices available/14 2/g")
 # devices paired
 convert=$(echo "$convert" | sed -r "s/devices paired/14 3/g")
 
+# devices connected
+convert=$(echo "$convert" | sed -r "s/devices connected/14 4/g")
+
 # devices trusted
-convert=$(echo "$convert" | sed -r "s/devices trusted/14 4/g")
+convert=$(echo "$convert" | sed -r "s/devices trusted/14 5/g")
 
 # upgrade
 convert=$(echo "$convert" | sed -r "s/upgrade/1/g")
@@ -357,6 +360,12 @@ elif [ "$RUNNING_X11" != "" ]; then
      LIGHTDM_DISPLAY=$(ls -al /etc/systemd/system/display-manager.service | grep "lightdm")
      fi
 
+fi
+
+
+# IF we are running a MODERN Raspberry Pi OS, FLAG as such (for interfacing UX)
+if [ -f /usr/bin/raspi-config ] && [ "$RUNNING_LABWC" != "" ]; then
+MODERN_RASPI_OS=1
 fi
 
 
@@ -624,8 +633,9 @@ fi
 ######################################
 
 
-# ON ARM REDHAT-BASED SYSTEMS ONLY:
 # Do we have kernel updates disabled?
+
+# ON ARM REDHAT-BASED SYSTEMS
 if [ -f "/etc/redhat-release" ] && [ ! -f "${HOME}/.redhat_kernel_alert.dat" ]; then
 
 # Are we auto-selecting the NEWEST kernel, to boot by default in grub?
@@ -634,11 +644,12 @@ KERNEL_BOOTED_UPDATES=$(sudo sed -n '/UPDATEDEFAULT=yes/p' /etc/sysconfig/kernel
 
      if [ "$IS_ARM" != "" ] && [ "$KERNEL_BOOTED_UPDATES" != "" ]; then
      
-     echo "${red}Your ARM-based device is CURRENTLY setup to UPDATE the grub bootloader to boot from THE LATEST KERNEL. THIS MAY CAUSE SOME ARM-BASED DEVICES TO NOT BOOT (without MANUALLY selecting a different kernel at boot time).${reset}"
+     echo "${red}Your ARM-based device is CURRENTLY setup to UPDATE the grub bootloader to boot from THE LATEST KERNEL. THIS IS LIKELY THE BEST OPTION FOR YOUR DEVICE, BUT you can FREEZE using NEWER kernels added during system upgrades, IF YOU THINK YOUR SPECIFIC DEVICE REQUIRES IT (when using CUSTOM kernels / modules / etc).${reset}"
      
      echo "${yellow} "
-     read -n1 -s -r -p $"PRESS F to fix this (disable grub auto-selecting NEW kernels to boot), OR any other key to skip fixing..." key
+     read -n1 -s -r -p $"PRESS F to freeze updating the used kernel (disable grub auto-selecting NEW kernels), OR any other key to skip fixing..." key
      echo "${reset} "
+     
      
          if [ "$key" = 'f' ] || [ "$key" = 'F' ]; then
      
@@ -682,14 +693,9 @@ KERNEL_BOOTED_UPDATES=$(sudo sed -n '/UPDATEDEFAULT=yes/p' /etc/sysconfig/kernel
 
 echo -e "ran" > ${HOME}/.redhat_kernel_alert.dat
 
-fi
-              
-
-######################################
-
 
 # Armbian freeze kernel updates
-if [ -f "/usr/bin/armbian-config" ] && [ ! -f "${HOME}/.armbian_kernel_alert.dat" ]; then
+elif [ -f "/usr/bin/armbian-config" ] && [ ! -f "${HOME}/.armbian_kernel_alert.dat" ]; then
 echo "${red}YOU MAY NEED TO *DISABLE* KERNEL UPDATES ON YOUR ARMBIAN DEVICE (IF YOU HAVE NOT ALREADY), SO YOUR DEVICE ALWAYS BOOTS UP PROPERLY."
 echo " "
 echo "${green}Run this command, and then choose 'System > Updates > Disable Armbian firmware upgrades':"
@@ -880,10 +886,27 @@ clean_system_update () {
           
           echo " "
      
-          echo "${cyan}APT sources list update complete.${reset}"
+          echo "${cyan}APT sources list refresh complete.${reset}"
+          
+          echo " "
+          
+          elif [ -f "/etc/redhat-release" ]; then
+
+          # Assure we are NOT stuck using any PREVIOUSLY-USED mirror with checksum mismatches,
+          # thereby causing ABORTION of the upgrade session (due to corrupt data being detected)
+          sudo dnf clean all
+          
+          sleep 3
+          
+          # Rebuild cache, needed for updates, since we CLEANED IT ABOVE
+          sudo dnf makecache
           
           echo " "
      
+          echo "${cyan}DNF cache refresh complete.${reset}"
+          
+          echo " "
+          
           fi
           
      
@@ -1311,6 +1334,16 @@ select opt in $OPTIONS; do
         ######################################
         
         echo " "
+            
+            # IF we are running a MODERN Raspberry Pi OS, WE ARE ALREADY GOOD TO GO
+            if [ "$MODERN_RASPI_OS" != "" ]; then
+             echo "${red}YOU ARE RUNNING A MODERN VERSION OF RASPBERRY PI OS, YOU SHOULD NOT NEED PULSEAUDIO.${reset}"
+             echo " "
+             echo "${cyan}Exiting...${reset}"
+             echo " "
+             exit
+            fi
+        
         
             if [ "$EUID" -ne 0 ] || [ "$TERMINAL_USERNAME" == "root" ]; then 
              echo "${red}Please run #WITH# 'sudo' PERMISSIONS.${reset}"
@@ -1493,6 +1526,16 @@ select opt in $OPTIONS; do
         ######################################
         
         echo " "
+            
+            # IF we are running a MODERN Raspberry Pi OS, WE ARE ALREADY GOOD TO GO
+            if [ "$MODERN_RASPI_OS" != "" ]; then
+             echo "${red}YOU ARE RUNNING A MODERN VERSION OF RASPBERRY PI OS, YOU SHOULD NOT NEED PULSEAUDIO.${reset}"
+             echo " "
+             echo "${cyan}Exiting...${reset}"
+             echo " "
+             exit
+            fi
+        
         
             if [ "$EUID" == 0 ]; then 
              echo "${red}Please run #WITHOUT# 'sudo' PERMISSIONS.${reset}"
@@ -1651,6 +1694,16 @@ select opt in $OPTIONS; do
         ######################################
         
         echo " "
+            
+            # IF we are running a MODERN Raspberry Pi OS, WE ARE ALREADY GOOD TO GO
+            if [ "$MODERN_RASPI_OS" != "" ]; then
+             echo "${red}YOU ARE RUNNING A MODERN VERSION OF RASPBERRY PI OS, YOU SHOULD NOT NEED PULSEAUDIO.${reset}"
+             echo " "
+             echo "${cyan}Exiting...${reset}"
+             echo " "
+             exit
+            fi
+        
         
             if [ "$EUID" == 0 ]; then 
              echo "${red}Please run #WITHOUT# 'sudo' PERMISSIONS.${reset}"
@@ -1751,9 +1804,13 @@ select opt in $OPTIONS; do
         sleep 1
         
         # Install pyradio python3 dependencies
-        $PACKAGE_INSTALL python3-setuptools python3-wheel python3-pip python3-requests python3-dnspython python3-psutil python3-rich -y
+        $PACKAGE_INSTALL pipx python3-setuptools python3-wheel python3-pip python3-requests python3-dnspython python3-psutil python3-rich -y
         
         sleep 3
+        
+        pipx ensurepath
+        
+        sleep 2
         
         # SPECIFILLY NAME IT WITH -O, TO OVERWRITE ANY PREVIOUS COPY...ALSO --no-cache TO ALWAYS GET LATEST COPY
         # Renaming pyradio's installation script may not work...
@@ -2616,7 +2673,9 @@ select opt in $OPTIONS; do
         send -- \"scan on\r\"
         expect \"$BLU_MAC\"
         send -- \"remove $BLU_MAC\r\"
-        expect \"Device has been removed\"
+        expect \"has been removed\"
+        send -- \"untrust $BLU_MAC\r\"
+        expect \"untrust succeeded\"
         send -- \"exit\r\"
         "
         
@@ -2655,7 +2714,7 @@ select opt in $OPTIONS; do
         echo "${yellow}Enter a NUMBER to choose whether to view the system's (INTERNAL) bluetooth devices, available devices, paired devices, or trusted devices (may not be available).${reset}"
         echo " "
             
-            OPTIONS="internal_devices available_devices paired_devices trusted_devices"
+            OPTIONS="internal_devices available_devices paired_devices connected_devices trusted_devices"
             
             select opt in $OPTIONS; do
                     echo " "
@@ -2672,7 +2731,7 @@ select opt in $OPTIONS; do
                    elif [ "$opt" = "available_devices" ]; then
                    
                     echo " "
-                    echo "${yellow}Avialable bluetooth devices:"
+                    echo "${yellow}AVAILABLE bluetooth devices:"
                     echo "${reset} "
                     bluetoothctl devices
                     echo " "
@@ -2681,16 +2740,25 @@ select opt in $OPTIONS; do
                    elif [ "$opt" = "paired_devices" ]; then
                    
                     echo " "
-                    echo "${yellow}Paired bluetooth devices:"
+                    echo "${yellow}PAIRED bluetooth devices:"
                     echo "${reset} "
-                    bluetoothctl paired-devices
+                    bluetoothctl devices Paired
+                    echo " "
+                    
+                   break
+                   elif [ "$opt" = "connected_devices" ]; then
+                   
+                    echo " "
+                    echo "${yellow}CONNECTED bluetooth devices:"
+                    echo "${reset} "
+                    bluetoothctl devices Connected
                     echo " "
                    
                    break
                    elif [ "$opt" = "trusted_devices" ]; then
                    
                     echo " "
-                    echo "${yellow}Trusted bluetooth devices:"
+                    echo "${yellow}TRUSTED bluetooth devices:"
                     echo "${reset} "
                     BT_TRUSTED=$(sudo grep -Ri trust /var/lib/bluetooth)
                     
@@ -2740,6 +2808,7 @@ select opt in $OPTIONS; do
         echo " "
         
         aplay /usr/share/sounds/alsa/Front_Center.wav
+        
         exit
         
         break
