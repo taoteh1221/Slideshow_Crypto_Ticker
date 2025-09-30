@@ -58,7 +58,7 @@ if [ ! -f ~/.Xresources ] && [ "$USER" != "root" ]; then
 touch ~/.Xresources
 chown ${USER}:${USER} ~/.Xresources # play it safe
 sleep 1
-xrdb -merge ~/.Xresources
+xrdb -merge ~/.Xresources > /dev/null 2>&1
 sleep 1
 fi
 
