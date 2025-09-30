@@ -45,10 +45,26 @@ FIND_DISPLAY=":0"
 fi
 
 
+# Only use first result (space-delimited)
+FIND_DISPLAY=${FIND_DISPLAY%%[[:space:]]*}
+
 DISPLAY=$FIND_DISPLAY
 
 export DISPLAY=$FIND_DISPLAY
 
+
+# AFTER setting DISPLAY
+if [ ! -f ~/.Xresources ] && [ "$USER" != "root" ]; then
+touch ~/.Xresources
+chown ${USER}:${USER} ~/.Xresources # play it safe
+sleep 1
+xrdb -merge ~/.Xresources > /dev/null 2>&1
+sleep 1
+fi
+
+
+# X resources
+export XRESOURCES=~/.Xresources 
 
 # Get logged-in username (if sudo, this works best with logname)
 TERMINAL_USERNAME=$(logname)
