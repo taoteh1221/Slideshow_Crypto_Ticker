@@ -300,6 +300,24 @@ echo " "
 ######################################
 
 
+# Graphical-based apps must be redirected to the tty, to work
+# correctly *IN A SUBSHELL* (this ALSO works fine NOT in a subshell too).
+launch_graphical_safe() {
+
+     if [ ! -z "$1" ]; then
+
+         output=$(
+         $1 < /dev/tty > /dev/tty
+         )
+     
+     fi
+
+}
+
+
+######################################
+
+
 # Path to app (CROSS-DISTRO-COMPATIBLE)
 get_app_path() {
 
@@ -583,7 +601,7 @@ echo "${reset} "
 
     if [ "$key" = 'f' ] || [ "$key" = 'F' ]; then
 
-    sudo armbian-config
+    launch_graphical_safe "sudo armbian-config"
     
     sleep 1
 
@@ -1039,7 +1057,7 @@ echo "${reset} "
 
     if [ "$key" = 'f' ] || [ "$key" = 'F' ]; then
 
-    sudo raspi-config
+    launch_graphical_safe "sudo raspi-config"
     
     sleep 1
 
@@ -1983,11 +2001,11 @@ select opt in $OPTIONS; do
 				echo " "
 				echo "${cyan}Initiating raspi-config, please wait...${reset}"
 				# WE NEED SUDO HERE, or raspi-config fails in bash
-				sudo raspi-config
+				launch_graphical_safe "sudo raspi-config"
 				elif [ -f /boot/dietpi/.version ]; then
 				echo " "
 				echo "${cyan}Initiating dietpi-software, please wait...${reset}"
-				dietpi-software
+				launch_graphical_safe "dietpi-software"
 				else
 				
 				echo " "
