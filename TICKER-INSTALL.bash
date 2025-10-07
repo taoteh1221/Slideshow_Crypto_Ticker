@@ -49,6 +49,25 @@ fi
 export XAUTHORITY=~/.Xauthority 
 # Working directory
 export PWD=$PWD
+
+
+FIND_DISPLAY=$(cat -e "/proc/$$/environ" | sed 's/\^@/\n/g' | grep DISPLAY | sed 's/.*=\(.*\).*/\1/')
+
+
+# If DISPLAY parameter wasn't set, try systemd environment check
+if [ -z "$FIND_DISPLAY" ]; then
+FIND_DISPLAY=$(systemctl --user show-environment | grep DISPLAY | sed 's/.*=\(.*\).*/\1/')
+fi
+
+
+# If DISPLAY parameter STILL wasn't set, use :0 (DEFAULT for 1st display)
+if [ -z "$FIND_DISPLAY" ]; then
+FIND_DISPLAY=":0"
+fi
+
+
+# Only use first result (space-delimited)
+FIND_DISPLAY=${FIND_DISPLAY%%[[:space:]]*}
 				
 
 ######################################
@@ -984,7 +1003,7 @@ echo " "
 
 echo "${cyan}Your system has been detected as:"
 echo " "
-echo "$OS v$VER (CURRENT display: ${DISPLAY_TYPE})${reset}"
+echo "$OS v$VER (CURRENT display info: ${DISPLAY_TYPE}; ID=${FIND_DISPLAY})${reset}"
 echo " "
 
 echo "${red}Chromium, Epiphany, and Firefox are supported (chromium is recommended for reliability, all these browsers will be installed if available). IF A BROWSER DOES NOT WORK, PLEASE CHECK MANUALLY THAT IT IS INSTALLED PROPERLY, AND MAKE SURE IT IS NOT CRASHING ON STARTUP!${reset}"
@@ -1893,7 +1912,7 @@ EOF
                 if [ ! -f $AUTOSTART_LOCATION ]; then 
                          
                 echo " "
-                echo "${cyan}Enabling USER-defined autostart (${AUTOSTART_LOCATION}), AND adding ticker autostart, please wait...${reset}"
+                echo "${cyan}Creating / enabling USER-defined autostart (${AUTOSTART_LOCATION}), AND adding ticker autostart, please wait...${reset}"
                 echo " "
 
                          
@@ -2241,18 +2260,31 @@ fi
 
 if [ "$SSH_SETUP" = "1" ]; then
 
+# Validate domain name
+valid_domain="^([a-zA-Z0-9][a-zA-Z0-9-]{0,61}[a-zA-Z0-9]\.)+[a-zA-Z]{2,}$"
+
+
+if [[ "$HOSTNAME" =~ $valid_domain ]]; then
+app_domain="$HOSTNAME"
+port_forward_notice="${yellow}(on an internal network, you may need router port forwarding, mapping $HOSTNAME => $IP [and reserve $IP for this device])${reset}"
+else
+app_domain="${HOSTNAME}.local"
+port_forward_notice=""
+fi
+
+
 echo "${yellow}SFTP login details are..."
 echo " "
 
 echo "${green}INTERNAL NETWORK SFTP host (port 22, on home / internal network):"
 echo " "
-echo "IP ADDRESS (may change, unless set as static for this device within the router):"
+echo "IP ADDRESS (may change, unless reserved for this device within the router):"
 echo "$IP"
 echo " "
-echo "HOST ADDRESS (ONLY works on linux / mac / windows, NOT android as of 2020):"
-echo "${yellow}(IF YOU JUST CHANGED '${HOSTNAME}' in raspi / dietpi config, USE THAT INSTEAD)"
+echo "HOST ADDRESS: $app_domain"
+echo "${yellow}(IF YOU JUST CHANGED '${app_domain}' in raspi / dietpi config, USE THAT INSTEAD)"
+echo "${port_forward_notice} "
 echo "${green} "
-echo "${HOSTNAME}.local"
 
 echo "SFTP username: $APP_USER"
 echo " "
