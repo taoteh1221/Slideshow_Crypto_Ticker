@@ -2,22 +2,19 @@
 
 # Copyright 2019-2025 GPLv3, Slideshow Crypto Ticker by Mike Kilday: Mike@DragonFrugal.com (leave this copyright / attribution intact in ALL forks / copies!)
 
+# var setup, and export (for any recursion)
 
-# Authentication of X sessions
-export XAUTHORITY=~/.Xauthority 
+# Working directory
+export PWD=$PWD
+
+# Terminal
+export TERM=$TERM
 
 
 # EXPLICITLY set any dietpi paths 
 # Export too, in case we are calling another bash instance in this script
 if [ -f /boot/dietpi/.version ]; then
 PATH=/boot/dietpi:$PATH
-export PATH=$PATH
-fi
-
-# EXPLICITLY set any ~/.local/bin paths
-# Export too, in case we are calling another bash instance in this script
-if [ -d ~/.local/bin ]; then
-PATH=~/.local/bin:$PATH
 export PATH=$PATH
 fi
 				
@@ -54,17 +51,26 @@ export DISPLAY=$FIND_DISPLAY
 
 
 # AFTER setting DISPLAY
-if [ ! -f ~/.Xresources ] && [ "$USER" != "root" ]; then
+# Authentication of X sessions / resources
+if [ ! -f ~/.Xresources ]; then
+
 touch ~/.Xresources
+     
 chown ${USER}:${USER} ~/.Xresources # play it safe
+     
 sleep 1
+     
 xrdb -merge ~/.Xresources > /dev/null 2>&1
+     
 sleep 1
+
 fi
 
 
-# X resources
+export XAUTHORITY=~/.Xauthority 
 export XRESOURCES=~/.Xresources 
+
+
 
 # Get logged-in username (if sudo, this works best with logname)
 TERMINAL_USERNAME=$(logname)
@@ -95,14 +101,14 @@ RUNNING_X11=$(echo "$DISPLAY_TYPE" | grep -i x11)
 # Are we using wayland display manager?
 RUNNING_WAYLAND=$(echo "$DISPLAY_TYPE" | grep -i wayland)
 
-# firefox is stubborn at refreshing JS
-rm -rf ~/.cache/mozilla/firefox/*
-sleep 1
-
 
 # chromium / epiphany / firefox refresh
 # X11
 if [ "$RUNNING_X11" != "" ]; then
+
+# firefox is stubborn at refreshing JS
+rm -rf ~/.cache/mozilla/firefox/*
+sleep 1
 
 xdotool key F5
 
@@ -111,6 +117,10 @@ else
 
 ~/ticker-stop
 
+sleep 1
+
+# firefox is stubborn at refreshing JS
+rm -rf ~/.cache/mozilla/firefox/*
 sleep 1
 
      # If CLI browser parameter wasn't included, use default browser

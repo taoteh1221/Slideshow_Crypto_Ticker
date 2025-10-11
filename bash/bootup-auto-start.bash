@@ -2,21 +2,19 @@
 
 # Copyright 2019-2025 GPLv3, Slideshow Crypto Ticker by Mike Kilday: Mike@DragonFrugal.com (leave this copyright / attribution intact in ALL forks / copies!)
 
-# Authentication of X sessions
-export XAUTHORITY=~/.Xauthority 
+# var setup, and export (for any recursion)
+
+# Working directory
+export PWD=$PWD
+
+# Terminal
+export TERM=$TERM
 
 
 # EXPLICITLY set any dietpi paths 
 # Export too, in case we are calling another bash instance in this script
 if [ -f /boot/dietpi/.version ]; then
 PATH=/boot/dietpi:$PATH
-export PATH=$PATH
-fi
-
-# EXPLICITLY set any ~/.local/bin paths
-# Export too, in case we are calling another bash instance in this script
-if [ -d ~/.local/bin ]; then
-PATH=~/.local/bin:$PATH
 export PATH=$PATH
 fi
 				
@@ -27,6 +25,70 @@ if [ -d /usr/sbin ]; then
 PATH=/usr/sbin:$PATH
 export PATH=$PATH
 fi
+
+
+######################################
+
+
+FIND_DISPLAY=$(cat -e "/proc/$$/environ" | sed 's/\^@/\n/g' | grep DISPLAY | sed 's/.*=\(.*\).*/\1/')
+
+
+# If DISPLAY parameter wasn't set, try systemd environment check
+if [ -z "$FIND_DISPLAY" ]; then
+     
+     # IF run as user (dev tests etc)
+     if [ "$USER" != "root" ]; then
+     FIND_DISPLAY=$(systemctl --user show-environment | grep DISPLAY | sed 's/.*=\(.*\).*/\1/')
+     # IF we are running this script as root, we need to get the USER env for the display
+     else
+     FILE_OWNER_USERNAME=$(stat -c '%U' "$0")
+     FIND_DISPLAY=$(systemctl --machine=${FILE_OWNER_USERNAME}@.host --user show-environment | grep DISPLAY | sed 's/.*=\(.*\).*/\1/')
+     fi
+     
+fi
+
+
+# If DISPLAY parameter STILL wasn't set, use :0 (DEFAULT for 1st display)
+if [ -z "$FIND_DISPLAY" ]; then
+FIND_DISPLAY=":0"
+fi
+
+
+# Only use first result (space-delimited)
+FIND_DISPLAY=${FIND_DISPLAY%%[[:space:]]*}
+
+DISPLAY=$FIND_DISPLAY
+
+export DISPLAY=$FIND_DISPLAY
+
+
+# AFTER setting DISPLAY
+# Authentication of X sessions / resources
+# IF run as user (dev tests etc)
+if [ "$USER" != "root" ]; then
+
+
+     if [ ! -f ~/.Xresources ]; then
+     
+     touch ~/.Xresources
+     
+     chown ${USER}:${USER} ~/.Xresources # play it safe
+     
+     sleep 1
+     
+     xrdb -merge ~/.Xresources > /dev/null 2>&1
+     
+     sleep 1
+     
+     fi
+
+export XAUTHORITY=~/.Xauthority 
+export XRESOURCES=~/.Xresources 
+
+fi
+
+
+######################################
 
 
 # Give system time to boot
