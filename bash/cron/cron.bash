@@ -2,10 +2,6 @@
 
 # Copyright 2019-2025 GPLv3, Slideshow Crypto Ticker by Mike Kilday: Mike@DragonFrugal.com (leave this copyright / attribution intact in ALL forks / copies!)
 
-# Authentication of X sessions
-export XAUTHORITY=~/.Xauthority 
-
-
 # EXPLICITLY set any dietpi paths 
 # Export too, in case we are calling another bash instance in this script
 if [ -f /boot/dietpi/.version ]; then
