@@ -842,13 +842,15 @@ v3.14.2
 ---------------------------------------------------------
 v3.14.3
 
--FIX: Miscellaneous fixes
+-BUG FIX: Added validity check on websocket URLS (in case it was disabled by the app, for auto-configged exchange websocket tokens, like kucoin uses)
 
 -Better browser startup dialogue suppression
 
--Better auto-installer / general UX
+-Upgraded Bitfinex websocket API support
 
 -Auto-installer refactoring
+
+-Better auto-installer UX
 
 -Polish on Redhat support
 

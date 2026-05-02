@@ -643,20 +643,32 @@ alph_symb_regex = /^[a-z0-9\/\-_|:]+$/i;
 
 function websocket_connect(exchange) {
 
+// Escape regex special characters
+var search_pattern = new RegExp( escape_regex('wss://') , 'gi');
+
+var result = api[exchange].match(search_pattern);
 		
+
 	if ( debug_mode == 'on' ) {
-    console.log('websocket_connect'); // DEBUGGING
-    }
-	
-	
+     console.log('websocket_connect: ' + api[exchange]); // DEBUGGING
+     }
+
+
 	// Create new socket
+     if ( result != null && typeof result.length != 'undefined' ) {
 	sockets[exchange] = new WebSocket(api[exchange]);
+     }
+     // OR SKIP AN INVALID WEBSOCKET INIT
+     else {
+     console.log('websocket_connect INVALID PROTOCOL INIT (SO SKIPPED): ' + api[exchange]); // DEBUGGING
+     return 0;
+     }
+
     
-    
-        // Fopr EXCHANGE_NAME_HERE, hange binary type from "blob" to "arraybuffer"
-        if ( exchange == 'EXCHANGE_NAME_HERE' ) {
-        sockets[exchange].binaryType = "arraybuffer";
-        }
+     // Fopr EXCHANGE_NAME_HERE, hange binary type from "blob" to "arraybuffer"
+     if ( exchange == 'EXCHANGE_NAME_HERE' ) {
+     sockets[exchange].binaryType = "arraybuffer";
+     }
    
    
 	// Open socket ///////////////////////////////////////////////////
@@ -771,7 +783,7 @@ function websocket_connect(exchange) {
 				 
 		}
 		// Bitfinex
-		else if ( exchange == 'bitfinex' && msg.length == 11 ) {
+		else if ( exchange == 'bitfinex' && msg.length > 10 ) {
 				 
 		market_id = subscribe_msg[exchange]['pair'];
 				 
@@ -826,21 +838,22 @@ function websocket_connect(exchange) {
 			// To assure appropriate ticker updated
 			if ( typeof update_key !== 'undefined' ) {
 	
-	           // Using ".status_" + update_key INSTEAD, TO SHOW PER-ASSET 
-               if ( show_exchange_name == 'off' ) { 
-               $(".parenth_" + update_key).css({ "display": "none" });
-               }
-               else {
-               $(".parenth_" + update_key).css({ "display": "inline" });
-               $(".status_" + update_key).text( render_names(exchange) ).css("color", "#2bbf7b", "important");
-               }
+	          
+                    // Using ".status_" + update_key INSTEAD, TO SHOW PER-ASSET 
+                    if ( show_exchange_name == 'off' ) { 
+                    $(".parenth_" + update_key).css({ "display": "none" });
+                    }
+                    else {
+                    $(".parenth_" + update_key).css({ "display": "inline" });
+                    $(".status_" + update_key).text( render_names(exchange) ).css("color", "#2bbf7b", "important");
+                    }
        
         			
-        	parsed_market_id = market_id_parser(market_id, exchange);
+        	     parsed_market_id = market_id_parser(market_id, exchange);
         					 
-        	asset = parsed_market_id.asset;
+        	     asset = parsed_market_id.asset;
         			
-        	pairing = parsed_market_id.pairing;
+        	     pairing = parsed_market_id.pairing;
         			
 			update_ticker(update_key, market_id, asset, pairing, price_raw, base_volume);
 			
